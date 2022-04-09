@@ -43,7 +43,7 @@
 // We mean it.
 //
 
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 #include <LiriAuroraCompositor/WaylandOutput>
 #include <LiriAuroraCompositor/WaylandClient>
 #include <LiriAuroraCompositor/WaylandSurface>
@@ -80,11 +80,15 @@ struct WaylandSurfaceViewMapper
     }
 
     WaylandSurface *surface = nullptr;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QList<WaylandView *> views;
+#else
+    QVector<WaylandView *> views;
+#endif
     bool has_entered = false;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandOutputPrivate : public QObjectPrivate, public PrivateServer::wl_output
+class LIRIAURORACOMPOSITOR_EXPORT WaylandOutputPrivate : public QObjectPrivate, public PrivateServer::wl_output
 {
 public:
     Q_DECLARE_PUBLIC(WaylandOutput)
@@ -119,11 +123,19 @@ private:
     QString manufacturer;
     QString model;
     QPoint position;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QList<WaylandOutputMode> modes;
+#else
+    QVector<WaylandOutputMode> modes;
+#endif
     int currentMode = -1;
     int preferredMode = -1;
     QRect availableGeometry;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QList<WaylandSurfaceViewMapper> surfaceViews;
+#else
+    QVector<WaylandSurfaceViewMapper> surfaceViews;
+#endif
     QSize physicalSize;
     WaylandOutput::Subpixel subpixel = WaylandOutput::SubpixelUnknown;
     WaylandOutput::Transform transform = WaylandOutput::TransformNormal;

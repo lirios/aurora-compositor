@@ -38,7 +38,7 @@ namespace Compositor {
 
 class WaylandViewporterPrivate;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandViewporter
+class LIRIAURORACOMPOSITOR_EXPORT WaylandViewporter
         : public WaylandCompositorExtensionTemplate<WaylandViewporter>
 {
     Q_OBJECT

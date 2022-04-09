@@ -34,16 +34,17 @@
 
 struct wl_client;
 
+class QInputMethodEvent;
+class QKeyEvent;
+
 namespace Aurora {
 
 namespace Compositor {
 
 class WaylandSurface;
 class WaylandQtTextInputMethodPrivate;
-class QInputMethodEvent;
-class QKeyEvent;
 
-class WaylandQtTextInputMethod : public WaylandCompositorExtensionTemplate<WaylandQtTextInputMethod>
+class LIRIAURORACOMPOSITOR_EXPORT WaylandQtTextInputMethod : public WaylandCompositorExtensionTemplate<WaylandQtTextInputMethod>
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandQtTextInputMethod)

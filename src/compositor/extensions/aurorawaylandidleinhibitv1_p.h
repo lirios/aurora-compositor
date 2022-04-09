@@ -50,7 +50,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandIdleInhibitManagerV1Private
+class LIRIAURORACOMPOSITOR_EXPORT WaylandIdleInhibitManagerV1Private
         : public WaylandCompositorExtensionPrivate
         , public PrivateServer::zwp_idle_inhibit_manager_v1
 {
@@ -58,7 +58,7 @@ class Q_WAYLANDCOMPOSITOR_EXPORT WaylandIdleInhibitManagerV1Private
 public:
     explicit WaylandIdleInhibitManagerV1Private() = default;
 
-    class Q_WAYLANDCOMPOSITOR_EXPORT Inhibitor
+    class LIRIAURORACOMPOSITOR_EXPORT Inhibitor
             : public PrivateServer::zwp_idle_inhibitor_v1
     {
     public:

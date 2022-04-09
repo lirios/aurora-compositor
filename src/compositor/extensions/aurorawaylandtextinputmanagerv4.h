@@ -50,7 +50,7 @@ namespace Compositor {
 
 class WaylandTextInputManagerV4Private;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandTextInputManagerV4 : public WaylandCompositorExtensionTemplate<WaylandTextInputManagerV4>
+class LIRIAURORACOMPOSITOR_EXPORT WaylandTextInputManagerV4 : public WaylandCompositorExtensionTemplate<WaylandTextInputManagerV4>
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandTextInputManagerV4)

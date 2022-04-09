@@ -27,8 +27,8 @@
 **
 ****************************************************************************/
 
-#ifndef QTWAYLANDQMLINCLUDE_H
-#define QTWAYLANDQMLINCLUDE_H
+#ifndef AURORA_COMPOSITOR_WAYLANDQMLINCLUDE_H
+#define AURORA_COMPOSITOR_WAYLANDQMLINCLUDE_H
 
 //
 //  W A R N I N G
@@ -40,10 +40,11 @@
 //
 // We mean it.
 //
-#include <QtCore/qglobal.h>
-#include <LiriAuroraCompositor/qtwaylandcompositor-config.h>
 
-#if QT_CONFIG(wayland_compositor_quick)
+#include <QtCore/qglobal.h>
+#include <LiriAuroraCompositor/liriauroracompositorfeatures.h>
+
+#if LIRI_FEATURE_aurora_compositor_quick
 #include <QtQml/qqml.h>
 #else
 #define QML_NAMED_ELEMENT(x)
@@ -51,11 +52,4 @@
 #define QML_ADDED_IN_VERSION(x, y)
 #endif
 
-namespace Aurora {
-
-namespace Compositor {
-} // namespace Compositor
-
-} // namespace Aurora
-
-#endif // QTWAYLANDQMLINCLUDE_H
+#endif // AURORA_COMPOSITOR_WAYLANDQMLINCLUDE_H

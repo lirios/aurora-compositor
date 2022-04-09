@@ -30,7 +30,7 @@
 #ifndef AURORA_COMPOSITOR_WAYLANDSURFACEGRABBER_H
 #define AURORA_COMPOSITOR_WAYLANDSURFACEGRABBER_H
 
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 #include <QtCore/QObject>
 
 namespace Aurora {
@@ -40,7 +40,7 @@ namespace Compositor {
 class WaylandSurface;
 class WaylandSurfaceGrabberPrivate;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandSurfaceGrabber : public QObject
+class LIRIAURORACOMPOSITOR_EXPORT WaylandSurfaceGrabber : public QObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandSurfaceGrabber)
@@ -59,7 +59,7 @@ public:
 
 Q_SIGNALS:
     void success(const QImage &image);
-    void failed(Error error);
+    void failed(Aurora::Compositor::WaylandSurfaceGrabber::Error error);
 };
 
 } // namespace Compositor

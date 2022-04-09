@@ -30,7 +30,7 @@
 #ifndef AURORA_COMPOSITOR_WAYLANDBUFFERREF_H
 #define AURORA_COMPOSITOR_WAYLANDBUFFERREF_H
 
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 #include <QImage>
 
 #if QT_CONFIG(opengl)
@@ -41,18 +41,18 @@
 
 struct wl_resource;
 
+class QOpenGLTexture;
+
 namespace Aurora {
 
 namespace Compositor {
-
-class QOpenGLTexture;
 
 namespace QtWayland
 {
     class ClientBuffer;
 }
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandBufferRef
+class LIRIAURORACOMPOSITOR_EXPORT WaylandBufferRef
 {
 public:
     WaylandBufferRef();
@@ -65,10 +65,6 @@ public:
     bool hasContent() const;
     bool hasProtectedContent() const;
     bool isDestroyed() const;
-#if QT_WAYLANDCOMPOSITOR_REMOVED_SINCE(6, 3)
-    bool operator==(const WaylandBufferRef &ref);
-    bool operator!=(const WaylandBufferRef &ref);
-#endif
 
     struct wl_resource *wl_buffer() const;
 
@@ -111,7 +107,7 @@ private:
     friend class WaylandBufferRefPrivate;
     friend class WaylandSurfacePrivate;
 
-    friend Q_WAYLANDCOMPOSITOR_EXPORT
+    friend LIRIAURORACOMPOSITOR_EXPORT
     bool operator==(const WaylandBufferRef &lhs, const WaylandBufferRef &rhs) noexcept;
     friend inline
     bool operator!=(const WaylandBufferRef &lhs, const WaylandBufferRef &rhs) noexcept

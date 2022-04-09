@@ -41,8 +41,8 @@
 #include <QGuiApplication>
 #include <QInputMethodEvent>
 
-#if QT_CONFIG(xkbcommon)
-#include <QtGui/private/qxkbcommon_p.h>
+#if LIRI_FEATURE_aurora_xkbcommon
+#include <LiriAuroraXkbCommonSupport/private/qxkbcommon_p.h>
 #endif
 
 namespace Aurora {
@@ -199,7 +199,7 @@ void WaylandTextInputPrivate::sendKeyEvent(QKeyEvent *event)
 
     // TODO add support for modifiers
 
-#if QT_CONFIG(xkbcommon)
+#if LIRI_FEATURE_aurora_xkbcommon
     for (xkb_keysym_t keysym : QXkbCommon::toKeysym(event)) {
         send_keysym(focusResource->handle, event->timestamp(), keysym,
                     event->type() == QEvent::KeyPress ? WL_KEYBOARD_KEY_STATE_PRESSED : WL_KEYBOARD_KEY_STATE_RELEASED,
@@ -339,9 +339,13 @@ void WaylandTextInputPrivate::zwp_text_input_v2_enable(Resource *resource, wl_re
     WaylandSurface *s = WaylandSurface::fromResource(surface);
     enabledSurfaces.insert(resource, s);
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if QT_CONFIG(im)
     WaylandInputMethodControl *control = s->inputMethodControl();
     if (control)
         control->updateTextInput();
+#endif
+#endif
 
     emit q->surfaceEnabled(s);
 }

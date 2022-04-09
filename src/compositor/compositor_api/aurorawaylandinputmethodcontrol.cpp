@@ -42,6 +42,10 @@
 
 #include <QtGui/QInputMethodEvent>
 
+namespace Aurora {
+
+namespace Compositor {
+
 WaylandInputMethodControl::WaylandInputMethodControl(WaylandSurface *surface)
     : QObject(*new WaylandInputMethodControlPrivate(surface), surface)
 {
@@ -240,5 +244,9 @@ WaylandTextInputV4 *WaylandInputMethodControlPrivate::textInputV4() const
     return WaylandTextInputV4::findIn(seat);
 }
 #endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
+
+} // namespace Compositor
+
+} // namespace Aurora
 
 #include "moc_aurorawaylandinputmethodcontrol.cpp"

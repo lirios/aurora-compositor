@@ -55,7 +55,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-struct Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgPositionerData {
+struct LIRIAURORACOMPOSITOR_EXPORT WaylandXdgPositionerData {
     QSize size;
     QRect anchorRect;
     Qt::Edges anchorEdges = {};
@@ -68,7 +68,7 @@ struct Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgPositionerData {
     QPoint unconstrainedPosition() const;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgShellPrivate
+class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgShellPrivate
         : public WaylandShellPrivate
         , public PrivateServer::xdg_wm_base
 {
@@ -93,7 +93,7 @@ protected:
     void xdg_wm_base_pong(Resource *resource, uint32_t serial) override;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgSurfacePrivate
+class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgSurfacePrivate
         : public WaylandCompositorExtensionPrivate
         , public PrivateServer::xdg_surface
 {
@@ -127,18 +127,26 @@ private:
     void xdg_surface_set_window_geometry(Resource *resource, int32_t x, int32_t y, int32_t width, int32_t height) override;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgToplevelPrivate : public QObjectPrivate, public PrivateServer::xdg_toplevel
+class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgToplevelPrivate : public QObjectPrivate, public PrivateServer::xdg_toplevel
 {
     Q_DECLARE_PUBLIC(WaylandXdgToplevel)
 public:
     struct ConfigureEvent {
         ConfigureEvent() = default;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         ConfigureEvent(const QList<WaylandXdgToplevel::State>
+#else
+        ConfigureEvent(const QVector<WaylandXdgToplevel::State>
+#endif
                        &incomingStates,
                        const QSize &incomingSize, uint incomingSerial)
         : states(incomingStates), size(incomingSize), serial(incomingSerial)
         { }
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         QList<WaylandXdgToplevel::State> states;
+#else
+        QVector<WaylandXdgToplevel::State> states;
+#endif
         QSize size = {0, 0};
         uint serial = 0;
     };
@@ -185,7 +193,7 @@ public:
     static WaylandSurfaceRole s_role;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgPopupPrivate : public QObjectPrivate, public PrivateServer::xdg_popup
+class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgPopupPrivate : public QObjectPrivate, public PrivateServer::xdg_popup
 {
     Q_DECLARE_PUBLIC(WaylandXdgPopup)
 public:
@@ -218,7 +226,7 @@ private:
     QList<ConfigureEvent> m_pendingConfigures;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgPositioner : public PrivateServer::xdg_positioner
+class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgPositioner : public PrivateServer::xdg_positioner
 {
 public:
     WaylandXdgPositioner(const WaylandResource& resource);

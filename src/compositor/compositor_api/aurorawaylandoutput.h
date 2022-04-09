@@ -31,7 +31,7 @@
 #ifndef AURORA_COMPOSITOR_WAYLANDOUTPUT_H
 #define AURORA_COMPOSITOR_WAYLANDOUTPUT_H
 
-#include <LiriAuroraCompositor/qtwaylandqmlinclude.h>
+#include <LiriAuroraCompositor/aurorawaylandqmlinclude.h>
 #include <LiriAuroraCompositor/aurorawaylandcompositorextension.h>
 #include <LiriAuroraCompositor/WaylandOutputMode>
 #include <QtCore/QObject>
@@ -54,11 +54,11 @@ class WaylandSurface;
 class WaylandView;
 class WaylandClient;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandOutput : public WaylandObject
+class LIRIAURORACOMPOSITOR_EXPORT WaylandOutput : public WaylandObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandOutput)
-    Q_PROPERTY(WaylandCompositor *compositor READ compositor WRITE setCompositor NOTIFY compositorChanged)
+    Q_PROPERTY(Aurora::Compositor::WaylandCompositor *compositor READ compositor WRITE setCompositor NOTIFY compositorChanged)
     Q_PROPERTY(QWindow *window READ window WRITE setWindow NOTIFY windowChanged)
     Q_PROPERTY(QString manufacturer READ manufacturer WRITE setManufacturer NOTIFY manufacturerChanged)
     Q_PROPERTY(QString model READ model WRITE setModel NOTIFY modelChanged)
@@ -66,14 +66,15 @@ class Q_WAYLANDCOMPOSITOR_EXPORT WaylandOutput : public WaylandObject
     Q_PROPERTY(QRect geometry READ geometry NOTIFY geometryChanged)
     Q_PROPERTY(QRect availableGeometry READ availableGeometry WRITE setAvailableGeometry NOTIFY availableGeometryChanged)
     Q_PROPERTY(QSize physicalSize READ physicalSize WRITE setPhysicalSize NOTIFY physicalSizeChanged)
-    Q_PROPERTY(WaylandOutput::Subpixel subpixel READ subpixel WRITE setSubpixel NOTIFY subpixelChanged)
-    Q_PROPERTY(WaylandOutput::Transform transform READ transform WRITE setTransform NOTIFY transformChanged)
+    Q_PROPERTY(Aurora::Compositor::WaylandOutput::Subpixel subpixel READ subpixel WRITE setSubpixel NOTIFY subpixelChanged)
+    Q_PROPERTY(Aurora::Compositor::WaylandOutput::Transform transform READ transform WRITE setTransform NOTIFY transformChanged)
     Q_PROPERTY(int scaleFactor READ scaleFactor WRITE setScaleFactor NOTIFY scaleFactorChanged)
     Q_PROPERTY(bool sizeFollowsWindow READ sizeFollowsWindow WRITE setSizeFollowsWindow NOTIFY sizeFollowsWindowChanged)
-
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QML_NAMED_ELEMENT(WaylandOutputBase)
     QML_ADDED_IN_VERSION(1, 0)
     QML_UNCREATABLE("Cannot create instance of WaylandOutputBase, use WaylandOutput instead")
+#endif
 public:
     enum Subpixel {
       SubpixelUnknown = 0,

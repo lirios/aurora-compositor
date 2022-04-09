@@ -28,7 +28,7 @@
 ****************************************************************************/
 
 import QtQuick
-import QtWayland.Compositor
+import Aurora.Compositor 1.0
 
 WaylandQuickItem {
     id: cursorItem

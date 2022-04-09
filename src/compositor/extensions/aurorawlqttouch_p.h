@@ -48,12 +48,13 @@
 
 #include <wayland-util.h>
 
+class QTouchEvent;
+
 namespace Aurora {
 
 namespace Compositor {
 
 class Surface;
-class QTouchEvent;
 class WaylandView;
 
 namespace QtWayland {
@@ -89,7 +90,11 @@ private:
     WaylandCompositor *m_compositor = nullptr;
     BehaviorFlags m_flags = BehaviorFlag::None;
     QList<Resource *> m_resources;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QList<float> m_posData;
+#else
+    QVector<float> m_posData;
+#endif
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(TouchExtensionGlobal::BehaviorFlags)

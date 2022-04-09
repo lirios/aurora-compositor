@@ -30,7 +30,7 @@
 #include "aurorawaylandivisurface.h"
 #include "aurorawaylandivisurface_p.h"
 #include "aurorawaylandiviapplication_p.h"
-#if QT_CONFIG(wayland_compositor_quick)
+#if LIRI_FEATURE_aurora_compositor_quick
 #include "aurorawaylandivisurfaceintegration_p.h"
 #endif
 
@@ -201,7 +201,7 @@ void WaylandIviSurface::sendConfigure(const QSize &size)
     d->send_configure(size.width(), size.height());
 }
 
-#if QT_CONFIG(wayland_compositor_quick)
+#if LIRI_FEATURE_aurora_compositor_quick
 WaylandQuickShellIntegration *WaylandIviSurface::createIntegration(WaylandQuickShellSurfaceItem *item)
 {
     return new QtWayland::IviSurfaceIntegration(item);

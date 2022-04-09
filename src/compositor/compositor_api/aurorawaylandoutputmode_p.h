@@ -48,7 +48,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandOutputModePrivate
+class LIRIAURORACOMPOSITOR_EXPORT WaylandOutputModePrivate
 {
 public:
     WaylandOutputModePrivate() {}

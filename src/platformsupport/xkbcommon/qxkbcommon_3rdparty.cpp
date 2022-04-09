@@ -107,6 +107,10 @@ static void qt_UCSConvertCase(uint32_t code, xkb_keysym_t *lower, xkb_keysym_t *
     *upper = QChar::toUpper(code);
 }
 
+namespace Aurora {
+
+namespace Compositor {
+
 void QXkbCommon::xkbcommon_XConvertCase(xkb_keysym_t sym, xkb_keysym_t *lower, xkb_keysym_t *upper)
 {
     /* Latin 1 keysym */
@@ -217,3 +221,7 @@ void QXkbCommon::xkbcommon_XConvertCase(xkb_keysym_t sym, xkb_keysym_t *lower, x
         break;
     }
 }
+
+} // namespace Compositor
+
+} // namespace Aurora

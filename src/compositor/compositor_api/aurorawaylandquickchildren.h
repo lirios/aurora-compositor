@@ -41,8 +41,8 @@
 // We mean it.
 //
 
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
-#if QT_CONFIG(wayland_compositor_quick)
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
+#if LIRI_FEATURE_aurora_compositor_quick
 #include <QtQml/QQmlListProperty>
 #include <QtCore/QList>
 #endif
@@ -51,34 +51,14 @@ namespace Aurora {
 
 namespace Compositor {
 
-#if QT_CONFIG(wayland_compositor_quick)
+#if LIRI_FEATURE_aurora_compositor_quick
 #define Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(className) \
         Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false) \
         Q_CLASSINFO("DefaultProperty", "data") \
     public: \
         QQmlListProperty<QObject> data() \
         { \
-            return QQmlListProperty<QObject>(this, this, \
-                                             &className::appendFunction, \
-                                             &className::countFunction, \
-                                             &className::atFunction, \
-                                             &className::clearFunction); \
-        } \
-        static void appendFunction(QQmlListProperty<QObject> *list, QObject *object) \
-        { \
-            static_cast<className *>(list->data)->m_children.append(object); \
-        } \
-        static qsizetype countFunction(QQmlListProperty<QObject> *list) \
-        { \
-            return static_cast<className *>(list->data)->m_children.size(); \
-        } \
-        static QObject *atFunction(QQmlListProperty<QObject> *list, qsizetype index) \
-        { \
-            return static_cast<className *>(list->data)->m_children.at(index); \
-        } \
-        static void clearFunction(QQmlListProperty<QObject> *list) \
-        { \
-            static_cast<className *>(list->data)->m_children.clear(); \
+            return QQmlListProperty<QObject>(this, &m_children); \
         } \
     private: \
         QList<QObject *> m_children;

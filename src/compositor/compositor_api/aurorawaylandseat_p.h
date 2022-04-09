@@ -43,7 +43,7 @@
 
 #include <stdint.h>
 
-#include <LiriAuroraCompositor/private/qtwaylandcompositorglobal_p.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 #include <LiriAuroraCompositor/aurorawaylandseat.h>
 
 #include <QtCore/QList>
@@ -53,12 +53,13 @@
 
 #include <LiriAuroraCompositor/private/aurora-server-wayland.h>
 
+class QKeyEvent;
+class QTouchEvent;
+
 namespace Aurora {
 
 namespace Compositor {
 
-class QKeyEvent;
-class QTouchEvent;
 class WaylandSeat;
 class WaylandDrag;
 class WaylandView;
@@ -76,7 +77,7 @@ class InputMethod;
 
 }
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandSeatPrivate : public QObjectPrivate, public PrivateServer::wl_seat
+class LIRIAURORACOMPOSITOR_EXPORT WaylandSeatPrivate : public QObjectPrivate, public PrivateServer::wl_seat
 {
 public:
     Q_DECLARE_PUBLIC(WaylandSeat)
@@ -88,7 +89,7 @@ public:
 
     static WaylandSeatPrivate *get(WaylandSeat *device) { return device->d_func(); }
 
-#if QT_CONFIG(wayland_datadevice)
+#if LIRI_FEATURE_aurora_datadevice
     void clientRequestedDataDevice(QtWayland::DataDeviceManager *dndSelection, struct wl_client *client, uint32_t id);
     QtWayland::DataDevice *dataDevice() const { return data_device.data(); }
 #endif
@@ -115,11 +116,9 @@ private:
     QScopedPointer<WaylandPointer> pointer;
     QScopedPointer<WaylandKeyboard> keyboard;
     QScopedPointer<WaylandTouch> touch;
-#if QT_CONFIG(wayland_datadevice)
+#if LIRI_FEATURE_aurora_datadevice
     QScopedPointer<QtWayland::DataDevice> data_device;
-# if QT_CONFIG(draganddrop)
     QScopedPointer<WaylandDrag> drag_handle;
-# endif
 #endif
     QScopedPointer<WaylandKeymap> keymap;
 

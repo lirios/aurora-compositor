@@ -31,15 +31,13 @@
 #define AURORA_COMPOSITOR_WAYLANDQUICKSHELLINTEGRATION_H
 
 #include <QtCore/QObject>
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
-
-QT_REQUIRE_CONFIG(wayland_compositor_quick);
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 
 namespace Aurora {
 
 namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandQuickShellIntegration : public QObject
+class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickShellIntegration : public QObject
 {
     Q_OBJECT
 public:

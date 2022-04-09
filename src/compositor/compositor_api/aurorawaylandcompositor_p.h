@@ -42,18 +42,18 @@
 // We mean it.
 //
 
-#include <LiriAuroraCompositor/private/qtwaylandcompositorglobal_p.h>
 #include <LiriAuroraCompositor/WaylandCompositor>
 #include <QtCore/private/qobject_p.h>
 #include <QtCore/QSet>
 #include <QtCore/QElapsedTimer>
+#include <QtGui/private/qtguiglobal_p.h>
 
 #include <LiriAuroraCompositor/private/aurora-server-wayland.h>
 
 #include <vector>
 
-#if QT_CONFIG(xkbcommon)
-#include <QtGui/private/qxkbcommon_p.h>
+#if LIRI_FEATURE_aurora_xkbcommon
+#include <LiriAuroraXkbCommonSupport/private/qxkbcommon_p.h>
 #endif
 
 class QWindowSystemEventHandler;
@@ -72,7 +72,7 @@ namespace QtWayland {
 
 class WaylandSurface;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandCompositorPrivate : public QObjectPrivate, public PrivateServer::wl_compositor, public PrivateServer::wl_subcompositor
+class LIRIAURORACOMPOSITOR_EXPORT WaylandCompositorPrivate : public QObjectPrivate, public PrivateServer::wl_compositor, public PrivateServer::wl_subcompositor
 {
 public:
     static WaylandCompositorPrivate *get(WaylandCompositor *compositor) { return compositor->d_func(); }
@@ -80,7 +80,7 @@ public:
     WaylandCompositorPrivate(WaylandCompositor *compositor);
     ~WaylandCompositorPrivate() override;
 
-#if QT_CONFIG(xkbcommon)
+#if LIRI_FEATURE_aurora_xkbcommon
     struct xkb_context *xkbContext() const { return mXkbContext.get(); }
 #endif
 
@@ -95,7 +95,7 @@ public:
     inline const QList<QtWayland::ClientBufferIntegration *> clientBufferIntegrations() const;
     inline QtWayland::ServerBufferIntegration *serverBufferIntegration() const;
 
-#if QT_CONFIG(wayland_datadevice)
+#if LIRI_FEATURE_aurora_datadevice
     QtWayland::DataDeviceManager *dataDeviceManager() const { return data_device_manager; }
 #endif
     QtWayland::BufferManager *bufferManager() const { return buffer_manager; }
@@ -146,7 +146,7 @@ protected:
 
     QList<WaylandSurface *> all_surfaces;
 
-#if QT_CONFIG(wayland_datadevice)
+#if LIRI_FEATURE_aurora_datadevice
     QtWayland::DataDeviceManager *data_device_manager = nullptr;
 #endif
     QtWayland::BufferManager *buffer_manager = nullptr;
@@ -171,7 +171,7 @@ protected:
     bool initialized = false;
     std::vector<QPointer<QObject> > polish_objects;
 
-#if QT_CONFIG(xkbcommon)
+#if LIRI_FEATURE_aurora_xkbcommon
     QXkbCommon::ScopedXKBContext mXkbContext;
 #endif
 

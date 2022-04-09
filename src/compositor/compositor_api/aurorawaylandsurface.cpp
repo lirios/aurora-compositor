@@ -33,8 +33,7 @@
 
 #include "wayland_wrapper/aurorawlbuffermanager_p.h"
 #include "wayland_wrapper/aurorawlregion_p.h"
-#include <LiriAuroraCompositor/private/qtwaylandcompositorglobal_p.h>
-#if QT_CONFIG(wayland_datadevice)
+#if LIRI_FEATURE_aurora_datadevice
 #include "wayland_wrapper/aurorawldatadevice_p.h"
 #include "wayland_wrapper/aurorawldatadevicemanager_p.h"
 #endif
@@ -492,8 +491,10 @@ void WaylandSurface::initialize(WaylandCompositor *compositor, WaylandClient *cl
     d->client = client;
     d->init(client->client(), id, version);
     d->isInitialized = true;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #if QT_CONFIG(im)
     d->inputMethodControl = new WaylandInputMethodControl(this);
+#endif
 #endif
 #ifndef QT_NO_DEBUG
     WaylandSurfacePrivate::removeUninitializedSurface(d);
@@ -887,12 +888,14 @@ bool WaylandSurface::isOpaque() const
     return d->isOpaque;
 }
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #if QT_CONFIG(im)
 WaylandInputMethodControl *WaylandSurface::inputMethodControl() const
 {
     Q_D(const WaylandSurface);
     return d->inputMethodControl;
 }
+#endif
 #endif
 
 /*!

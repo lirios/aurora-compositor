@@ -30,8 +30,8 @@
 #ifndef AURORA_COMPOSITOR_WAYLANDCLIENT_H
 #define AURORA_COMPOSITOR_WAYLANDCLIENT_H
 
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
-#include <LiriAuroraCompositor/qtwaylandqmlinclude.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
+#include <LiriAuroraCompositor/aurorawaylandqmlinclude.h>
 
 #include <QObject>
 
@@ -46,20 +46,21 @@ namespace Compositor {
 class WaylandClientPrivate;
 class WaylandCompositor;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandClient : public QObject
+class LIRIAURORACOMPOSITOR_EXPORT WaylandClient : public QObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandClient)
 
-    Q_PROPERTY(WaylandCompositor *compositor READ compositor CONSTANT)
+    Q_PROPERTY(Aurora::Compositor::WaylandCompositor *compositor READ compositor CONSTANT)
     Q_PROPERTY(qint64 userId READ userId CONSTANT)
     Q_PROPERTY(qint64 groupId READ groupId CONSTANT)
     Q_PROPERTY(qint64 processId READ processId CONSTANT)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     Q_MOC_INCLUDE("aurorawaylandcompositor.h")
-
     QML_NAMED_ELEMENT(WaylandClient)
     QML_ADDED_IN_VERSION(1, 0)
     QML_UNCREATABLE("")
+#endif
 public:
     ~WaylandClient() override;
 

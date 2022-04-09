@@ -90,8 +90,13 @@ private:
 
     bool initSimpleTexture(LinuxDmabufWlBuffer *dmabufBuffer);
     bool initYuvTexture(LinuxDmabufWlBuffer *dmabufBuffer);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QList<uint32_t> supportedDrmFormats();
     QList<uint64_t> supportedDrmModifiers(uint32_t format);
+#else
+    QVector<uint32_t> supportedDrmFormats();
+    QVector<uint64_t> supportedDrmModifiers(uint32_t format);
+#endif
 
     EGLDisplay m_eglDisplay = EGL_NO_DISPLAY;
     ::wl_display *m_wlDisplay = nullptr;

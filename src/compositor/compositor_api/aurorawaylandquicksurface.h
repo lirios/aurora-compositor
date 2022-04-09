@@ -35,8 +35,6 @@
 
 struct wl_client;
 
-QT_REQUIRE_CONFIG(wayland_compositor_quick);
-
 namespace Aurora {
 
 namespace Compositor {
@@ -44,14 +42,16 @@ namespace Compositor {
 class WaylandQuickSurfacePrivate;
 class WaylandQuickCompositor;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandQuickSurface : public WaylandSurface
+class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickSurface : public WaylandSurface
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandQuickSurface)
     Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandQuickSurface)
     Q_PROPERTY(bool useTextureAlpha READ useTextureAlpha WRITE setUseTextureAlpha NOTIFY useTextureAlphaChanged)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QML_NAMED_ELEMENT(WaylandSurface)
     QML_ADDED_IN_VERSION(1, 0)
+#endif
 public:
     WaylandQuickSurface();
     WaylandQuickSurface(WaylandCompositor *compositor, WaylandClient *client, quint32 id, int version);
@@ -70,5 +70,7 @@ Q_SIGNALS:
 } // namespace Compositor
 
 } // namespace Aurora
+
+Q_DECLARE_METATYPE(Aurora::Compositor::WaylandQuickSurface*)
 
 #endif

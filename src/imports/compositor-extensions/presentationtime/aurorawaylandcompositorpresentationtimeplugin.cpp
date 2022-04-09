@@ -68,13 +68,13 @@ class WaylandCompositorPresentationTimePlugin : public QQmlExtensionPlugin
 public:
     void registerTypes(const char *uri) override
     {
-        Q_ASSERT(QLatin1String(uri) == QLatin1String("QtWayland.Compositor.PresentationTime"));
+        Q_ASSERT(QLatin1String(uri) == QLatin1String("Aurora.Compositor.PresentationTime"));
         defineModule(uri);
     }
 
     static void defineModule(const char *uri)
     {
-        qmlRegisterModule(uri, QT_VERSION_MAJOR, QT_VERSION_MINOR);
+        qmlRegisterModule(uri, 1, 0);
         qmlRegisterType<WaylandPresentationTime>(uri, 1, 0, "PresentationTime");
     }
 };

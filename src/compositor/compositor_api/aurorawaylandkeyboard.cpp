@@ -42,7 +42,7 @@
 #include <QKeyEvent>
 #include <fcntl.h>
 #include <unistd.h>
-#if QT_CONFIG(xkbcommon)
+#if LIRI_FEATURE_aurora_xkbcommon
 #include <sys/mman.h>
 #include <sys/types.h>
 #include <xkbcommon/xkbcommon-names.h>
@@ -59,7 +59,7 @@ WaylandKeyboardPrivate::WaylandKeyboardPrivate(WaylandSeat *seat)
 
 WaylandKeyboardPrivate::~WaylandKeyboardPrivate()
 {
-#if QT_CONFIG(xkbcommon)
+#if LIRI_FEATURE_aurora_xkbcommon
     if (xkbContext()) {
         if (keymap_area)
             munmap(keymap_area, keymap_size);
@@ -128,7 +128,7 @@ void WaylandKeyboardPrivate::keyboard_bind_resource(wl_keyboard::Resource *resou
     if (resource->version() >= WL_KEYBOARD_REPEAT_INFO_SINCE_VERSION)
         send_repeat_info(resource->handle, repeatRate, repeatDelay);
 
-#if QT_CONFIG(xkbcommon)
+#if LIRI_FEATURE_aurora_xkbcommon
     if (xkbContext()) {
         send_keymap(resource->handle, WL_KEYBOARD_KEYMAP_FORMAT_XKB_V1,
                     keymap_fd, keymap_size);
@@ -174,7 +174,7 @@ void WaylandKeyboardPrivate::sendKeyEvent(uint code, uint32_t state)
         send_key(focusResource->handle, serial, time, key, state);
 }
 
-#if QT_CONFIG(xkbcommon)
+#if LIRI_FEATURE_aurora_xkbcommon
 void WaylandKeyboardPrivate::maybeUpdateXkbScanCodeTable()
 {
     if (!scanCodesByQtKey.isEmpty() || !xkbState())
@@ -218,7 +218,7 @@ void WaylandKeyboardPrivate::resetKeyboardState()
 
 void WaylandKeyboardPrivate::updateModifierState(uint code, uint32_t state)
 {
-#if QT_CONFIG(xkbcommon)
+#if LIRI_FEATURE_aurora_xkbcommon
     if (!xkbContext())
         return;
 
@@ -270,7 +270,7 @@ void WaylandKeyboardPrivate::maybeUpdateKeymap()
         return;
 
     pendingKeymap = false;
-#if QT_CONFIG(xkbcommon)
+#if LIRI_FEATURE_aurora_xkbcommon
     if (!xkbContext())
         return;
 
@@ -302,7 +302,7 @@ void WaylandKeyboardPrivate::maybeUpdateKeymap()
 
 uint WaylandKeyboardPrivate::fromWaylandKey(const uint key)
 {
-#if QT_CONFIG(xkbcommon)
+#if LIRI_FEATURE_aurora_xkbcommon
     const uint offset = QTWAYLANDKEYBOARD_XKB_HISTORICAL_OFFSET;
     return key + offset;
 #else
@@ -312,7 +312,7 @@ uint WaylandKeyboardPrivate::fromWaylandKey(const uint key)
 
 uint WaylandKeyboardPrivate::toWaylandKey(const uint nativeScanCode)
 {
-#if QT_CONFIG(xkbcommon)
+#if LIRI_FEATURE_aurora_xkbcommon
     const uint offset = QTWAYLANDKEYBOARD_XKB_HISTORICAL_OFFSET;
     Q_ASSERT(nativeScanCode >= offset);
     return nativeScanCode - offset;
@@ -321,7 +321,7 @@ uint WaylandKeyboardPrivate::toWaylandKey(const uint nativeScanCode)
 #endif
 }
 
-#if QT_CONFIG(xkbcommon)
+#if LIRI_FEATURE_aurora_xkbcommon
 static int createAnonymousFile(size_t size)
 {
     QString path = QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation);
@@ -421,7 +421,7 @@ void WaylandKeyboardPrivate::createXKBKeymap()
         qWarning("Failed to load the '%s' XKB keymap.", qPrintable(keymap->layout()));
     }
 }
-#endif // QT_CONFIG(xkbcommon)
+#endif // LIRI_FEATURE_aurora_xkbcommon
 
 void WaylandKeyboardPrivate::sendRepeatInfo()
 {
@@ -456,7 +456,7 @@ WaylandKeyboard::WaylandKeyboard(WaylandSeat *seat, QObject *parent)
     connect(keymap, &WaylandKeymap::optionsChanged, this, &WaylandKeyboard::updateKeymap);
     connect(keymap, &WaylandKeymap::rulesChanged, this, &WaylandKeyboard::updateKeymap);
     connect(keymap, &WaylandKeymap::modelChanged, this, &WaylandKeyboard::updateKeymap);
-#if QT_CONFIG(xkbcommon)
+#if LIRI_FEATURE_aurora_xkbcommon
     d->createXKBKeymap();
 #endif
 }
@@ -541,7 +541,7 @@ void WaylandKeyboard::sendKeyReleaseEvent(uint code)
 
 void WaylandKeyboardPrivate::checkAndRepairModifierState(QKeyEvent *ke)
 {
-#if QT_CONFIG(xkbcommon)
+#if LIRI_FEATURE_aurora_xkbcommon
     if (ke->modifiers() != currentModifierState) {
         if (focusResource && ke->key() != Qt::Key_Shift
                 && ke->key() != Qt::Key_Control && ke->key() != Qt::Key_Alt) {
@@ -651,7 +651,7 @@ void WaylandKeyboard::addClient(WaylandClient *client, uint32_t id, uint32_t ver
 uint WaylandKeyboard::keyToScanCode(int qtKey) const
 {
     uint scanCode = 0;
-#if QT_CONFIG(xkbcommon)
+#if LIRI_FEATURE_aurora_xkbcommon
     Q_D(const WaylandKeyboard);
     const_cast<WaylandKeyboardPrivate *>(d)->maybeUpdateXkbScanCodeTable();
     scanCode = d->scanCodesByQtKey.value({d->group, qtKey}, 0);

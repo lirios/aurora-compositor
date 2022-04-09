@@ -31,7 +31,11 @@
 
 #include <LiriAuroraCompositor/WaylandCompositor>
 #include <qpa/qplatformnativeinterface.h>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QtOpenGL/QOpenGLTexture>
+#else
+#include <QtGui/QOpenGLTexture>
+#endif
 #include <QtGui/QGuiApplication>
 #include <QtGui/QOpenGLContext>
 #include <QtGui/QOffscreenSurface>
@@ -44,7 +48,11 @@
 #include <QMutexLocker>
 #include <QVarLengthArray>
 #include <QtCore/private/qcore_unix_p.h>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QtGui/private/qeglstreamconvenience_p.h>
+#else
+#include <QtEglSupport/private/qeglstreamconvenience_p.h>
+#endif
 
 #ifndef GL_TEXTURE_EXTERNAL_OES
 #define GL_TEXTURE_EXTERNAL_OES     0x8D65
@@ -412,7 +420,7 @@ void WaylandEglClientBufferIntegration::initializeHardware(struct wl_display *di
 {
     Q_D(WaylandEglClientBufferIntegration);
 
-    const bool ignoreBindDisplay = !qgetenv("QT_WAYLAND_IGNORE_BIND_DISPLAY").isEmpty();
+    const bool ignoreBindDisplay = !qEnvironmentVariableIsEmpty("QT_WAYLAND_IGNORE_BIND_DISPLAY");
 
     QPlatformNativeInterface *nativeInterface = QGuiApplication::platformNativeInterface();
     if (!nativeInterface) {

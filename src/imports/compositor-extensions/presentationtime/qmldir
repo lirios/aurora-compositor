@@ -1,0 +1,3 @@
+module Aurora.Compositor.PresentationTime
+plugin auroracompositopresentationtimeplugin
+classname WaylandCompositorPresentationTimePlugin

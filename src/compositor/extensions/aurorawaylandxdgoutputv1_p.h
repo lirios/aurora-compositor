@@ -32,8 +32,8 @@
 
 #include <QtCore/QHash>
 
-#include <AuroraWaylandOutput>
-#include <AuroraWaylandXdgOutputV1>
+#include <LiriAuroraCompositor/WaylandOutput>
+#include <LiriAuroraCompositor/WaylandXdgOutputV1>
 #include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
 #include <LiriAuroraCompositor/private/aurora-server-xdg-output-unstable-v1.h>
 
@@ -52,7 +52,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgOutputManagerV1Private
+class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgOutputManagerV1Private
         : public WaylandCompositorExtensionPrivate
         , public PrivateServer::zxdg_output_manager_v1
 {
@@ -73,7 +73,7 @@ private:
     QHash<WaylandOutput *, WaylandXdgOutputV1 *> xdgOutputs;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgOutputV1Private
+class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgOutputV1Private
         : public QObjectPrivate
         , public PrivateServer::zxdg_output_v1
 {

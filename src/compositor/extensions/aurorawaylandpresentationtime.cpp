@@ -32,6 +32,9 @@
 
 #include <time.h>
 #include <QQuickWindow>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#  include <QScreen>
+#endif
 #include <LiriAuroraCompositor/WaylandView>
 #include <LiriAuroraCompositor/WaylandQuickItem>
 
@@ -272,7 +275,11 @@ void PresentationFeedback::connectToWindow(QQuickWindow *window)
     m_connectedWindow = window;
 
     connect(window, &QQuickWindow::beforeSynchronizing, this, &PresentationFeedback::onSync);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     connect(window, &QQuickWindow::afterFrameEnd, this, &PresentationFeedback::onSwapped);
+#else
+    connect(window, &QQuickWindow::frameSwapped, this, &PresentationFeedback::onSwapped);
+#endif
 }
 
 void PresentationFeedback::onSync()
@@ -291,7 +298,11 @@ void PresentationFeedback::onSwapped()
     QQuickWindow *window = qobject_cast<QQuickWindow *>(sender());
 
     if (m_sync) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         disconnect(window, &QQuickWindow::afterFrameEnd, this, &PresentationFeedback::onSwapped);
+#else
+        disconnect(window, &QQuickWindow::frameSwapped, this, &PresentationFeedback::onSwapped);
+#endif
         connect(m_presentationTime, &WaylandPresentationTime::presented, this, &PresentationFeedback::sendPresented);
     }
 }

@@ -48,7 +48,7 @@ class WaylandView;
 class WaylandClient;
 class WaylandSurface;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandTouch : public WaylandObject
+class LIRIAURORACOMPOSITOR_EXPORT WaylandTouch : public WaylandObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandTouch)

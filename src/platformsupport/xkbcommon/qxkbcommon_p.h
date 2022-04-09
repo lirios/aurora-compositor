@@ -58,17 +58,21 @@
 
 #include <xkbcommon/xkbcommon.h>
 
+#include <LiriAuroraXkbCommonSupport/liriauroraxkbcommonsupportglobal.h>
+
 #include <memory>
-
-QT_BEGIN_NAMESPACE
-
-Q_DECLARE_LOGGING_CATEGORY(lcXkbcommon)
 
 class QEvent;
 class QKeyEvent;
 class QPlatformInputContext;
 
-class QXkbCommon
+namespace Aurora {
+
+namespace Compositor {
+
+Q_DECLARE_LOGGING_CATEGORY(lcXkbcommon)
+
+class LIRIAURORAXKBCOMMONSUPPORT_EXPORT QXkbCommon
 {
 public:
     static QString lookupString(struct xkb_state *state, xkb_keycode_t code);
@@ -117,6 +121,8 @@ public:
     using ScopedXKBContext = std::unique_ptr<struct xkb_context, XKBContextDeleter>;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif // QXKBCOMMON_P_H

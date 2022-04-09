@@ -30,7 +30,7 @@
 #ifndef AURORA_COMPOSITOR_WAYLANDWLSHELL_P_H
 #define AURORA_COMPOSITOR_WAYLANDWLSHELL_P_H
 
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 #include <LiriAuroraCompositor/aurorawaylandsurface.h>
 #include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
 #include <LiriAuroraCompositor/private/aurorawaylandshell_p.h>
@@ -59,7 +59,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandWlShellPrivate
+class LIRIAURORACOMPOSITOR_EXPORT WaylandWlShellPrivate
                                         : public WaylandShellPrivate
                                         , public PrivateServer::wl_shell
 {
@@ -77,7 +77,7 @@ protected:
     QList<WaylandWlShellSurface *> m_shellSurfaces;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandWlShellSurfacePrivate
+class LIRIAURORACOMPOSITOR_EXPORT WaylandWlShellSurfacePrivate
                                         : public WaylandCompositorExtensionPrivate
                                         , public PrivateServer::wl_shell_surface
 {

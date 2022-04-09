@@ -31,7 +31,7 @@
 #include "aurorawaylandwlshell.h"
 #include "aurorawaylandwlshell_p.h"
 
-#if QT_CONFIG(wayland_compositor_quick)
+#if LIRI_FEATURE_aurora_compositor_quick
 #include "aurorawaylandwlshellintegration_p.h"
 #endif
 #include <LiriAuroraCompositor/private/aurorawaylandutils_p.h>
@@ -582,7 +582,7 @@ void WaylandWlShellSurface::sendPopupDone()
     d->send_popup_done();
 }
 
-#if QT_CONFIG(wayland_compositor_quick)
+#if LIRI_FEATURE_aurora_compositor_quick
 WaylandQuickShellIntegration *WaylandWlShellSurface::createIntegration(WaylandQuickShellSurfaceItem *item)
 {
     return new QtWayland::WlShellIntegration(item);

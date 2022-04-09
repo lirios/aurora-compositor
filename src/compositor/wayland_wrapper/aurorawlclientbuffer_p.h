@@ -52,6 +52,8 @@
 
 #include <wayland-server-core.h>
 
+class QOpenGLTexture;
+
 namespace Aurora {
 
 namespace Compositor {
@@ -59,7 +61,6 @@ namespace Compositor {
 class WaylandClientBufferIntegration;
 class WaylandBufferRef;
 class WaylandCompositor;
-class QOpenGLTexture;
 
 namespace QtWayland {
 
@@ -69,7 +70,7 @@ struct surface_buffer_destroy_listener
     class ClientBuffer *surfaceBuffer = nullptr;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT ClientBuffer
+class LIRIAURORACOMPOSITOR_EXPORT ClientBuffer
 {
 public:
     ClientBuffer(struct ::wl_resource *bufferResource);
@@ -122,7 +123,7 @@ private:
     friend class BufferManager;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT SharedMemoryBuffer : public ClientBuffer
+class LIRIAURORACOMPOSITOR_EXPORT SharedMemoryBuffer : public ClientBuffer
 {
 public:
     SharedMemoryBuffer(struct ::wl_resource *bufferResource);

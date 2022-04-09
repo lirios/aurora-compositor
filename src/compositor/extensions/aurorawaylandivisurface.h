@@ -45,15 +45,16 @@ class WaylandIviApplication;
 class WaylandSurfaceRole;
 class WaylandResource;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandIviSurface : public WaylandShellSurfaceTemplate<WaylandIviSurface>
+class LIRIAURORACOMPOSITOR_EXPORT WaylandIviSurface : public WaylandShellSurfaceTemplate<WaylandIviSurface>
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandIviSurface)
     Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandIviSurface)
-    Q_PROPERTY(WaylandSurface *surface READ surface NOTIFY surfaceChanged)
+    Q_PROPERTY(Aurora::Compositor::WaylandSurface *surface READ surface NOTIFY surfaceChanged)
     Q_PROPERTY(uint iviId READ iviId NOTIFY iviIdChanged)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     Q_MOC_INCLUDE("aurorawaylandsurface.h")
-
+#endif
 public:
     WaylandIviSurface();
     WaylandIviSurface(WaylandIviApplication *application, WaylandSurface *surface, uint iviId, const WaylandResource &resource);
@@ -72,7 +73,7 @@ public:
 
     Q_INVOKABLE void sendConfigure(const QSize &size);
 
-#if QT_CONFIG(wayland_compositor_quick)
+#if LIRI_FEATURE_aurora_compositor_quick
     WaylandQuickShellIntegration *createIntegration(WaylandQuickShellSurfaceItem *item) override;
 #endif
 

@@ -31,7 +31,7 @@
 #ifndef AURORA_COMPOSITOR_WAYLANDSURFACE_H
 #define AURORA_COMPOSITOR_WAYLANDSURFACE_H
 
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 #include <LiriAuroraCompositor/aurorawaylandcompositor.h>
 #include <LiriAuroraCompositor/aurorawaylandcompositorextension.h>
 #include <LiriAuroraCompositor/aurorawaylandclient.h>
@@ -45,11 +45,12 @@
 struct wl_client;
 struct wl_resource;
 
+class QTouchEvent;
+
 namespace Aurora {
 
 namespace Compositor {
 
-class QTouchEvent;
 class WaylandSurfacePrivate;
 class WaylandBufferRef;
 class WaylandView;
@@ -66,27 +67,28 @@ private:
     QByteArray m_name;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandSurface : public WaylandObject
+class LIRIAURORACOMPOSITOR_EXPORT WaylandSurface : public WaylandObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandSurface)
-    Q_PROPERTY(WaylandClient *client READ client CONSTANT)
-    Q_PROPERTY(QRectF sourceGeometry READ sourceGeometry NOTIFY sourceGeometryChanged REVISION(1, 13))
-    Q_PROPERTY(QSize destinationSize READ destinationSize NOTIFY destinationSizeChanged REVISION(1, 13))
-    Q_PROPERTY(QSize bufferSize READ bufferSize NOTIFY bufferSizeChanged REVISION(1, 13))
+    Q_PROPERTY(Aurora::Compositor::WaylandClient *client READ client CONSTANT)
+    Q_PROPERTY(QRectF sourceGeometry READ sourceGeometry NOTIFY sourceGeometryChanged)
+    Q_PROPERTY(QSize destinationSize READ destinationSize NOTIFY destinationSizeChanged)
+    Q_PROPERTY(QSize bufferSize READ bufferSize NOTIFY bufferSizeChanged)
     Q_PROPERTY(int bufferScale READ bufferScale NOTIFY bufferScaleChanged)
     Q_PROPERTY(Qt::ScreenOrientation contentOrientation READ contentOrientation NOTIFY contentOrientationChanged)
-    Q_PROPERTY(WaylandSurface::Origin origin READ origin NOTIFY originChanged)
+    Q_PROPERTY(Aurora::Compositor::WaylandSurface::Origin origin READ origin NOTIFY originChanged)
     Q_PROPERTY(bool hasContent READ hasContent NOTIFY hasContentChanged)
     Q_PROPERTY(bool cursorSurface READ isCursorSurface WRITE markAsCursorSurface NOTIFY cursorSurfaceChanged)
-    Q_PROPERTY(bool inhibitsIdle READ inhibitsIdle NOTIFY inhibitsIdleChanged REVISION(1, 14))
-    Q_PROPERTY(bool isOpaque READ isOpaque NOTIFY isOpaqueChanged REVISION(6, 4))
+    Q_PROPERTY(bool inhibitsIdle READ inhibitsIdle NOTIFY inhibitsIdleChanged)
+    Q_PROPERTY(bool isOpaque READ isOpaque NOTIFY isOpaqueChanged)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     Q_MOC_INCLUDE("aurorawaylanddrag.h")
     Q_MOC_INCLUDE("aurorawaylandcompositor.h")
-
     QML_NAMED_ELEMENT(WaylandSurfaceBase)
     QML_ADDED_IN_VERSION(1, 0)
     QML_UNCREATABLE("Cannot create instance of WaylandSurfaceBase, use WaylandSurface instead")
+#endif
 public:
     enum Origin {
         OriginTopLeft,
@@ -143,8 +145,10 @@ public:
     bool inhibitsIdle() const;
     bool isOpaque() const;
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #if QT_CONFIG(im)
     WaylandInputMethodControl *inputMethodControl() const;
+#endif
 #endif
 
 public Q_SLOTS:
@@ -160,9 +164,9 @@ Q_SIGNALS:
     void damaged(const QRegion &rect);
     void parentChanged(Aurora::Compositor::WaylandSurface *newParent, Aurora::Compositor::WaylandSurface *oldParent);
     void childAdded(Aurora::Compositor::WaylandSurface *child);
-    Q_REVISION(1, 13) void sourceGeometryChanged();
-    Q_REVISION(1, 13) void destinationSizeChanged();
-    Q_REVISION(1, 13) void bufferSizeChanged();
+    void sourceGeometryChanged();
+    void destinationSizeChanged();
+    void bufferSizeChanged();
     void bufferScaleChanged();
     void offsetForNextFrame(const QPoint &offset);
     void contentOrientationChanged();
@@ -173,8 +177,8 @@ Q_SIGNALS:
     void subsurfacePlaceBelow(Aurora::Compositor::WaylandSurface *sibling);
     void dragStarted(Aurora::Compositor::WaylandDrag *drag);
     void cursorSurfaceChanged();
-    Q_REVISION(14) void inhibitsIdleChanged();
-    Q_REVISION(6, 4) void isOpaqueChanged();
+    void inhibitsIdleChanged();
+    void isOpaqueChanged();
 
     void configure(bool hasBuffer);
     void redraw();

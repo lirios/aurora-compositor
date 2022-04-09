@@ -42,7 +42,7 @@ namespace Compositor {
 
 class WaylandQtWindowManagerPrivate;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandQtWindowManager : public WaylandCompositorExtensionTemplate<WaylandQtWindowManager>
+class LIRIAURORACOMPOSITOR_EXPORT WaylandQtWindowManager : public WaylandCompositorExtensionTemplate<WaylandQtWindowManager>
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandQtWindowManager)

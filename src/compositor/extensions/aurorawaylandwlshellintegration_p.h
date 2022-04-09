@@ -62,13 +62,13 @@ protected:
     bool eventFilter(QObject *object, QEvent *event) override;
 
 private Q_SLOTS:
-    void handleStartMove(WaylandSeat *seat);
-    void handleStartResize(WaylandSeat *seat, WaylandWlShellSurface::ResizeEdge edges);
+    void handleStartMove(Aurora::Compositor::WaylandSeat *seat);
+    void handleStartResize(Aurora::Compositor::WaylandSeat *seat, WaylandWlShellSurface::ResizeEdge edges);
     void handleSetDefaultTopLevel();
-    void handleSetTransient(WaylandSurface *parentSurface, const QPoint &relativeToParent, bool inactive);
-    void handleSetMaximized(WaylandOutput *output);
-    void handleSetFullScreen(WaylandWlShellSurface::FullScreenMethod method, uint framerate, WaylandOutput *output);
-    void handleSetPopup(WaylandSeat *seat, WaylandSurface *parent, const QPoint &relativeToParent);
+    void handleSetTransient(Aurora::Compositor::WaylandSurface *parentSurface, const QPoint &relativeToParent, bool inactive);
+    void handleSetMaximized(Aurora::Compositor::WaylandOutput *output);
+    void handleSetFullScreen(WaylandWlShellSurface::FullScreenMethod method, uint framerate, Aurora::Compositor::WaylandOutput *output);
+    void handleSetPopup(Aurora::Compositor::WaylandSeat *seat, Aurora::Compositor::WaylandSurface *parent, const QPoint &relativeToParent);
     void handleShellSurfaceDestroyed();
     void handleSurfaceHasContentChanged();
     void handleRedraw();

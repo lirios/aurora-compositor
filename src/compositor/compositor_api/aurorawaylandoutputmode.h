@@ -30,14 +30,14 @@
 #ifndef AURORA_COMPOSITOR_WAYLANDOUTPUTMODE_H
 #define AURORA_COMPOSITOR_WAYLANDOUTPUTMODE_H
 
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 #include <QtCore/QSize>
 
 namespace Aurora {
 
 namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandOutputMode
+class LIRIAURORACOMPOSITOR_EXPORT WaylandOutputMode
 {
 public:
     explicit WaylandOutputMode();

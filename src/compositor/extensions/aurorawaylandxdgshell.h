@@ -58,7 +58,7 @@ class WaylandXdgPopup;
 class WaylandXdgPopupPrivate;
 class WaylandXdgPositioner;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgShell : public WaylandShellTemplate<WaylandXdgShell>
+class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgShell : public WaylandShellTemplate<WaylandXdgShell>
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandXdgShell)
@@ -72,36 +72,37 @@ public:
     static QByteArray interfaceName();
 
 public Q_SLOTS:
-    uint ping(WaylandClient *client);
+    uint ping(Aurora::Compositor::WaylandClient *client);
 
 Q_SIGNALS:
-    void xdgSurfaceCreated(WaylandXdgSurface *xdgSurface);
-    void toplevelCreated(WaylandXdgToplevel *toplevel, WaylandXdgSurface *xdgSurface);
-    void popupCreated(WaylandXdgPopup *popup, WaylandXdgSurface *xdgSurface);
+    void xdgSurfaceCreated(Aurora::Compositor::WaylandXdgSurface *xdgSurface);
+    void toplevelCreated(Aurora::Compositor::WaylandXdgToplevel *toplevel, Aurora::Compositor::WaylandXdgSurface *xdgSurface);
+    void popupCreated(Aurora::Compositor::WaylandXdgPopup *popup, Aurora::Compositor::WaylandXdgSurface *xdgSurface);
     void pong(uint serial);
 
 private Q_SLOTS:
-    void handleSeatChanged(WaylandSeat *newSeat, WaylandSeat *oldSeat);
-    void handleFocusChanged(WaylandSurface *newSurface, WaylandSurface *oldSurface);
+    void handleSeatChanged(Aurora::Compositor::WaylandSeat *newSeat, Aurora::Compositor::WaylandSeat *oldSeat);
+    void handleFocusChanged(Aurora::Compositor::WaylandSurface *newSurface, Aurora::Compositor::WaylandSurface *oldSurface);
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgSurface : public WaylandShellSurfaceTemplate<WaylandXdgSurface>
+class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgSurface : public WaylandShellSurfaceTemplate<WaylandXdgSurface>
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandXdgSurface)
     Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandXdgSurface)
-    Q_PROPERTY(WaylandXdgShell *shell READ shell NOTIFY shellChanged)
-    Q_PROPERTY(WaylandSurface *surface READ surface NOTIFY surfaceChanged)
-    Q_PROPERTY(WaylandXdgToplevel *toplevel READ toplevel NOTIFY toplevelCreated)
-    Q_PROPERTY(WaylandXdgPopup *popup READ popup NOTIFY popupCreated)
+    Q_PROPERTY(Aurora::Compositor::WaylandXdgShell *shell READ shell NOTIFY shellChanged)
+    Q_PROPERTY(Aurora::Compositor::WaylandSurface *surface READ surface NOTIFY surfaceChanged)
+    Q_PROPERTY(Aurora::Compositor::WaylandXdgToplevel *toplevel READ toplevel NOTIFY toplevelCreated)
+    Q_PROPERTY(Aurora::Compositor::WaylandXdgPopup *popup READ popup NOTIFY popupCreated)
     Q_PROPERTY(QRect windowGeometry READ windowGeometry NOTIFY windowGeometryChanged)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     Q_MOC_INCLUDE("aurorawaylandsurface.h")
-
+#endif
 public:
     explicit WaylandXdgSurface();
     explicit WaylandXdgSurface(WaylandXdgShell* xdgShell, WaylandSurface *surface, const WaylandResource &resource);
 
-    Q_INVOKABLE void initialize(WaylandXdgShell* xdgShell, WaylandSurface *surface, const WaylandResource &resource);
+    Q_INVOKABLE void initialize(Aurora::Compositor::WaylandXdgShell* xdgShell, Aurora::Compositor::WaylandSurface *surface, const Aurora::Compositor::WaylandResource &resource);
 
     Qt::WindowType windowType() const override;
 
@@ -115,7 +116,7 @@ public:
     static QByteArray interfaceName();
     static WaylandXdgSurface *fromResource(::wl_resource *resource);
 
-#if QT_CONFIG(wayland_compositor_quick)
+#if LIRI_FEATURE_aurora_compositor_quick
     WaylandQuickShellIntegration *createIntegration(WaylandQuickShellSurfaceItem *item) override;
 #endif
 
@@ -134,12 +135,12 @@ private Q_SLOTS:
     void handleBufferScaleChanged();
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgToplevel : public QObject
+class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgToplevel : public QObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandXdgToplevel)
-    Q_PROPERTY(WaylandXdgSurface *xdgSurface READ xdgSurface CONSTANT)
-    Q_PROPERTY(WaylandXdgToplevel *parentToplevel READ parentToplevel NOTIFY parentToplevelChanged)
+    Q_PROPERTY(Aurora::Compositor::WaylandXdgSurface *xdgSurface READ xdgSurface CONSTANT)
+    Q_PROPERTY(Aurora::Compositor::WaylandXdgToplevel *parentToplevel READ parentToplevel NOTIFY parentToplevelChanged)
     Q_PROPERTY(QString title READ title NOTIFY titleChanged)
     Q_PROPERTY(QString appId READ appId NOTIFY appIdChanged)
     Q_PROPERTY(QSize maxSize READ maxSize NOTIFY maxSizeChanged)
@@ -180,7 +181,11 @@ public:
     QString appId() const;
     QSize maxSize() const;
     QSize minSize() const;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QList<WaylandXdgToplevel::State> states() const;
+#else
+    QVector<WaylandXdgToplevel::State> states() const;
+#endif
     bool maximized() const;
     bool fullscreen() const;
     bool resizing() const;
@@ -188,8 +193,13 @@ public:
     DecorationMode decorationMode() const;
 
     Q_INVOKABLE QSize sizeForResize(const QSizeF &size, const QPointF &delta, Qt::Edges edges) const;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     uint sendConfigure(const QSize &size, const QList<State> &states);
     Q_INVOKABLE uint sendConfigure(const QSize &size, const QList<int> &states);
+#else
+    uint sendConfigure(const QSize &size, const QVector<State> &states);
+    Q_INVOKABLE uint sendConfigure(const QSize &size, const QVector<int> &states);
+#endif
     Q_INVOKABLE void sendClose();
     Q_INVOKABLE uint sendMaximized(const QSize &size);
     Q_INVOKABLE uint sendUnmaximized(const QSize &size = QSize(0, 0));
@@ -205,18 +215,18 @@ Q_SIGNALS:
     void appIdChanged();
     void maxSizeChanged();
     void minSizeChanged();
-    void startMove(WaylandSeat *seat);
-    void startResize(WaylandSeat *seat, Qt::Edges edges);
+    void startMove(Aurora::Compositor::WaylandSeat *seat);
+    void startResize(Aurora::Compositor::WaylandSeat *seat, Qt::Edges edges);
     void statesChanged();
     void maximizedChanged();
     void fullscreenChanged();
     void resizingChanged();
     void activatedChanged();
 
-    void showWindowMenu(WaylandSeat *seat, const QPoint &localSurfacePosition);
+    void showWindowMenu(Aurora::Compositor::WaylandSeat *seat, const QPoint &localSurfacePosition);
     void setMaximized();
     void unsetMaximized();
-    void setFullscreen(WaylandOutput *output);
+    void setFullscreen(Aurora::Compositor::WaylandOutput *output);
     void unsetFullscreen();
     void setMinimized();
 
@@ -226,12 +236,12 @@ private:
     QList<int> statesAsInts() const;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgPopup : public QObject
+class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgPopup : public QObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandXdgPopup)
-    Q_PROPERTY(WaylandXdgSurface *xdgSurface READ xdgSurface CONSTANT)
-    Q_PROPERTY(WaylandXdgSurface *parentXdgSurface READ parentXdgSurface CONSTANT)
+    Q_PROPERTY(Aurora::Compositor::WaylandXdgSurface *xdgSurface READ xdgSurface CONSTANT)
+    Q_PROPERTY(Aurora::Compositor::WaylandXdgSurface *parentXdgSurface READ parentXdgSurface CONSTANT)
     Q_PROPERTY(QRect configuredGeometry READ configuredGeometry NOTIFY configuredGeometryChanged)
 
     // Positioner properties
@@ -261,7 +271,7 @@ public:
     QPoint unconstrainedPosition() const;
 
     Q_INVOKABLE uint sendConfigure(const QRect &geometry);
-    Q_REVISION(1, 14) Q_INVOKABLE void sendPopupDone();
+    Q_INVOKABLE void sendPopupDone();
 
     static WaylandSurfaceRole *role();
 

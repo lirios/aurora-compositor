@@ -49,15 +49,12 @@
 #include <LiriAuroraCompositor/WaylandCompositor>
 
 #include <LiriAuroraCompositor/private/aurora-server-wayland.h>
-#include <LiriAuroraCompositor/private/qtwaylandcompositorglobal_p.h>
 
-QT_REQUIRE_CONFIG(wayland_datadevice);
+class QSocketNotifier;
 
 namespace Aurora {
 
 namespace Compositor {
-
-class QSocketNotifier;
 
 namespace QtWayland {
 

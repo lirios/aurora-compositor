@@ -33,9 +33,8 @@
 
 #include "aurorawaylandview.h"
 #include <LiriAuroraCompositor/private/aurorawaylandseat_p.h>
-#include <LiriAuroraCompositor/private/qtwaylandcompositorglobal_p.h>
 
-#if QT_CONFIG(wayland_datadevice)
+#if LIRI_FEATURE_aurora_datadevice
 #include "aurorawldatadevice_p.h"
 #endif
 

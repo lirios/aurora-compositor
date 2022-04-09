@@ -30,13 +30,11 @@
 #ifndef AURORA_COMPOSITOR_WAYLANDDRAG_H
 #define AURORA_COMPOSITOR_WAYLANDDRAG_H
 
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
-#include <LiriAuroraCompositor/qtwaylandqmlinclude.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
+#include <LiriAuroraCompositor/aurorawaylandqmlinclude.h>
 
 #include <QtCore/QObject>
 #include <QtCore/QPointF>
-
-QT_REQUIRE_CONFIG(draganddrop);
 
 namespace Aurora {
 
@@ -46,18 +44,19 @@ class WaylandDragPrivate;
 class WaylandSurface;
 class WaylandSeat;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandDrag : public QObject
+class LIRIAURORACOMPOSITOR_EXPORT WaylandDrag : public QObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandDrag)
 
-    Q_PROPERTY(WaylandSurface *icon READ icon NOTIFY iconChanged)
+    Q_PROPERTY(Aurora::Compositor::WaylandSurface *icon READ icon NOTIFY iconChanged)
     Q_PROPERTY(bool visible READ visible NOTIFY iconChanged)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     Q_MOC_INCLUDE("aurorawaylandsurface.h")
-
     QML_NAMED_ELEMENT(WaylandDrag)
     QML_ADDED_IN_VERSION(1, 0)
     QML_UNCREATABLE("")
+#endif
 public:
     explicit WaylandDrag(WaylandSeat *seat);
 

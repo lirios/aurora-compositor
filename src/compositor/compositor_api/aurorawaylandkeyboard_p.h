@@ -43,7 +43,6 @@
 //
 #include <LiriAuroraCompositor/private/aurorawaylandcompositor_p.h>
 
-#include <LiriAuroraCompositor/private/qtwaylandcompositorglobal_p.h>
 #include <LiriAuroraCompositor/aurorawaylandseat.h>
 #include <LiriAuroraCompositor/aurorawaylandkeyboard.h>
 #include <LiriAuroraCompositor/aurorawaylanddestroylistener.h>
@@ -53,9 +52,9 @@
 
 #include <QtCore/QList>
 
-#if QT_CONFIG(xkbcommon)
+#if LIRI_FEATURE_aurora_xkbcommon
 #include <xkbcommon/xkbcommon.h>
-#include <QtGui/private/qxkbcommon_p.h>
+#include <LiriAuroraXkbCommonSupport/private/qxkbcommon_p.h>
 #endif
 
 
@@ -63,7 +62,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandKeyboardPrivate : public QObjectPrivate
+class LIRIAURORACOMPOSITOR_EXPORT WaylandKeyboardPrivate : public QObjectPrivate
                                                   , public PrivateServer::wl_keyboard
 {
 public:
@@ -78,7 +77,7 @@ public:
 
     void focused(WaylandSurface* surface);
 
-#if QT_CONFIG(xkbcommon)
+#if LIRI_FEATURE_aurora_xkbcommon
     struct xkb_state *xkbState() const { return mXkbState.get(); }
     struct xkb_context *xkbContext() const {
         return WaylandCompositorPrivate::get(seat->compositor())->xkbContext();
@@ -103,7 +102,7 @@ protected:
     void keyboard_release(Resource *resource) override;
 
 private:
-#if QT_CONFIG(xkbcommon)
+#if LIRI_FEATURE_aurora_xkbcommon
     void createXKBKeymap();
     void createXKBState(xkb_keymap *keymap);
 #endif
@@ -118,7 +117,11 @@ private:
     Resource *focusResource = nullptr;
     WaylandDestroyListener focusDestroyListener;
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QList<uint32_t> keys;
+#else
+    QVector<uint32_t> keys;
+#endif
     uint32_t modsDepressed = 0;
     uint32_t modsLatched = 0;
     uint32_t modsLocked = 0;
@@ -131,7 +134,7 @@ private:
     Qt::KeyboardModifiers currentModifierState;
 
     bool pendingKeymap = false;
-#if QT_CONFIG(xkbcommon)
+#if LIRI_FEATURE_aurora_xkbcommon
     size_t keymap_size;
     int keymap_fd = -1;
     char *keymap_area = nullptr;

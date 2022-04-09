@@ -32,7 +32,7 @@
 #define AURORA_COMPOSITOR_WAYLANDDESTROYLISTENER_H
 
 #include <QtCore/QObject>
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 
 struct wl_resource;
 
@@ -42,7 +42,7 @@ namespace Compositor {
 
 class WaylandDestroyListenerPrivate;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandDestroyListener : public QObject
+class LIRIAURORACOMPOSITOR_EXPORT WaylandDestroyListener : public QObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandDestroyListener)

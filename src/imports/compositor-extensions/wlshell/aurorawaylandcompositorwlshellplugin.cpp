@@ -66,13 +66,13 @@ class WaylandCompositorWlShellPlugin : public QQmlExtensionPlugin
 public:
     void registerTypes(const char *uri) override
     {
-        Q_ASSERT(QLatin1String(uri) == QLatin1String("QtWayland.Compositor.WlShell"));
+        Q_ASSERT(QLatin1String(uri) == QLatin1String("Aurora.Compositor.WlShell"));
         defineModule(uri);
     }
 
     static void defineModule(const char *uri)
     {
-        qmlRegisterModule(uri, QT_VERSION_MAJOR, QT_VERSION_MINOR);
+        qmlRegisterModule(uri, 1, 0);
         qmlRegisterType<WaylandWlShellQuickExtension>(uri, 1, 0, "WlShell");
         qmlRegisterType<WaylandWlShellSurface>(uri, 1, 0, "WlShellSurface");
     }

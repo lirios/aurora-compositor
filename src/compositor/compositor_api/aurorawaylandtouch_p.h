@@ -42,7 +42,7 @@
 // We mean it.
 //
 
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 #include <LiriAuroraCompositor/WaylandDestroyListener>
 #include <LiriAuroraCompositor/WaylandTouch>
 #include <LiriAuroraCompositor/WaylandSeat>
@@ -59,7 +59,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandTouchPrivate : public QObjectPrivate, public PrivateServer::wl_touch
+class LIRIAURORACOMPOSITOR_EXPORT WaylandTouchPrivate : public QObjectPrivate, public PrivateServer::wl_touch
 {
     Q_DECLARE_PUBLIC(WaylandTouch)
 public:

@@ -35,7 +35,11 @@
 #include <LiriAuroraCompositor/private/aurora-server-wayland.h>
 #include <LiriAuroraCompositor/private/aurorawlclientbufferintegration_p.h>
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QtOpenGL/QOpenGLTexture>
+#else
+#include <QtGui/QOpenGLTexture>
+#endif
 #include <QtCore/QObject>
 #include <QtCore/QHash>
 #include <QtCore/QSize>
@@ -85,14 +89,22 @@ class LinuxDmabuf : public PrivateServer::zwp_linux_dmabuf_v1
 public:
     explicit LinuxDmabuf(wl_display *display, LinuxDmabufClientBufferIntegration *clientBufferIntegration);
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     void setSupportedModifiers(const QHash<uint32_t, QList<uint64_t>> &modifiers);
+#else
+    void setSupportedModifiers(const QHash<uint32_t, QVector<uint64_t>> &modifiers);
+#endif
 
 protected:
     void zwp_linux_dmabuf_v1_bind_resource(Resource *resource) override;
     void zwp_linux_dmabuf_v1_create_params(Resource *resource, uint32_t params_id) override;
 
 private:
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QHash<uint32_t, QList<uint64_t>> m_modifiers; // key=DRM format, value=supported DRM modifiers for format
+#else
+    QHash<uint32_t, QVector<uint64_t>> m_modifiers; // key=DRM format, value=supported DRM modifiers for format
+#endif
     LinuxDmabufClientBufferIntegration *m_clientBufferIntegration;
 };
 

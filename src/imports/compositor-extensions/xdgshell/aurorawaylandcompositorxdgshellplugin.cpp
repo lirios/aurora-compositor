@@ -69,22 +69,22 @@ class WaylandCompositorXdgShellPlugin : public QQmlExtensionPlugin
 public:
     void registerTypes(const char *uri) override
     {
-        Q_ASSERT(QLatin1String(uri) == QLatin1String("QtWayland.Compositor.XdgShell"));
+        Q_ASSERT(QLatin1String(uri) == QLatin1String("Aurora.Compositor.XdgShell"));
         defineModule(uri);
     }
 
     static void defineModule(const char *uri)
     {
-        qmlRegisterModule(uri, QT_VERSION_MAJOR, QT_VERSION_MINOR);
+        qmlRegisterModule(uri, 1, 0);
 
-        qmlRegisterType<WaylandXdgShellQuickExtension>(uri, 1, 3, "XdgShell");
-        qmlRegisterType<WaylandXdgSurface>(uri, 1, 3, "XdgSurface");
-        qmlRegisterUncreatableType<WaylandXdgToplevel>(uri, 1, 3, "XdgToplevel", QObject::tr("Cannot create instance of XdgShellToplevel"));
-        qmlRegisterUncreatableType<WaylandXdgPopup>(uri, 1, 3, "XdgPopup", QObject::tr("Cannot create instance of XdgShellPopup"));
+        qmlRegisterType<WaylandXdgShellQuickExtension>(uri, 1, 0, "XdgShell");
+        qmlRegisterType<WaylandXdgSurface>(uri, 1, 0, "XdgSurface");
+        qmlRegisterUncreatableType<WaylandXdgToplevel>(uri, 1, 0, "XdgToplevel", QObject::tr("Cannot create instance of XdgShellToplevel"));
+        qmlRegisterUncreatableType<WaylandXdgPopup>(uri, 1, 0, "XdgPopup", QObject::tr("Cannot create instance of XdgShellPopup"));
 
-        qmlRegisterType<WaylandXdgDecorationManagerV1QuickExtension>(uri, 1, 3, "XdgDecorationManagerV1");
-        qmlRegisterType<WaylandXdgOutputManagerV1QuickExtension>(uri, 1, 14, "XdgOutputManagerV1");
-        qmlRegisterType<WaylandQuickXdgOutputV1>(uri, 1, 14, "XdgOutputV1");
+        qmlRegisterType<WaylandXdgDecorationManagerV1QuickExtension>(uri, 1, 0, "XdgDecorationManagerV1");
+        qmlRegisterType<WaylandXdgOutputManagerV1QuickExtension>(uri, 1, 0, "XdgOutputManagerV1");
+        qmlRegisterType<WaylandQuickXdgOutputV1>(uri, 1, 0, "XdgOutputV1");
     }
 };
 

@@ -34,14 +34,15 @@
 
 struct wl_client;
 
+class QInputMethodEvent;
+class QKeyEvent;
+
 namespace Aurora {
 
 namespace Compositor {
 
 class WaylandTextInputPrivate;
 
-class QInputMethodEvent;
-class QKeyEvent;
 class WaylandSurface;
 
 class WaylandTextInput : public WaylandCompositorExtensionTemplate<WaylandTextInput>
@@ -68,8 +69,8 @@ public:
 
 Q_SIGNALS:
     void updateInputMethod(Qt::InputMethodQueries queries);
-    void surfaceEnabled(WaylandSurface *surface);
-    void surfaceDisabled(WaylandSurface *surface);
+    void surfaceEnabled(Aurora::Compositor::WaylandSurface *surface);
+    void surfaceDisabled(Aurora::Compositor::WaylandSurface *surface);
 
 private:
     void focusSurfaceDestroyed(void *);

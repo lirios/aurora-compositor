@@ -41,7 +41,7 @@
 // We mean it.
 //
 
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 #include <LiriAuroraCompositor/aurorawaylandinputmethodcontrol.h>
 
 #include <QtCore/private/qobject_p.h>
@@ -59,7 +59,7 @@ class WaylandTextInputV4;
 #endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
 class WaylandQtTextInputMethod;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandInputMethodControlPrivate : public QObjectPrivate
+class LIRIAURORACOMPOSITOR_EXPORT WaylandInputMethodControlPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(WaylandInputMethodControl)
 

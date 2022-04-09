@@ -31,8 +31,8 @@
 #define AURORA_COMPOSITOR_WAYLANDRESOURCE_H
 
 #include <QtCore/QObject>
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
-#include <LiriAuroraCompositor/qtwaylandqmlinclude.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
+#include <LiriAuroraCompositor/aurorawaylandqmlinclude.h>
 
 struct wl_resource;
 
@@ -40,12 +40,14 @@ namespace Aurora {
 
 namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandResource
+class LIRIAURORACOMPOSITOR_EXPORT WaylandResource
 {
     Q_GADGET
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QML_NAMED_ELEMENT(waylandresource)
     QML_UNCREATABLE("")
     QML_ADDED_IN_VERSION(1, 0)
+#endif
 public:
     WaylandResource();
     explicit WaylandResource(wl_resource *resource);

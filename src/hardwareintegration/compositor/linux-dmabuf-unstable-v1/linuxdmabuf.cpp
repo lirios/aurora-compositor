@@ -46,11 +46,19 @@ LinuxDmabuf::LinuxDmabuf(wl_display *display, LinuxDmabufClientBufferIntegration
 {
 }
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 void LinuxDmabuf::setSupportedModifiers(const QHash<uint32_t, QList<uint64_t>> &modifiers)
 {
     Q_ASSERT(resourceMap().isEmpty());
     m_modifiers = modifiers;
 }
+#else
+void LinuxDmabuf::setSupportedModifiers(const QHash<uint32_t, QVector<uint64_t> > &modifiers)
+{
+    Q_ASSERT(resourceMap().isEmpty());
+    m_modifiers = modifiers;
+}
+#endif
 
 void LinuxDmabuf::zwp_linux_dmabuf_v1_bind_resource(Resource *resource)
 {

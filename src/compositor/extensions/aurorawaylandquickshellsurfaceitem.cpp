@@ -175,7 +175,7 @@ void WaylandQuickShellSurfaceItem::setMoveItem(QQuickItem *moveItem)
     if (this->moveItem() == moveItem)
         return;
     d->m_moveItem = moveItem;
-    moveItemChanged();
+    emit moveItemChanged();
 }
 
 /*!
@@ -321,7 +321,8 @@ static WaylandQuickShellSurfaceItem *findSurfaceItemFromMoveItem(QQuickItem *mov
         return nullptr;
     if (auto *surf = qobject_cast<WaylandQuickShellSurfaceItem *>(moveItem))
         return surf;
-    for (auto *item : moveItem->childItems()) {
+    const auto children = moveItem->childItems();
+    for (auto *item : children) {
         if (auto *surf = findSurfaceItemFromMoveItem(item))
             return surf;
     }
@@ -367,7 +368,8 @@ void WaylandQuickShellSurfaceItemPrivate::lower()
     QQuickItem *parent = moveItem->parentItem();
     if (!parent)
         return;
-    auto it = parent->childItems().cbegin();
+    const auto children = parent->childItems();
+    auto it = children.cbegin();
 
     auto skip = [this](QQuickItem *item) {
         if (auto *surf = findSurfaceItemFromMoveItem(item))

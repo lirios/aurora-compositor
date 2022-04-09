@@ -39,11 +39,11 @@ namespace Compositor {
 
 class WaylandXdgDecorationManagerV1Private;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgDecorationManagerV1 : public WaylandCompositorExtensionTemplate<WaylandXdgDecorationManagerV1>
+class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgDecorationManagerV1 : public WaylandCompositorExtensionTemplate<WaylandXdgDecorationManagerV1>
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandXdgDecorationManagerV1)
-    Q_PROPERTY(WaylandXdgToplevel::DecorationMode preferredMode READ preferredMode WRITE setPreferredMode NOTIFY preferredModeChanged)
+    Q_PROPERTY(Aurora::Compositor::WaylandXdgToplevel::DecorationMode preferredMode READ preferredMode WRITE setPreferredMode NOTIFY preferredModeChanged)
 
 public:
     explicit WaylandXdgDecorationManagerV1();

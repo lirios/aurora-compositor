@@ -34,9 +34,7 @@
 #include "aurorawaylandsurface_p.h"
 #include "aurorawldatadevicemanager_p.h"
 
-#if QT_CONFIG(draganddrop)
 #include "aurorawaylanddrag.h"
-#endif
 #include "aurorawaylandview.h"
 #include <LiriAuroraCompositor/WaylandClient>
 #include <LiriAuroraCompositor/private/aurorawaylandcompositor_p.h>
@@ -80,7 +78,6 @@ void DataDevice::sourceDestroyed(DataSource *source)
         m_selectionSource = nullptr;
 }
 
-#if QT_CONFIG(draganddrop)
 void DataDevice::setDragFocus(WaylandSurface *focus, const QPointF &localPosition)
 {
     if (m_dragFocusResource) {
@@ -174,7 +171,6 @@ void DataDevice::setDragIcon(WaylandSurface *icon)
     m_dragIcon = icon;
     Q_EMIT m_seat->drag()->iconChanged();
 }
-#endif // QT_CONFIG(draganddrop)
 
 void DataDevice::data_device_set_selection(Resource *, struct ::wl_resource *source, uint32_t serial)
 {

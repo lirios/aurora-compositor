@@ -45,7 +45,7 @@
 #include <LiriAuroraCompositor/private/aurorawaylandkeyboard_p.h>
 #include <LiriAuroraCompositor/private/aurorawaylandsurface_p.h>
 
-#if QT_CONFIG(wayland_datadevice)
+#if LIRI_FEATURE_aurora_datadevice
 #include "wayland_wrapper/aurorawldatadevice_p.h"
 #include "wayland_wrapper/aurorawldatadevicemanager_p.h"
 #endif
@@ -131,7 +131,7 @@ public:
         uint32_t code = ke->nativeScanCode;
         bool isDown = ke->keyType == QEvent::KeyPress;
 
-#if QT_CONFIG(xkbcommon)
+#if LIRI_FEATURE_aurora_xkbcommon
         xkb_state *xkbState = keyb->xkbState();
         Qt::KeyboardModifiers modifiers = QXkbCommon::modifiers(xkbState);
 
@@ -176,7 +176,7 @@ WaylandCompositorPrivate::WaylandCompositorPrivate(WaylandCompositor *compositor
 
     QWindowSystemInterfacePrivate::installWindowSystemEventHandler(eventHandler.data());
 
-#if QT_CONFIG(xkbcommon)
+#if LIRI_FEATURE_aurora_xkbcommon
     mXkbContext.reset(xkb_context_new(XKB_CONTEXT_NO_FLAGS));
     if (!mXkbContext) {
         qWarning("Failed to create a XKB context: keymap will not be supported");
@@ -198,7 +198,7 @@ void WaylandCompositorPrivate::init()
     wl_compositor::init(display, 4);
     wl_subcompositor::init(display, 1);
 
-#if QT_CONFIG(wayland_datadevice)
+#if LIRI_FEATURE_aurora_datadevice
     data_device_manager =  new QtWayland::DataDeviceManager(q);
 #endif
     buffer_manager = new QtWayland::BufferManager(q);
@@ -260,7 +260,7 @@ WaylandCompositorPrivate::~WaylandCompositorPrivate()
     const auto outputsToDelete = outputs;
     qDeleteAll(outputsToDelete);
 
-#if QT_CONFIG(wayland_datadevice)
+#if LIRI_FEATURE_aurora_datadevice
     delete data_device_manager;
 #endif
 
@@ -939,7 +939,7 @@ void WaylandCompositor::retainedSelectionReceived(QMimeData *)
 void WaylandCompositor::overrideSelection(const QMimeData *data)
 {
     Q_D(WaylandCompositor);
-#if QT_CONFIG(wayland_datadevice)
+#if LIRI_FEATURE_aurora_datadevice
     d->data_device_manager->overrideSelection(*data);
 #endif
 }
@@ -1110,7 +1110,7 @@ QVector<WaylandCompositor::ShmFormat> WaylandCompositor::additionalShmFormats() 
 
 void WaylandCompositor::applicationStateChanged(Qt::ApplicationState state)
 {
-#if QT_CONFIG(xkbcommon)
+#if LIRI_FEATURE_aurora_xkbcommon
     if (state == Qt::ApplicationInactive) {
         auto *seat = defaultSeat();
         if (seat != nullptr) {

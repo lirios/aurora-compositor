@@ -30,8 +30,8 @@
 #ifndef AURORA_COMPOSITOR_WAYLANDCOMPOSITOR_H
 #define AURORA_COMPOSITOR_WAYLANDCOMPOSITOR_H
 
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
-#include <LiriAuroraCompositor/qtwaylandqmlinclude.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
+#include <LiriAuroraCompositor/aurorawaylandqmlinclude.h>
 #include <LiriAuroraCompositor/aurorawaylandcompositorextension.h>
 #include <LiriAuroraCompositor/WaylandOutput>
 
@@ -42,15 +42,15 @@
 
 struct wl_display;
 
+class QInputEvent;
+class QMimeData;
+class QUrl;
+class QOpenGLContext;
+
 namespace Aurora {
 
 namespace Compositor {
 
-class QInputEvent;
-
-class QMimeData;
-class QUrl;
-class QOpenGLContext;
 class WaylandCompositorPrivate;
 class WaylandClient;
 class WaylandSurface;
@@ -62,26 +62,28 @@ class WaylandTouch;
 class WaylandSurfaceGrabber;
 class WaylandBufferRef;
 
-Q_WAYLANDCOMPOSITOR_EXPORT Q_DECLARE_LOGGING_CATEGORY(qLcWaylandCompositor)
-Q_WAYLANDCOMPOSITOR_EXPORT Q_DECLARE_LOGGING_CATEGORY(qLcWaylandCompositorHardwareIntegration)
+LIRIAURORACOMPOSITOR_EXPORT Q_DECLARE_LOGGING_CATEGORY(qLcWaylandCompositor)
+LIRIAURORACOMPOSITOR_EXPORT Q_DECLARE_LOGGING_CATEGORY(qLcWaylandCompositorHardwareIntegration)
 Q_DECLARE_LOGGING_CATEGORY(qLcWaylandCompositorInputMethods)
 Q_DECLARE_LOGGING_CATEGORY(qLcWaylandCompositorTextInput)
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandCompositor : public WaylandObject
+class LIRIAURORACOMPOSITOR_EXPORT WaylandCompositor : public WaylandObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandCompositor)
     Q_PROPERTY(QByteArray socketName READ socketName WRITE setSocketName NOTIFY socketNameChanged)
     Q_PROPERTY(bool created READ isCreated NOTIFY createdChanged)
     Q_PROPERTY(bool retainedSelection READ retainedSelectionEnabled WRITE setRetainedSelectionEnabled NOTIFY retainedSelectionChanged)
-    Q_PROPERTY(WaylandOutput *defaultOutput READ defaultOutput WRITE setDefaultOutput NOTIFY defaultOutputChanged)
+    Q_PROPERTY(Aurora::Compositor::WaylandOutput *defaultOutput READ defaultOutput WRITE setDefaultOutput NOTIFY defaultOutputChanged)
     Q_PROPERTY(bool useHardwareIntegrationExtension READ useHardwareIntegrationExtension WRITE setUseHardwareIntegrationExtension NOTIFY useHardwareIntegrationExtensionChanged)
-    Q_PROPERTY(WaylandSeat *defaultSeat READ defaultSeat NOTIFY defaultSeatChanged)
-    Q_PROPERTY(QVector<ShmFormat> additionalShmFormats READ additionalShmFormats WRITE setAdditionalShmFormats NOTIFY additionalShmFormatsChanged REVISION(6, 0))
+    Q_PROPERTY(Aurora::Compositor::WaylandSeat *defaultSeat READ defaultSeat NOTIFY defaultSeatChanged)
+    Q_PROPERTY(QVector<ShmFormat> additionalShmFormats READ additionalShmFormats WRITE setAdditionalShmFormats NOTIFY additionalShmFormatsChanged)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     Q_MOC_INCLUDE("aurorawaylandseat.h")
     QML_NAMED_ELEMENT(WaylandCompositorBase)
     QML_UNCREATABLE("Cannot create instance of WaylandCompositorBase, use WaylandCompositor instead")
     QML_ADDED_IN_VERSION(1, 0)
+#endif
 public:
     // Duplicates subset of supported values wl_shm_format enum
     enum ShmFormat {

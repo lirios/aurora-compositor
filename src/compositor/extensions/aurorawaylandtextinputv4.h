@@ -44,14 +44,15 @@
 
 struct wl_client;
 
+class QInputMethodEvent;
+class QKeyEvent;
+
 namespace Aurora {
 
 namespace Compositor {
 
 class WaylandTextInputV4Private;
 
-class QInputMethodEvent;
-class QKeyEvent;
 class WaylandSurface;
 
 class WaylandTextInputV4 : public WaylandCompositorExtensionTemplate<WaylandTextInputV4>

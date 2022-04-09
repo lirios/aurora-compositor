@@ -34,13 +34,11 @@
 #include <QtQml/QQmlParserStatus>
 #include <LiriAuroraCompositor/WaylandXdgOutputV1>
 
-QT_REQUIRE_CONFIG(wayland_compositor_quick);
-
 namespace Aurora {
 
 namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandQuickXdgOutputV1
+class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickXdgOutputV1
         : public WaylandXdgOutputV1
         , public QQmlParserStatus
 {

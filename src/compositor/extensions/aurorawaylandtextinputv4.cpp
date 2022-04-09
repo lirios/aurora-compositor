@@ -51,8 +51,8 @@
 #include <QInputMethodEvent>
 #include <qpa/qwindowsysteminterface.h>
 
-#if QT_CONFIG(xkbcommon)
-#include <QtGui/private/qxkbcommon_p.h>
+#if LIRI_FEATURE_aurora_xkbcommon
+#include <LiriAuroraXkbCommonSupport/private/qxkbcommon_p.h>
 #endif
 
 namespace Aurora {

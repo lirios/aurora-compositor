@@ -52,7 +52,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandQtWindowManagerPrivate
+class LIRIAURORACOMPOSITOR_EXPORT WaylandQtWindowManagerPrivate
         : public WaylandCompositorExtensionPrivate
         , public PrivateServer::qt_windowmanager
 {

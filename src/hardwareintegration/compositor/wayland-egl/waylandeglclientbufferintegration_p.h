@@ -51,7 +51,7 @@ namespace Compositor {
 
 class WaylandEglClientBufferIntegrationPrivate;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandEglClientBufferIntegration : public QtWayland::ClientBufferIntegration
+class LIRIAURORACOMPOSITOR_EXPORT WaylandEglClientBufferIntegration : public QtWayland::ClientBufferIntegration
 {
     Q_DECLARE_PRIVATE(WaylandEglClientBufferIntegration)
 public:
@@ -69,7 +69,7 @@ private:
 
 struct BufferState;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandEglClientBuffer : public QtWayland::ClientBuffer
+class LIRIAURORACOMPOSITOR_EXPORT WaylandEglClientBuffer : public QtWayland::ClientBuffer
 {
 public:
     WaylandEglClientBuffer(WaylandEglClientBufferIntegration* integration, wl_resource *bufferResource);

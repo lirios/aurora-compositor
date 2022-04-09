@@ -52,12 +52,13 @@
 // We mean it.
 //
 
+class QInputMethodEvent;
+class QKeyEvent;
+
 namespace Aurora {
 
 namespace Compositor {
 
-class QInputMethodEvent;
-class QKeyEvent;
 class WaylandCompositor;
 class WaylandView;
 
@@ -78,7 +79,7 @@ public:
     Qt::InputMethodQueries changedState;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandTextInputPrivate : public WaylandCompositorExtensionPrivate, public PrivateServer::zwp_text_input_v2
+class LIRIAURORACOMPOSITOR_EXPORT WaylandTextInputPrivate : public WaylandCompositorExtensionPrivate, public PrivateServer::zwp_text_input_v2
 {
     Q_DECLARE_PUBLIC(WaylandTextInput)
 public:

@@ -27,11 +27,15 @@
 **
 ****************************************************************************/
 
-#include <AuroraWaylandCompositor>
-#include <AuroraWaylandOutput>
+#include <LiriAuroraCompositor/WaylandCompositor>
+#include <LiriAuroraCompositor/WaylandOutput>
 
 #include "aurorawaylandquickxdgoutputv1.h"
 #include "aurorawaylandxdgoutputv1_p.h"
+
+namespace Aurora {
+
+namespace Compositor {
 
 WaylandQuickXdgOutputV1::WaylandQuickXdgOutputV1()
     : WaylandXdgOutputV1()
@@ -64,3 +68,7 @@ void WaylandQuickXdgOutputV1::componentComplete()
         }
     }
 }
+
+} // namespace Compositor
+
+} // namespace Aurora

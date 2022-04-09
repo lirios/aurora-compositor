@@ -48,7 +48,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandKeymapPrivate : public QObjectPrivate
+class LIRIAURORACOMPOSITOR_EXPORT WaylandKeymapPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(WaylandKeymap)
 public:

@@ -42,7 +42,7 @@ namespace Compositor {
 
 class WaylandIviApplicationPrivate;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandIviApplication : public WaylandCompositorExtensionTemplate<WaylandIviApplication>
+class LIRIAURORACOMPOSITOR_EXPORT WaylandIviApplication : public WaylandCompositorExtensionTemplate<WaylandIviApplication>
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandIviApplication)
@@ -57,8 +57,8 @@ public:
     static QByteArray interfaceName();
 
 Q_SIGNALS:
-    void iviSurfaceRequested(WaylandSurface *surface, uint iviId, const WaylandResource &resource);
-    void iviSurfaceCreated(WaylandIviSurface *iviSurface);
+    void iviSurfaceRequested(Aurora::Compositor::WaylandSurface *surface, uint iviId, const Aurora::Compositor::WaylandResource &resource);
+    void iviSurfaceCreated(Aurora::Compositor::WaylandIviSurface *iviSurface);
 };
 
 } // namespace Compositor

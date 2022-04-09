@@ -30,7 +30,7 @@
 #ifndef AURORA_COMPOSITOR_WAYLANDSHELL_H
 #define AURORA_COMPOSITOR_WAYLANDSHELL_H
 
-#include <LiriAuroraCompositor/qtwaylandqmlinclude.h>
+#include <LiriAuroraCompositor/aurorawaylandqmlinclude.h>
 #include <LiriAuroraCompositor/aurorawaylandcompositorextension.h>
 
 namespace Aurora {
@@ -39,15 +39,16 @@ namespace Compositor {
 
 class WaylandShellPrivate;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandShell : public WaylandCompositorExtension
+class LIRIAURORACOMPOSITOR_EXPORT WaylandShell : public WaylandCompositorExtension
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandShell)
     Q_PROPERTY(FocusPolicy focusPolicy READ focusPolicy WRITE setFocusPolicy NOTIFY focusPolicyChanged)
-
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QML_NAMED_ELEMENT(Shell)
     QML_UNCREATABLE("")
     QML_ADDED_IN_VERSION(1, 0)
+#endif
 public:
     enum FocusPolicy {
         AutomaticFocus,
@@ -70,7 +71,7 @@ protected:
 };
 
 template <typename T>
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandShellTemplate : public WaylandShell
+class LIRIAURORACOMPOSITOR_EXPORT WaylandShellTemplate : public WaylandShell
 {
 public:
     WaylandShellTemplate()

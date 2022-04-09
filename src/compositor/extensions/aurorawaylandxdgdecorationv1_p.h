@@ -54,7 +54,7 @@ namespace Compositor {
 
 class WaylandXdgToplevel;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgDecorationManagerV1Private
+class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgDecorationManagerV1Private
         : public WaylandCompositorExtensionPrivate
         , public PrivateServer::zxdg_decoration_manager_v1
 {
@@ -70,7 +70,7 @@ private:
     DecorationMode m_preferredMode = DecorationMode::ClientSideDecoration;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgToplevelDecorationV1
+class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgToplevelDecorationV1
         : public PrivateServer::zxdg_toplevel_decoration_v1
 {
 public:

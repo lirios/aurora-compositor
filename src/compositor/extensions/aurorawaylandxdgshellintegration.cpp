@@ -89,24 +89,40 @@ bool XdgToplevelIntegration::filterMouseMoveEvent(QMouseEvent *event)
     if (grabberState == GrabberState::Resize) {
         Q_ASSERT(resizeState.seat == m_item->compositor()->seatFor(event));
         if (!resizeState.initialized) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
             resizeState.initialMousePos = event->scenePosition();
+#else
+            resizeState.initialMousePos = event->windowPos();
+#endif
             resizeState.initialized = true;
             return true;
         }
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         QPointF delta = m_item->mapToSurface(event->scenePosition() - resizeState.initialMousePos);
+#else
+        QPointF delta = m_item->mapToSurface(event->windowPos() - resizeState.initialMousePos);
+#endif
         QSize newSize = m_toplevel->sizeForResize(resizeState.initialWindowSize, delta, resizeState.resizeEdges);
         m_toplevel->sendResizing(newSize);
     } else if (grabberState == GrabberState::Move) {
         Q_ASSERT(moveState.seat == m_item->compositor()->seatFor(event));
         QQuickItem *moveItem = m_item->moveItem();
         if (!moveState.initialized) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
             moveState.initialOffset = moveItem->mapFromItem(nullptr, event->scenePosition());
+#else
+            moveState.initialOffset = moveItem->mapFromItem(nullptr, event->windowPos());
+#endif
             moveState.initialized = true;
             return true;
         }
         if (!moveItem->parentItem())
             return true;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         QPointF parentPos = moveItem->parentItem()->mapFromItem(nullptr, event->scenePosition());
+#else
+        QPointF parentPos = moveItem->parentItem()->mapFromItem(nullptr, event->windowPos());
+#endif
         moveItem->setPosition(parentPos - moveState.initialOffset);
     }
     return false;
@@ -146,7 +162,11 @@ void XdgToplevelIntegration::handleSetMaximized()
     if (!m_item->view()->isPrimary())
         return;
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QList<WaylandXdgToplevel::State> states = m_toplevel->states();
+#else
+    QVector<WaylandXdgToplevel::State> states = m_toplevel->states();
+#endif
 
     if (!states.contains(WaylandXdgToplevel::State::FullscreenState) && !states.contains(WaylandXdgToplevel::State::MaximizedState)) {
         windowedGeometry.initialWindowSize = m_xdgSurface->windowGeometry().size();
@@ -202,7 +222,11 @@ void XdgToplevelIntegration::handleSetFullscreen()
     if (!m_item->view()->isPrimary())
         return;
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QList<WaylandXdgToplevel::State> states = m_toplevel->states();
+#else
+    QVector<WaylandXdgToplevel::State> states = m_toplevel->states();
+#endif
 
     if (!states.contains(WaylandXdgToplevel::State::FullscreenState) && !states.contains(WaylandXdgToplevel::State::MaximizedState)) {
         windowedGeometry.initialWindowSize = m_xdgSurface->windowGeometry().size();

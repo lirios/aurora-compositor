@@ -52,7 +52,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandIviApplicationPrivate
+class LIRIAURORACOMPOSITOR_EXPORT WaylandIviApplicationPrivate
         : public WaylandCompositorExtensionPrivate
         , public PrivateServer::ivi_application
 {

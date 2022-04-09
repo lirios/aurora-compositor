@@ -33,8 +33,6 @@
 #include <LiriAuroraCompositor/WaylandCompositorExtension>
 #include <LiriAuroraCompositor/WaylandQuickItem>
 
-QT_REQUIRE_CONFIG(wayland_compositor_quick);
-
 namespace Aurora {
 
 namespace Compositor {
@@ -42,18 +40,20 @@ namespace Compositor {
 class WaylandQuickShellSurfaceItemPrivate;
 class WaylandShellSurface;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandQuickShellSurfaceItem : public WaylandQuickItem
+class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickShellSurfaceItem : public WaylandQuickItem
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandQuickShellSurfaceItem)
-    Q_PROPERTY(WaylandShellSurface *shellSurface READ shellSurface WRITE setShellSurface NOTIFY shellSurfaceChanged)
+    Q_PROPERTY(Aurora::Compositor::WaylandShellSurface *shellSurface READ shellSurface WRITE setShellSurface NOTIFY shellSurfaceChanged)
     Q_PROPERTY(QQuickItem *moveItem READ moveItem WRITE setMoveItem NOTIFY moveItemChanged)
     Q_PROPERTY(bool autoCreatePopupItems READ autoCreatePopupItems WRITE setAutoCreatePopupItems NOTIFY autoCreatePopupItemsChanged)
     Q_PROPERTY(bool staysOnTop READ staysOnTop WRITE setStaysOnTop NOTIFY staysOnTopChanged)
     Q_PROPERTY(bool staysOnBottom READ staysOnBottom WRITE setStaysOnBottom NOTIFY staysOnBottomChanged)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     Q_MOC_INCLUDE("aurorawaylandshellsurface.h")
     QML_NAMED_ELEMENT(ShellSurfaceItem)
     QML_ADDED_IN_VERSION(1, 0)
+#endif
 public:
     WaylandQuickShellSurfaceItem(QQuickItem *parent = nullptr);
     ~WaylandQuickShellSurfaceItem() override;

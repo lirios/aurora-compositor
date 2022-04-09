@@ -30,7 +30,7 @@
 #ifndef AURORA_COMPOSITOR_WAYLANDSHELLSURFACE_H
 #define AURORA_COMPOSITOR_WAYLANDSHELLSURFACE_H
 
-#include <LiriAuroraCompositor/qtwaylandqmlinclude.h>
+#include <LiriAuroraCompositor/aurorawaylandqmlinclude.h>
 #include <LiriAuroraCompositor/aurorawaylandcompositorextension.h>
 
 namespace Aurora {
@@ -40,15 +40,17 @@ namespace Compositor {
 class WaylandQuickShellIntegration;
 class WaylandQuickShellSurfaceItem;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandShellSurface : public WaylandCompositorExtension
+class LIRIAURORACOMPOSITOR_EXPORT WaylandShellSurface : public WaylandCompositorExtension
 {
     Q_OBJECT
     Q_PROPERTY(Qt::WindowType windowType READ windowType NOTIFY windowTypeChanged)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QML_NAMED_ELEMENT(ShellSurface)
     QML_UNCREATABLE("")
     QML_ADDED_IN_VERSION(1, 0)
+#endif
 public:
-#if QT_CONFIG(wayland_compositor_quick)
+#if LIRI_FEATURE_aurora_compositor_quick
     virtual WaylandQuickShellIntegration *createIntegration(WaylandQuickShellSurfaceItem *item) = 0;
 #endif
     WaylandShellSurface(WaylandObject *waylandObject) : WaylandCompositorExtension(waylandObject) {}
@@ -63,7 +65,7 @@ Q_SIGNALS:
 };
 
 template <typename T>
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandShellSurfaceTemplate : public WaylandShellSurface
+class LIRIAURORACOMPOSITOR_EXPORT WaylandShellSurfaceTemplate : public WaylandShellSurface
 {
 public:
     WaylandShellSurfaceTemplate(WaylandObject *container = nullptr)

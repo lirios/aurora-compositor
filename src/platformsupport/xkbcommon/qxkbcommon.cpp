@@ -48,7 +48,9 @@
 #include <qpa/qplatforminputcontext.h>
 #include <qpa/qplatformintegration.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 Q_LOGGING_CATEGORY(lcXkbcommon, "qt.xkbcommon")
 
@@ -826,4 +828,6 @@ void QXkbCommon::setXkbContext(QPlatformInputContext *inputContext, struct xkb_c
     setXkbContext.invoke(inputContext, Qt::DirectConnection, Q_ARG(struct xkb_context*, context));
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

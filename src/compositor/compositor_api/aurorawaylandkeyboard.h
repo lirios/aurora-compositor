@@ -45,7 +45,7 @@ class WaylandKeyboardPrivate;
 class WaylandSeat;
 class WaylandKeymap;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandKeyboard : public WaylandObject
+class LIRIAURORACOMPOSITOR_EXPORT WaylandKeyboard : public WaylandObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandKeyboard)

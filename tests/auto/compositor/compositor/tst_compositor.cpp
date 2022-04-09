@@ -66,7 +66,7 @@ class tst_WaylandCompositor : public QObject
 private slots:
     void init();
     void seatCapabilities();
-#if QT_CONFIG(xkbcommon)
+#if LIRI_FEATURE_aurora_xkbcommon
     void simpleKeyboard();
     void keyboardKeymaps();
     void keyboardLayoutSwitching();
@@ -202,7 +202,7 @@ void tst_WaylandCompositor::multipleClients()
     QTRY_COMPARE(compositor.surfaces.size(), 0);
 }
 
-#if QT_CONFIG(xkbcommon)
+#if LIRI_FEATURE_aurora_xkbcommon
 
 void tst_WaylandCompositor::simpleKeyboard()
 {
@@ -315,7 +315,7 @@ void tst_WaylandCompositor::keyboardLayoutSwitching()
     QTRY_COMPARE(mockKeyboard->m_lastKeyCode, 44u);
 }
 
-#endif // QT_CONFIG(xkbcommon)
+#endif // LIRI_FEATURE_aurora_xkbcommon
 
 void tst_WaylandCompositor::keyboardGrab()
 {
@@ -1830,9 +1830,9 @@ void tst_WaylandCompositor::xdgOutput()
     QTRY_COMPARE(xdgOutput->logicalSize, QSize(1000, 1000));
 }
 
-#include <tst_compositor.moc>
-QTEST_MAIN(tst_WaylandCompositor);
-
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include <tst_compositor.moc>
+QTEST_MAIN(Aurora::Compositor::tst_WaylandCompositor);

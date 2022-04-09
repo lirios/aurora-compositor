@@ -31,8 +31,7 @@
 #define AURORA_COMPOSITOR_WAYLANDCOMPOSITORGLOBAL_H
 
 #include <QtGui/qtguiglobal.h>
-#include <AuroraCompositor/qtwaylandcompositor-config.h>
-#include <AuroraCompositor/qtwaylandcompositorexports.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 
 #endif // AURORA_COMPOSITOR_WAYLANDCOMPOSITORGLOBAL_H
 

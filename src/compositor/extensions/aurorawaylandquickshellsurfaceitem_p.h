@@ -55,7 +55,7 @@ namespace Compositor {
 class WaylandShellSurface;
 class WaylandQuickShellSurfaceItem;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandQuickShellSurfaceItemPrivate : public WaylandQuickItemPrivate
+class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickShellSurfaceItemPrivate : public WaylandQuickItemPrivate
 {
     Q_DECLARE_PUBLIC(WaylandQuickShellSurfaceItem)
 public:
@@ -74,7 +74,7 @@ public:
     bool staysOnBottom = false;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandQuickShellEventFilter : public QObject
+class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickShellEventFilter : public QObject
 {
     Q_OBJECT
 public:

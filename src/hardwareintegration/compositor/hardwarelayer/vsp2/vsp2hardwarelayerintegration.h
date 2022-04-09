@@ -38,6 +38,8 @@
 
 struct wl_kms_buffer;
 
+class QScreen;
+
 namespace Aurora {
 
 namespace Compositor {
@@ -46,7 +48,6 @@ namespace QNativeInterface::Private {
 struct QVsp2Screen;
 }
 
-class QScreen;
 class WaylandSurface;
 class WaylandQuickHardwareLayer;
 

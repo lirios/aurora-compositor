@@ -47,7 +47,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandQuickSurfacePrivate : public WaylandSurfacePrivate
+class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickSurfacePrivate : public WaylandSurfacePrivate
 {
     Q_DECLARE_PUBLIC(WaylandQuickSurface)
 public:

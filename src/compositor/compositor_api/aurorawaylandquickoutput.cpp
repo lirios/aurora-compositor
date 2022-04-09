@@ -106,7 +106,7 @@ void WaylandQuickOutput::setAutomaticFrameCallback(bool automatic)
         return;
 
     m_automaticFrameCallback = automatic;
-    automaticFrameCallbackChanged();
+    emit automaticFrameCallbackChanged();
 }
 
 static QQuickItem* clickableItemAtPosition(QQuickItem *rootItem, const QPointF &position)

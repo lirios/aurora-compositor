@@ -48,12 +48,13 @@
 
 #include <wayland-util.h>
 
+class QKeyEvent;
+
 namespace Aurora {
 
 namespace Compositor {
 
 class WaylandSurface;
-class QKeyEvent;
 
 namespace QtWayland {
 

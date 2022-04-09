@@ -32,16 +32,16 @@
 
 #include <QObject>
 #include <LiriAuroraCompositor/aurorawaylandcompositorextension.h>
-#include <QtCore/private/qglobal_p.h>
+
+class QQuickWindow;
 
 namespace Aurora {
 
 namespace Compositor {
 
-class QQuickWindow;
 class WaylandPresentationTimePrivate;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandPresentationTime : public WaylandCompositorExtensionTemplate<WaylandPresentationTime>
+class LIRIAURORACOMPOSITOR_EXPORT WaylandPresentationTime : public WaylandCompositorExtensionTemplate<WaylandPresentationTime>
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandPresentationTime)

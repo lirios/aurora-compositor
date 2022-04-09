@@ -164,9 +164,11 @@ uint WaylandTouch::sendTouchPointEvent(WaylandSurface *surface, int id, const QP
     case Qt::TouchPointStationary:
         // stationary points are not sent through wayland, the client must cache them
         break;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     case Qt::TouchPointUnknownState:
         // Ignored
         break;
+#endif
     }
 
     return serial;
@@ -213,6 +215,7 @@ void WaylandTouch::sendFullTouchEvent(WaylandSurface *surface, QTouchEvent *even
     if (ext && ext->postTouchEvent(event, surface))
         return;
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     const QList<QTouchEvent::TouchPoint> points = event->points();
     if (points.isEmpty())
         return;
@@ -226,6 +229,21 @@ void WaylandTouch::sendFullTouchEvent(WaylandSurface *surface, QTouchEvent *even
         if (tp.state() == QEventPoint::Released)
             d->ids[id] = -1;
     }
+#else
+    const QList<QTouchEvent::TouchPoint> points = event->touchPoints();
+    if (points.isEmpty())
+        return;
+
+    const int pointCount = points.count();
+    for (int i = 0; i < pointCount; ++i) {
+        const QTouchEvent::TouchPoint &tp(points.at(i));
+        // Convert the local pos in the compositor window to surface-relative.
+        const int id = d->toSequentialWaylandId(tp.id());
+        sendTouchPointEvent(surface, id, tp.pos(), tp.state());
+        if (tp.state() == Qt::TouchPointReleased)
+            d->ids[id] = -1;
+    }
+#endif
     sendFrameEvent(surface->client());
 }
 

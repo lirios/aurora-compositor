@@ -48,7 +48,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandShellPrivate : public WaylandCompositorExtensionPrivate
+class LIRIAURORACOMPOSITOR_EXPORT WaylandShellPrivate : public WaylandCompositorExtensionPrivate
 {
     Q_DECLARE_PUBLIC(WaylandShell)
 public:

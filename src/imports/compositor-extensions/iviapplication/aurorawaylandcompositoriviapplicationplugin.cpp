@@ -66,13 +66,13 @@ class WaylandCompositorIviApplicationPlugin : public QQmlExtensionPlugin
 public:
     void registerTypes(const char *uri) override
     {
-        Q_ASSERT(QLatin1String(uri) == QLatin1String("QtWayland.Compositor.IviApplication"));
+        Q_ASSERT(QLatin1String(uri) == QLatin1String("Aurora.Compositor.IviApplication"));
         defineModule(uri);
     }
 
     static void defineModule(const char *uri)
     {
-        qmlRegisterModule(uri, QT_VERSION_MAJOR, QT_VERSION_MINOR);
+        qmlRegisterModule(uri, 1, 0);
         qmlRegisterType<WaylandIviApplicationQuickExtension>(uri, 1, 0, "IviApplication");
         qmlRegisterType<WaylandIviSurface>(uri, 1, 0, "IviSurface");
     }

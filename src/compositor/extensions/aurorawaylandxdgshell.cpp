@@ -30,7 +30,7 @@
 #include "aurorawaylandxdgshell.h"
 #include "aurorawaylandxdgshell_p.h"
 
-#if QT_CONFIG(wayland_compositor_quick)
+#if LIRI_FEATURE_aurora_compositor_quick
 #include "aurorawaylandxdgshellintegration_p.h"
 #endif
 #include <LiriAuroraCompositor/private/aurorawaylandutils_p.h>
@@ -690,7 +690,7 @@ WaylandXdgSurface *WaylandXdgSurface::fromResource(wl_resource *resource)
     return nullptr;
 }
 
-#if QT_CONFIG(wayland_compositor_quick)
+#if LIRI_FEATURE_aurora_compositor_quick
 WaylandQuickShellIntegration *WaylandXdgSurface::createIntegration(WaylandQuickShellSurfaceItem *item)
 {
     Q_D(const WaylandXdgSurface);
@@ -738,7 +738,11 @@ WaylandQuickShellIntegration *WaylandXdgSurface::createIntegration(WaylandQuickS
 WaylandXdgToplevel::WaylandXdgToplevel(WaylandXdgSurface *xdgSurface, WaylandResource &resource)
     : QObject(*new WaylandXdgToplevelPrivate(xdgSurface, resource))
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QList<WaylandXdgToplevel::State> states;
+#else
+    QVector<WaylandXdgToplevel::State> states;
+#endif
     sendConfigure({0, 0}, states);
 }
 
@@ -868,7 +872,11 @@ QSize WaylandXdgToplevel::minSize() const
  *
  * This property holds the last states the client acknowledged for this WaylandToplevel.
  */
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 QList<WaylandXdgToplevel::State> WaylandXdgToplevel::states() const
+#else
+QVector<WaylandXdgToplevel::State> WaylandXdgToplevel::states() const
+#endif
 {
     Q_D(const WaylandXdgToplevel);
     return d->m_lastAckedConfigure.states;
@@ -1016,7 +1024,11 @@ QSize WaylandXdgToplevel::sizeForResize(const QSizeF &size, const QPointF &delta
  * of the surface. A size of zero means the client is free to decide the size.
  * Known \a states are enumerated in WaylandXdgToplevel::State.
  */
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 uint WaylandXdgToplevel::sendConfigure(const QSize &size, const QList<WaylandXdgToplevel::State> &states)
+#else
+uint WaylandXdgToplevel::sendConfigure(const QSize &size, const QVector<WaylandXdgToplevel::State> &states)
+#endif
 {
     if (!size.isValid()) {
         qWarning() << "Can't configure xdg_toplevel with an invalid size" << size;
@@ -1039,9 +1051,17 @@ uint WaylandXdgToplevel::sendConfigure(const QSize &size, const QList<WaylandXdg
  * A size of zero means the client is free to decide the size.
  * Known \a states are enumerated in XdgToplevel::State.
  */
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 uint WaylandXdgToplevel::sendConfigure(const QSize &size, const QList<int> &states)
+#else
+uint WaylandXdgToplevel::sendConfigure(const QSize &size, const QVector<int> &states)
+#endif
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QList<State> s;
+#else
+    QVector<State> s;
+#endif
     for (auto state : states)
         s << State(state);
     return sendConfigure(size, s);
@@ -1318,7 +1338,7 @@ void WaylandXdgToplevelPrivate::handleAckConfigure(uint serial)
 
     m_lastAckedConfigure = config;
 
-    for (uint state : changedStates) {
+    for (const uint state : qAsConst(changedStates)) {
         switch (state) {
         case state_maximized:
             emit q->maximizedChanged();

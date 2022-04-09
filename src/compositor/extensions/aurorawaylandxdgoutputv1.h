@@ -43,7 +43,7 @@ class WaylandOutput;
 class WaylandXdgOutputManagerV1Private;
 class WaylandXdgOutputV1Private;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgOutputManagerV1
+class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgOutputManagerV1
         : public WaylandCompositorExtensionTemplate<WaylandXdgOutputManagerV1>
 {
     Q_OBJECT
@@ -57,19 +57,21 @@ public:
     static const wl_interface *interface();
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgOutputV1 : public QObject
+class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgOutputV1 : public QObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandXdgOutputV1)
     Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandXdgOutputV1)
-    Q_PROPERTY(WaylandXdgOutputManagerV1 *manager READ manager NOTIFY managerChanged)
-    Q_PROPERTY(WaylandOutput *output READ output NOTIFY outputChanged)
+    Q_PROPERTY(Aurora::Compositor::WaylandXdgOutputManagerV1 *manager READ manager NOTIFY managerChanged)
+    Q_PROPERTY(Aurora::Compositor::WaylandOutput *output READ output NOTIFY outputChanged)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString description READ description WRITE setDescription NOTIFY descriptionChanged)
     Q_PROPERTY(QPoint logicalPosition READ logicalPosition WRITE setLogicalPosition NOTIFY logicalPositionChanged)
     Q_PROPERTY(QSize logicalSize READ logicalSize WRITE setLogicalSize NOTIFY logicalSizeChanged)
     Q_PROPERTY(QRect logicalGeometry READ logicalGeometry NOTIFY logicalGeometryChanged)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     Q_MOC_INCLUDE("aurorawaylandoutput.h")
+#endif
 public:
     WaylandXdgOutputV1();
     WaylandXdgOutputV1(WaylandOutput *output, WaylandXdgOutputManagerV1 *manager);

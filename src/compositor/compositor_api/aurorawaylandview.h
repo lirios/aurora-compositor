@@ -31,7 +31,7 @@
 #define AURORA_COMPOSITOR_WAYLANDSURFACEVIEW_H
 
 #include <LiriAuroraCompositor/WaylandBufferRef>
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 
 #include <QtCore/QPointF>
 #include <QtCore/QObject>
@@ -44,16 +44,18 @@ class WaylandSurface;
 class WaylandViewPrivate;
 class WaylandOutput;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandView : public QObject
+class LIRIAURORACOMPOSITOR_EXPORT WaylandView : public QObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandView)
     Q_PROPERTY(QObject *renderObject READ renderObject CONSTANT)
-    Q_PROPERTY(WaylandSurface *surface READ surface WRITE setSurface NOTIFY surfaceChanged)
-    Q_PROPERTY(WaylandOutput *output READ output WRITE setOutput NOTIFY outputChanged)
+    Q_PROPERTY(Aurora::Compositor::WaylandSurface *surface READ surface WRITE setSurface NOTIFY surfaceChanged)
+    Q_PROPERTY(Aurora::Compositor::WaylandOutput *output READ output WRITE setOutput NOTIFY outputChanged)
     Q_PROPERTY(bool bufferLocked READ isBufferLocked WRITE setBufferLocked NOTIFY bufferLockedChanged)
     Q_PROPERTY(bool allowDiscardFrontBuffer READ allowDiscardFrontBuffer WRITE setAllowDiscardFrontBuffer NOTIFY allowDiscardFrontBufferChanged)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     Q_MOC_INCLUDE("aurorawaylandoutput.h")
+#endif
 public:
     WaylandView(QObject *renderObject = nullptr, QObject *parent = nullptr);
     ~WaylandView() override;

@@ -58,7 +58,7 @@ namespace Compositor {
 class WaylandCompositor;
 class WaylandSurface;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandQtTextInputMethodPrivate : public WaylandCompositorExtensionPrivate, public PrivateServer::qt_text_input_method_v1
+class LIRIAURORACOMPOSITOR_EXPORT WaylandQtTextInputMethodPrivate : public WaylandCompositorExtensionPrivate, public PrivateServer::qt_text_input_method_v1
 {
     Q_DECLARE_PUBLIC(WaylandQtTextInputMethod)
 public:

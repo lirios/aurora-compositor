@@ -41,24 +41,25 @@
 // We mean it.
 //
 
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 #include <LiriAuroraCompositor/aurorawaylandsurface.h>
 #include <LiriAuroraCompositor/aurorawaylandbufferref.h>
 #include <QtCore/QSize>
 #include <QtCore/private/qglobal_p.h>
 #include <wayland-server-core.h>
 
+class QOpenGLTexture;
+
 namespace Aurora {
 
 namespace Compositor {
 
 class WaylandCompositor;
-class QOpenGLTexture;
 
 namespace QtWayland {
 class Display;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT ClientBufferIntegration
+class LIRIAURORACOMPOSITOR_EXPORT ClientBufferIntegration
 {
 public:
     ClientBufferIntegration();

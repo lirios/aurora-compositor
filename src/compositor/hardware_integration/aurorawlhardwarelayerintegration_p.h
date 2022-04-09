@@ -41,7 +41,7 @@
 // We mean it.
 //
 
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 
 #include <QObject>
 #include <private/qglobal_p.h>
@@ -56,7 +56,7 @@ class WaylandQuickHardwareLayer;
 
 namespace QtWayland {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT HardwareLayerIntegration : public QObject
+class LIRIAURORACOMPOSITOR_EXPORT HardwareLayerIntegration : public QObject
 {
     Q_OBJECT
 public:

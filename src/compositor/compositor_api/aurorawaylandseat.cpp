@@ -33,33 +33,35 @@
 #include "aurorawaylandcompositor.h"
 #include "aurorawaylandinputmethodcontrol.h"
 #include "aurorawaylandview.h"
-#if QT_CONFIG(draganddrop)
 #include <LiriAuroraCompositor/WaylandDrag>
-#endif
 #include <LiriAuroraCompositor/WaylandTouch>
 #include <LiriAuroraCompositor/WaylandPointer>
 #include <LiriAuroraCompositor/WaylandKeymap>
 #include <LiriAuroraCompositor/private/aurorawaylandseat_p.h>
 #include <LiriAuroraCompositor/private/aurorawaylandcompositor_p.h>
 #include <LiriAuroraCompositor/private/aurorawaylandkeyboard_p.h>
-#if QT_CONFIG(wayland_datadevice)
+#if LIRI_FEATURE_aurora_datadevice
 #include <LiriAuroraCompositor/private/aurorawldatadevice_p.h>
 #endif
 #include <LiriAuroraCompositor/private/aurorawaylandutils_p.h>
 
 #include "extensions/aurorawlqtkey_p.h"
 #include "extensions/aurorawaylandtextinput.h"
-#if QT_WAYLAND_TEXT_INPUT_V4_WIP
-#include "extensions/aurorawaylandtextinputv4.h"
-#endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
-#include "extensions/aurorawaylandqttextinputmethod.h"
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if QT_CONFIG(im)
+#  if QT_WAYLAND_TEXT_INPUT_V4_WIP
+#    include "extensions/aurorawaylandtextinputv4.h"
+#  endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
+#  include "extensions/aurorawaylandqttextinputmethod.h"
+#endif
+#endif
 
 namespace Aurora {
 
 namespace Compositor {
 
 WaylandSeatPrivate::WaylandSeatPrivate(WaylandSeat *seat) :
-#if QT_CONFIG(wayland_datadevice)
+#if LIRI_FEATURE_aurora_datadevice
     drag_handle(new WaylandDrag(seat)),
 #endif
     keymap(new WaylandKeymap())
@@ -99,7 +101,7 @@ void WaylandSeatPrivate::setCapabilities(WaylandSeat::CapabilityFlags caps)
     }
 }
 
-#if QT_CONFIG(wayland_datadevice)
+#if LIRI_FEATURE_aurora_datadevice
 void WaylandSeatPrivate::clientRequestedDataDevice(QtWayland::DataDeviceManager *, struct wl_client *client, uint32_t id)
 {
     Q_Q(WaylandSeat);
@@ -472,6 +474,7 @@ void WaylandSeat::sendFullKeyEvent(QKeyEvent *event)
         return;
     }
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #if QT_CONFIG(im)
     if (keyboardFocus()->inputMethodControl()->enabled()
         && event->nativeScanCode() == 0) {
@@ -503,6 +506,7 @@ void WaylandSeat::sendFullKeyEvent(QKeyEvent *event)
         }
 #endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
     }
+#endif
 #endif
 
     QtWayland::QtKeyExtensionGlobal *ext = QtWayland::QtKeyExtensionGlobal::findIn(d->compositor);
@@ -600,7 +604,7 @@ bool WaylandSeat::setKeyboardFocus(WaylandSurface *surface)
     d->keyboardFocus = surface;
     if (!d->keyboard.isNull())
         d->keyboard->setFocus(surface);
-#if QT_CONFIG(wayland_datadevice)
+#if LIRI_FEATURE_aurora_datadevice
     if (d->data_device)
         d->data_device->setFocus(surface ? surface->client() : nullptr);
 #endif
@@ -678,13 +682,11 @@ WaylandCompositor *WaylandSeat::compositor() const
 /*!
  * Returns the drag object for this WaylandSeat.
  */
-#if QT_CONFIG(draganddrop)
 WaylandDrag *WaylandSeat::drag() const
 {
     Q_D(const WaylandSeat);
     return d->drag_handle.data();
 }
-#endif
 
 /*!
  * Returns the capability flags for this WaylandSeat.

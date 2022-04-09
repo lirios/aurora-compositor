@@ -31,12 +31,20 @@
 #include "waylandeglstreamcontroller.h"
 
 #include <LiriAuroraCompositor/WaylandCompositor>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QtOpenGL/QOpenGLTexture>
+#else
+#include <QtGui/QOpenGLTexture>
+#endif
 #include <QtGui/QGuiApplication>
 #include <QtGui/QOpenGLContext>
 #include <QtGui/QOffscreenSurface>
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QtGui/private/qeglstreamconvenience_p.h>
+#else
+#include <QtEglSupport/private/qeglstreamconvenience_p.h>
+#endif
 #include <qpa/qplatformnativeinterface.h>
 
 #include <LiriAuroraCompositor/private/aurorawaylandcompositor_p.h>
@@ -310,7 +318,7 @@ void WaylandEglStreamClientBufferIntegration::initializeHardware(struct wl_displ
 {
     Q_D(WaylandEglStreamClientBufferIntegration);
 
-    const bool ignoreBindDisplay = !qgetenv("QT_WAYLAND_IGNORE_BIND_DISPLAY").isEmpty();
+    const bool ignoreBindDisplay = !qEnvironmentVariableIsEmpty("QT_WAYLAND_IGNORE_BIND_DISPLAY");
 
     QPlatformNativeInterface *nativeInterface = QGuiApplication::platformNativeInterface();
     if (!nativeInterface) {

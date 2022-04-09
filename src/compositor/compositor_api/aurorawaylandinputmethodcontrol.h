@@ -33,6 +33,8 @@
 #include <QtGui/qtguiglobal.h>
 #include <QObject>
 
+class QInputMethodEvent;
+
 namespace Aurora {
 
 namespace Compositor {
@@ -40,7 +42,6 @@ namespace Compositor {
 class WaylandCompositor;
 class WaylandInputMethodControlPrivate;
 class WaylandSurface;
-class QInputMethodEvent;
 class WaylandTextInput;
 
 class WaylandInputMethodControl : public QObject

@@ -45,7 +45,7 @@ class WaylandView;
 class WaylandOutput;
 class WaylandClient;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandPointer : public WaylandObject
+class LIRIAURORACOMPOSITOR_EXPORT WaylandPointer : public WaylandObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandPointer)

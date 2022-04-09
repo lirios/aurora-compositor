@@ -95,7 +95,7 @@
  * \sa WaylandSurface, WaylandWlShellSurface, WaylandIviSurface, WaylandShellSurfaceTemplate
  */
 
-#if QT_CONFIG(wayland_compositor_quick)
+#if LIRI_FEATURE_aurora_compositor_quick
 /*!
  * \fn WaylandQuickShellIntegration *WaylandShellSurface::createIntegration(WaylandQuickShellSurfaceItem *item)
  *

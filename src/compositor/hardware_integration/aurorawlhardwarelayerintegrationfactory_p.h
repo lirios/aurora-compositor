@@ -41,7 +41,7 @@
 // We mean it.
 //
 
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 #include <QtCore/QStringList>
 #include <QtCore/private/qglobal_p.h>
 
@@ -53,7 +53,7 @@ namespace QtWayland {
 
 class HardwareLayerIntegration;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT HardwareLayerIntegrationFactory
+class LIRIAURORACOMPOSITOR_EXPORT HardwareLayerIntegrationFactory
 {
 public:
     static QStringList keys();

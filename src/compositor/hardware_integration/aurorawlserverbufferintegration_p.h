@@ -45,24 +45,25 @@
 #include <QtCore/QSize>
 #include <QtGui/qopengl.h>
 
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 
 struct wl_client;
 struct wl_resource;
+
+class QOpenGLContext;
+class QOpenGLTexture;
+class QImage;
 
 namespace Aurora {
 
 namespace Compositor {
 
 class WaylandCompositor;
-class QOpenGLContext;
-class QOpenGLTexture;
-class QImage;
 
 namespace QtWayland {
 class Display;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT ServerBuffer
+class LIRIAURORACOMPOSITOR_EXPORT ServerBuffer
 {
 public:
     enum Format {
@@ -89,7 +90,7 @@ protected:
     Format m_format;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT ServerBufferIntegration
+class LIRIAURORACOMPOSITOR_EXPORT ServerBufferIntegration
 {
 public:
     ServerBufferIntegration();
@@ -99,6 +100,7 @@ public:
 
     virtual bool supportsFormat(ServerBuffer::Format format) const = 0;
     virtual ServerBuffer *createServerBufferFromImage(const QImage &qimage, ServerBuffer::Format format) = 0;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     virtual ServerBuffer *createServerBufferFromData(QByteArrayView view, const QSize &size,
                                                      uint glInternalFormat)
     {
@@ -107,6 +109,16 @@ public:
         Q_UNUSED(glInternalFormat);
         return nullptr;
     }
+#else
+    virtual ServerBuffer *createServerBufferFromData(const QByteArray &data, const QSize &size,
+                                                     uint glInternalFormat)
+    {
+        Q_UNUSED(data);
+        Q_UNUSED(size);
+        Q_UNUSED(glInternalFormat);
+        return nullptr;
+    }
+#endif
 };
 
 }

@@ -41,9 +41,9 @@
 // We mean it.
 //
 
-#include <QtQuick/private/qquickmousearea_p.h>
+#include <QQuickItem>
 
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 
 namespace Aurora {
 
@@ -51,17 +51,18 @@ namespace Compositor {
 
 class WaylandMouseTrackerPrivate;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandMouseTracker : public QQuickItem
+class LIRIAURORACOMPOSITOR_EXPORT WaylandMouseTracker : public QQuickItem
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandMouseTracker)
     Q_PROPERTY(qreal mouseX READ mouseX NOTIFY mouseXChanged)
     Q_PROPERTY(qreal mouseY READ mouseY NOTIFY mouseYChanged)
     Q_PROPERTY(bool containsMouse READ hovered NOTIFY hoveredChanged)
-
     Q_PROPERTY(bool windowSystemCursorEnabled READ windowSystemCursorEnabled WRITE setWindowSystemCursorEnabled NOTIFY windowSystemCursorEnabledChanged)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QML_NAMED_ELEMENT(WaylandMouseTracker)
     QML_ADDED_IN_VERSION(1, 0)
+#endif
 public:
     WaylandMouseTracker(QQuickItem *parent = nullptr);
 

@@ -42,7 +42,7 @@
 // We mean it.
 //
 
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 #include <private/qobject_p.h>
 
 #include <private/aurorawlclientbuffer_p.h>
@@ -79,7 +79,7 @@ namespace QtWayland {
 class FrameCallback;
 }
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandSurfacePrivate : public QObjectPrivate, public PrivateServer::wl_surface
+class LIRIAURORACOMPOSITOR_EXPORT WaylandSurfacePrivate : public QObjectPrivate, public PrivateServer::wl_surface
 {
 public:
     static WaylandSurfacePrivate *get(WaylandSurface *surface);
@@ -177,8 +177,10 @@ public: //member variables
     bool isOpaque = false;
     Qt::ScreenOrientation contentOrientation = Qt::PrimaryOrientation;
     QWindow::Visibility visibility;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #if QT_CONFIG(im)
     WaylandInputMethodControl *inputMethodControl = nullptr;
+#endif
 #endif
 
     class Subsurface : public PrivateServer::wl_subsurface

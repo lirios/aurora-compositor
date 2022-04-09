@@ -42,12 +42,13 @@
 #include <LiriAuroraCompositor/aurorawaylandcompositor.h>
 #include <LiriAuroraCompositor/private/aurora-server-server-buffer-extension.h>
 
+class QSharedMemory;
+
 namespace Aurora {
 
 namespace Compositor {
 
 class ShmServerBufferIntegration;
-class QSharedMemory;
 
 class ShmServerBuffer : public QtWayland::ServerBuffer, public PrivateServer::qt_server_buffer
 {

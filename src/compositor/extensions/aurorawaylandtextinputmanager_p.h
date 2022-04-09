@@ -49,7 +49,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandTextInputManagerPrivate : public WaylandCompositorExtensionPrivate, public PrivateServer::zwp_text_input_manager_v2
+class LIRIAURORACOMPOSITOR_EXPORT WaylandTextInputManagerPrivate : public WaylandCompositorExtensionPrivate, public PrivateServer::zwp_text_input_manager_v2
 {
     Q_DECLARE_PUBLIC(WaylandTextInputManager)
 public:

@@ -57,10 +57,11 @@
 #include <QtWaylandCompositor/QWaylandSurface>
 #include <QtWaylandCompositor/QWaylandView>
 
+class QOpenGLTexture;
+
 QT_BEGIN_NAMESPACE
 
 class Window;
-class QOpenGLTexture;
 class QWaylandXdgShell;
 class QWaylandXdgSurface;
 class QWaylandXdgToplevel;

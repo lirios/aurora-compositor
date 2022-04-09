@@ -28,7 +28,7 @@
 ****************************************************************************/
 
 #include "aurorawlbuffermanager_p.h"
-#include <AuroraWaylandCompositor>
+#include <LiriAuroraCompositor/WaylandCompositor>
 #include <LiriAuroraCompositor/private/aurorawaylandcompositor_p.h>
 #include <LiriAuroraCompositor/private/aurorawlclientbufferintegration_p.h>
 #include <QDebug>

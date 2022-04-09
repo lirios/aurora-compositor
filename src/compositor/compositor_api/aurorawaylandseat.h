@@ -34,11 +34,15 @@
 #include <QtCore/QPoint>
 #include <QtCore/QString>
 
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
-#include <LiriAuroraCompositor/qtwaylandqmlinclude.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
+#include <LiriAuroraCompositor/aurorawaylandqmlinclude.h>
 #include <LiriAuroraCompositor/aurorawaylandcompositorextension.h>
 #include <LiriAuroraCompositor/aurorawaylandkeyboard.h>
 #include <LiriAuroraCompositor/aurorawaylandview.h>
+
+class QKeyEvent;
+class QTouchEvent;
+class QInputEvent;
 
 namespace Aurora {
 
@@ -46,31 +50,27 @@ namespace Compositor {
 
 class WaylandCompositor;
 class WaylandSurface;
-class QKeyEvent;
-class QTouchEvent;
-class QInputEvent;
 class WaylandSeatPrivate;
 class WaylandDrag;
 class WaylandKeyboard;
 class WaylandPointer;
 class WaylandTouch;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandSeat : public WaylandObject
+class LIRIAURORACOMPOSITOR_EXPORT WaylandSeat : public WaylandObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandSeat)
 
-#if QT_CONFIG(draganddrop)
-    Q_PROPERTY(WaylandDrag *drag READ drag CONSTANT)
+    Q_PROPERTY(Aurora::Compositor::WaylandDrag *drag READ drag CONSTANT)
+    Q_PROPERTY(Aurora::Compositor::WaylandKeymap *keymap READ keymap CONSTANT)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     Q_MOC_INCLUDE("aurorawaylanddrag.h")
-#endif
-    Q_PROPERTY(WaylandKeymap *keymap READ keymap CONSTANT)
     Q_MOC_INCLUDE("aurorawaylandkeymap.h")
     Q_MOC_INCLUDE("aurorawaylandview.h")
-
     QML_NAMED_ELEMENT(WaylandSeat)
     QML_ADDED_IN_VERSION(1, 0)
     QML_UNCREATABLE("")
+#endif
 public:
     enum CapabilityFlag {
         // The order should match the enum WL_SEAT_CAPABILITY_*
@@ -123,9 +123,7 @@ public:
 
     WaylandCompositor *compositor() const;
 
-#if QT_CONFIG(draganddrop)
     WaylandDrag *drag() const;
-#endif
 
     WaylandSeat::CapabilityFlags capabilities() const;
 

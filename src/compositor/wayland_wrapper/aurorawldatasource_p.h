@@ -42,11 +42,8 @@
 //
 
 #include <LiriAuroraCompositor/private/aurora-server-wayland.h>
-#include <LiriAuroraCompositor/private/qtwaylandcompositorglobal_p.h>
 #include <QObject>
 #include <QtCore/QList>
-
-QT_REQUIRE_CONFIG(wayland_datadevice);
 
 namespace Aurora {
 

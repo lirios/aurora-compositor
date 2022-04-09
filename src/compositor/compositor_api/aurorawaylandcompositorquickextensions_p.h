@@ -42,7 +42,7 @@
 //
 
 #include <QtQml/qqml.h>
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 #include <LiriAuroraCompositor/aurorawaylandquickextension.h>
 
 #include <LiriAuroraCompositor/aurorawaylandcompositor.h>
@@ -60,7 +60,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandQuickCompositorQuickExtensionContainer : public WaylandQuickCompositor
+class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickCompositorQuickExtensionContainer : public WaylandQuickCompositor
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<WaylandCompositorExtension> extensions READ extensions)

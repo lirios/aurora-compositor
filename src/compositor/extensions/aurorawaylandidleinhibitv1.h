@@ -38,7 +38,7 @@ namespace Compositor {
 
 class WaylandIdleInhibitManagerV1Private;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandIdleInhibitManagerV1 : public WaylandCompositorExtensionTemplate<WaylandIdleInhibitManagerV1>
+class LIRIAURORACOMPOSITOR_EXPORT WaylandIdleInhibitManagerV1 : public WaylandCompositorExtensionTemplate<WaylandIdleInhibitManagerV1>
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandIdleInhibitManagerV1)

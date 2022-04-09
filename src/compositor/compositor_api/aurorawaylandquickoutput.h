@@ -35,23 +35,24 @@
 #include <LiriAuroraCompositor/aurorawaylandoutput.h>
 #include <LiriAuroraCompositor/aurorawaylandquickchildren.h>
 
-QT_REQUIRE_CONFIG(wayland_compositor_quick);
+class QQuickWindow;
 
 namespace Aurora {
 
 namespace Compositor {
 
 class WaylandQuickCompositor;
-class QQuickWindow;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandQuickOutput : public WaylandOutput, public QQmlParserStatus
+class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickOutput : public WaylandOutput, public QQmlParserStatus
 {
     Q_INTERFACES(QQmlParserStatus)
     Q_OBJECT
     Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandQuickOutput)
     Q_PROPERTY(bool automaticFrameCallback READ automaticFrameCallback WRITE setAutomaticFrameCallback NOTIFY automaticFrameCallbackChanged)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QML_NAMED_ELEMENT(WaylandOutput)
     QML_ADDED_IN_VERSION(1, 0)
+#endif
 public:
     WaylandQuickOutput();
     WaylandQuickOutput(WaylandCompositor *compositor, QWindow *window);

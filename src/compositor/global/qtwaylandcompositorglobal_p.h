@@ -41,22 +41,7 @@
 // We mean it.
 //
 
-#include <QtWaylandGlobal/private/qtwaylandglobal-config_p.h>
-#include <AuroraCompositor/qtwaylandcompositorglobal.h>
 #include <QtGui/private/qtguiglobal_p.h>
-#include <AuroraCompositor/private/qtwaylandcompositor-config_p.h>
-
-namespace Aurora {
-
-namespace Compositor {
-
-#if QT_CONFIG(wayland_compositor_quick)
-void Q_WAYLANDCOMPOSITOR_EXPORT qml_register_types_QtWayland_Compositor();
-#endif
-
-} // namespace Compositor
-
-} // namespace Aurora
 
 #endif // AURORA_COMPOSITOR_WAYLANDCOMPOSITORGLOBAL_P_H
 

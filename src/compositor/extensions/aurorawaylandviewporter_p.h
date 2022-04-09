@@ -52,7 +52,7 @@ namespace Compositor {
 
 class WaylandSurface;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandViewporterPrivate
+class LIRIAURORACOMPOSITOR_EXPORT WaylandViewporterPrivate
         : public WaylandCompositorExtensionPrivate
         , public PrivateServer::wp_viewporter
 {
@@ -60,7 +60,7 @@ class Q_WAYLANDCOMPOSITOR_EXPORT WaylandViewporterPrivate
 public:
     explicit WaylandViewporterPrivate() = default;
 
-    class Q_WAYLANDCOMPOSITOR_EXPORT Viewport
+    class LIRIAURORACOMPOSITOR_EXPORT Viewport
             : public PrivateServer::wp_viewport
     {
     public:

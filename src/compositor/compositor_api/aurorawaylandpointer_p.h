@@ -42,7 +42,7 @@
 // We mean it.
 //
 
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 #include <LiriAuroraCompositor/WaylandDestroyListener>
 #include <LiriAuroraCompositor/WaylandPointer>
 
@@ -64,7 +64,7 @@ namespace Compositor {
 
 class WaylandView;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandPointerPrivate : public QObjectPrivate
+class LIRIAURORACOMPOSITOR_EXPORT WaylandPointerPrivate : public QObjectPrivate
                                                  , public PrivateServer::wl_pointer
 {
     Q_DECLARE_PUBLIC(WaylandPointer)

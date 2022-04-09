@@ -33,17 +33,16 @@
 #include <LiriAuroraCompositor/aurorawaylandcompositor.h>
 #include <QtQml/QQmlParserStatus>
 
-QT_REQUIRE_CONFIG(wayland_compositor_quick);
+class QQuickWindow;
 
 namespace Aurora {
 
 namespace Compositor {
 
-class QQuickWindow;
 class WaylandQuickCompositorPrivate;
 class WaylandView;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandQuickCompositor : public WaylandCompositor, public QQmlParserStatus
+class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickCompositor : public WaylandCompositor, public QQmlParserStatus
 {
     Q_INTERFACES(QQmlParserStatus)
     Q_OBJECT

@@ -45,7 +45,7 @@
 #include <QPalette>
 #include <QTextCharFormat>
 
-#ifdef QT_BUILD_WAYLANDCOMPOSITOR_LIB
+#ifdef LIRI_BUILD_AURORACOMPOSITOR_LIB
 #include <LiriAuroraCompositor/private/aurora-server-text-input-unstable-v2.h>
 #include <LiriAuroraCompositor/private/aurora-server-text-input-unstable-v4-wip.h>
 #else

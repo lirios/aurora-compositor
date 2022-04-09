@@ -29,6 +29,10 @@
 
 #include "aurorawaylandquickshellintegration.h"
 
+namespace Aurora {
+
+namespace Compositor {
+
 /*!
  * \class WaylandQuickShellIntegration
  * \inmodule QtWaylandCompositor
@@ -88,3 +92,7 @@ WaylandQuickShellIntegration::WaylandQuickShellIntegration(QObject *parent)
 WaylandQuickShellIntegration::~WaylandQuickShellIntegration()
 {
 }
+
+} // namespace Compositor
+
+} // namespace Aurora

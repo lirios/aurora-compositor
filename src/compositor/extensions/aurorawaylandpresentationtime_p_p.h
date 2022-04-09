@@ -42,20 +42,21 @@
 //
 
 #include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandpresentationtime_p.h>
 #include <LiriAuroraCompositor/private/aurora-server-presentation-time.h>
 
 #include <QObject>
 #include <QPointer>
 #include <QMultiMap>
 
+class QQuickWindow;
+
 namespace Aurora {
 
 namespace Compositor {
 
-
 class WaylandSurface;
 class WaylandView;
-class QQuickWindow;
 
 class PresentationFeedback : public QObject, public PrivateServer::wp_presentation_feedback
 {

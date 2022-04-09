@@ -130,10 +130,18 @@ bool WaylandMouseTracker::childMouseEventFilter(QQuickItem *item, QEvent *event)
     Q_D(WaylandMouseTracker);
     if (event->type() == QEvent::MouseMove) {
         QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         d->handleMousePos(mapFromItem(item, mouseEvent->position()));
+#else
+        d->handleMousePos(mapFromItem(item, mouseEvent->localPos()));
+#endif
     } else if (event->type() == QEvent::HoverMove) {
         QHoverEvent *hoverEvent = static_cast<QHoverEvent *>(event);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         d->handleMousePos(mapFromItem(item, hoverEvent->position()));
+#else
+        d->handleMousePos(mapFromItem(item, hoverEvent->posF()));
+#endif
     }
     return false;
 }
@@ -142,14 +150,22 @@ void WaylandMouseTracker::mouseMoveEvent(QMouseEvent *event)
 {
     Q_D(WaylandMouseTracker);
     QQuickItem::mouseMoveEvent(event);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     d->handleMousePos(event->position());
+#else
+    d->handleMousePos(event->localPos());
+#endif
 }
 
 void WaylandMouseTracker::hoverMoveEvent(QHoverEvent *event)
 {
     Q_D(WaylandMouseTracker);
     QQuickItem::hoverMoveEvent(event);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     d->handleMousePos(event->position());
+#else
+    d->handleMousePos(event->posF());
+#endif
 }
 
 void WaylandMouseTracker::hoverEnterEvent(QHoverEvent *event)

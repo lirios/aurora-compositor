@@ -41,8 +41,7 @@
 // We mean it.
 //
 
-#include <LiriAuroraCompositor/AuroraWaylandQuickItem>
-#include <QtCore/private/qglobal_p.h>
+#include <LiriAuroraCompositor/WaylandQuickItem>
 
 namespace Aurora {
 
@@ -50,14 +49,16 @@ namespace Compositor {
 
 class WaylandQuickHardwareLayerPrivate;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandQuickHardwareLayer : public QObject, public QQmlParserStatus
+class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickHardwareLayer : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
     Q_DECLARE_PRIVATE(WaylandQuickHardwareLayer)
     Q_PROPERTY(int stackingLevel READ stackingLevel WRITE setStackingLevel NOTIFY stackingLevelChanged)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QML_NAMED_ELEMENT(WaylandHardwareLayer)
     QML_ADDED_IN_VERSION(1, 2)
+#endif
 public:
     explicit WaylandQuickHardwareLayer(QObject *parent = nullptr);
     ~WaylandQuickHardwareLayer() override;

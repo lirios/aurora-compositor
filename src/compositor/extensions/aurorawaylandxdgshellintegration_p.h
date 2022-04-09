@@ -63,8 +63,8 @@ protected:
     bool eventFilter(QObject *object, QEvent *event) override;
 
 private Q_SLOTS:
-    void handleStartMove(WaylandSeat *seat);
-    void handleStartResize(WaylandSeat *seat, Qt::Edges edges);
+    void handleStartMove(Aurora::Compositor::WaylandSeat *seat);
+    void handleStartResize(Aurora::Compositor::WaylandSeat *seat, Qt::Edges edges);
     void handleSetMaximized();
     void handleUnsetMaximized();
     void handleMaximizedChanged();

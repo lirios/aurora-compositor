@@ -41,7 +41,7 @@
 // We mean it.
 //
 
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 
 #include <QRegion>
 #include <private/qglobal_p.h>
@@ -55,7 +55,7 @@ namespace Compositor {
 
 namespace QtWayland {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT Region : public PrivateServer::wl_region
+class LIRIAURORACOMPOSITOR_EXPORT Region : public PrivateServer::wl_region
 {
 public:
     Region(struct wl_client *client, uint32_t id);

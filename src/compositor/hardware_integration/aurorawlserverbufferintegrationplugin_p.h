@@ -41,7 +41,7 @@
 // We mean it.
 //
 
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 
 #include <QtCore/qplugin.h>
 #include <QtCore/qfactoryinterface.h>
@@ -57,7 +57,7 @@ class ServerBufferIntegration;
 
 #define QtWaylandServerBufferIntegrationFactoryInterface_iid "org.qt-project.Qt.Compositor.QtWaylandServerBufferIntegrationFactoryInterface.5.3"
 
-class Q_WAYLANDCOMPOSITOR_EXPORT ServerBufferIntegrationPlugin : public QObject
+class LIRIAURORACOMPOSITOR_EXPORT ServerBufferIntegrationPlugin : public QObject
 {
     Q_OBJECT
 public:

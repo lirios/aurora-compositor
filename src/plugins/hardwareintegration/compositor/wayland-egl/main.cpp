@@ -29,7 +29,7 @@
 
 #include <LiriAuroraCompositor/private/aurorawlclientbufferintegrationfactory_p.h>
 #include <LiriAuroraCompositor/private/aurorawlclientbufferintegrationplugin_p.h>
-#include <QtWaylandEglCompositorHwIntegration/private/waylandeglclientbufferintegration_p.h>
+#include "waylandeglclientbufferintegration_p.h"
 
 namespace Aurora {
 

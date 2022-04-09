@@ -31,8 +31,8 @@
 #define AURORA_COMPOSITOR_WAYLANDKEYMAP_H
 
 #include <QtCore/QObject>
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
-#include <LiriAuroraCompositor/qtwaylandqmlinclude.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
+#include <LiriAuroraCompositor/aurorawaylandqmlinclude.h>
 #include <LiriAuroraCompositor/aurorawaylandquickchildren.h>
 
 namespace Aurora {
@@ -41,7 +41,7 @@ namespace Compositor {
 
 class WaylandKeymapPrivate;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandKeymap : public QObject
+class LIRIAURORACOMPOSITOR_EXPORT WaylandKeymap : public QObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandKeymap)
@@ -51,8 +51,10 @@ class Q_WAYLANDCOMPOSITOR_EXPORT WaylandKeymap : public QObject
     Q_PROPERTY(QString options READ options WRITE setOptions NOTIFY optionsChanged)
     Q_PROPERTY(QString rules READ rules WRITE setRules NOTIFY rulesChanged)
     Q_PROPERTY(QString model READ model WRITE setModel NOTIFY modelChanged)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QML_NAMED_ELEMENT(WaylandKeymap)
     QML_ADDED_IN_VERSION(1, 0)
+#endif
 public:
     WaylandKeymap(const QString &layout = QString(), const QString &variant = QString(), const QString &options = QString(),
                    const QString &model = QString(), const QString &rules = QString(), QObject *parent = nullptr);

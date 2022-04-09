@@ -30,8 +30,8 @@
 #ifndef AURORA_COMPOSITOR_WAYLANDEXTENSION_H
 #define AURORA_COMPOSITOR_WAYLANDEXTENSION_H
 
-#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
-#include <LiriAuroraCompositor/qtwaylandqmlinclude.h>
+#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
+#include <LiriAuroraCompositor/aurorawaylandqmlinclude.h>
 
 #include <QtCore/QObject>
 
@@ -45,7 +45,7 @@ class WaylandCompositor;
 class WaylandCompositorExtension;
 class WaylandCompositorExtensionPrivate;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandObject : public QObject
+class LIRIAURORACOMPOSITOR_EXPORT WaylandObject : public QObject
 {
     Q_OBJECT
 public:
@@ -63,13 +63,15 @@ protected:
     QList<WaylandCompositorExtension *> extension_vector;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandCompositorExtension : public WaylandObject
+class LIRIAURORACOMPOSITOR_EXPORT WaylandCompositorExtension : public WaylandObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandCompositorExtension)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QML_NAMED_ELEMENT(WaylandExtension)
     QML_ADDED_IN_VERSION(1, 0)
     QML_UNCREATABLE("")
+#endif
 public:
     WaylandCompositorExtension();
     WaylandCompositorExtension(WaylandObject *container);
@@ -91,7 +93,7 @@ protected:
 };
 
 template <typename T>
-class Q_WAYLANDCOMPOSITOR_EXPORT WaylandCompositorExtensionTemplate : public WaylandCompositorExtension
+class LIRIAURORACOMPOSITOR_EXPORT WaylandCompositorExtensionTemplate : public WaylandCompositorExtension
 {
 public:
     WaylandCompositorExtensionTemplate()
