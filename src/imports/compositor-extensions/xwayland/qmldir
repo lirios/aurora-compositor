@@ -1,0 +1,3 @@
+module Liri.XWayland
+plugin lirixwaylandplugin
+classname LiriXWaylandPlugin
