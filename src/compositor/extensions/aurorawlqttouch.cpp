@@ -27,21 +27,23 @@
 **
 ****************************************************************************/
 
-#include "qwlqttouch_p.h"
-#include "qwaylandview.h"
+#include "aurorawlqttouch_p.h"
+#include "aurorawaylandview.h"
 #include <QPointingDevice>
 #include <QTouchEvent>
 #include <QWindow>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 namespace QtWayland {
 
 static const int maxRawPos = 24;
 
-TouchExtensionGlobal::TouchExtensionGlobal(QWaylandCompositor *compositor)
-    : QWaylandCompositorExtensionTemplate(compositor)
-    , QtWaylandServer::qt_touch_extension(compositor->display(), 1)
+TouchExtensionGlobal::TouchExtensionGlobal(WaylandCompositor *compositor)
+    : WaylandCompositorExtensionTemplate(compositor)
+    , PrivateServer::qt_touch_extension(compositor->display(), 1)
     , m_compositor(compositor)
     , m_posData(maxRawPos * 2)
 {
@@ -56,7 +58,7 @@ static inline int toFixed(qreal f)
     return int(f * 10000);
 }
 
-bool TouchExtensionGlobal::postTouchEvent(QTouchEvent *event, QWaylandSurface *surface)
+bool TouchExtensionGlobal::postTouchEvent(QTouchEvent *event, WaylandSurface *surface)
 {
     const QList<QTouchEvent::TouchPoint> points = event->points();
     const int pointCount = points.count();
@@ -137,4 +139,6 @@ void TouchExtensionGlobal::touch_extension_destroy_resource(Resource *resource)
 
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

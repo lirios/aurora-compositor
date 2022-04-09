@@ -27,14 +27,14 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDEXTENSION_P_H
-#define QWAYLANDEXTENSION_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDEXTENSION_P_H
+#define AURORA_COMPOSITOR_WAYLANDEXTENSION_P_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -43,25 +43,29 @@
 
 #include <QtCore/private/qobject_p.h>
 
-#include <QtWaylandCompositor/QWaylandCompositorExtension>
+#include <LiriAuroraCompositor/WaylandCompositorExtension>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandCompositorExtensionPrivate : public QObjectPrivate
+namespace Compositor {
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandCompositorExtensionPrivate : public QObjectPrivate
 {
-    Q_DECLARE_PUBLIC(QWaylandCompositorExtension)
+    Q_DECLARE_PUBLIC(WaylandCompositorExtension)
 
 public:
-    QWaylandCompositorExtensionPrivate()
+    WaylandCompositorExtensionPrivate()
     {
     }
 
-    static QWaylandCompositorExtensionPrivate *get(QWaylandCompositorExtension *extension) { return extension->d_func(); }
+    static WaylandCompositorExtensionPrivate *get(WaylandCompositorExtension *extension) { return extension->d_func(); }
 
-    QWaylandObject *extension_container = nullptr;
+    WaylandObject *extension_container = nullptr;
     bool initialized = false;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif  /*QWAYLANDEXTENSION_P_H*/

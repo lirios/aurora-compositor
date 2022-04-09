@@ -34,12 +34,12 @@
 #ifndef XWAYLANDQUICKSHELLSURFACEITEM_H
 #define XWAYLANDQUICKSHELLSURFACEITEM_H
 
-#include <QtWaylandCompositor/QWaylandQuickItem>
+#include <LiriAuroraCompositor/WaylandQuickItem>
 
 class XWaylandQuickShellIntegration;
 class XWaylandShellSurface;
 
-class XWaylandQuickShellSurfaceItem : public QWaylandQuickItem
+class XWaylandQuickShellSurfaceItem : public WaylandQuickItem
 {
     Q_OBJECT
     Q_PROPERTY(XWaylandShellSurface *shellSurface READ shellSurface WRITE setShellSurface NOTIFY shellSurfaceChanged)

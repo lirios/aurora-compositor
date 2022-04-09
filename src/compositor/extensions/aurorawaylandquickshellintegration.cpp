@@ -27,10 +27,10 @@
 **
 ****************************************************************************/
 
-#include "qwaylandquickshellintegration.h"
+#include "aurorawaylandquickshellintegration.h"
 
 /*!
- * \class QWaylandQuickShellIntegration
+ * \class WaylandQuickShellIntegration
  * \inmodule QtWaylandCompositor
  * \since 5.14
  * \brief Provides support for shell surface integration with QtQuick.
@@ -38,14 +38,14 @@
  * Shell surface implementations should inherit from this class in order to provide
  * an integration between the shell surface and QtQuick.
  *
- * Shell integration is installed as an event filter for a QWaylandQuickShellSurfaceItem.
+ * Shell integration is installed as an event filter for a WaylandQuickShellSurfaceItem.
  * Reimplement the event filter method and return \c true when you want to filter the
  * event out, otherwise return \c false.
  *
  * Example:
  *
  * \code
- * class MyShellIntegration : public QWaylandQuickShellIntegration
+ * class MyShellIntegration : public WaylandQuickShellIntegration
  * {
  *     Q_OBJECT
  * public:
@@ -56,15 +56,15 @@
  * };
  *
  * MyShellIntegration::MyShellIntegration(QObject *parent)
- *     : QWaylandQuickShellIntegration(parent)
+ *     : WaylandQuickShellIntegration(parent)
  * {
  * }
  *
  * bool MyShellIntegration::eventFilter(QObject *object, QEvent *event)
  * {
- *     QWaylandQuickShellSurfaceItem *shellSurfaceItem = qobject_cast<QWaylandQuickShellSurfaceItem *>(object);
+ *     WaylandQuickShellSurfaceItem *shellSurfaceItem = qobject_cast<WaylandQuickShellSurfaceItem *>(object);
  *     if (!shellSurfaceItem)
- *         return QWaylandQuickShellIntegration::eventFilter(object, event);
+ *         return WaylandQuickShellIntegration::eventFilter(object, event);
  *
  *     if (event->type() == QEvent::MouseMove) {
  *         QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
@@ -72,19 +72,19 @@
  *         return true;
  *     }
  *
- *     return QWaylandQuickShellIntegration::eventFilter(object, event);
+ *     return WaylandQuickShellIntegration::eventFilter(object, event);
  * }
  * \endcode
  *
- * \sa QWaylandQuickShellSurfaceItem
+ * \sa WaylandQuickShellSurfaceItem
  * \sa QObject::eventFilter()
  */
 
-QWaylandQuickShellIntegration::QWaylandQuickShellIntegration(QObject *parent)
+WaylandQuickShellIntegration::WaylandQuickShellIntegration(QObject *parent)
     : QObject(parent)
 {
 }
 
-QWaylandQuickShellIntegration::~QWaylandQuickShellIntegration()
+WaylandQuickShellIntegration::~WaylandQuickShellIntegration()
 {
 }

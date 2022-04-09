@@ -27,16 +27,16 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDXDGSHELL_P_H
-#define QWAYLANDXDGSHELL_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDXDGSHELL_P_H
+#define AURORA_COMPOSITOR_WAYLANDXDGSHELL_P_H
 
-#include <QtWaylandCompositor/private/qwaylandcompositorextension_p.h>
-#include <QtWaylandCompositor/private/qwaylandshell_p.h>
-#include <QtWaylandCompositor/private/qwayland-server-xdg-shell.h>
+#include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandshell_p.h>
+#include <LiriAuroraCompositor/private/aurora-server-xdg-shell.h>
 
-#include <QtWaylandCompositor/QWaylandXdgShell>
+#include <LiriAuroraCompositor/WaylandXdgShell>
 
-#include <QtWaylandCompositor/private/qwaylandxdgdecorationv1_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandxdgdecorationv1_p.h>
 
 #include <QtCore/QSet>
 
@@ -44,44 +44,46 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-struct Q_WAYLANDCOMPOSITOR_EXPORT QWaylandXdgPositionerData {
+namespace Compositor {
+
+struct Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgPositionerData {
     QSize size;
     QRect anchorRect;
     Qt::Edges anchorEdges = {};
     Qt::Edges gravityEdges = {};
     uint constraintAdjustments = XDG_POSITIONER_CONSTRAINT_ADJUSTMENT_NONE;
     QPoint offset;
-    QWaylandXdgPositionerData();
+    WaylandXdgPositionerData();
     bool isComplete() const;
     QPoint anchorPoint() const;
     QPoint unconstrainedPosition() const;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandXdgShellPrivate
-        : public QWaylandShellPrivate
-        , public QtWaylandServer::xdg_wm_base
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgShellPrivate
+        : public WaylandShellPrivate
+        , public PrivateServer::xdg_wm_base
 {
-    Q_DECLARE_PUBLIC(QWaylandXdgShell)
+    Q_DECLARE_PUBLIC(WaylandXdgShell)
 public:
-    QWaylandXdgShellPrivate();
+    WaylandXdgShellPrivate();
     void ping(Resource *resource, uint32_t serial);
-    void registerXdgSurface(QWaylandXdgSurface *xdgSurface);
-    void unregisterXdgSurface(QWaylandXdgSurface *xdgSurface);
-    static QWaylandXdgShellPrivate *get(QWaylandXdgShell *xdgShell) { return xdgShell->d_func(); }
+    void registerXdgSurface(WaylandXdgSurface *xdgSurface);
+    void unregisterXdgSurface(WaylandXdgSurface *xdgSurface);
+    static WaylandXdgShellPrivate *get(WaylandXdgShell *xdgShell) { return xdgShell->d_func(); }
 
     QSet<uint32_t> m_pings;
-    QMultiMap<struct wl_client *, QWaylandXdgSurface *> m_xdgSurfaces;
+    QMultiMap<struct wl_client *, WaylandXdgSurface *> m_xdgSurfaces;
 
-    QWaylandXdgSurface *xdgSurfaceFromSurface(QWaylandSurface *surface);
+    WaylandXdgSurface *xdgSurfaceFromSurface(WaylandSurface *surface);
 
 protected:
     void xdg_wm_base_destroy(Resource *resource) override;
@@ -91,27 +93,27 @@ protected:
     void xdg_wm_base_pong(Resource *resource, uint32_t serial) override;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandXdgSurfacePrivate
-        : public QWaylandCompositorExtensionPrivate
-        , public QtWaylandServer::xdg_surface
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgSurfacePrivate
+        : public WaylandCompositorExtensionPrivate
+        , public PrivateServer::xdg_surface
 {
-    Q_DECLARE_PUBLIC(QWaylandXdgSurface)
+    Q_DECLARE_PUBLIC(WaylandXdgSurface)
 public:
-    QWaylandXdgSurfacePrivate();
+    WaylandXdgSurfacePrivate();
     void setWindowType(Qt::WindowType windowType);
     void handleFocusLost();
     void handleFocusReceived();
-    static QWaylandXdgSurfacePrivate *get(QWaylandXdgSurface *xdgSurface) { return xdgSurface->d_func(); }
+    static WaylandXdgSurfacePrivate *get(WaylandXdgSurface *xdgSurface) { return xdgSurface->d_func(); }
 
     QRect calculateFallbackWindowGeometry() const;
     void updateFallbackWindowGeometry();
 
 private:
-    QWaylandXdgShell *m_xdgShell = nullptr;
-    QWaylandSurface *m_surface = nullptr;
+    WaylandXdgShell *m_xdgShell = nullptr;
+    WaylandSurface *m_surface = nullptr;
 
-    QWaylandXdgToplevel *m_toplevel = nullptr;
-    QWaylandXdgPopup *m_popup = nullptr;
+    WaylandXdgToplevel *m_toplevel = nullptr;
+    WaylandXdgPopup *m_popup = nullptr;
     QRect m_windowGeometry;
     bool m_unsetWindowGeometry = true;
     QMargins m_windowMargins;
@@ -125,29 +127,29 @@ private:
     void xdg_surface_set_window_geometry(Resource *resource, int32_t x, int32_t y, int32_t width, int32_t height) override;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandXdgToplevelPrivate : public QObjectPrivate, public QtWaylandServer::xdg_toplevel
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgToplevelPrivate : public QObjectPrivate, public PrivateServer::xdg_toplevel
 {
-    Q_DECLARE_PUBLIC(QWaylandXdgToplevel)
+    Q_DECLARE_PUBLIC(WaylandXdgToplevel)
 public:
     struct ConfigureEvent {
         ConfigureEvent() = default;
-        ConfigureEvent(const QList<QWaylandXdgToplevel::State>
+        ConfigureEvent(const QList<WaylandXdgToplevel::State>
                        &incomingStates,
                        const QSize &incomingSize, uint incomingSerial)
         : states(incomingStates), size(incomingSize), serial(incomingSerial)
         { }
-        QList<QWaylandXdgToplevel::State> states;
+        QList<WaylandXdgToplevel::State> states;
         QSize size = {0, 0};
         uint serial = 0;
     };
 
-    QWaylandXdgToplevelPrivate(QWaylandXdgSurface *xdgSurface, const QWaylandResource& resource);
+    WaylandXdgToplevelPrivate(WaylandXdgSurface *xdgSurface, const WaylandResource& resource);
     ConfigureEvent lastSentConfigure() const { return m_pendingConfigures.empty() ? m_lastAckedConfigure : m_pendingConfigures.last(); }
     void handleAckConfigure(uint serial); //TODO: move?
     void handleFocusLost();
     void handleFocusReceived();
 
-    static QWaylandXdgToplevelPrivate *get(QWaylandXdgToplevel *toplevel) { return toplevel->d_func(); }
+    static WaylandXdgToplevelPrivate *get(WaylandXdgToplevel *toplevel) { return toplevel->d_func(); }
     static Qt::Edges convertToEdges(resize_edge edge);
 
 protected:
@@ -170,36 +172,36 @@ protected:
     void xdg_toplevel_set_minimized(Resource *resource) override;
 
 public:
-    QWaylandXdgSurface *m_xdgSurface = nullptr;
-    QWaylandXdgToplevel *m_parentToplevel = nullptr;
+    WaylandXdgSurface *m_xdgSurface = nullptr;
+    WaylandXdgToplevel *m_parentToplevel = nullptr;
     QList<ConfigureEvent> m_pendingConfigures;
     ConfigureEvent m_lastAckedConfigure;
     QString m_title;
     QString m_appId;
     QSize m_maxSize;
     QSize m_minSize = {0, 0};
-    QWaylandXdgToplevelDecorationV1 *m_decoration = nullptr;
+    WaylandXdgToplevelDecorationV1 *m_decoration = nullptr;
 
-    static QWaylandSurfaceRole s_role;
+    static WaylandSurfaceRole s_role;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandXdgPopupPrivate : public QObjectPrivate, public QtWaylandServer::xdg_popup
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgPopupPrivate : public QObjectPrivate, public PrivateServer::xdg_popup
 {
-    Q_DECLARE_PUBLIC(QWaylandXdgPopup)
+    Q_DECLARE_PUBLIC(WaylandXdgPopup)
 public:
     struct ConfigureEvent {
         QRect geometry;
         uint serial;
     };
 
-    QWaylandXdgPopupPrivate(QWaylandXdgSurface *xdgSurface, QWaylandXdgSurface *parentXdgSurface,
-                            QWaylandXdgPositioner *positioner, const QWaylandResource& resource);
+    WaylandXdgPopupPrivate(WaylandXdgSurface *xdgSurface, WaylandXdgSurface *parentXdgSurface,
+                            WaylandXdgPositioner *positioner, const WaylandResource& resource);
 
     void handleAckConfigure(uint serial);
 
-    static QWaylandXdgPopupPrivate *get(QWaylandXdgPopup *popup) { return popup->d_func(); }
+    static WaylandXdgPopupPrivate *get(WaylandXdgPopup *popup) { return popup->d_func(); }
 
-    static QWaylandSurfaceRole s_role;
+    static WaylandSurfaceRole s_role;
 
 private:
     uint sendConfigure(const QRect &geometry);
@@ -209,18 +211,18 @@ protected:
     void xdg_popup_grab(Resource *resource, struct ::wl_resource *seat, uint32_t serial) override;
 
 private:
-    QWaylandXdgSurface *m_xdgSurface = nullptr;
-    QWaylandXdgSurface *m_parentXdgSurface = nullptr;
-    QWaylandXdgPositionerData m_positionerData;
+    WaylandXdgSurface *m_xdgSurface = nullptr;
+    WaylandXdgSurface *m_parentXdgSurface = nullptr;
+    WaylandXdgPositionerData m_positionerData;
     QRect m_geometry;
     QList<ConfigureEvent> m_pendingConfigures;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandXdgPositioner : public QtWaylandServer::xdg_positioner
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgPositioner : public PrivateServer::xdg_positioner
 {
 public:
-    QWaylandXdgPositioner(const QWaylandResource& resource);
-    static QWaylandXdgPositioner *fromResource(wl_resource *resource);
+    WaylandXdgPositioner(const WaylandResource& resource);
+    static WaylandXdgPositioner *fromResource(wl_resource *resource);
     static Qt::Edges convertToEdges(anchor anchor);
     static Qt::Edges convertToEdges(gravity gravity);
 
@@ -236,9 +238,11 @@ protected:
     void xdg_positioner_set_offset(Resource *resource, int32_t x, int32_t y) override;
 
 public:
-    QWaylandXdgPositionerData m_data;
+    WaylandXdgPositionerData m_data;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDXDGSHELL_P_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDXDGSHELL_P_H

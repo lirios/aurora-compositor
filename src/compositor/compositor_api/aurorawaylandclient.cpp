@@ -27,22 +27,24 @@
 **
 ****************************************************************************/
 
-#include "qwaylandclient.h"
+#include "aurorawaylandclient.h"
 #include <QtCore/private/qobject_p.h>
 
-#include <QtWaylandCompositor/QWaylandCompositor>
-#include <QtWaylandCompositor/private/qwaylandcompositor_p.h>
+#include <LiriAuroraCompositor/WaylandCompositor>
+#include <LiriAuroraCompositor/private/aurorawaylandcompositor_p.h>
 
 
 #include <wayland-server-core.h>
 #include <wayland-util.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandClientPrivate : public QObjectPrivate
+namespace Compositor {
+
+class WaylandClientPrivate : public QObjectPrivate
 {
 public:
-    QWaylandClientPrivate(QWaylandCompositor *compositor, wl_client *_client)
+    WaylandClientPrivate(WaylandCompositor *compositor, wl_client *_client)
         : compositor(compositor)
         , client(_client)
     {
@@ -50,7 +52,7 @@ public:
         wl_client_get_credentials(client, &pid, &uid, &gid);
     }
 
-    ~QWaylandClientPrivate() override
+    ~WaylandClientPrivate() override
     {
     }
 
@@ -58,12 +60,12 @@ public:
     {
         Q_UNUSED(data);
 
-        QWaylandClient *client = reinterpret_cast<Listener *>(listener)->parent;
+        WaylandClient *client = reinterpret_cast<Listener *>(listener)->parent;
         Q_ASSERT(client != nullptr);
         delete client;
     }
 
-    QWaylandCompositor *compositor = nullptr;
+    WaylandCompositor *compositor = nullptr;
     wl_client *client = nullptr;
 
     uid_t uid;
@@ -72,17 +74,17 @@ public:
 
     struct Listener {
         wl_listener listener;
-        QWaylandClient *parent = nullptr;
+        WaylandClient *parent = nullptr;
     };
     Listener listener;
 
-    QWaylandClient::TextInputProtocols mTextInputProtocols = QWaylandClient::NoProtocol;
+    WaylandClient::TextInputProtocols mTextInputProtocols = WaylandClient::NoProtocol;
 };
 
 /*!
  * \qmltype WaylandClient
- * \instantiates QWaylandClient
- * \inqmlmodule QtWayland.Compositor
+ * \instantiates WaylandClient
+ * \inqmlmodule Aurora.Compositor
  * \since 5.8
  * \brief Represents a client connecting to the WaylandCompositor.
  *
@@ -91,69 +93,69 @@ public:
  */
 
 /*!
- * \class QWaylandClient
+ * \class WaylandClient
  * \inmodule QtWaylandCompositor
  * \since 5.8
- * \brief The QWaylandClient class represents a client connecting to the QWaylandCompositor.
+ * \brief The WaylandClient class represents a client connecting to the WaylandCompositor.
  *
  * This class corresponds to a client connecting to the compositor using the Wayland protocol.
  * It corresponds to the Wayland interface wl_client.
  */
 
 /*!
- * Constructs a QWaylandClient for the \a compositor and the Wayland \a client.
+ * Constructs a WaylandClient for the \a compositor and the Wayland \a client.
  */
-QWaylandClient::QWaylandClient(QWaylandCompositor *compositor, wl_client *client)
-    : QObject(*new QWaylandClientPrivate(compositor, client))
+WaylandClient::WaylandClient(WaylandCompositor *compositor, wl_client *client)
+    : QObject(*new WaylandClientPrivate(compositor, client))
 {
-    Q_D(QWaylandClient);
+    Q_D(WaylandClient);
 
     // Destroy wrapper when the client goes away
     d->listener.parent = this;
-    d->listener.listener.notify = QWaylandClientPrivate::client_destroy_callback;
+    d->listener.listener.notify = WaylandClientPrivate::client_destroy_callback;
     wl_client_add_destroy_listener(client, &d->listener.listener);
 
-    QWaylandCompositorPrivate::get(compositor)->addClient(this);
+    WaylandCompositorPrivate::get(compositor)->addClient(this);
 }
 
 /*!
- * Destroys the QWaylandClient.
+ * Destroys the WaylandClient.
  */
-QWaylandClient::~QWaylandClient()
+WaylandClient::~WaylandClient()
 {
-    Q_D(QWaylandClient);
+    Q_D(WaylandClient);
 
     // Remove listener from signal
     wl_list_remove(&d->listener.listener.link);
 
-    QWaylandCompositorPrivate::get(d->compositor)->removeClient(this);
+    WaylandCompositorPrivate::get(d->compositor)->removeClient(this);
 }
 
 /*!
- * Returns the QWaylandClient corresponding to the Wayland client \a wlClient and \a compositor.
- * If a QWaylandClient has not already been created for a client, it is
+ * Returns the WaylandClient corresponding to the Wayland client \a wlClient and \a compositor.
+ * If a WaylandClient has not already been created for a client, it is
  * created and returned.
  */
-QWaylandClient *QWaylandClient::fromWlClient(QWaylandCompositor *compositor, wl_client *wlClient)
+WaylandClient *WaylandClient::fromWlClient(WaylandCompositor *compositor, wl_client *wlClient)
 {
     if (!wlClient)
         return nullptr;
 
-    QWaylandClient *client = nullptr;
+    WaylandClient *client = nullptr;
 
     wl_listener *l = wl_client_get_destroy_listener(wlClient,
-        QWaylandClientPrivate::client_destroy_callback);
+        WaylandClientPrivate::client_destroy_callback);
     if (l)
-        client = reinterpret_cast<QWaylandClientPrivate::Listener *>(
-            wl_container_of(l, (QWaylandClientPrivate::Listener *)nullptr, listener))->parent;
+        client = reinterpret_cast<WaylandClientPrivate::Listener *>(
+            wl_container_of(l, (WaylandClientPrivate::Listener *)nullptr, listener))->parent;
 
     if (!client) {
-        // The original idea was to create QWaylandClient instances when
+        // The original idea was to create WaylandClient instances when
         // a client bound wl_compositor, but it's legal for a client to
-        // bind several times resulting in multiple QWaylandClient
+        // bind several times resulting in multiple WaylandClient
         // instances for the same wl_client therefore we create it from
         // here on demand
-        client = new QWaylandClient(compositor, wlClient);
+        client = new WaylandClient(compositor, wlClient);
     }
 
     return client;
@@ -166,23 +168,23 @@ QWaylandClient *QWaylandClient::fromWlClient(QWaylandCompositor *compositor, wl_
  */
 
 /*!
- * \property QWaylandClient::compositor
+ * \property WaylandClient::compositor
  *
- * This property holds the compositor of this QWaylandClient.
+ * This property holds the compositor of this WaylandClient.
  */
-QWaylandCompositor *QWaylandClient::compositor() const
+WaylandCompositor *WaylandClient::compositor() const
 {
-    Q_D(const QWaylandClient);
+    Q_D(const WaylandClient);
 
     return d->compositor;
 }
 
 /*!
- * Returns the Wayland client of this QWaylandClient.
+ * Returns the Wayland client of this WaylandClient.
  */
-wl_client *QWaylandClient::client() const
+wl_client *WaylandClient::client() const
 {
-    Q_D(const QWaylandClient);
+    Q_D(const WaylandClient);
 
     return d->client;
 }
@@ -194,14 +196,14 @@ wl_client *QWaylandClient::client() const
  */
 
 /*!
- * \property QWaylandClient::userId
+ * \property WaylandClient::userId
  * \readonly
  *
- * This property holds the user id of this QWaylandClient.
+ * This property holds the user id of this WaylandClient.
  */
-qint64 QWaylandClient::userId() const
+qint64 WaylandClient::userId() const
 {
-    Q_D(const QWaylandClient);
+    Q_D(const WaylandClient);
 
     return d->uid;
 }
@@ -214,13 +216,13 @@ qint64 QWaylandClient::userId() const
  */
 
 /*!
- * \property QWaylandClient::groupId
+ * \property WaylandClient::groupId
  *
- * This property holds the group id of this QWaylandClient.
+ * This property holds the group id of this WaylandClient.
  */
-qint64 QWaylandClient::groupId() const
+qint64 WaylandClient::groupId() const
 {
-    Q_D(const QWaylandClient);
+    Q_D(const WaylandClient);
 
     return d->gid;
 }
@@ -233,13 +235,13 @@ qint64 QWaylandClient::groupId() const
  */
 
 /*!
- * \property QWaylandClient::processId
+ * \property WaylandClient::processId
  *
- * This property holds the process id of this QWaylandClient.
+ * This property holds the process id of this WaylandClient.
  */
-qint64 QWaylandClient::processId() const
+qint64 WaylandClient::processId() const
 {
-    Q_D(const QWaylandClient);
+    Q_D(const WaylandClient);
 
     return d->pid;
 }
@@ -253,9 +255,9 @@ qint64 QWaylandClient::processId() const
 /*!
  * Kills the client with the specified \a signal.
  */
-void QWaylandClient::kill(int signal)
+void WaylandClient::kill(int signal)
 {
-    Q_D(QWaylandClient);
+    Q_D(WaylandClient);
 
     ::kill(d->pid, signal);
 }
@@ -269,26 +271,28 @@ void QWaylandClient::kill(int signal)
 /*!
  * Closes the client.
  */
-void QWaylandClient::close()
+void WaylandClient::close()
 {
-    Q_D(QWaylandClient);
+    Q_D(WaylandClient);
     d->compositor->destroyClient(this);
 }
 
-QWaylandClient::TextInputProtocols QWaylandClient::textInputProtocols() const
+WaylandClient::TextInputProtocols WaylandClient::textInputProtocols() const
 {
-    Q_D(const QWaylandClient);
+    Q_D(const WaylandClient);
     return d->mTextInputProtocols;
 }
 
-void QWaylandClient::setTextInputProtocols(TextInputProtocols p)
+void WaylandClient::setTextInputProtocols(TextInputProtocols p)
 {
-    Q_D(QWaylandClient);
+    Q_D(WaylandClient);
     if (d->mTextInputProtocols != p)
         d->mTextInputProtocols = p;
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#include "moc_qwaylandclient.cpp"
+} // namespace Aurora
+
+#include "moc_aurorawaylandclient.cpp"
 

@@ -27,29 +27,31 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDXDGDECORATIONV1_H
-#define QWAYLANDXDGDECORATIONV1_H
+#ifndef AURORA_COMPOSITOR_WAYLANDXDGDECORATIONV1_H
+#define AURORA_COMPOSITOR_WAYLANDXDGDECORATIONV1_H
 
-#include <QtWaylandCompositor/QWaylandCompositorExtension>
-#include <QtWaylandCompositor/QWaylandXdgToplevel>
+#include <LiriAuroraCompositor/WaylandCompositorExtension>
+#include <LiriAuroraCompositor/WaylandXdgToplevel>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandXdgDecorationManagerV1Private;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandXdgDecorationManagerV1 : public QWaylandCompositorExtensionTemplate<QWaylandXdgDecorationManagerV1>
+class WaylandXdgDecorationManagerV1Private;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgDecorationManagerV1 : public WaylandCompositorExtensionTemplate<WaylandXdgDecorationManagerV1>
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandXdgDecorationManagerV1)
-    Q_PROPERTY(QWaylandXdgToplevel::DecorationMode preferredMode READ preferredMode WRITE setPreferredMode NOTIFY preferredModeChanged)
+    Q_DECLARE_PRIVATE(WaylandXdgDecorationManagerV1)
+    Q_PROPERTY(WaylandXdgToplevel::DecorationMode preferredMode READ preferredMode WRITE setPreferredMode NOTIFY preferredModeChanged)
 
 public:
-    explicit QWaylandXdgDecorationManagerV1();
+    explicit WaylandXdgDecorationManagerV1();
 
     void initialize() override;
 
-    QWaylandXdgToplevel::DecorationMode preferredMode() const;
-    void setPreferredMode(QWaylandXdgToplevel::DecorationMode preferredMode);
+    WaylandXdgToplevel::DecorationMode preferredMode() const;
+    void setPreferredMode(WaylandXdgToplevel::DecorationMode preferredMode);
 
     static const struct wl_interface *interface();
 
@@ -57,6 +59,8 @@ Q_SIGNALS:
     void preferredModeChanged();
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDXDGDECORATIONV1_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDXDGDECORATIONV1_H

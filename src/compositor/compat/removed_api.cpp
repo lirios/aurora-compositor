@@ -35,14 +35,14 @@ QT_USE_NAMESPACE
 
 #if QT_WAYLANDCOMPOSITOR_REMOVED_SINCE(6, 3)
 
-#include "qwaylandbufferref.h"
+#include "aurorawaylandbufferref.h"
 
-bool QWaylandBufferRef::operator==(const QWaylandBufferRef &other)
+bool WaylandBufferRef::operator==(const WaylandBufferRef &other)
 {
     return std::as_const(*this) == other;
 }
 
-bool QWaylandBufferRef::operator!=(const QWaylandBufferRef &other)
+bool WaylandBufferRef::operator!=(const WaylandBufferRef &other)
 {
     return std::as_const(*this) != other;
 }

@@ -27,29 +27,31 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDINPUTMETHODCONTROL_H
-#define QWAYLANDINPUTMETHODCONTROL_H
+#ifndef AURORA_COMPOSITOR_WAYLANDINPUTMETHODCONTROL_H
+#define AURORA_COMPOSITOR_WAYLANDINPUTMETHODCONTROL_H
 
 #include <QtGui/qtguiglobal.h>
 #include <QObject>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandCompositor;
-class QWaylandInputMethodControlPrivate;
-class QWaylandSurface;
+namespace Compositor {
+
+class WaylandCompositor;
+class WaylandInputMethodControlPrivate;
+class WaylandSurface;
 class QInputMethodEvent;
-class QWaylandTextInput;
+class WaylandTextInput;
 
-class QWaylandInputMethodControl : public QObject
+class WaylandInputMethodControl : public QObject
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandInputMethodControl)
-    Q_DISABLE_COPY(QWaylandInputMethodControl)
+    Q_DECLARE_PRIVATE(WaylandInputMethodControl)
+    Q_DISABLE_COPY(WaylandInputMethodControl)
 
     Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
 public:
-    explicit QWaylandInputMethodControl(QWaylandSurface *surface);
+    explicit WaylandInputMethodControl(WaylandSurface *surface);
 
     QVariant inputMethodQuery(Qt::InputMethodQuery query, QVariant argument) const;
 
@@ -58,7 +60,7 @@ public:
     bool enabled() const;
     void setEnabled(bool enabled);
 
-    void setSurface(QWaylandSurface *surface);
+    void setSurface(WaylandSurface *surface);
     void updateTextInput();
 
 Q_SIGNALS:
@@ -67,10 +69,12 @@ Q_SIGNALS:
 
 private:
     void defaultSeatChanged();
-    void surfaceEnabled(QWaylandSurface *surface);
-    void surfaceDisabled(QWaylandSurface *surface);
+    void surfaceEnabled(WaylandSurface *surface);
+    void surfaceDisabled(WaylandSurface *surface);
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDINPUTMETHODCONTROL_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDINPUTMETHODCONTROL_H

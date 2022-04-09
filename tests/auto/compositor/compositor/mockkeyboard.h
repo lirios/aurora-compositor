@@ -32,6 +32,10 @@
 #include <QObject>
 #include "wayland-wayland-client-protocol.h"
 
+namespace Aurora {
+
+namespace Compositor {
+
 class MockKeyboard : public QObject
 {
     Q_OBJECT
@@ -46,5 +50,9 @@ public:
     uint m_lastKeyState = 0;
     uint m_group = 0;
 };
+
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif // MOCKKEYBOARD_H

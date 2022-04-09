@@ -28,31 +28,39 @@
 
 #include "testkeyboardgrabber.h"
 
-TestKeyboardGrabber::TestKeyboardGrabber(QWaylandSeat *seat)
-    : QWaylandKeyboard(seat)
+namespace Aurora {
+
+namespace Compositor {
+
+TestKeyboardGrabber::TestKeyboardGrabber(WaylandSeat *seat)
+    : WaylandKeyboard(seat)
 {
 }
 
-void TestKeyboardGrabber::setFocus(QWaylandSurface *surface)
+void TestKeyboardGrabber::setFocus(WaylandSurface *surface)
 {
     Q_EMIT focusedCalled();
-    QWaylandKeyboard::setFocus(surface);
+    WaylandKeyboard::setFocus(surface);
 }
 
 void TestKeyboardGrabber::sendKeyPressEvent(uint code)
 {
     Q_EMIT keyPressCalled();
-    QWaylandKeyboard::sendKeyPressEvent(code);
+    WaylandKeyboard::sendKeyPressEvent(code);
 }
 
 void TestKeyboardGrabber::sendKeyReleaseEvent(uint code)
 {
     Q_EMIT keyReleaseCalled();
-    QWaylandKeyboard::sendKeyReleaseEvent(code);
+    WaylandKeyboard::sendKeyReleaseEvent(code);
 }
 
-void TestKeyboardGrabber::sendKeyModifiers(QWaylandClient *client, uint32_t serial)
+void TestKeyboardGrabber::sendKeyModifiers(WaylandClient *client, uint32_t serial)
 {
     Q_EMIT modifiersCalled();
-    QWaylandKeyboard::sendKeyModifiers(client, serial);
+    WaylandKeyboard::sendKeyModifiers(client, serial);
 }
+
+} // namespace Compositor
+
+} // namespace Aurora

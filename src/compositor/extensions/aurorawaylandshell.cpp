@@ -27,26 +27,28 @@
 **
 ****************************************************************************/
 
-#include "qwaylandshell.h"
-#include "qwaylandshell_p.h"
+#include "aurorawaylandshell.h"
+#include "aurorawaylandshell_p.h"
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-QWaylandShellPrivate::QWaylandShellPrivate()
+namespace Compositor {
+
+WaylandShellPrivate::WaylandShellPrivate()
 {
 }
 
-QWaylandShell::QWaylandShell()
+WaylandShell::WaylandShell()
 {
 }
 
-QWaylandShell::QWaylandShell(QWaylandObject *waylandObject)
-    : QWaylandCompositorExtension(waylandObject, *new QWaylandShellPrivate())
+WaylandShell::WaylandShell(WaylandObject *waylandObject)
+    : WaylandCompositorExtension(waylandObject, *new WaylandShellPrivate())
 {
 }
 
 /*!
- * \enum QWaylandShell::FocusPolicy
+ * \enum WaylandShell::FocusPolicy
  *
  * This enum type is used to specify the focus policy for shell surfaces.
  *
@@ -61,19 +63,19 @@ QWaylandShell::QWaylandShell(QWaylandObject *waylandObject)
  */
 
 /*!
- * \property QWaylandShell::focusPolicy
+ * \property WaylandShell::focusPolicy
  *
- * This property holds the focus policy of the QWaylandShell.
+ * This property holds the focus policy of the WaylandShell.
  */
-QWaylandShell::FocusPolicy QWaylandShell::focusPolicy() const
+WaylandShell::FocusPolicy WaylandShell::focusPolicy() const
 {
-    Q_D(const QWaylandShell);
+    Q_D(const WaylandShell);
     return d->focusPolicy;
 }
 
-void QWaylandShell::setFocusPolicy(QWaylandShell::FocusPolicy focusPolicy)
+void WaylandShell::setFocusPolicy(WaylandShell::FocusPolicy focusPolicy)
 {
-    Q_D(QWaylandShell);
+    Q_D(WaylandShell);
 
     if (d->focusPolicy == focusPolicy)
         return;
@@ -82,14 +84,16 @@ void QWaylandShell::setFocusPolicy(QWaylandShell::FocusPolicy focusPolicy)
     emit focusPolicyChanged();
 }
 
-QWaylandShell::QWaylandShell(QWaylandShellPrivate &dd)
-    : QWaylandCompositorExtension(dd)
+WaylandShell::WaylandShell(WaylandShellPrivate &dd)
+    : WaylandCompositorExtension(dd)
 {
 }
 
-QWaylandShell::QWaylandShell(QWaylandObject *container, QWaylandShellPrivate &dd)
-    : QWaylandCompositorExtension(container, dd)
+WaylandShell::WaylandShell(WaylandObject *container, WaylandShellPrivate &dd)
+    : WaylandCompositorExtension(container, dd)
 {
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

@@ -8,54 +8,54 @@ import QtQuick.tooling 1.2
 
 Module {
     dependencies: ["QtQuick 2.0"]
-    Component { name: "QWaylandCompositorExtension"; prototype: "QWaylandObject" }
+    Component { name: "WaylandCompositorExtension"; prototype: "WaylandObject" }
     Component {
-        name: "QWaylandIviApplication"
-        prototype: "QWaylandCompositorExtension"
+        name: "WaylandIviApplication"
+        prototype: "WaylandCompositorExtension"
         Signal {
             name: "iviSurfaceRequested"
-            Parameter { name: "surface"; type: "QWaylandSurface"; isPointer: true }
+            Parameter { name: "surface"; type: "WaylandSurface"; isPointer: true }
             Parameter { name: "iviId"; type: "uint" }
-            Parameter { name: "resource"; type: "QWaylandResource" }
+            Parameter { name: "resource"; type: "WaylandResource" }
         }
         Signal {
             name: "iviSurfaceCreated"
-            Parameter { name: "iviSurface"; type: "QWaylandIviSurface"; isPointer: true }
+            Parameter { name: "iviSurface"; type: "WaylandIviSurface"; isPointer: true }
         }
     }
     Component {
-        name: "QWaylandIviApplicationQuickExtension"
+        name: "WaylandIviApplicationQuickExtension"
         defaultProperty: "data"
-        prototype: "QWaylandIviApplication"
+        prototype: "WaylandIviApplication"
         exports: ["QtWayland.Compositor.IviApplication/IviApplication 1.0"]
         exportMetaObjectRevisions: [0]
         Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
     }
     Component {
-        name: "QWaylandIviSurface"
+        name: "WaylandIviSurface"
         defaultProperty: "data"
-        prototype: "QWaylandShellSurface"
+        prototype: "WaylandShellSurface"
         exports: ["QtWayland.Compositor.IviApplication/IviSurface 1.0"]
         exportMetaObjectRevisions: [0]
         Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-        Property { name: "surface"; type: "QWaylandSurface"; isReadonly: true; isPointer: true }
+        Property { name: "surface"; type: "WaylandSurface"; isReadonly: true; isPointer: true }
         Property { name: "iviId"; type: "uint"; isReadonly: true }
         Method {
             name: "initialize"
-            Parameter { name: "iviApplication"; type: "QWaylandIviApplication"; isPointer: true }
-            Parameter { name: "surface"; type: "QWaylandSurface"; isPointer: true }
+            Parameter { name: "iviApplication"; type: "WaylandIviApplication"; isPointer: true }
+            Parameter { name: "surface"; type: "WaylandSurface"; isPointer: true }
             Parameter { name: "iviId"; type: "uint" }
-            Parameter { name: "resource"; type: "QWaylandResource" }
+            Parameter { name: "resource"; type: "WaylandResource" }
         }
         Method {
             name: "sendConfigure"
             Parameter { name: "size"; type: "QSize" }
         }
     }
-    Component { name: "QWaylandObject"; prototype: "QObject" }
+    Component { name: "WaylandObject"; prototype: "QObject" }
     Component {
-        name: "QWaylandShellSurface"
-        prototype: "QWaylandCompositorExtension"
+        name: "WaylandShellSurface"
+        prototype: "WaylandCompositorExtension"
         Property { name: "windowType"; type: "Qt::WindowType"; isReadonly: true }
     }
 }

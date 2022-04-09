@@ -45,7 +45,9 @@
 
 #include <QDebug>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 static constexpr bool extraDebug = false;
 
@@ -719,4 +721,6 @@ void VulkanWrapper::freeTextureImage(VulkanImageWrapper *imageWrapper)
     d_ptr->freeTextureImage(imageWrapper);
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

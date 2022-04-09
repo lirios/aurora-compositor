@@ -34,30 +34,32 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWaylandCompositor/private/qwayland-server-hardware-integration.h>
+#include <LiriAuroraCompositor/private/aurora-server-hardware-integration.h>
 
-#include <QtWaylandCompositor/QWaylandCompositorExtension>
+#include <LiriAuroraCompositor/WaylandCompositorExtension>
 
 #include <QtCore/QString>
 #include <QtCore/private/qglobal_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandCompositor;
+namespace Compositor {
+
+class WaylandCompositor;
 
 namespace QtWayland {
 
-class HardwareIntegration : public QWaylandCompositorExtensionTemplate<HardwareIntegration>, public QtWaylandServer::qt_hardware_integration
+class HardwareIntegration : public WaylandCompositorExtensionTemplate<HardwareIntegration>, public PrivateServer::qt_hardware_integration
 {
 public:
-    HardwareIntegration(QWaylandCompositor *compositor);
+    HardwareIntegration(WaylandCompositor *compositor);
 
     void setClientBufferIntegrationName(const QString &name);
     void setServerBufferIntegrationName(const QString &name);
@@ -72,5 +74,7 @@ private:
 
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 #endif

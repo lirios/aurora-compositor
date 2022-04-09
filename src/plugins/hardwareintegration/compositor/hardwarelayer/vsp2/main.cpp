@@ -27,10 +27,12 @@
 **
 ****************************************************************************/
 
-#include <QtWaylandCompositor/private/qwlhardwarelayerintegrationplugin_p.h>
+#include <LiriAuroraCompositor/private/aurorawlhardwarelayerintegrationplugin_p.h>
 #include "vsp2hardwarelayerintegration.h"
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 class Vsp2HardwareLayerIntegrationPlugin : public QtWayland::HardwareLayerIntegrationPlugin
 {
@@ -47,6 +49,8 @@ QtWayland::HardwareLayerIntegration *Vsp2HardwareLayerIntegrationPlugin::create(
     return new Vsp2HardwareLayerIntegration();
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #include "main.moc"

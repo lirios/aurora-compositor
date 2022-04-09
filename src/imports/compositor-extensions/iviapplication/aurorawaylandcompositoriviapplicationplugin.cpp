@@ -30,16 +30,16 @@
 #include <QtQml/qqmlextensionplugin.h>
 #include <QtQml/qqml.h>
 
-#include <QtWaylandCompositor/qwaylandquickextension.h>
-#include <QtWaylandCompositor/qwaylandiviapplication.h>
-#include <QtWaylandCompositor/qwaylandivisurface.h>
+#include <LiriAuroraCompositor/aurorawaylandquickextension.h>
+#include <LiriAuroraCompositor/aurorawaylandiviapplication.h>
+#include <LiriAuroraCompositor/aurorawaylandivisurface.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(QWaylandIviApplication)
+namespace Compositor {
 
 /*!
-    \qmlmodule QtWayland.Compositor.IviApplication
+    \qmlmodule Aurora.Compositor.IviApplication
     \title Qt Wayland IviApplication Extension
     \ingroup qmlmodules
     \brief Provides a Qt API for the IviApplication shell extension.
@@ -53,11 +53,13 @@ Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(QWaylandIviApplication)
     \section2 Usage
     To use this module, import it like this:
     \qml
-    import QtWayland.Compositor.IviApplication
+    import Aurora.Compositor.IviApplication
     \endqml
 */
 
-class QWaylandCompositorIviApplicationPlugin : public QQmlExtensionPlugin
+Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(WaylandIviApplication)
+
+class WaylandCompositorIviApplicationPlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
@@ -71,11 +73,13 @@ public:
     static void defineModule(const char *uri)
     {
         qmlRegisterModule(uri, QT_VERSION_MAJOR, QT_VERSION_MINOR);
-        qmlRegisterType<QWaylandIviApplicationQuickExtension>(uri, 1, 0, "IviApplication");
-        qmlRegisterType<QWaylandIviSurface>(uri, 1, 0, "IviSurface");
+        qmlRegisterType<WaylandIviApplicationQuickExtension>(uri, 1, 0, "IviApplication");
+        qmlRegisterType<WaylandIviSurface>(uri, 1, 0, "IviSurface");
     }
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#include "qwaylandcompositoriviapplicationplugin.moc"
+} // namespace Aurora
+
+#include "aurorawaylandcompositoriviapplicationplugin.moc"

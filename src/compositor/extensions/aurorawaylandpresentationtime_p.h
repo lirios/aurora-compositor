@@ -27,27 +27,29 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDPRESENTATIONTIME_P_H
-#define QWAYLANDPRESENTATIONTIME_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDPRESENTATIONTIME_P_H
+#define AURORA_COMPOSITOR_WAYLANDPRESENTATIONTIME_P_H
 
 #include <QObject>
-#include <QtWaylandCompositor/qwaylandcompositorextension.h>
+#include <LiriAuroraCompositor/aurorawaylandcompositorextension.h>
 #include <QtCore/private/qglobal_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 class QQuickWindow;
-class QWaylandPresentationTimePrivate;
+class WaylandPresentationTimePrivate;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandPresentationTime : public QWaylandCompositorExtensionTemplate<QWaylandPresentationTime>
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandPresentationTime : public WaylandCompositorExtensionTemplate<WaylandPresentationTime>
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandPresentationTime)
+    Q_DECLARE_PRIVATE(WaylandPresentationTime)
 public:
-    QWaylandPresentationTime();
-    QWaylandPresentationTime(QWaylandCompositor *compositor);
+    WaylandPresentationTime();
+    WaylandPresentationTime(WaylandCompositor *compositor);
 
-    QWaylandCompositor *compositor() const;
+    WaylandCompositor *compositor() const;
     void initialize() override;
 
     Q_INVOKABLE void sendFeedback(QQuickWindow *window, quint64 sequence, quint64 tv_sec, quint32 tv_nsec);
@@ -59,6 +61,8 @@ signals:
     void presented(quint64 sequence, quint64 tv_sec, quint32 tv_nsec, quint32 refresh_nsec);
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif

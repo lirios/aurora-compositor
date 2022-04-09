@@ -29,7 +29,7 @@
 
 #include "waylandeglclientbufferintegration_p.h"
 
-#include <QtWaylandCompositor/QWaylandCompositor>
+#include <LiriAuroraCompositor/WaylandCompositor>
 #include <qpa/qplatformnativeinterface.h>
 #include <QtOpenGL/QOpenGLTexture>
 #include <QtGui/QGuiApplication>
@@ -112,7 +112,9 @@ typedef void (GL_APIENTRYP PFNGLEGLIMAGETARGETTEXTURE2DOESPROC) (GLenum target, 
 typedef void (GL_APIENTRYP PFNGLEGLIMAGETARGETRENDERBUFFERSTORAGEOESPROC) (GLenum target, GLeglImageOES image);
 #endif
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 static const char *
 egl_error_string(EGLint code)
@@ -511,23 +513,23 @@ WaylandEglClientBuffer::~WaylandEglClientBuffer()
     delete d;
 }
 
-static QWaylandBufferRef::BufferFormatEgl formatFromEglFormat(EGLint format) {
+static WaylandBufferRef::BufferFormatEgl formatFromEglFormat(EGLint format) {
     switch (format) {
     case EGL_TEXTURE_RGB:
-        return QWaylandBufferRef::BufferFormatEgl_RGB;
+        return WaylandBufferRef::BufferFormatEgl_RGB;
     case EGL_TEXTURE_RGBA:
-        return QWaylandBufferRef::BufferFormatEgl_RGBA;
+        return WaylandBufferRef::BufferFormatEgl_RGBA;
     case EGL_TEXTURE_EXTERNAL_WL:
-        return QWaylandBufferRef::BufferFormatEgl_EXTERNAL_OES;
+        return WaylandBufferRef::BufferFormatEgl_EXTERNAL_OES;
     case EGL_TEXTURE_Y_UV_WL:
-        return QWaylandBufferRef::BufferFormatEgl_Y_UV;
+        return WaylandBufferRef::BufferFormatEgl_Y_UV;
     case EGL_TEXTURE_Y_U_V_WL:
-        return QWaylandBufferRef::BufferFormatEgl_Y_U_V;
+        return WaylandBufferRef::BufferFormatEgl_Y_U_V;
     case EGL_TEXTURE_Y_XUXV_WL:
-        return QWaylandBufferRef::BufferFormatEgl_Y_XUXV;
+        return WaylandBufferRef::BufferFormatEgl_Y_XUXV;
     }
 
-    return QWaylandBufferRef::BufferFormatEgl_RGBA;
+    return WaylandBufferRef::BufferFormatEgl_RGBA;
 }
 
 static QOpenGLTexture::TextureFormat openGLFormatFromEglFormat(EGLint format) {
@@ -541,7 +543,7 @@ static QOpenGLTexture::TextureFormat openGLFormatFromEglFormat(EGLint format) {
     }
 }
 
-QWaylandBufferRef::BufferFormatEgl WaylandEglClientBuffer::bufferFormatEgl() const
+WaylandBufferRef::BufferFormatEgl WaylandEglClientBuffer::bufferFormatEgl() const
 {
     return formatFromEglFormat(d->egl_format);
 }
@@ -600,9 +602,9 @@ bool WaylandEglClientBuffer::isProtected()
 }
 
 
-QWaylandSurface::Origin WaylandEglClientBuffer::origin() const
+WaylandSurface::Origin WaylandEglClientBuffer::origin() const
 {
-    return d->isYInverted ? QWaylandSurface::OriginTopLeft : QWaylandSurface::OriginBottomLeft;
+    return d->isYInverted ? WaylandSurface::OriginTopLeft : WaylandSurface::OriginBottomLeft;
 }
 
 quintptr WaylandEglClientBuffer::lockNativeBuffer()
@@ -634,4 +636,6 @@ QSize WaylandEglClientBuffer::size() const
     return d->size;
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

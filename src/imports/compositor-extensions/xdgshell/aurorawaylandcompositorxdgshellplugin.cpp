@@ -30,19 +30,17 @@
 #include <QtQml/qqmlextensionplugin.h>
 #include <QtQml/qqml.h>
 
-#include <QtWaylandCompositor/QWaylandQuickExtension>
-#include <QtWaylandCompositor/QWaylandXdgShell>
-#include <QtWaylandCompositor/QWaylandXdgDecorationManagerV1>
-#include <QtWaylandCompositor/QWaylandQuickXdgOutputV1>
+#include <LiriAuroraCompositor/WaylandQuickExtension>
+#include <LiriAuroraCompositor/WaylandXdgShell>
+#include <LiriAuroraCompositor/WaylandXdgDecorationManagerV1>
+#include <LiriAuroraCompositor/WaylandQuickXdgOutputV1>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(QWaylandXdgShell)
-Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(QWaylandXdgDecorationManagerV1)
-Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(QWaylandXdgOutputManagerV1)
+namespace Compositor {
 
 /*!
-    \qmlmodule QtWayland.Compositor.XdgShell
+    \qmlmodule Aurora.Compositor.XdgShell
     \title Qt Wayland XdgShell Extension
     \ingroup qmlmodules
     \brief Provides a Qt API for the XdgShell shell extension.
@@ -56,11 +54,15 @@ Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(QWaylandXdgOutputManagerV1)
     \section2 Usage
     To use this module, import it like this:
     \qml
-    import QtWayland.Compositor.XdgShell
+    import Aurora.Compositor.XdgShell
     \endqml
 */
 
-class QWaylandCompositorXdgShellPlugin : public QQmlExtensionPlugin
+Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(WaylandXdgShell)
+Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(WaylandXdgDecorationManagerV1)
+Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(WaylandXdgOutputManagerV1)
+
+class WaylandCompositorXdgShellPlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
@@ -75,17 +77,19 @@ public:
     {
         qmlRegisterModule(uri, QT_VERSION_MAJOR, QT_VERSION_MINOR);
 
-        qmlRegisterType<QWaylandXdgShellQuickExtension>(uri, 1, 3, "XdgShell");
-        qmlRegisterType<QWaylandXdgSurface>(uri, 1, 3, "XdgSurface");
-        qmlRegisterUncreatableType<QWaylandXdgToplevel>(uri, 1, 3, "XdgToplevel", QObject::tr("Cannot create instance of XdgShellToplevel"));
-        qmlRegisterUncreatableType<QWaylandXdgPopup>(uri, 1, 3, "XdgPopup", QObject::tr("Cannot create instance of XdgShellPopup"));
+        qmlRegisterType<WaylandXdgShellQuickExtension>(uri, 1, 3, "XdgShell");
+        qmlRegisterType<WaylandXdgSurface>(uri, 1, 3, "XdgSurface");
+        qmlRegisterUncreatableType<WaylandXdgToplevel>(uri, 1, 3, "XdgToplevel", QObject::tr("Cannot create instance of XdgShellToplevel"));
+        qmlRegisterUncreatableType<WaylandXdgPopup>(uri, 1, 3, "XdgPopup", QObject::tr("Cannot create instance of XdgShellPopup"));
 
-        qmlRegisterType<QWaylandXdgDecorationManagerV1QuickExtension>(uri, 1, 3, "XdgDecorationManagerV1");
-        qmlRegisterType<QWaylandXdgOutputManagerV1QuickExtension>(uri, 1, 14, "XdgOutputManagerV1");
-        qmlRegisterType<QWaylandQuickXdgOutputV1>(uri, 1, 14, "XdgOutputV1");
+        qmlRegisterType<WaylandXdgDecorationManagerV1QuickExtension>(uri, 1, 3, "XdgDecorationManagerV1");
+        qmlRegisterType<WaylandXdgOutputManagerV1QuickExtension>(uri, 1, 14, "XdgOutputManagerV1");
+        qmlRegisterType<WaylandQuickXdgOutputV1>(uri, 1, 14, "XdgOutputV1");
     }
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#include "qwaylandcompositorxdgshellplugin.moc"
+} // namespace Aurora
+
+#include "aurorawaylandcompositorxdgshellplugin.moc"

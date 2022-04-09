@@ -27,26 +27,26 @@
 **
 ****************************************************************************/
 
-#include <QWaylandCompositor>
-#include <QWaylandOutput>
+#include <AuroraWaylandCompositor>
+#include <AuroraWaylandOutput>
 
-#include "qwaylandquickxdgoutputv1.h"
-#include "qwaylandxdgoutputv1_p.h"
+#include "aurorawaylandquickxdgoutputv1.h"
+#include "aurorawaylandxdgoutputv1_p.h"
 
-QWaylandQuickXdgOutputV1::QWaylandQuickXdgOutputV1()
-    : QWaylandXdgOutputV1()
+WaylandQuickXdgOutputV1::WaylandQuickXdgOutputV1()
+    : WaylandXdgOutputV1()
 {
 }
 
-void QWaylandQuickXdgOutputV1::componentComplete()
+void WaylandQuickXdgOutputV1::componentComplete()
 {
     // Try to find the manager from the compositor extensions
     if (!manager()) {
         for (auto *p = parent(); p != nullptr; p = p->parent()) {
-            if (auto *c = qobject_cast<QWaylandCompositor *>(p)) {
+            if (auto *c = qobject_cast<WaylandCompositor *>(p)) {
                 for (auto *extension : c->extensions()) {
-                    if (auto *m = qobject_cast<QWaylandXdgOutputManagerV1 *>(extension)) {
-                        QWaylandXdgOutputV1Private::get(this)->setManager(m);
+                    if (auto *m = qobject_cast<WaylandXdgOutputManagerV1 *>(extension)) {
+                        WaylandXdgOutputV1Private::get(this)->setManager(m);
                         break;
                     }
                 }
@@ -57,8 +57,8 @@ void QWaylandQuickXdgOutputV1::componentComplete()
     // Try to find the output from the parents
     if (!output()) {
         for (auto *p = parent(); p != nullptr; p = p->parent()) {
-            if (auto *o = qobject_cast<QWaylandOutput *>(p)) {
-                QWaylandXdgOutputV1Private::get(this)->setOutput(o);
+            if (auto *o = qobject_cast<WaylandOutput *>(p)) {
+                WaylandXdgOutputV1Private::get(this)->setOutput(o);
                 break;
             }
         }

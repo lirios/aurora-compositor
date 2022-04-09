@@ -27,20 +27,22 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDIVISURFACEINTEGRATION_H
-#define QWAYLANDIVISURFACEINTEGRATION_H
+#ifndef AURORA_COMPOSITOR_WAYLANDIVISURFACEINTEGRATION_H
+#define AURORA_COMPOSITOR_WAYLANDIVISURFACEINTEGRATION_H
 
-#include <QtWaylandCompositor/private/qwaylandquickshellsurfaceitem_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandquickshellsurfaceitem_p.h>
 
-#include <QtWaylandCompositor/QWaylandIviSurface>
+#include <LiriAuroraCompositor/WaylandIviSurface>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -49,23 +51,25 @@ QT_BEGIN_NAMESPACE
 
 namespace QtWayland {
 
-class IviSurfaceIntegration : public QWaylandQuickShellIntegration
+class IviSurfaceIntegration : public WaylandQuickShellIntegration
 {
     Q_OBJECT
 public:
-    IviSurfaceIntegration(QWaylandQuickShellSurfaceItem *item);
+    IviSurfaceIntegration(WaylandQuickShellSurfaceItem *item);
     ~IviSurfaceIntegration() override;
 
 private Q_SLOTS:
     void handleIviSurfaceDestroyed();
 
 private:
-    QWaylandQuickShellSurfaceItem *m_item = nullptr;
-    QWaylandIviSurface *m_shellSurface = nullptr;
+    WaylandQuickShellSurfaceItem *m_item = nullptr;
+    WaylandIviSurface *m_shellSurface = nullptr;
 };
 
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDIVISURFACEINTEGRATION_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDIVISURFACEINTEGRATION_H

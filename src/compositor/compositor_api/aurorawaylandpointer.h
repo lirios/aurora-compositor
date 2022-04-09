@@ -27,48 +27,50 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDPOINTER_H
-#define QWAYLANDPOINTER_H
+#ifndef AURORA_COMPOSITOR_WAYLANDPOINTER_H
+#define AURORA_COMPOSITOR_WAYLANDPOINTER_H
 
-#include <QtWaylandCompositor/QWaylandCompositorExtension>
+#include <LiriAuroraCompositor/WaylandCompositorExtension>
 
 struct wl_resource;
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandPointer;
-class QWaylandPointerPrivate;
-class QWaylandSeat;
-class QWaylandView;
-class QWaylandOutput;
-class QWaylandClient;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandPointer : public QWaylandObject
+class WaylandPointer;
+class WaylandPointerPrivate;
+class WaylandSeat;
+class WaylandView;
+class WaylandOutput;
+class WaylandClient;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandPointer : public WaylandObject
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandPointer)
+    Q_DECLARE_PRIVATE(WaylandPointer)
     Q_PROPERTY(bool isButtonPressed READ isButtonPressed NOTIFY buttonPressedChanged)
 public:
-    QWaylandPointer(QWaylandSeat *seat, QObject *parent = nullptr);
+    WaylandPointer(WaylandSeat *seat, QObject *parent = nullptr);
 
-    QWaylandSeat *seat() const;
-    QWaylandCompositor *compositor() const;
+    WaylandSeat *seat() const;
+    WaylandCompositor *compositor() const;
 
-    QWaylandOutput *output() const;
-    void setOutput(QWaylandOutput *output);
+    WaylandOutput *output() const;
+    void setOutput(WaylandOutput *output);
 
     virtual uint sendMousePressEvent(Qt::MouseButton button);
     virtual uint sendMouseReleaseEvent(Qt::MouseButton button);
-    virtual void sendMouseMoveEvent(QWaylandView *view, const QPointF &localPos, const QPointF &outputSpacePos);
+    virtual void sendMouseMoveEvent(WaylandView *view, const QPointF &localPos, const QPointF &outputSpacePos);
     virtual void sendMouseWheelEvent(Qt::Orientation orientation, int delta);
 
-    QWaylandView *mouseFocus() const;
+    WaylandView *mouseFocus() const;
     QPointF currentLocalPosition() const;
     QPointF currentSpacePosition() const;
 
     bool isButtonPressed() const;
 
-    virtual void addClient(QWaylandClient *client, uint32_t id, uint32_t version);
+    virtual void addClient(WaylandClient *client, uint32_t id, uint32_t version);
 
     wl_resource *focusResource() const;
 
@@ -80,9 +82,11 @@ Q_SIGNALS:
 
 private:
     void enteredSurfaceDestroyed(void *data);
-    void pointerFocusChanged(QWaylandView *newFocus, QWaylandView *oldFocus);
+    void pointerFocusChanged(WaylandView *newFocus, WaylandView *oldFocus);
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif  /*QWAYLANDPOINTER_H*/

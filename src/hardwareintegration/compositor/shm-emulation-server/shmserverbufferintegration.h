@@ -30,24 +30,26 @@
 #ifndef SHMSERVERBUFFERINTEGRATION_H
 #define SHMSERVERBUFFERINTEGRATION_H
 
-#include <QtWaylandCompositor/private/qwlserverbufferintegration_p.h>
+#include <LiriAuroraCompositor/private/aurorawlserverbufferintegration_p.h>
 
-#include "qwayland-server-shm-emulation-server-buffer.h"
+#include "aurora-server-shm-emulation-server-buffer.h"
 
 #include <QtGui/QImage>
 #include <QtGui/QWindow>
 #include <QtGui/qpa/qplatformnativeinterface.h>
 #include <QtGui/QGuiApplication>
 
-#include <QtWaylandCompositor/qwaylandcompositor.h>
-#include <QtWaylandCompositor/private/qwayland-server-server-buffer-extension.h>
+#include <LiriAuroraCompositor/aurorawaylandcompositor.h>
+#include <LiriAuroraCompositor/private/aurora-server-server-buffer-extension.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 class ShmServerBufferIntegration;
 class QSharedMemory;
 
-class ShmServerBuffer : public QtWayland::ServerBuffer, public QtWaylandServer::qt_server_buffer
+class ShmServerBuffer : public QtWayland::ServerBuffer, public PrivateServer::qt_server_buffer
 {
 public:
     ShmServerBuffer(ShmServerBufferIntegration *integration, const QImage &qimage, QtWayland::ServerBuffer::Format format);
@@ -65,18 +67,18 @@ private:
     int m_height;
     int m_bpl;
     QOpenGLTexture *m_texture = nullptr;
-    QtWaylandServer::qt_shm_emulation_server_buffer::format m_shm_format;
+    PrivateServer::qt_shm_emulation_server_buffer::format m_shm_format;
 };
 
 class ShmServerBufferIntegration :
     public QtWayland::ServerBufferIntegration,
-    public QtWaylandServer::qt_shm_emulation_server_buffer
+    public PrivateServer::qt_shm_emulation_server_buffer
 {
 public:
     ShmServerBufferIntegration();
     ~ShmServerBufferIntegration() override;
 
-    bool initializeHardware(QWaylandCompositor *) override;
+    bool initializeHardware(WaylandCompositor *) override;
 
     bool supportsFormat(QtWayland::ServerBuffer::Format format) const override;
     QtWayland::ServerBuffer *createServerBufferFromImage(const QImage &qimage, QtWayland::ServerBuffer::Format format) override;
@@ -85,6 +87,8 @@ public:
 private:
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif

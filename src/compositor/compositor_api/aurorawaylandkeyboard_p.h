@@ -28,28 +28,28 @@
 **
 ****************************************************************************/
 
-#ifndef QTWAYLAND_QWLKEYBOARD_P_H
-#define QTWAYLAND_QWLKEYBOARD_P_H
+#ifndef AURORA_WAYLAND_KEYBOARD_P_H
+#define AURORA_WAYLAND_KEYBOARD_P_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
-#include <QtWaylandCompositor/private/qwaylandcompositor_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandcompositor_p.h>
 
-#include <QtWaylandCompositor/private/qtwaylandcompositorglobal_p.h>
-#include <QtWaylandCompositor/qwaylandseat.h>
-#include <QtWaylandCompositor/qwaylandkeyboard.h>
-#include <QtWaylandCompositor/qwaylanddestroylistener.h>
+#include <LiriAuroraCompositor/private/qtwaylandcompositorglobal_p.h>
+#include <LiriAuroraCompositor/aurorawaylandseat.h>
+#include <LiriAuroraCompositor/aurorawaylandkeyboard.h>
+#include <LiriAuroraCompositor/aurorawaylanddestroylistener.h>
 
 #include <QtCore/private/qobject_p.h>
-#include <QtWaylandCompositor/private/qwayland-server-wayland.h>
+#include <LiriAuroraCompositor/private/aurora-server-wayland.h>
 
 #include <QtCore/QList>
 
@@ -59,27 +59,29 @@
 #endif
 
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandKeyboardPrivate : public QObjectPrivate
-                                                  , public QtWaylandServer::wl_keyboard
+namespace Compositor {
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandKeyboardPrivate : public QObjectPrivate
+                                                  , public PrivateServer::wl_keyboard
 {
 public:
-    Q_DECLARE_PUBLIC(QWaylandKeyboard)
+    Q_DECLARE_PUBLIC(WaylandKeyboard)
 
-    static QWaylandKeyboardPrivate *get(QWaylandKeyboard *keyboard);
+    static WaylandKeyboardPrivate *get(WaylandKeyboard *keyboard);
 
-    QWaylandKeyboardPrivate(QWaylandSeat *seat);
-    ~QWaylandKeyboardPrivate() override;
+    WaylandKeyboardPrivate(WaylandSeat *seat);
+    ~WaylandKeyboardPrivate() override;
 
-    QWaylandCompositor *compositor() const { return seat->compositor(); }
+    WaylandCompositor *compositor() const { return seat->compositor(); }
 
-    void focused(QWaylandSurface* surface);
+    void focused(WaylandSurface* surface);
 
 #if QT_CONFIG(xkbcommon)
     struct xkb_state *xkbState() const { return mXkbState.get(); }
     struct xkb_context *xkbContext() const {
-        return QWaylandCompositorPrivate::get(seat->compositor())->xkbContext();
+        return WaylandCompositorPrivate::get(seat->compositor())->xkbContext();
     }
     uint32_t xkbModsMask() const { return modsDepressed | modsLatched | modsLocked; }
     void maybeUpdateXkbScanCodeTable();
@@ -93,7 +95,7 @@ public:
     void maybeUpdateKeymap();
 
     void checkFocusResource(Resource *resource);
-    void sendEnter(QWaylandSurface *surface, Resource *resource);
+    void sendEnter(WaylandSurface *surface, Resource *resource);
 
 protected:
     void keyboard_bind_resource(Resource *resource) override;
@@ -110,11 +112,11 @@ private:
 
     void sendRepeatInfo();
 
-    QWaylandSeat *seat = nullptr;
+    WaylandSeat *seat = nullptr;
 
-    QWaylandSurface *focus = nullptr;
+    WaylandSurface *focus = nullptr;
     Resource *focusResource = nullptr;
-    QWaylandDestroyListener focusDestroyListener;
+    WaylandDestroyListener focusDestroyListener;
 
     QList<uint32_t> keys;
     uint32_t modsDepressed = 0;
@@ -142,6 +144,8 @@ private:
     quint32 repeatDelay = 400;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QTWAYLAND_QWLKEYBOARD_P_H
+} // namespace Aurora
+
+#endif // AURORA_WAYLAND_KEYBOARD_P_H

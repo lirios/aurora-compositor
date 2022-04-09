@@ -34,7 +34,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -43,10 +43,12 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QHash>
-#include "qwlclientbuffer_p.h"
-QT_BEGIN_NAMESPACE
+#include "aurorawlclientbuffer_p.h"
+namespace Aurora {
 
-class QWaylandCompositor;
+namespace Compositor {
+
+class WaylandCompositor;
 
 namespace QtWayland {
 
@@ -55,7 +57,7 @@ class ClientBuffer;
 class Q_WAYLANDCOMPOSITOR_EXPORT BufferManager : public QObject
 {
 public:
-    BufferManager(QWaylandCompositor *compositor);
+    BufferManager(WaylandCompositor *compositor);
     ClientBuffer *getBuffer(struct ::wl_resource *buffer_resource);
     void registerBuffer(struct ::wl_resource *buffer_resource, ClientBuffer *clientBuffer);
 private:
@@ -63,10 +65,12 @@ private:
     static void destroy_listener_callback(wl_listener *listener, void *data);
 
     QHash<struct ::wl_resource *, ClientBuffer*> m_buffers;
-    QWaylandCompositor *m_compositor = nullptr;
+    WaylandCompositor *m_compositor = nullptr;
 };
 
 }
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif // QWLBUFFERMANAGER_H

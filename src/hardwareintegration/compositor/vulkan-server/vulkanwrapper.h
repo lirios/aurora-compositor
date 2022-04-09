@@ -32,7 +32,9 @@
 
 #include <QOpenGLContext>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 class VulkanWrapper;
 struct VulkanImageWrapper;
@@ -55,6 +57,8 @@ private:
     VulkanWrapperPrivate *d_ptr;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif // VULKANWRAPPER_H

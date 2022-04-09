@@ -31,16 +31,16 @@
 #define DMABUFSERVERBUFFERINTEGRATION_H
 
 #include <QtCore/QVariant>
-#include <QtWaylandCompositor/private/qwlserverbufferintegration_p.h>
+#include <LiriAuroraCompositor/private/aurorawlserverbufferintegration_p.h>
 
-#include "qwayland-server-qt-dmabuf-server-buffer.h"
+#include "aurora-server-qt-dmabuf-server-buffer.h"
 
 #include <QtGui/QWindow>
 #include <QtGui/qpa/qplatformnativeinterface.h>
 #include <QtGui/QGuiApplication>
 
-#include <QtWaylandCompositor/qwaylandcompositor.h>
-#include <QtWaylandCompositor/private/qwayland-server-server-buffer-extension.h>
+#include <LiriAuroraCompositor/aurorawaylandcompositor.h>
+#include <LiriAuroraCompositor/private/aurora-server-server-buffer-extension.h>
 
 #include <QtCore/QDebug>
 #include <EGL/egl.h>
@@ -61,12 +61,14 @@ typedef EGLBoolean (EGLAPIENTRYP PFNEGLEXPORTDMABUFIMAGEQUERYMESAPROC) (EGLDispl
 typedef EGLBoolean (EGLAPIENTRYP PFNEGLEXPORTDMABUFIMAGEMESAPROC) (EGLDisplay dpy, EGLImageKHR image, int *fds, EGLint *strides, EGLint *offsets);
 #endif
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 class DmaBufServerBufferIntegration;
 class QImage;
 
-class DmaBufServerBuffer : public QtWayland::ServerBuffer, public QtWaylandServer::qt_server_buffer
+class DmaBufServerBuffer : public QtWayland::ServerBuffer, public PrivateServer::qt_server_buffer
 {
 public:
     DmaBufServerBuffer(DmaBufServerBufferIntegration *integration, const QImage &qimage, QtWayland::ServerBuffer::Format format);
@@ -93,13 +95,13 @@ private:
 
 class DmaBufServerBufferIntegration :
     public QtWayland::ServerBufferIntegration,
-    public QtWaylandServer::qt_dmabuf_server_buffer
+    public PrivateServer::qt_dmabuf_server_buffer
 {
 public:
     DmaBufServerBufferIntegration();
     ~DmaBufServerBufferIntegration() override;
 
-    bool initializeHardware(QWaylandCompositor *) override;
+    bool initializeHardware(WaylandCompositor *) override;
 
     bool supportsFormat(QtWayland::ServerBuffer::Format format) const override;
     QtWayland::ServerBuffer *createServerBufferFromImage(const QImage &qimage, QtWayland::ServerBuffer::Format format) override;
@@ -181,6 +183,8 @@ void DmaBufServerBufferIntegration::glEGLImageTargetTexture2DOES(GLenum target, 
     else
         qCWarning(qLcWaylandCompositorHardwareIntegration) << "DmaBufServerBufferIntegration: Trying to use unresolved function glEGLImageTargetTexture2DOES";
 }
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif

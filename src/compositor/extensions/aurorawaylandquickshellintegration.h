@@ -27,24 +27,28 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDQUICKSHELLINTEGRATION_H
-#define QWAYLANDQUICKSHELLINTEGRATION_H
+#ifndef AURORA_COMPOSITOR_WAYLANDQUICKSHELLINTEGRATION_H
+#define AURORA_COMPOSITOR_WAYLANDQUICKSHELLINTEGRATION_H
 
 #include <QtCore/QObject>
-#include <QtWaylandCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
 
 QT_REQUIRE_CONFIG(wayland_compositor_quick);
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandQuickShellIntegration : public QObject
+namespace Compositor {
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandQuickShellIntegration : public QObject
 {
     Q_OBJECT
 public:
-    QWaylandQuickShellIntegration(QObject *parent = nullptr);
-    ~QWaylandQuickShellIntegration() override;
+    WaylandQuickShellIntegration(QObject *parent = nullptr);
+    ~WaylandQuickShellIntegration() override;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDQUICKSHELLINTEGRATION_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDQUICKSHELLINTEGRATION_H

@@ -27,16 +27,16 @@
 **
 ****************************************************************************/
 
-#include "qwldatadevicemanager_p.h"
+#include "aurorawldatadevicemanager_p.h"
 
-#include <QtWaylandCompositor/QWaylandCompositor>
+#include <LiriAuroraCompositor/WaylandCompositor>
 
-#include <QtWaylandCompositor/private/qwaylandcompositor_p.h>
-#include <QtWaylandCompositor/private/qwaylandseat_p.h>
-#include "qwldatadevice_p.h"
-#include "qwldatasource_p.h"
-#include "qwldataoffer_p.h"
-#include "qwaylandmimehelper_p.h"
+#include <LiriAuroraCompositor/private/aurorawaylandcompositor_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandseat_p.h>
+#include "aurorawldatadevice_p.h"
+#include "aurorawldatasource_p.h"
+#include "aurorawldataoffer_p.h"
+#include "aurorawaylandmimehelper_p.h"
 
 #include <QtCore/QDebug>
 #include <QtCore/QSocketNotifier>
@@ -44,11 +44,13 @@
 #include <QtCore/private/qcore_unix_p.h>
 #include <QtCore/QFile>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 namespace QtWayland {
 
-DataDeviceManager::DataDeviceManager(QWaylandCompositor *compositor)
+DataDeviceManager::DataDeviceManager(WaylandCompositor *compositor)
     : wl_data_device_manager(compositor->display(), 1)
     , m_compositor(compositor)
 {
@@ -94,7 +96,7 @@ void DataDeviceManager::retain()
     QList<QString> offers = m_current_selection_source->mimeTypes();
     finishReadFromClient();
     if (m_retainedReadIndex >= offers.count()) {
-        QWaylandCompositorPrivate::get(m_compositor)->feedRetainedSelectionData(&m_retainedData);
+        WaylandCompositorPrivate::get(m_compositor)->feedRetainedSelectionData(&m_retainedData);
         return;
     }
     QString mimeType = offers.at(m_retainedReadIndex);
@@ -184,15 +186,15 @@ void DataDeviceManager::overrideSelection(const QMimeData &mimeData)
     for (const QString &format : formats)
         m_retainedData.setData(format, mimeData.data(format));
 
-    QWaylandCompositorPrivate::get(m_compositor)->feedRetainedSelectionData(&m_retainedData);
+    WaylandCompositorPrivate::get(m_compositor)->feedRetainedSelectionData(&m_retainedData);
 
     m_compositorOwnsSelection = true;
 
-    QWaylandSeat *dev = m_compositor->defaultSeat();
-    QWaylandSurface *focusSurface = dev->keyboardFocus();
+    WaylandSeat *dev = m_compositor->defaultSeat();
+    WaylandSurface *focusSurface = dev->keyboardFocus();
     if (focusSurface)
         offerFromCompositorToClient(
-                    QWaylandSeatPrivate::get(dev)->dataDevice()->resourceMap().value(focusSurface->waylandClient())->handle);
+                    WaylandSeatPrivate::get(dev)->dataDevice()->resourceMap().value(focusSurface->waylandClient())->handle);
 }
 
 bool DataDeviceManager::offerFromCompositorToClient(wl_resource *clientDataDeviceResource)
@@ -233,8 +235,8 @@ void DataDeviceManager::data_device_manager_create_data_source(Resource *resourc
 
 void DataDeviceManager::data_device_manager_get_data_device(Resource *resource, uint32_t id, struct ::wl_resource *seat)
 {
-    QWaylandSeat *input_device = QWaylandSeat::fromSeatResource(seat);
-    QWaylandSeatPrivate::get(input_device)->clientRequestedDataDevice(this, resource->client(), id);
+    WaylandSeat *input_device = WaylandSeat::fromSeatResource(seat);
+    WaylandSeatPrivate::get(input_device)->clientRequestedDataDevice(this, resource->client(), id);
 }
 
 void DataDeviceManager::comp_accept(wl_client *, wl_resource *, uint32_t, const char *)
@@ -246,7 +248,7 @@ void DataDeviceManager::comp_receive(wl_client *client, wl_resource *resource, c
     Q_UNUSED(client);
     DataDeviceManager *self = static_cast<DataDeviceManager *>(wl_resource_get_user_data(resource));
     //qDebug("client %p wants data for type %s from compositor", client, mime_type);
-    QByteArray content = QWaylandMimeHelper::getByteArray(&self->m_retainedData, QString::fromLatin1(mime_type));
+    QByteArray content = WaylandMimeHelper::getByteArray(&self->m_retainedData, QString::fromLatin1(mime_type));
     if (!content.isEmpty()) {
         QFile f;
         if (f.open(fd, QIODevice::WriteOnly))
@@ -270,4 +272,6 @@ const struct wl_data_offer_interface DataDeviceManager::compositor_offer_interfa
 
 } //namespace
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

@@ -28,32 +28,34 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDKEYBOARD_H
-#define QWAYLANDKEYBOARD_H
+#ifndef AURORA_COMPOSITOR_WAYLANDKEYBOARD_H
+#define AURORA_COMPOSITOR_WAYLANDKEYBOARD_H
 
 #include <QtCore/QObject>
 
-#include <QtWaylandCompositor/QWaylandCompositorExtension>
-#include <QtWaylandCompositor/QWaylandSurface>
+#include <LiriAuroraCompositor/WaylandCompositorExtension>
+#include <LiriAuroraCompositor/WaylandSurface>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandKeyboard;
-class QWaylandKeyboardPrivate;
-class QWaylandSeat;
-class QWaylandKeymap;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandKeyboard : public QWaylandObject
+class WaylandKeyboard;
+class WaylandKeyboardPrivate;
+class WaylandSeat;
+class WaylandKeymap;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandKeyboard : public WaylandObject
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandKeyboard)
+    Q_DECLARE_PRIVATE(WaylandKeyboard)
     Q_PROPERTY(quint32 repeatRate READ repeatRate WRITE setRepeatRate NOTIFY repeatRateChanged)
     Q_PROPERTY(quint32 repeatDelay READ repeatDelay WRITE setRepeatDelay NOTIFY repeatDelayChanged)
 public:
-    QWaylandKeyboard(QWaylandSeat *seat, QObject *parent = nullptr);
+    WaylandKeyboard(WaylandSeat *seat, QObject *parent = nullptr);
 
-    QWaylandSeat *seat() const;
-    QWaylandCompositor *compositor() const;
+    WaylandSeat *seat() const;
+    WaylandCompositor *compositor() const;
 
     quint32 repeatRate() const;
     void setRepeatRate(quint32 rate);
@@ -61,21 +63,21 @@ public:
     quint32 repeatDelay() const;
     void setRepeatDelay(quint32 delay);
 
-    virtual void setFocus(QWaylandSurface *surface);
+    virtual void setFocus(WaylandSurface *surface);
 
-    virtual void sendKeyModifiers(QWaylandClient *client, uint32_t serial);
+    virtual void sendKeyModifiers(WaylandClient *client, uint32_t serial);
     virtual void sendKeyPressEvent(uint code);
     virtual void sendKeyReleaseEvent(uint code);
 
-    QWaylandSurface *focus() const;
-    QWaylandClient *focusClient() const;
+    WaylandSurface *focus() const;
+    WaylandClient *focusClient() const;
 
-    virtual void addClient(QWaylandClient *client, uint32_t id, uint32_t version);
+    virtual void addClient(WaylandClient *client, uint32_t id, uint32_t version);
 
     uint keyToScanCode(int qtKey) const;
 
 Q_SIGNALS:
-    void focusChanged(QWaylandSurface *surface);
+    void focusChanged(Aurora::Compositor::WaylandSurface *surface);
     void repeatRateChanged(quint32 repeatRate);
     void repeatDelayChanged(quint32 repeatDelay);
 
@@ -86,6 +88,8 @@ private Q_SLOTS:
     void updateKeymap();
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif //QWAYLANDKEYBOARD_H

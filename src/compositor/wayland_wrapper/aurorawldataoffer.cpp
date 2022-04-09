@@ -27,20 +27,22 @@
 **
 ****************************************************************************/
 
-#include "qwldataoffer_p.h"
+#include "aurorawldataoffer_p.h"
 
-#include "qwldatadevice_p.h"
-#include "qwldatasource_p.h"
+#include "aurorawldatadevice_p.h"
+#include "aurorawldatasource_p.h"
 
 #include <unistd.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 namespace QtWayland
 {
 
-DataOffer::DataOffer(DataSource *dataSource, QtWaylandServer::wl_data_device::Resource *target)
-    : QtWaylandServer::wl_data_offer(target->client(), 0, 1)
+DataOffer::DataOffer(DataSource *dataSource, PrivateServer::wl_data_device::Resource *target)
+    : PrivateServer::wl_data_offer(target->client(), 0, 1)
     , m_dataSource(dataSource)
 {
     // FIXME: connect to dataSource and reset m_dataSource on destroy
@@ -84,4 +86,6 @@ void DataOffer::data_offer_destroy_resource(Resource *)
 
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

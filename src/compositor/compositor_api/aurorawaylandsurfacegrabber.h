@@ -27,21 +27,23 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDSURFACEGRABBER_H
-#define QWAYLANDSURFACEGRABBER_H
+#ifndef AURORA_COMPOSITOR_WAYLANDSURFACEGRABBER_H
+#define AURORA_COMPOSITOR_WAYLANDSURFACEGRABBER_H
 
-#include <QtWaylandCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
 #include <QtCore/QObject>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandSurface;
-class QWaylandSurfaceGrabberPrivate;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandSurfaceGrabber : public QObject
+class WaylandSurface;
+class WaylandSurfaceGrabberPrivate;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandSurfaceGrabber : public QObject
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandSurfaceGrabber)
+    Q_DECLARE_PRIVATE(WaylandSurfaceGrabber)
 public:
     enum Error {
         InvalidSurface,
@@ -50,9 +52,9 @@ public:
         RendererNotReady,
     };
     Q_ENUM(Error)
-    explicit QWaylandSurfaceGrabber(QWaylandSurface *surface, QObject *parent = nullptr);
+    explicit WaylandSurfaceGrabber(WaylandSurface *surface, QObject *parent = nullptr);
 
-    QWaylandSurface *surface() const;
+    WaylandSurface *surface() const;
     void grab();
 
 Q_SIGNALS:
@@ -60,6 +62,8 @@ Q_SIGNALS:
     void failed(Error error);
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDSURFACEGRABBER_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDSURFACEGRABBER_H

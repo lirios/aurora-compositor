@@ -27,27 +27,29 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDHARDWARELAYERINTEGRATIONPLUGIN_H
-#define QWAYLANDHARDWARELAYERINTEGRATIONPLUGIN_H
+#ifndef AURORA_COMPOSITOR_WAYLANDHARDWARELAYERINTEGRATIONPLUGIN_H
+#define AURORA_COMPOSITOR_WAYLANDHARDWARELAYERINTEGRATIONPLUGIN_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWaylandCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
 
 #include <QtCore/qplugin.h>
 #include <QtCore/qfactoryinterface.h>
 #include <QtCore/private/qglobal_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 namespace QtWayland {
 
@@ -67,6 +69,8 @@ public:
 
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDHARDWARELAYERINTEGRATIONPLUGIN_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDHARDWARELAYERINTEGRATIONPLUGIN_H

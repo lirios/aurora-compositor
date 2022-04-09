@@ -27,27 +27,29 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDQUICKCHILDREN_H
-#define QWAYLANDQUICKCHILDREN_H
+#ifndef AURORA_COMPOSITOR_WAYLANDQUICKCHILDREN_H
+#define AURORA_COMPOSITOR_WAYLANDQUICKCHILDREN_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWaylandCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
 #if QT_CONFIG(wayland_compositor_quick)
 #include <QtQml/QQmlListProperty>
 #include <QtCore/QList>
 #endif
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 #if QT_CONFIG(wayland_compositor_quick)
 #define Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(className) \
@@ -84,6 +86,8 @@ QT_BEGIN_NAMESPACE
 #define Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(className)
 #endif
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDQUICKCHILDREN_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDQUICKCHILDREN_H

@@ -58,7 +58,7 @@ protected:
 };
 
 
-XWaylandServer::XWaylandServer(QWaylandCompositor *compositor, QObject *parent)
+XWaylandServer::XWaylandServer(WaylandCompositor *compositor, QObject *parent)
     : QObject(parent)
     , m_compositor(compositor)
     , m_display(0)
@@ -74,7 +74,7 @@ XWaylandServer::~XWaylandServer()
     shutdown();
 }
 
-QWaylandCompositor *XWaylandServer::compositor() const
+WaylandCompositor *XWaylandServer::compositor() const
 {
     return m_compositor;
 }

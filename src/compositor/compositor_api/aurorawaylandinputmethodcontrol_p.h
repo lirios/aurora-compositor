@@ -27,55 +27,59 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDINPUTMETHODCONTROL_P_H
-#define QWAYLANDINPUTMETHODCONTROL_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDINPUTMETHODCONTROL_P_H
+#define AURORA_COMPOSITOR_WAYLANDINPUTMETHODCONTROL_P_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWaylandCompositor/qtwaylandcompositorglobal.h>
-#include <QtWaylandCompositor/qwaylandinputmethodcontrol.h>
+#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/aurorawaylandinputmethodcontrol.h>
 
 #include <QtCore/private/qobject_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandCompositor;
-class QWaylandSeat;
-class QWaylandSurface;
-class QWaylandTextInput;
+namespace Compositor {
+
+class WaylandCompositor;
+class WaylandSeat;
+class WaylandSurface;
+class WaylandTextInput;
 #if QT_WAYLAND_TEXT_INPUT_V4_WIP
-class QWaylandTextInputV4;
+class WaylandTextInputV4;
 #endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
-class QWaylandQtTextInputMethod;
+class WaylandQtTextInputMethod;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandInputMethodControlPrivate : public QObjectPrivate
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandInputMethodControlPrivate : public QObjectPrivate
 {
-    Q_DECLARE_PUBLIC(QWaylandInputMethodControl)
+    Q_DECLARE_PUBLIC(WaylandInputMethodControl)
 
 public:
-    explicit QWaylandInputMethodControlPrivate(QWaylandSurface *surface);
+    explicit WaylandInputMethodControlPrivate(WaylandSurface *surface);
 
-    QWaylandTextInput *textInput() const;
+    WaylandTextInput *textInput() const;
 #if QT_WAYLAND_TEXT_INPUT_V4_WIP
-    QWaylandTextInputV4 *textInputV4() const;
+    WaylandTextInputV4 *textInputV4() const;
 #endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
-    QWaylandQtTextInputMethod *textInputMethod() const;
+    WaylandQtTextInputMethod *textInputMethod() const;
 
-    QWaylandCompositor *compositor = nullptr;
-    QWaylandSeat *seat = nullptr;
-    QWaylandSurface *surface = nullptr;
+    WaylandCompositor *compositor = nullptr;
+    WaylandSeat *seat = nullptr;
+    WaylandSurface *surface = nullptr;
     bool enabled = false;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDINPUTMETHODCONTROL_P_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDINPUTMETHODCONTROL_P_H

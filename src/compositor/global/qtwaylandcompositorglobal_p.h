@@ -27,14 +27,14 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDCOMPOSITORGLOBAL_P_H
-#define QWAYLANDCOMPOSITORGLOBAL_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDCOMPOSITORGLOBAL_P_H
+#define AURORA_COMPOSITOR_WAYLANDCOMPOSITORGLOBAL_P_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -42,17 +42,21 @@
 //
 
 #include <QtWaylandGlobal/private/qtwaylandglobal-config_p.h>
-#include <QtWaylandCompositor/qtwaylandcompositorglobal.h>
+#include <AuroraCompositor/qtwaylandcompositorglobal.h>
 #include <QtGui/private/qtguiglobal_p.h>
-#include <QtWaylandCompositor/private/qtwaylandcompositor-config_p.h>
+#include <AuroraCompositor/private/qtwaylandcompositor-config_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 #if QT_CONFIG(wayland_compositor_quick)
 void Q_WAYLANDCOMPOSITOR_EXPORT qml_register_types_QtWayland_Compositor();
 #endif
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDCOMPOSITORGLOBAL_P_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDCOMPOSITORGLOBAL_P_H
 

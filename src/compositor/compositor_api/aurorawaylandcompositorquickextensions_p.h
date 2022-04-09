@@ -27,14 +27,14 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDCOMPOSITORQUICKEXTENSIONS_P_H
-#define QWAYLANDCOMPOSITORQUICKEXTENSIONS_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDCOMPOSITORQUICKEXTENSIONS_P_H
+#define AURORA_COMPOSITOR_WAYLANDCOMPOSITORQUICKEXTENSIONS_P_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -42,26 +42,28 @@
 //
 
 #include <QtQml/qqml.h>
-#include <QtWaylandCompositor/qtwaylandcompositorglobal.h>
-#include <QtWaylandCompositor/qwaylandquickextension.h>
+#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/aurorawaylandquickextension.h>
 
-#include <QtWaylandCompositor/qwaylandcompositor.h>
-#include <QtWaylandCompositor/qwaylandquickcompositor.h>
-#include <QtWaylandCompositor/qwaylandqtwindowmanager.h>
-#include <QtWaylandCompositor/qwaylandtextinputmanager.h>
+#include <LiriAuroraCompositor/aurorawaylandcompositor.h>
+#include <LiriAuroraCompositor/aurorawaylandquickcompositor.h>
+#include <LiriAuroraCompositor/aurorawaylandqtwindowmanager.h>
+#include <LiriAuroraCompositor/aurorawaylandtextinputmanager.h>
 #include <QtCore/private/qglobal_p.h>
 #if QT_WAYLAND_TEXT_INPUT_V4_WIP
-#include <QtWaylandCompositor/qwaylandtextinputmanagerv4.h>
+#include <LiriAuroraCompositor/aurorawaylandtextinputmanagerv4.h>
 #endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
-#include <QtWaylandCompositor/qwaylandqttextinputmethodmanager.h>
-#include <QtWaylandCompositor/qwaylandidleinhibitv1.h>
+#include <LiriAuroraCompositor/aurorawaylandqttextinputmethodmanager.h>
+#include <LiriAuroraCompositor/aurorawaylandidleinhibitv1.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandQuickCompositorQuickExtensionContainer : public QWaylandQuickCompositor
+namespace Compositor {
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandQuickCompositorQuickExtensionContainer : public WaylandQuickCompositor
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<QWaylandCompositorExtension> extensions READ extensions)
+    Q_PROPERTY(QQmlListProperty<WaylandCompositorExtension> extensions READ extensions)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
     Q_CLASSINFO("DefaultProperty", "data")
     QML_NAMED_ELEMENT(WaylandCompositor)
@@ -72,34 +74,34 @@ public:
         return QQmlListProperty<QObject>(this, &m_objects);
     }
 
-    QQmlListProperty<QWaylandCompositorExtension> extensions()
+    QQmlListProperty<WaylandCompositorExtension> extensions()
     {
-        return QQmlListProperty<QWaylandCompositorExtension>(this, this,
+        return QQmlListProperty<WaylandCompositorExtension>(this, this,
                                                    &append_extension,
                                                    &countFunction,
                                                    &atFunction,
                                                    &clearFunction);
     }
 
-    static qsizetype countFunction(QQmlListProperty<QWaylandCompositorExtension> *list)
+    static qsizetype countFunction(QQmlListProperty<WaylandCompositorExtension> *list)
     {
-        return static_cast<QWaylandQuickCompositorQuickExtensionContainer *>(list->data)->extension_vector.size();
+        return static_cast<WaylandQuickCompositorQuickExtensionContainer *>(list->data)->extension_vector.size();
     }
 
-    static QWaylandCompositorExtension *atFunction(QQmlListProperty<QWaylandCompositorExtension> *list, qsizetype index)
+    static WaylandCompositorExtension *atFunction(QQmlListProperty<WaylandCompositorExtension> *list, qsizetype index)
     {
-        return static_cast<QWaylandQuickCompositorQuickExtensionContainer *>(list->data)->extension_vector.at(index);
+        return static_cast<WaylandQuickCompositorQuickExtensionContainer *>(list->data)->extension_vector.at(index);
     }
 
-    static void append_extension(QQmlListProperty<QWaylandCompositorExtension> *list, QWaylandCompositorExtension *extension)
+    static void append_extension(QQmlListProperty<WaylandCompositorExtension> *list, WaylandCompositorExtension *extension)
     {
-        QWaylandQuickCompositorQuickExtensionContainer *quickExtObj = static_cast<QWaylandQuickCompositorQuickExtensionContainer *>(list->data);
+        WaylandQuickCompositorQuickExtensionContainer *quickExtObj = static_cast<WaylandQuickCompositorQuickExtensionContainer *>(list->data);
         extension->setExtensionContainer(quickExtObj);
     }
 
-    static void clearFunction(QQmlListProperty<QWaylandCompositorExtension> *list)
+    static void clearFunction(QQmlListProperty<WaylandCompositorExtension> *list)
     {
-        static_cast<QWaylandQuickCompositorQuickExtensionContainer *>(list->data)->extension_vector.clear();
+        static_cast<WaylandQuickCompositorQuickExtensionContainer *>(list->data)->extension_vector.clear();
     }
 
 private:
@@ -108,14 +110,16 @@ private:
 
 
 // Note: These have to be in a header with a Q_OBJECT macro, otherwise we won't run moc on it
-Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(QWaylandQtWindowManager, QtWindowManager)
-Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(QWaylandIdleInhibitManagerV1, IdleInhibitManagerV1)
-Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(QWaylandTextInputManager, TextInputManager)
+Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(WaylandQtWindowManager, QtWindowManager)
+Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(WaylandIdleInhibitManagerV1, IdleInhibitManagerV1)
+Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(WaylandTextInputManager, TextInputManager)
 #if QT_WAYLAND_TEXT_INPUT_V4_WIP
-Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(QWaylandTextInputManagerV4, TextInputManagerV4)
+Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(WaylandTextInputManagerV4, TextInputManagerV4)
 #endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
-Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(QWaylandQtTextInputMethodManager, QtTextInputMethodManager)
+Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(WaylandQtTextInputMethodManager, QtTextInputMethodManager)
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDCOMPOSITORQUICKEXTENSIONS_P_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDCOMPOSITORQUICKEXTENSIONS_P_H

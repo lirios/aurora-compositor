@@ -34,7 +34,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -46,14 +46,16 @@
 #include <QtGui/QClipboard>
 #include <QtCore/QMimeData>
 
-#include <QtWaylandCompositor/QWaylandCompositor>
+#include <LiriAuroraCompositor/WaylandCompositor>
 
-#include <QtWaylandCompositor/private/qwayland-server-wayland.h>
-#include <QtWaylandCompositor/private/qtwaylandcompositorglobal_p.h>
+#include <LiriAuroraCompositor/private/aurora-server-wayland.h>
+#include <LiriAuroraCompositor/private/qtwaylandcompositorglobal_p.h>
 
 QT_REQUIRE_CONFIG(wayland_datadevice);
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 class QSocketNotifier;
 
@@ -62,12 +64,12 @@ namespace QtWayland {
 class DataDevice;
 class DataSource;
 
-class DataDeviceManager : public QObject, public QtWaylandServer::wl_data_device_manager
+class DataDeviceManager : public QObject, public PrivateServer::wl_data_device_manager
 {
     Q_OBJECT
 
 public:
-    DataDeviceManager(QWaylandCompositor *compositor);
+    DataDeviceManager(WaylandCompositor *compositor);
 
     void setCurrentSelectionSource(DataSource *source);
     DataSource *currentSelectionSource();
@@ -91,7 +93,7 @@ private:
     void retain();
     void finishReadFromClient(bool exhausted = false);
 
-    QWaylandCompositor *m_compositor = nullptr;
+    WaylandCompositor *m_compositor = nullptr;
     QList<DataDevice *> m_data_device_list;
 
     DataSource *m_current_selection_source = nullptr;
@@ -121,6 +123,8 @@ private:
 
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif // WLDATADEVICEMANAGER_H

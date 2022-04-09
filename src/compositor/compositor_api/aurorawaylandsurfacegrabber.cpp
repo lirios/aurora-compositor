@@ -27,29 +27,31 @@
 **
 ****************************************************************************/
 
-#include "qwaylandsurfacegrabber.h"
+#include "aurorawaylandsurfacegrabber.h"
 
 #include <QtCore/private/qobject_p.h>
-#include <QtWaylandCompositor/qwaylandsurface.h>
-#include <QtWaylandCompositor/qwaylandcompositor.h>
-#include <QtWaylandCompositor/private/qwaylandsurface_p.h>
+#include <LiriAuroraCompositor/aurorawaylandsurface.h>
+#include <LiriAuroraCompositor/aurorawaylandcompositor.h>
+#include <LiriAuroraCompositor/private/aurorawaylandsurface_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 /*!
-    \class QWaylandSurfaceGrabber
+    \class WaylandSurfaceGrabber
     \inmodule QtWaylandCompositor
     \since 5.8
-    \brief The QWaylandSurfaceGrabber class allows to read the content of a QWaylandSurface.
+    \brief The WaylandSurfaceGrabber class allows to read the content of a WaylandSurface.
 
     Sometimes it is needed to get the contents of a surface, for example to provide a screenshot
-    to the user. The QWaylandSurfaceGrabber class provides a simple method to do so, without
+    to the user. The WaylandSurfaceGrabber class provides a simple method to do so, without
     having to care what type of buffer backs the surface, be it shared memory, OpenGL or something
     else.
 */
 
 /*!
-    \enum QWaylandSurfaceGrabber::Error
+    \enum WaylandSurfaceGrabber::Error
 
     The Error enum describes the reason for a grab failure.
 
@@ -59,29 +61,29 @@ QT_BEGIN_NAMESPACE
     \value RendererNotReady The compositor renderer is not ready to grab the surface content.
  */
 
-class QWaylandSurfaceGrabberPrivate : public QObjectPrivate
+class WaylandSurfaceGrabberPrivate : public QObjectPrivate
 {
-    Q_DECLARE_PUBLIC(QWaylandSurfaceGrabber)
+    Q_DECLARE_PUBLIC(WaylandSurfaceGrabber)
 
-    QWaylandSurface *surface = nullptr;
+    WaylandSurface *surface = nullptr;
 };
 
 /*!
- * Create a QWaylandSurfaceGrabber object with the given \a surface and \a parent
+ * Create a WaylandSurfaceGrabber object with the given \a surface and \a parent
  */
-QWaylandSurfaceGrabber::QWaylandSurfaceGrabber(QWaylandSurface *surface, QObject *parent)
-                      : QObject(*(new QWaylandSurfaceGrabberPrivate), parent)
+WaylandSurfaceGrabber::WaylandSurfaceGrabber(WaylandSurface *surface, QObject *parent)
+                      : QObject(*(new WaylandSurfaceGrabberPrivate), parent)
 {
-    Q_D(QWaylandSurfaceGrabber);
+    Q_D(WaylandSurfaceGrabber);
     d->surface = surface;
 }
 
 /*!
  * Returns the surface set on this object
  */
-QWaylandSurface *QWaylandSurfaceGrabber::surface() const
+WaylandSurface *WaylandSurfaceGrabber::surface() const
 {
-    Q_D(const QWaylandSurfaceGrabber);
+    Q_D(const WaylandSurfaceGrabber);
     return d->surface;
 }
 
@@ -90,16 +92,16 @@ QWaylandSurface *QWaylandSurfaceGrabber::surface() const
  * It may not be possible to do that immediately so the success and failed signals
  * should be used to be notified of when the grab is completed.
  */
-void QWaylandSurfaceGrabber::grab()
+void WaylandSurfaceGrabber::grab()
 {
-    Q_D(QWaylandSurfaceGrabber);
+    Q_D(WaylandSurfaceGrabber);
     if (!d->surface) {
         emit failed(InvalidSurface);
         return;
     }
 
-    QWaylandSurfacePrivate *surf = QWaylandSurfacePrivate::get(d->surface);
-    QWaylandBufferRef buf = surf->bufferRef;
+    WaylandSurfacePrivate *surf = WaylandSurfacePrivate::get(d->surface);
+    WaylandBufferRef buf = surf->bufferRef;
     if (!buf.hasBuffer()) {
         emit failed(NoBufferAttached);
         return;
@@ -108,4 +110,6 @@ void QWaylandSurfaceGrabber::grab()
     d->surface->compositor()->grabSurface(this, buf);
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

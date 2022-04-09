@@ -49,7 +49,7 @@
 #include <QtCore/QSocketNotifier>
 #include <QtCore/QtMath>
 
-#include <QtWaylandCompositor/QWaylandSurface>
+#include <LiriAuroraCompositor/WaylandSurface>
 
 #include "xcbcursors.h"
 #include "xcbwindow.h"
@@ -93,12 +93,12 @@ void XWaylandManager::setServer(XWaylandServer *server)
     m_server = server;
 }
 
-QWaylandCompositor *XWaylandManager::compositor() const
+WaylandCompositor *XWaylandManager::compositor() const
 {
     return m_compositor;
 }
 
-void XWaylandManager::setCompositor(QWaylandCompositor *compositor)
+void XWaylandManager::setCompositor(WaylandCompositor *compositor)
 {
     m_compositor = compositor;
 }
@@ -227,7 +227,7 @@ XWaylandShellSurface *XWaylandManager::shellSurfaceFromId(xcb_window_t id)
     return m_windowsMap.value(id, nullptr);
 }
 
-XWaylandShellSurface *XWaylandManager::shellSurfaceFromSurface(QWaylandSurface *surface)
+XWaylandShellSurface *XWaylandManager::shellSurfaceFromSurface(WaylandSurface *surface)
 {
     for (auto item : m_windowsMap.keys()) {
         auto shellSurface = m_windowsMap.value(item);
@@ -774,7 +774,7 @@ void XWaylandManager::handleSurfaceId(XWaylandShellSurface *shellSurface, xcb_cl
     shellSurface->setSurfaceId(id);
 
     wl_resource *resource = wl_client_get_object(m_server->client(), id);
-    QWaylandSurface *surface = resource ? QWaylandSurface::fromResource(resource) : nullptr;
+    WaylandSurface *surface = resource ? WaylandSurface::fromResource(resource) : nullptr;
     if (surface)
         shellSurface->setSurface(surface);
     else

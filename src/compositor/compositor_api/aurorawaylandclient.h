@@ -27,11 +27,11 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDCLIENT_H
-#define QWAYLANDCLIENT_H
+#ifndef AURORA_COMPOSITOR_WAYLANDCLIENT_H
+#define AURORA_COMPOSITOR_WAYLANDCLIENT_H
 
-#include <QtWaylandCompositor/qtwaylandcompositorglobal.h>
-#include <QtWaylandCompositor/qtwaylandqmlinclude.h>
+#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/qtwaylandqmlinclude.h>
 
 #include <QObject>
 
@@ -39,27 +39,29 @@
 
 struct wl_client;
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandClientPrivate;
-class QWaylandCompositor;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandClient : public QObject
+class WaylandClientPrivate;
+class WaylandCompositor;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandClient : public QObject
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandClient)
+    Q_DECLARE_PRIVATE(WaylandClient)
 
-    Q_PROPERTY(QWaylandCompositor *compositor READ compositor CONSTANT)
+    Q_PROPERTY(WaylandCompositor *compositor READ compositor CONSTANT)
     Q_PROPERTY(qint64 userId READ userId CONSTANT)
     Q_PROPERTY(qint64 groupId READ groupId CONSTANT)
     Q_PROPERTY(qint64 processId READ processId CONSTANT)
-    Q_MOC_INCLUDE("qwaylandcompositor.h")
+    Q_MOC_INCLUDE("aurorawaylandcompositor.h")
 
     QML_NAMED_ELEMENT(WaylandClient)
     QML_ADDED_IN_VERSION(1, 0)
     QML_UNCREATABLE("")
 public:
-    ~QWaylandClient() override;
+    ~WaylandClient() override;
 
     enum TextInputProtocol {
         NoProtocol = 0,
@@ -75,9 +77,9 @@ public:
     TextInputProtocols textInputProtocols() const;
     void setTextInputProtocols(TextInputProtocols p);
 
-    static QWaylandClient *fromWlClient(QWaylandCompositor *compositor, wl_client *wlClient);
+    static WaylandClient *fromWlClient(WaylandCompositor *compositor, wl_client *wlClient);
 
-    QWaylandCompositor *compositor() const;
+    WaylandCompositor *compositor() const;
 
     wl_client *client() const;
 
@@ -92,9 +94,11 @@ public Q_SLOTS:
     void close();
 
 private:
-    explicit QWaylandClient(QWaylandCompositor *compositor, wl_client *client);
+    explicit WaylandClient(WaylandCompositor *compositor, wl_client *client);
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDCLIENT_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDCLIENT_H

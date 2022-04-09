@@ -27,31 +27,35 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDQUICKXDGOUTPUT_V1
-#define QWAYLANDQUICKXDGOUTPUT_V1
+#ifndef AURORA_COMPOSITOR_WAYLANDQUICKXDGOUTPUT_V1
+#define AURORA_COMPOSITOR_WAYLANDQUICKXDGOUTPUT_V1
 
 #include <QtQml/QQmlListProperty>
 #include <QtQml/QQmlParserStatus>
-#include <QtWaylandCompositor/QWaylandXdgOutputV1>
+#include <LiriAuroraCompositor/WaylandXdgOutputV1>
 
 QT_REQUIRE_CONFIG(wayland_compositor_quick);
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandQuickXdgOutputV1
-        : public QWaylandXdgOutputV1
+namespace Compositor {
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandQuickXdgOutputV1
+        : public WaylandXdgOutputV1
         , public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
 public:
-    explicit QWaylandQuickXdgOutputV1();
+    explicit WaylandQuickXdgOutputV1();
 
 protected:
     void classBegin() override {}
     void componentComplete() override;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDQUICKXDGOUTPUT_V1
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDQUICKXDGOUTPUT_V1

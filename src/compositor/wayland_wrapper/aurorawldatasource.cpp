@@ -27,21 +27,23 @@
 **
 ****************************************************************************/
 
-#include "qwldatasource_p.h"
-#include "qwldataoffer_p.h"
-#include "qwldatadevice_p.h"
-#include "qwldatadevicemanager_p.h"
-#include <QtWaylandCompositor/private/qwaylandutils_p.h>
+#include "aurorawldatasource_p.h"
+#include "aurorawldataoffer_p.h"
+#include "aurorawldatadevice_p.h"
+#include "aurorawldatadevicemanager_p.h"
+#include <LiriAuroraCompositor/private/aurorawaylandutils_p.h>
 
 #include <unistd.h>
-#include <QtWaylandCompositor/private/wayland-wayland-server-protocol.h>
+#include <LiriAuroraCompositor/private/wayland-wayland-server-protocol.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 namespace QtWayland {
 
 DataSource::DataSource(struct wl_client *client, uint32_t id, uint32_t time)
-    : QtWaylandServer::wl_data_source(client, id, 1)
+    : PrivateServer::wl_data_source(client, id, 1)
     , m_time(time)
 {
 }
@@ -105,7 +107,7 @@ void DataSource::data_source_destroy(Resource *resource)
     wl_resource_destroy(resource->handle);
 }
 
-void DataSource::data_source_destroy_resource(QtWaylandServer::wl_data_source::Resource *resource)
+void DataSource::data_source_destroy_resource(PrivateServer::wl_data_source::Resource *resource)
 {
     Q_UNUSED(resource);
     delete this;
@@ -113,4 +115,6 @@ void DataSource::data_source_destroy_resource(QtWaylandServer::wl_data_source::R
 
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

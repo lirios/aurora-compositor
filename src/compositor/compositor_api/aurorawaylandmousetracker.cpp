@@ -27,17 +27,19 @@
 **
 ****************************************************************************/
 
-#include "qwaylandmousetracker_p.h"
+#include "aurorawaylandmousetracker_p.h"
 
 #include <QtQuick/private/qquickitem_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandMouseTrackerPrivate : public QQuickItemPrivate
+namespace Compositor {
+
+class WaylandMouseTrackerPrivate : public QQuickItemPrivate
 {
-    Q_DECLARE_PUBLIC(QWaylandMouseTracker)
+    Q_DECLARE_PUBLIC(WaylandMouseTracker)
 public:
-    QWaylandMouseTrackerPrivate()
+    WaylandMouseTrackerPrivate()
     {
         QImage cursorImage(64,64,QImage::Format_ARGB32);
         cursorImage.fill(Qt::transparent);
@@ -45,7 +47,7 @@ public:
     }
     void handleMousePos(const QPointF &mousePos)
     {
-        Q_Q(QWaylandMouseTracker);
+        Q_Q(WaylandMouseTracker);
         bool xChanged = mousePos.x() != this->mousePos.x();
         bool yChanged = mousePos.y() != this->mousePos.y();
         if (xChanged || yChanged) {
@@ -59,7 +61,7 @@ public:
 
     void setHovered(bool hovered)
     {
-        Q_Q(QWaylandMouseTracker);
+        Q_Q(WaylandMouseTracker);
         if (this->hovered == hovered)
             return;
         this->hovered = hovered;
@@ -72,10 +74,10 @@ public:
     bool hovered = false;
 };
 
-QWaylandMouseTracker::QWaylandMouseTracker(QQuickItem *parent)
-        : QQuickItem(*(new QWaylandMouseTrackerPrivate), parent)
+WaylandMouseTracker::WaylandMouseTracker(QQuickItem *parent)
+        : QQuickItem(*(new WaylandMouseTrackerPrivate), parent)
 {
-    Q_D(QWaylandMouseTracker);
+    Q_D(WaylandMouseTracker);
     setFiltersChildMouseEvents(true);
     setAcceptHoverEvents(true);
     setAcceptedMouseButtons(Qt::AllButtons);
@@ -84,21 +86,21 @@ QWaylandMouseTracker::QWaylandMouseTracker(QQuickItem *parent)
 #endif
 }
 
-qreal QWaylandMouseTracker::mouseX() const
+qreal WaylandMouseTracker::mouseX() const
 {
-    Q_D(const QWaylandMouseTracker);
+    Q_D(const WaylandMouseTracker);
     return d->mousePos.x();
 }
-qreal QWaylandMouseTracker::mouseY() const
+qreal WaylandMouseTracker::mouseY() const
 {
-    Q_D(const QWaylandMouseTracker);
+    Q_D(const WaylandMouseTracker);
     return d->mousePos.y();
 }
 
 #if QT_CONFIG(cursor)
-void QWaylandMouseTracker::setWindowSystemCursorEnabled(bool enable)
+void WaylandMouseTracker::setWindowSystemCursorEnabled(bool enable)
 {
-    Q_D(QWaylandMouseTracker);
+    Q_D(WaylandMouseTracker);
     if (d->windowSystemCursorEnabled != enable) {
         d->windowSystemCursorEnabled = enable;
         if (enable) {
@@ -110,22 +112,22 @@ void QWaylandMouseTracker::setWindowSystemCursorEnabled(bool enable)
     }
 }
 
-bool QWaylandMouseTracker::windowSystemCursorEnabled() const
+bool WaylandMouseTracker::windowSystemCursorEnabled() const
 {
-    Q_D(const QWaylandMouseTracker);
+    Q_D(const WaylandMouseTracker);
     return d->windowSystemCursorEnabled;
 }
 #endif
 
-bool QWaylandMouseTracker::hovered() const
+bool WaylandMouseTracker::hovered() const
 {
-    Q_D(const QWaylandMouseTracker);
+    Q_D(const WaylandMouseTracker);
     return d->hovered;
 }
 
-bool QWaylandMouseTracker::childMouseEventFilter(QQuickItem *item, QEvent *event)
+bool WaylandMouseTracker::childMouseEventFilter(QQuickItem *item, QEvent *event)
 {
-    Q_D(QWaylandMouseTracker);
+    Q_D(WaylandMouseTracker);
     if (event->type() == QEvent::MouseMove) {
         QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
         d->handleMousePos(mapFromItem(item, mouseEvent->position()));
@@ -136,32 +138,34 @@ bool QWaylandMouseTracker::childMouseEventFilter(QQuickItem *item, QEvent *event
     return false;
 }
 
-void QWaylandMouseTracker::mouseMoveEvent(QMouseEvent *event)
+void WaylandMouseTracker::mouseMoveEvent(QMouseEvent *event)
 {
-    Q_D(QWaylandMouseTracker);
+    Q_D(WaylandMouseTracker);
     QQuickItem::mouseMoveEvent(event);
     d->handleMousePos(event->position());
 }
 
-void QWaylandMouseTracker::hoverMoveEvent(QHoverEvent *event)
+void WaylandMouseTracker::hoverMoveEvent(QHoverEvent *event)
 {
-    Q_D(QWaylandMouseTracker);
+    Q_D(WaylandMouseTracker);
     QQuickItem::hoverMoveEvent(event);
     d->handleMousePos(event->position());
 }
 
-void QWaylandMouseTracker::hoverEnterEvent(QHoverEvent *event)
+void WaylandMouseTracker::hoverEnterEvent(QHoverEvent *event)
 {
-    Q_D(QWaylandMouseTracker);
+    Q_D(WaylandMouseTracker);
     Q_UNUSED(event);
     d->setHovered(true);
 }
 
-void QWaylandMouseTracker::hoverLeaveEvent(QHoverEvent *event)
+void WaylandMouseTracker::hoverLeaveEvent(QHoverEvent *event)
 {
-    Q_D(QWaylandMouseTracker);
+    Q_D(WaylandMouseTracker);
     Q_UNUSED(event);
     d->setHovered(false);
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

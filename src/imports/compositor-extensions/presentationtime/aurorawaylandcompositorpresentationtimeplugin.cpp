@@ -30,15 +30,15 @@
 #include <QtQml/qqmlextensionplugin.h>
 #include <QtQml/qqml.h>
 
-#include <QtWaylandCompositor/qwaylandquickextension.h>
-#include <QtWaylandCompositor/private/qwaylandpresentationtime_p.h>
+#include <LiriAuroraCompositor/aurorawaylandquickextension.h>
+#include <LiriAuroraCompositor/private/aurorawaylandpresentationtime_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(QWaylandPresentationTime)
+namespace Compositor {
 
 /*!
-    \qmlmodule QtWayland.Compositor.PresentationTime
+    \qmlmodule Aurora.Compositor.PresentationTime
     \title Qt Wayland Presentation Time Extension
     \ingroup qmlmodules
     \since 6.3
@@ -55,11 +55,13 @@ Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(QWaylandPresentationTime)
     \section2 Usage
     To use this module, import it like this:
     \qml
-    import QtWayland.Compositor.PresentationTime
+    import Aurora.Compositor.PresentationTime
     \endqml
 */
 
-class QWaylandCompositorPresentationTimePlugin : public QQmlExtensionPlugin
+Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(WaylandPresentationTime)
+
+class WaylandCompositorPresentationTimePlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
@@ -73,9 +75,12 @@ public:
     static void defineModule(const char *uri)
     {
         qmlRegisterModule(uri, QT_VERSION_MAJOR, QT_VERSION_MINOR);
-        qmlRegisterType<QWaylandPresentationTime>(uri, 1, 0, "PresentationTime");
+        qmlRegisterType<WaylandPresentationTime>(uri, 1, 0, "PresentationTime");
     }
 };
-QT_END_NAMESPACE
 
-#include "qwaylandcompositorpresentationtimeplugin.moc"
+} // namespace Compositor
+
+} // namespace Aurora
+
+#include "aurorawaylandcompositorpresentationtimeplugin.moc"

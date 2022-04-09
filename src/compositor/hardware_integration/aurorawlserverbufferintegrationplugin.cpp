@@ -27,9 +27,11 @@
 **
 ****************************************************************************/
 
-#include "qwlserverbufferintegrationplugin_p.h"
+#include "aurorawlserverbufferintegrationplugin_p.h"
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 namespace QtWayland {
 
@@ -44,5 +46,7 @@ ServerBufferIntegrationPlugin::~ServerBufferIntegrationPlugin()
 
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 

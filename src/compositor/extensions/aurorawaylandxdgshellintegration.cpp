@@ -27,26 +27,28 @@
 **
 ****************************************************************************/
 
-#include "qwaylandxdgshellintegration_p.h"
+#include "aurorawaylandxdgshellintegration_p.h"
 
-#include <QtWaylandCompositor/QWaylandXdgSurface>
-#include <QtWaylandCompositor/QWaylandCompositor>
-#include <QtWaylandCompositor/QWaylandSeat>
+#include <LiriAuroraCompositor/WaylandXdgSurface>
+#include <LiriAuroraCompositor/WaylandCompositor>
+#include <LiriAuroraCompositor/WaylandSeat>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 namespace QtWayland {
 
-static void handlePopupCreated(QWaylandQuickShellSurfaceItem *parentItem, QWaylandXdgPopup *popup)
+static void handlePopupCreated(WaylandQuickShellSurfaceItem *parentItem, WaylandXdgPopup *popup)
 {
     if (parentItem->shellSurface() == popup->parentXdgSurface())
-        QWaylandQuickShellSurfaceItemPrivate::get(parentItem)->maybeCreateAutoPopup(popup->xdgSurface());
+        WaylandQuickShellSurfaceItemPrivate::get(parentItem)->maybeCreateAutoPopup(popup->xdgSurface());
 }
 
-XdgToplevelIntegration::XdgToplevelIntegration(QWaylandQuickShellSurfaceItem *item)
-    : QWaylandQuickShellIntegration(item)
+XdgToplevelIntegration::XdgToplevelIntegration(WaylandQuickShellSurfaceItem *item)
+    : WaylandQuickShellIntegration(item)
     , m_item(item)
-    , m_xdgSurface(qobject_cast<QWaylandXdgSurface *>(item->shellSurface()))
+    , m_xdgSurface(qobject_cast<WaylandXdgSurface *>(item->shellSurface()))
     , m_toplevel(m_xdgSurface->toplevel())
     , grabberState(GrabberState::Default)
 {
@@ -54,19 +56,19 @@ XdgToplevelIntegration::XdgToplevelIntegration(QWaylandQuickShellSurfaceItem *it
 
     m_item->setSurface(m_xdgSurface->surface());
 
-    connect(m_toplevel, &QWaylandXdgToplevel::startMove, this, &XdgToplevelIntegration::handleStartMove);
-    connect(m_toplevel, &QWaylandXdgToplevel::startResize, this, &XdgToplevelIntegration::handleStartResize);
-    connect(m_toplevel, &QWaylandXdgToplevel::setMaximized, this, &XdgToplevelIntegration::handleSetMaximized);
-    connect(m_toplevel, &QWaylandXdgToplevel::unsetMaximized, this, &XdgToplevelIntegration::handleUnsetMaximized);
-    connect(m_toplevel, &QWaylandXdgToplevel::maximizedChanged, this, &XdgToplevelIntegration::handleMaximizedChanged);
-    connect(m_toplevel, &QWaylandXdgToplevel::setFullscreen, this, &XdgToplevelIntegration::handleSetFullscreen);
-    connect(m_toplevel, &QWaylandXdgToplevel::unsetFullscreen, this, &XdgToplevelIntegration::handleUnsetFullscreen);
-    connect(m_toplevel, &QWaylandXdgToplevel::fullscreenChanged, this, &XdgToplevelIntegration::handleFullscreenChanged);
-    connect(m_toplevel, &QWaylandXdgToplevel::activatedChanged, this, &XdgToplevelIntegration::handleActivatedChanged);
-    connect(m_xdgSurface->shell(), &QWaylandXdgShell::popupCreated, this, [item](QWaylandXdgPopup *popup, QWaylandXdgSurface *){
+    connect(m_toplevel, &WaylandXdgToplevel::startMove, this, &XdgToplevelIntegration::handleStartMove);
+    connect(m_toplevel, &WaylandXdgToplevel::startResize, this, &XdgToplevelIntegration::handleStartResize);
+    connect(m_toplevel, &WaylandXdgToplevel::setMaximized, this, &XdgToplevelIntegration::handleSetMaximized);
+    connect(m_toplevel, &WaylandXdgToplevel::unsetMaximized, this, &XdgToplevelIntegration::handleUnsetMaximized);
+    connect(m_toplevel, &WaylandXdgToplevel::maximizedChanged, this, &XdgToplevelIntegration::handleMaximizedChanged);
+    connect(m_toplevel, &WaylandXdgToplevel::setFullscreen, this, &XdgToplevelIntegration::handleSetFullscreen);
+    connect(m_toplevel, &WaylandXdgToplevel::unsetFullscreen, this, &XdgToplevelIntegration::handleUnsetFullscreen);
+    connect(m_toplevel, &WaylandXdgToplevel::fullscreenChanged, this, &XdgToplevelIntegration::handleFullscreenChanged);
+    connect(m_toplevel, &WaylandXdgToplevel::activatedChanged, this, &XdgToplevelIntegration::handleActivatedChanged);
+    connect(m_xdgSurface->shell(), &WaylandXdgShell::popupCreated, this, [item](WaylandXdgPopup *popup, WaylandXdgSurface *){
         handlePopupCreated(item, popup);
     });
-    connect(m_xdgSurface->surface(), &QWaylandSurface::destinationSizeChanged, this, &XdgToplevelIntegration::handleSurfaceSizeChanged);
+    connect(m_xdgSurface->surface(), &WaylandSurface::destinationSizeChanged, this, &XdgToplevelIntegration::handleSurfaceSizeChanged);
     connect(m_toplevel, &QObject::destroyed, this, &XdgToplevelIntegration::handleToplevelDestroyed);
 }
 
@@ -79,7 +81,7 @@ bool XdgToplevelIntegration::eventFilter(QObject *object, QEvent *event)
         QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
         return filterMouseReleaseEvent(mouseEvent);
     }
-    return QWaylandQuickShellIntegration::eventFilter(object, event);
+    return WaylandQuickShellIntegration::eventFilter(object, event);
 }
 
 bool XdgToplevelIntegration::filterMouseMoveEvent(QMouseEvent *event)
@@ -121,14 +123,14 @@ bool XdgToplevelIntegration::filterMouseReleaseEvent(QMouseEvent *event)
     return false;
 }
 
-void XdgToplevelIntegration::handleStartMove(QWaylandSeat *seat)
+void XdgToplevelIntegration::handleStartMove(WaylandSeat *seat)
 {
     grabberState = GrabberState::Move;
     moveState.seat = seat;
     moveState.initialized = false;
 }
 
-void XdgToplevelIntegration::handleStartResize(QWaylandSeat *seat, Qt::Edges edges)
+void XdgToplevelIntegration::handleStartResize(WaylandSeat *seat, Qt::Edges edges)
 {
     grabberState = GrabberState::Resize;
     resizeState.seat = seat;
@@ -144,9 +146,9 @@ void XdgToplevelIntegration::handleSetMaximized()
     if (!m_item->view()->isPrimary())
         return;
 
-    QList<QWaylandXdgToplevel::State> states = m_toplevel->states();
+    QList<WaylandXdgToplevel::State> states = m_toplevel->states();
 
-    if (!states.contains(QWaylandXdgToplevel::State::FullscreenState) && !states.contains(QWaylandXdgToplevel::State::MaximizedState)) {
+    if (!states.contains(WaylandXdgToplevel::State::FullscreenState) && !states.contains(WaylandXdgToplevel::State::MaximizedState)) {
         windowedGeometry.initialWindowSize = m_xdgSurface->windowGeometry().size();
         windowedGeometry.initialPosition = m_item->moveItem()->position();
     }
@@ -154,7 +156,7 @@ void XdgToplevelIntegration::handleSetMaximized()
     // Any prior output-resize handlers are irrelevant at this point.
     disconnect(nonwindowedState.sizeChangedConnection);
     nonwindowedState.output = m_item->view()->output();
-    nonwindowedState.sizeChangedConnection = connect(nonwindowedState.output, &QWaylandOutput::availableGeometryChanged, this, &XdgToplevelIntegration::handleMaximizedSizeChanged);
+    nonwindowedState.sizeChangedConnection = connect(nonwindowedState.output, &WaylandOutput::availableGeometryChanged, this, &XdgToplevelIntegration::handleMaximizedSizeChanged);
     handleMaximizedSizeChanged();
 }
 
@@ -200,9 +202,9 @@ void XdgToplevelIntegration::handleSetFullscreen()
     if (!m_item->view()->isPrimary())
         return;
 
-    QList<QWaylandXdgToplevel::State> states = m_toplevel->states();
+    QList<WaylandXdgToplevel::State> states = m_toplevel->states();
 
-    if (!states.contains(QWaylandXdgToplevel::State::FullscreenState) && !states.contains(QWaylandXdgToplevel::State::MaximizedState)) {
+    if (!states.contains(WaylandXdgToplevel::State::FullscreenState) && !states.contains(WaylandXdgToplevel::State::MaximizedState)) {
         windowedGeometry.initialWindowSize = m_xdgSurface->windowGeometry().size();
         windowedGeometry.initialPosition = m_item->moveItem()->position();
     }
@@ -210,7 +212,7 @@ void XdgToplevelIntegration::handleSetFullscreen()
     // Any prior output-resize handlers are irrelevant at this point.
     disconnect(nonwindowedState.sizeChangedConnection);
     nonwindowedState.output = m_item->view()->output();
-    nonwindowedState.sizeChangedConnection = connect(nonwindowedState.output, &QWaylandOutput::geometryChanged, this, &XdgToplevelIntegration::handleFullscreenSizeChanged);
+    nonwindowedState.sizeChangedConnection = connect(nonwindowedState.output, &WaylandOutput::geometryChanged, this, &XdgToplevelIntegration::handleFullscreenSizeChanged);
     handleFullscreenSizeChanged();
 }
 
@@ -278,9 +280,9 @@ void XdgToplevelIntegration::handleToplevelDestroyed()
     disconnect(nonwindowedState.sizeChangedConnection);
 }
 
-XdgPopupIntegration::XdgPopupIntegration(QWaylandQuickShellSurfaceItem *item)
+XdgPopupIntegration::XdgPopupIntegration(WaylandQuickShellSurfaceItem *item)
     : m_item(item)
-    , m_xdgSurface(qobject_cast<QWaylandXdgSurface *>(item->shellSurface()))
+    , m_xdgSurface(qobject_cast<WaylandXdgSurface *>(item->shellSurface()))
     , m_popup(m_xdgSurface->popup())
 {
     Q_ASSERT(m_popup);
@@ -288,8 +290,8 @@ XdgPopupIntegration::XdgPopupIntegration(QWaylandQuickShellSurfaceItem *item)
     m_item->setSurface(m_xdgSurface->surface());
     handleGeometryChanged();
 
-    connect(m_popup, &QWaylandXdgPopup::configuredGeometryChanged, this, &XdgPopupIntegration::handleGeometryChanged);
-    connect(m_xdgSurface->shell(), &QWaylandXdgShell::popupCreated, this, [item](QWaylandXdgPopup *popup, QWaylandXdgSurface *){
+    connect(m_popup, &WaylandXdgPopup::configuredGeometryChanged, this, &XdgPopupIntegration::handleGeometryChanged);
+    connect(m_xdgSurface->shell(), &WaylandXdgShell::popupCreated, this, [item](WaylandXdgPopup *popup, WaylandXdgSurface *){
         handlePopupCreated(item, popup);
     });
 }
@@ -310,4 +312,6 @@ void XdgPopupIntegration::handleGeometryChanged()
 
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

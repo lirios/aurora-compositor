@@ -34,41 +34,45 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWaylandCompositor/QWaylandCompositorExtensionTemplate>
-#include <QtWaylandCompositor/QWaylandCompositor>
-#include <QtWaylandCompositor/private/qwayland-server-qt-key-unstable-v1.h>
+#include <LiriAuroraCompositor/WaylandCompositorExtensionTemplate>
+#include <LiriAuroraCompositor/WaylandCompositor>
+#include <LiriAuroraCompositor/private/aurora-server-qt-key-unstable-v1.h>
 #include <QtCore/private/qglobal_p.h>
 
 #include <wayland-util.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandSurface;
+namespace Compositor {
+
+class WaylandSurface;
 class QKeyEvent;
 
 namespace QtWayland {
 
-class QtKeyExtensionGlobal : public QWaylandCompositorExtensionTemplate<QtKeyExtensionGlobal>, public QtWaylandServer::zqt_key_v1
+class QtKeyExtensionGlobal : public WaylandCompositorExtensionTemplate<QtKeyExtensionGlobal>, public PrivateServer::zqt_key_v1
 {
     Q_OBJECT
 public:
-    QtKeyExtensionGlobal(QWaylandCompositor *compositor);
+    QtKeyExtensionGlobal(WaylandCompositor *compositor);
 
-    bool postQtKeyEvent(QKeyEvent *event, QWaylandSurface *surface);
+    bool postQtKeyEvent(QKeyEvent *event, WaylandSurface *surface);
 
 private:
-    QWaylandCompositor *m_compositor = nullptr;
+    WaylandCompositor *m_compositor = nullptr;
 };
 
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif // WLQTKEY_H

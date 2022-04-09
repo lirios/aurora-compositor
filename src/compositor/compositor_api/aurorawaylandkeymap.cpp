@@ -27,88 +27,90 @@
 **
 ****************************************************************************/
 
-#include "qwaylandkeymap.h"
-#include "qwaylandkeymap_p.h"
+#include "aurorawaylandkeymap.h"
+#include "aurorawaylandkeymap_p.h"
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-QWaylandKeymap::QWaylandKeymap(const QString &layout, const QString &variant, const QString &options, const QString &model, const QString &rules, QObject *parent)
-    : QObject(*new QWaylandKeymapPrivate(layout, variant, options, model, rules), parent)
+namespace Compositor {
+
+WaylandKeymap::WaylandKeymap(const QString &layout, const QString &variant, const QString &options, const QString &model, const QString &rules, QObject *parent)
+    : QObject(*new WaylandKeymapPrivate(layout, variant, options, model, rules), parent)
 {
 }
 
-QString QWaylandKeymap::layout() const {
-    Q_D(const QWaylandKeymap);
+QString WaylandKeymap::layout() const {
+    Q_D(const WaylandKeymap);
     return d->m_layout;
 }
 
-void QWaylandKeymap::setLayout(const QString &layout)
+void WaylandKeymap::setLayout(const QString &layout)
 {
-    Q_D(QWaylandKeymap);
+    Q_D(WaylandKeymap);
     if (d->m_layout == layout)
         return;
     d->m_layout = layout;
     emit layoutChanged();
 }
 
-QString QWaylandKeymap::variant() const
+QString WaylandKeymap::variant() const
 {
-    Q_D(const QWaylandKeymap);
+    Q_D(const WaylandKeymap);
     return d->m_variant;
 }
 
-void QWaylandKeymap::setVariant(const QString &variant)
+void WaylandKeymap::setVariant(const QString &variant)
 {
-    Q_D(QWaylandKeymap);
+    Q_D(WaylandKeymap);
     if (d->m_variant == variant)
         return;
     d->m_variant = variant;
     emit variantChanged();
 }
 
-QString QWaylandKeymap::options() const {
-    Q_D(const QWaylandKeymap);
+QString WaylandKeymap::options() const {
+    Q_D(const WaylandKeymap);
     return d->m_options;
 }
 
-void QWaylandKeymap::setOptions(const QString &options)
+void WaylandKeymap::setOptions(const QString &options)
 {
-    Q_D(QWaylandKeymap);
+    Q_D(WaylandKeymap);
     if (d->m_options == options)
         return;
     d->m_options = options;
     emit optionsChanged();
 }
 
-QString QWaylandKeymap::rules() const {
-    Q_D(const QWaylandKeymap);
+QString WaylandKeymap::rules() const {
+    Q_D(const WaylandKeymap);
     return d->m_rules;
 }
 
-void QWaylandKeymap::setRules(const QString &rules)
+void WaylandKeymap::setRules(const QString &rules)
 {
-    Q_D(QWaylandKeymap);
+    Q_D(WaylandKeymap);
     if (d->m_rules == rules)
         return;
     d->m_rules = rules;
     emit rulesChanged();
 }
 
-QString QWaylandKeymap::model() const {
-    Q_D(const QWaylandKeymap);
+QString WaylandKeymap::model() const {
+    Q_D(const WaylandKeymap);
     return d->m_model;
 }
 
-void QWaylandKeymap::setModel(const QString &model)
+void WaylandKeymap::setModel(const QString &model)
 {
-    Q_D(QWaylandKeymap);
+    Q_D(WaylandKeymap);
     if (d->m_model == model)
         return;
     d->m_model = model;
     emit modelChanged();
 }
 
-QWaylandKeymapPrivate::QWaylandKeymapPrivate(const QString &layout, const QString &variant,
+WaylandKeymapPrivate::WaylandKeymapPrivate(const QString &layout, const QString &variant,
                                              const QString &options, const QString &model,
                                              const QString &rules)
     : m_layout(layout)
@@ -119,6 +121,8 @@ QWaylandKeymapPrivate::QWaylandKeymapPrivate(const QString &layout, const QStrin
 {
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#include "moc_qwaylandkeymap.cpp"
+} // namespace Aurora
+
+#include "moc_aurorawaylandkeymap.cpp"

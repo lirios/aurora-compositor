@@ -35,7 +35,9 @@
 
 #include <QtCore/QDebug>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 ShmServerBuffer::ShmServerBuffer(ShmServerBufferIntegration *integration, const QImage &qimage, QtWayland::ServerBuffer::Format format)
     : QtWayland::ServerBuffer(qimage.size(),format)
@@ -47,14 +49,14 @@ ShmServerBuffer::ShmServerBuffer(ShmServerBufferIntegration *integration, const 
     m_format = format;
     switch (m_format) {
         case RGBA32:
-            m_shm_format = QtWaylandServer::qt_shm_emulation_server_buffer::format_RGBA32;
+            m_shm_format = PrivateServer::qt_shm_emulation_server_buffer::format_RGBA32;
             break;
         case A8:
-            m_shm_format = QtWaylandServer::qt_shm_emulation_server_buffer::format_A8;
+            m_shm_format = PrivateServer::qt_shm_emulation_server_buffer::format_A8;
             break;
         default:
             qWarning("ShmServerBuffer: unsupported format");
-            m_shm_format = QtWaylandServer::qt_shm_emulation_server_buffer::format_RGBA32;
+            m_shm_format = PrivateServer::qt_shm_emulation_server_buffer::format_RGBA32;
             break;
     }
 
@@ -113,11 +115,11 @@ ShmServerBufferIntegration::~ShmServerBufferIntegration()
 {
 }
 
-bool ShmServerBufferIntegration::initializeHardware(QWaylandCompositor *compositor)
+bool ShmServerBufferIntegration::initializeHardware(WaylandCompositor *compositor)
 {
     Q_ASSERT(QGuiApplication::platformNativeInterface());
 
-    QtWaylandServer::qt_shm_emulation_server_buffer::init(compositor->display(), 1);
+    PrivateServer::qt_shm_emulation_server_buffer::init(compositor->display(), 1);
     return true;
 }
 
@@ -138,4 +140,6 @@ QtWayland::ServerBuffer *ShmServerBufferIntegration::createServerBufferFromImage
     return new ShmServerBuffer(this, qimage, format);
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

@@ -41,7 +41,9 @@
 
 #include <QtCore/QDebug>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 static constexpr bool extraDebug = false;
 
 #define DECL_GL_FUNCTION(name, type) \
@@ -265,11 +267,11 @@ VulkanServerBufferIntegration::~VulkanServerBufferIntegration()
 {
 }
 
-bool VulkanServerBufferIntegration::initializeHardware(QWaylandCompositor *compositor)
+bool VulkanServerBufferIntegration::initializeHardware(WaylandCompositor *compositor)
 {
     Q_ASSERT(QGuiApplication::platformNativeInterface());
 
-    QtWaylandServer::zqt_vulkan_server_buffer_v1::init(compositor->display(), 1);
+    PrivateServer::zqt_vulkan_server_buffer_v1::init(compositor->display(), 1);
     return true;
 }
 
@@ -313,4 +315,6 @@ VulkanServerBufferIntegration::createServerBufferFromData(QByteArrayView view, c
     return nullptr;
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

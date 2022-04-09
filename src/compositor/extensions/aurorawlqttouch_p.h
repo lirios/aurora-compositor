@@ -34,29 +34,31 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWaylandCompositor/private/qwayland-server-touch-extension.h>
-#include <QtWaylandCompositor/QWaylandCompositor>
-#include <QtWaylandCompositor/QWaylandCompositorExtensionTemplate>
+#include <LiriAuroraCompositor/private/aurora-server-touch-extension.h>
+#include <LiriAuroraCompositor/WaylandCompositor>
+#include <LiriAuroraCompositor/WaylandCompositorExtensionTemplate>
 #include <QtCore/private/qglobal_p.h>
 
 #include <wayland-util.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 class Surface;
 class QTouchEvent;
-class QWaylandView;
+class WaylandView;
 
 namespace QtWayland {
 
-class TouchExtensionGlobal : public QWaylandCompositorExtensionTemplate<TouchExtensionGlobal>, public QtWaylandServer::qt_touch_extension
+class TouchExtensionGlobal : public WaylandCompositorExtensionTemplate<TouchExtensionGlobal>, public PrivateServer::qt_touch_extension
 {
     Q_OBJECT
     Q_PROPERTY(BehaviorFlags behaviorFlags READ behaviorFlags WRITE setBehviorFlags NOTIFY behaviorFlagsChanged)
@@ -68,10 +70,10 @@ public:
     };
     Q_DECLARE_FLAGS(BehaviorFlags, BehaviorFlag)
 
-    TouchExtensionGlobal(QWaylandCompositor *compositor);
+    TouchExtensionGlobal(WaylandCompositor *compositor);
     ~TouchExtensionGlobal() override;
 
-    bool postTouchEvent(QTouchEvent *event, QWaylandSurface *surface);
+    bool postTouchEvent(QTouchEvent *event, WaylandSurface *surface);
 
     void setBehviorFlags(BehaviorFlags flags);
     BehaviorFlags behaviorFlags() const { return m_flags; }
@@ -84,7 +86,7 @@ protected:
     void touch_extension_destroy_resource(Resource *resource) override;
 
 private:
-    QWaylandCompositor *m_compositor = nullptr;
+    WaylandCompositor *m_compositor = nullptr;
     BehaviorFlags m_flags = BehaviorFlag::None;
     QList<Resource *> m_resources;
     QList<float> m_posData;
@@ -94,6 +96,8 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(TouchExtensionGlobal::BehaviorFlags)
 
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif // WLTOUCH_H

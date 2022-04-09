@@ -27,16 +27,16 @@
 **
 ****************************************************************************/
 
-#include "qwaylandtextinput.h"
-#include "qwaylandtextinput_p.h"
+#include "aurorawaylandtextinput.h"
+#include "aurorawaylandtextinput_p.h"
 
-#include <QtWaylandCompositor/QWaylandCompositor>
-#include <QtWaylandCompositor/private/qwaylandseat_p.h>
+#include <LiriAuroraCompositor/WaylandCompositor>
+#include <LiriAuroraCompositor/private/aurorawaylandseat_p.h>
 
-#include "qwaylandsurface.h"
-#include "qwaylandview.h"
-#include "qwaylandinputmethodeventbuilder_p.h"
-#include "qwaylandinputmethodcontrol.h"
+#include "aurorawaylandsurface.h"
+#include "aurorawaylandview.h"
+#include "aurorawaylandinputmethodeventbuilder_p.h"
+#include "aurorawaylandinputmethodcontrol.h"
 
 #include <QGuiApplication>
 #include <QInputMethodEvent>
@@ -45,13 +45,15 @@
 #include <QtGui/private/qxkbcommon_p.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-QWaylandTextInputClientState::QWaylandTextInputClientState()
+namespace Compositor {
+
+WaylandTextInputClientState::WaylandTextInputClientState()
 {
 }
 
-Qt::InputMethodQueries QWaylandTextInputClientState::updatedQueries(const QWaylandTextInputClientState &other) const
+Qt::InputMethodQueries WaylandTextInputClientState::updatedQueries(const WaylandTextInputClientState &other) const
 {
     Qt::InputMethodQueries queries;
 
@@ -71,7 +73,7 @@ Qt::InputMethodQueries QWaylandTextInputClientState::updatedQueries(const QWayla
     return queries;
 }
 
-Qt::InputMethodQueries QWaylandTextInputClientState::mergeChanged(const QWaylandTextInputClientState &other) {
+Qt::InputMethodQueries WaylandTextInputClientState::mergeChanged(const WaylandTextInputClientState &other) {
     Qt::InputMethodQueries queries;
 
     if ((other.changedState & Qt::ImHints) && hints != other.hints) {
@@ -107,21 +109,21 @@ Qt::InputMethodQueries QWaylandTextInputClientState::mergeChanged(const QWayland
     return queries;
 }
 
-QWaylandTextInputPrivate::QWaylandTextInputPrivate(QWaylandCompositor *compositor)
+WaylandTextInputPrivate::WaylandTextInputPrivate(WaylandCompositor *compositor)
     : compositor(compositor)
-    , currentState(new QWaylandTextInputClientState)
-    , pendingState(new QWaylandTextInputClientState)
+    , currentState(new WaylandTextInputClientState)
+    , pendingState(new WaylandTextInputClientState)
 {
 }
 
-void QWaylandTextInputPrivate::sendInputMethodEvent(QInputMethodEvent *event)
+void WaylandTextInputPrivate::sendInputMethodEvent(QInputMethodEvent *event)
 {
-    Q_Q(QWaylandTextInput);
+    Q_Q(WaylandTextInput);
 
     if (!focusResource || !focusResource->handle)
         return;
 
-    QWaylandTextInputClientState afterCommit;
+    WaylandTextInputClientState afterCommit;
 
     afterCommit.surroundingText = currentState->surroundingText;
     afterCommit.cursorPosition = qMin(currentState->cursorPosition, currentState->anchorPosition);
@@ -139,8 +141,8 @@ void QWaylandTextInputPrivate::sendInputMethodEvent(QInputMethodEvent *event)
         if (event->replacementStart() <= 0 && (event->replacementLength() >= -event->replacementStart())) {
             const int selectionStart = qMin(currentState->cursorPosition, currentState->anchorPosition);
             const int selectionEnd = qMax(currentState->cursorPosition, currentState->anchorPosition);
-            const int before = QWaylandInputMethodEventBuilder::indexToWayland(currentState->surroundingText, -event->replacementStart(), selectionStart + event->replacementStart());
-            const int after = QWaylandInputMethodEventBuilder::indexToWayland(currentState->surroundingText, event->replacementLength() + event->replacementStart(), selectionEnd);
+            const int before = WaylandInputMethodEventBuilder::indexToWayland(currentState->surroundingText, -event->replacementStart(), selectionStart + event->replacementStart());
+            const int after = WaylandInputMethodEventBuilder::indexToWayland(currentState->surroundingText, event->replacementLength() + event->replacementStart(), selectionEnd);
             send_delete_surrounding_text(focusResource->handle, before, after);
         } else {
             // TODO: Implement this case
@@ -157,8 +159,8 @@ void QWaylandTextInputPrivate::sendInputMethodEvent(QInputMethodEvent *event)
         if (attribute.type == QInputMethodEvent::Selection) {
             afterCommit.cursorPosition = attribute.start;
             afterCommit.anchorPosition = attribute.length;
-            int cursor = QWaylandInputMethodEventBuilder::indexToWayland(afterCommit.surroundingText, qAbs(attribute.start - afterCommit.cursorPosition), qMin(attribute.start, afterCommit.cursorPosition));
-            int anchor = QWaylandInputMethodEventBuilder::indexToWayland(afterCommit.surroundingText, qAbs(attribute.length - afterCommit.cursorPosition), qMin(attribute.length, afterCommit.cursorPosition));
+            int cursor = WaylandInputMethodEventBuilder::indexToWayland(afterCommit.surroundingText, qAbs(attribute.start - afterCommit.cursorPosition), qMin(attribute.start, afterCommit.cursorPosition));
+            int anchor = WaylandInputMethodEventBuilder::indexToWayland(afterCommit.surroundingText, qAbs(attribute.length - afterCommit.cursorPosition), qMin(attribute.length, afterCommit.cursorPosition));
             send_cursor_position(focusResource->handle,
                                  attribute.start < afterCommit.cursorPosition ? -cursor : cursor,
                                  attribute.length < afterCommit.cursorPosition ? -anchor : anchor);
@@ -167,12 +169,12 @@ void QWaylandTextInputPrivate::sendInputMethodEvent(QInputMethodEvent *event)
     send_commit_string(focusResource->handle, event->commitString());
     for (const QInputMethodEvent::Attribute &attribute : event->attributes()) {
         if (attribute.type == QInputMethodEvent::Cursor) {
-            int index = QWaylandInputMethodEventBuilder::indexToWayland(event->preeditString(), attribute.start);
+            int index = WaylandInputMethodEventBuilder::indexToWayland(event->preeditString(), attribute.start);
             send_preedit_cursor(focusResource->handle, index);
         } else if (attribute.type == QInputMethodEvent::TextFormat) {
-            int start = QWaylandInputMethodEventBuilder::indexToWayland(event->preeditString(), attribute.start);
-            int length = QWaylandInputMethodEventBuilder::indexToWayland(event->preeditString(), attribute.length, attribute.start);
-            // TODO add support for different stylesQWaylandTextInput
+            int start = WaylandInputMethodEventBuilder::indexToWayland(event->preeditString(), attribute.start);
+            int length = WaylandInputMethodEventBuilder::indexToWayland(event->preeditString(), attribute.length, attribute.start);
+            // TODO add support for different stylesWaylandTextInput
             send_preedit_styling(focusResource->handle, start, length, preedit_style_default);
         }
     }
@@ -190,7 +192,7 @@ void QWaylandTextInputPrivate::sendInputMethodEvent(QInputMethodEvent *event)
     }
 }
 
-void QWaylandTextInputPrivate::sendKeyEvent(QKeyEvent *event)
+void WaylandTextInputPrivate::sendKeyEvent(QKeyEvent *event)
 {
     if (!focusResource || !focusResource->handle)
         return;
@@ -208,7 +210,7 @@ void QWaylandTextInputPrivate::sendKeyEvent(QKeyEvent *event)
 #endif
 }
 
-void QWaylandTextInputPrivate::sendInputPanelState()
+void WaylandTextInputPrivate::sendInputPanelState()
 {
     if (!focusResource || !focusResource->handle)
         return;
@@ -223,7 +225,7 @@ void QWaylandTextInputPrivate::sendInputPanelState()
                            localRect.x(), localRect.y(), localRect.width(), localRect.height());
 }
 
-void QWaylandTextInputPrivate::sendTextDirection()
+void WaylandTextInputPrivate::sendTextDirection()
 {
     if (!focusResource || !focusResource->handle)
         return;
@@ -234,7 +236,7 @@ void QWaylandTextInputPrivate::sendTextDirection()
                                                          (direction == Qt::RightToLeft) ? text_direction_rtl : text_direction_auto);
 }
 
-void QWaylandTextInputPrivate::sendLocale()
+void WaylandTextInputPrivate::sendLocale()
 {
     if (!focusResource || !focusResource->handle)
         return;
@@ -243,7 +245,7 @@ void QWaylandTextInputPrivate::sendLocale()
     send_language(focusResource->handle, locale.bcp47Name());
 }
 
-QVariant QWaylandTextInputPrivate::inputMethodQuery(Qt::InputMethodQuery property, QVariant argument) const
+QVariant WaylandTextInputPrivate::inputMethodQuery(Qt::InputMethodQuery property, QVariant argument) const
 {
     switch (property) {
     case Qt::ImHints:
@@ -284,9 +286,9 @@ QVariant QWaylandTextInputPrivate::inputMethodQuery(Qt::InputMethodQuery propert
     }
 }
 
-void QWaylandTextInputPrivate::setFocus(QWaylandSurface *surface)
+void WaylandTextInputPrivate::setFocus(WaylandSurface *surface)
 {
-    Q_Q(QWaylandTextInput);
+    Q_Q(WaylandTextInput);
 
     if (focusResource && focus != surface) {
         uint32_t serial = compositor->nextSerial();
@@ -298,8 +300,8 @@ void QWaylandTextInputPrivate::setFocus(QWaylandSurface *surface)
 
     if (resource && (focus != surface || focusResource != resource)) {
         uint32_t serial = compositor->nextSerial();
-        currentState.reset(new QWaylandTextInputClientState);
-        pendingState.reset(new QWaylandTextInputClientState);
+        currentState.reset(new WaylandTextInputClientState);
+        pendingState.reset(new WaylandTextInputClientState);
         send_enter(resource->handle, serial, surface->resource());
         focusResource = resource;
         sendInputPanelState();
@@ -314,59 +316,59 @@ void QWaylandTextInputPrivate::setFocus(QWaylandSurface *surface)
     focus = surface;
 }
 
-void QWaylandTextInputPrivate::zwp_text_input_v2_bind_resource(Resource *resource)
+void WaylandTextInputPrivate::zwp_text_input_v2_bind_resource(Resource *resource)
 {
     send_modifiers_map(resource->handle, QByteArray(""));
 }
 
-void QWaylandTextInputPrivate::zwp_text_input_v2_destroy_resource(Resource *resource)
+void WaylandTextInputPrivate::zwp_text_input_v2_destroy_resource(Resource *resource)
 {
     if (focusResource == resource)
         focusResource = nullptr;
 }
 
-void QWaylandTextInputPrivate::zwp_text_input_v2_destroy(Resource *resource)
+void WaylandTextInputPrivate::zwp_text_input_v2_destroy(Resource *resource)
 {
     wl_resource_destroy(resource->handle);
 }
 
-void QWaylandTextInputPrivate::zwp_text_input_v2_enable(Resource *resource, wl_resource *surface)
+void WaylandTextInputPrivate::zwp_text_input_v2_enable(Resource *resource, wl_resource *surface)
 {
-    Q_Q(QWaylandTextInput);
+    Q_Q(WaylandTextInput);
 
-    QWaylandSurface *s = QWaylandSurface::fromResource(surface);
+    WaylandSurface *s = WaylandSurface::fromResource(surface);
     enabledSurfaces.insert(resource, s);
 
-    QWaylandInputMethodControl *control = s->inputMethodControl();
+    WaylandInputMethodControl *control = s->inputMethodControl();
     if (control)
         control->updateTextInput();
 
     emit q->surfaceEnabled(s);
 }
 
-void QWaylandTextInputPrivate::zwp_text_input_v2_disable(QtWaylandServer::zwp_text_input_v2::Resource *resource, wl_resource *)
+void WaylandTextInputPrivate::zwp_text_input_v2_disable(PrivateServer::zwp_text_input_v2::Resource *resource, wl_resource *)
 {
-    Q_Q(QWaylandTextInput);
+    Q_Q(WaylandTextInput);
 
-    QWaylandSurface *s = enabledSurfaces.take(resource);
+    WaylandSurface *s = enabledSurfaces.take(resource);
     emit q->surfaceDisabled(s);
 }
 
-void QWaylandTextInputPrivate::zwp_text_input_v2_show_input_panel(Resource *)
+void WaylandTextInputPrivate::zwp_text_input_v2_show_input_panel(Resource *)
 {
     inputPanelVisible = true;
 
     qApp->inputMethod()->show();
 }
 
-void QWaylandTextInputPrivate::zwp_text_input_v2_hide_input_panel(Resource *)
+void WaylandTextInputPrivate::zwp_text_input_v2_hide_input_panel(Resource *)
 {
     inputPanelVisible = false;
 
     qApp->inputMethod()->hide();
 }
 
-void QWaylandTextInputPrivate::zwp_text_input_v2_set_cursor_rectangle(Resource *resource, int32_t x, int32_t y, int32_t width, int32_t height)
+void WaylandTextInputPrivate::zwp_text_input_v2_set_cursor_rectangle(Resource *resource, int32_t x, int32_t y, int32_t width, int32_t height)
 {
     if (resource != focusResource)
         return;
@@ -376,9 +378,9 @@ void QWaylandTextInputPrivate::zwp_text_input_v2_set_cursor_rectangle(Resource *
     pendingState->changedState |= Qt::ImCursorRectangle;
 }
 
-void QWaylandTextInputPrivate::zwp_text_input_v2_update_state(Resource *resource, uint32_t serial, uint32_t flags)
+void WaylandTextInputPrivate::zwp_text_input_v2_update_state(Resource *resource, uint32_t serial, uint32_t flags)
 {
-    Q_Q(QWaylandTextInput);
+    Q_Q(WaylandTextInput);
 
     qCDebug(qLcWaylandCompositorInputMethods) << "update_state" << serial << flags;
 
@@ -400,7 +402,7 @@ void QWaylandTextInputPrivate::zwp_text_input_v2_update_state(Resource *resource
         currentState.swap(pendingState);
     }
 
-    pendingState.reset(new QWaylandTextInputClientState);
+    pendingState.reset(new WaylandTextInputClientState);
 
     if (queries) {
         qCDebug(qLcWaylandCompositorInputMethods) << "QInputMethod::update()" << queries;
@@ -409,7 +411,7 @@ void QWaylandTextInputPrivate::zwp_text_input_v2_update_state(Resource *resource
     }
 }
 
-void QWaylandTextInputPrivate::zwp_text_input_v2_set_content_type(Resource *resource, uint32_t hint, uint32_t purpose)
+void WaylandTextInputPrivate::zwp_text_input_v2_set_content_type(Resource *resource, uint32_t hint, uint32_t purpose)
 {
     if (resource != focusResource)
         return;
@@ -475,7 +477,7 @@ void QWaylandTextInputPrivate::zwp_text_input_v2_set_content_type(Resource *reso
     pendingState->changedState |= Qt::ImHints;
 }
 
-void QWaylandTextInputPrivate::zwp_text_input_v2_set_preferred_language(Resource *resource, const QString &language)
+void WaylandTextInputPrivate::zwp_text_input_v2_set_preferred_language(Resource *resource, const QString &language)
 {
     if (resource != focusResource)
         return;
@@ -485,97 +487,97 @@ void QWaylandTextInputPrivate::zwp_text_input_v2_set_preferred_language(Resource
     pendingState->changedState |= Qt::ImPreferredLanguage;
 }
 
-void QWaylandTextInputPrivate::zwp_text_input_v2_set_surrounding_text(Resource *resource, const QString &text, int32_t cursor, int32_t anchor)
+void WaylandTextInputPrivate::zwp_text_input_v2_set_surrounding_text(Resource *resource, const QString &text, int32_t cursor, int32_t anchor)
 {
     if (resource != focusResource)
         return;
 
     pendingState->surroundingText = text;
-    pendingState->cursorPosition = QWaylandInputMethodEventBuilder::indexFromWayland(text, cursor);
-    pendingState->anchorPosition = QWaylandInputMethodEventBuilder::indexFromWayland(text, anchor);
+    pendingState->cursorPosition = WaylandInputMethodEventBuilder::indexFromWayland(text, cursor);
+    pendingState->anchorPosition = WaylandInputMethodEventBuilder::indexFromWayland(text, anchor);
 
     pendingState->changedState |= Qt::ImSurroundingText | Qt::ImCursorPosition | Qt::ImAnchorPosition;
 }
 
-QWaylandTextInput::QWaylandTextInput(QWaylandObject *container, QWaylandCompositor *compositor)
-    : QWaylandCompositorExtensionTemplate(container, *new QWaylandTextInputPrivate(compositor))
+WaylandTextInput::WaylandTextInput(WaylandObject *container, WaylandCompositor *compositor)
+    : WaylandCompositorExtensionTemplate(container, *new WaylandTextInputPrivate(compositor))
 {
-    connect(&d_func()->focusDestroyListener, &QWaylandDestroyListener::fired,
-            this, &QWaylandTextInput::focusSurfaceDestroyed);
+    connect(&d_func()->focusDestroyListener, &WaylandDestroyListener::fired,
+            this, &WaylandTextInput::focusSurfaceDestroyed);
 
     connect(qApp->inputMethod(), &QInputMethod::visibleChanged,
-            this, &QWaylandTextInput::sendInputPanelState);
+            this, &WaylandTextInput::sendInputPanelState);
     connect(qApp->inputMethod(), &QInputMethod::keyboardRectangleChanged,
-            this, &QWaylandTextInput::sendInputPanelState);
+            this, &WaylandTextInput::sendInputPanelState);
     connect(qApp->inputMethod(), &QInputMethod::inputDirectionChanged,
-            this, &QWaylandTextInput::sendTextDirection);
+            this, &WaylandTextInput::sendTextDirection);
     connect(qApp->inputMethod(), &QInputMethod::localeChanged,
-            this, &QWaylandTextInput::sendLocale);
+            this, &WaylandTextInput::sendLocale);
 }
 
-QWaylandTextInput::~QWaylandTextInput()
+WaylandTextInput::~WaylandTextInput()
 {
 }
 
-void QWaylandTextInput::sendInputMethodEvent(QInputMethodEvent *event)
+void WaylandTextInput::sendInputMethodEvent(QInputMethodEvent *event)
 {
-    Q_D(QWaylandTextInput);
+    Q_D(WaylandTextInput);
 
     d->sendInputMethodEvent(event);
 }
 
-void QWaylandTextInput::sendKeyEvent(QKeyEvent *event)
+void WaylandTextInput::sendKeyEvent(QKeyEvent *event)
 {
-    Q_D(QWaylandTextInput);
+    Q_D(WaylandTextInput);
 
     d->sendKeyEvent(event);
 }
 
-void QWaylandTextInput::sendInputPanelState()
+void WaylandTextInput::sendInputPanelState()
 {
-    Q_D(QWaylandTextInput);
+    Q_D(WaylandTextInput);
 
     d->sendInputPanelState();
 }
 
-void QWaylandTextInput::sendTextDirection()
+void WaylandTextInput::sendTextDirection()
 {
-    Q_D(QWaylandTextInput);
+    Q_D(WaylandTextInput);
 
     d->sendTextDirection();
 }
 
-void QWaylandTextInput::sendLocale()
+void WaylandTextInput::sendLocale()
 {
-    Q_D(QWaylandTextInput);
+    Q_D(WaylandTextInput);
 
     d->sendLocale();
 }
 
-QVariant QWaylandTextInput::inputMethodQuery(Qt::InputMethodQuery property, QVariant argument) const
+QVariant WaylandTextInput::inputMethodQuery(Qt::InputMethodQuery property, QVariant argument) const
 {
-    const Q_D(QWaylandTextInput);
+    const Q_D(WaylandTextInput);
 
     return d->inputMethodQuery(property, argument);
 }
 
-QWaylandSurface *QWaylandTextInput::focus() const
+WaylandSurface *WaylandTextInput::focus() const
 {
-    const Q_D(QWaylandTextInput);
+    const Q_D(WaylandTextInput);
 
     return d->focus;
 }
 
-void QWaylandTextInput::setFocus(QWaylandSurface *surface)
+void WaylandTextInput::setFocus(WaylandSurface *surface)
 {
-    Q_D(QWaylandTextInput);
+    Q_D(WaylandTextInput);
 
     d->setFocus(surface);
 }
 
-void QWaylandTextInput::focusSurfaceDestroyed(void *)
+void WaylandTextInput::focusSurfaceDestroyed(void *)
 {
-    Q_D(QWaylandTextInput);
+    Q_D(WaylandTextInput);
 
     d->focusDestroyListener.reset();
 
@@ -583,28 +585,30 @@ void QWaylandTextInput::focusSurfaceDestroyed(void *)
     d->focusResource = nullptr;
 }
 
-bool QWaylandTextInput::isSurfaceEnabled(QWaylandSurface *surface) const
+bool WaylandTextInput::isSurfaceEnabled(WaylandSurface *surface) const
 {
-    const Q_D(QWaylandTextInput);
+    const Q_D(WaylandTextInput);
 
     return d->enabledSurfaces.values().contains(surface);
 }
 
-void QWaylandTextInput::add(::wl_client *client, uint32_t id, int version)
+void WaylandTextInput::add(::wl_client *client, uint32_t id, int version)
 {
-    Q_D(QWaylandTextInput);
+    Q_D(WaylandTextInput);
 
     d->add(client, id, version);
 }
 
-const wl_interface *QWaylandTextInput::interface()
+const wl_interface *WaylandTextInput::interface()
 {
-    return QWaylandTextInputPrivate::interface();
+    return WaylandTextInputPrivate::interface();
 }
 
-QByteArray QWaylandTextInput::interfaceName()
+QByteArray WaylandTextInput::interfaceName()
 {
-    return QWaylandTextInputPrivate::interfaceName();
+    return WaylandTextInputPrivate::interfaceName();
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

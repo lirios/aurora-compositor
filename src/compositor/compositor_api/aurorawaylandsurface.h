@@ -28,14 +28,14 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDSURFACE_H
-#define QWAYLANDSURFACE_H
+#ifndef AURORA_COMPOSITOR_WAYLANDSURFACE_H
+#define AURORA_COMPOSITOR_WAYLANDSURFACE_H
 
-#include <QtWaylandCompositor/qtwaylandcompositorglobal.h>
-#include <QtWaylandCompositor/qwaylandcompositor.h>
-#include <QtWaylandCompositor/qwaylandcompositorextension.h>
-#include <QtWaylandCompositor/qwaylandclient.h>
-#include <QtWaylandCompositor/qwaylanddrag.h>
+#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/aurorawaylandcompositor.h>
+#include <LiriAuroraCompositor/aurorawaylandcompositorextension.h>
+#include <LiriAuroraCompositor/aurorawaylandclient.h>
+#include <LiriAuroraCompositor/aurorawaylanddrag.h>
 
 #include <QtCore/QScopedPointer>
 #include <QtGui/QImage>
@@ -45,18 +45,20 @@
 struct wl_client;
 struct wl_resource;
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 class QTouchEvent;
-class QWaylandSurfacePrivate;
-class QWaylandBufferRef;
-class QWaylandView;
-class QWaylandInputMethodControl;
+class WaylandSurfacePrivate;
+class WaylandBufferRef;
+class WaylandView;
+class WaylandInputMethodControl;
 
-class QWaylandSurfaceRole
+class WaylandSurfaceRole
 {
 public:
-    QWaylandSurfaceRole(const QByteArray &n) : m_name(n) {}
+    WaylandSurfaceRole(const QByteArray &n) : m_name(n) {}
 
     const QByteArray name() { return m_name; }
 
@@ -64,23 +66,23 @@ private:
     QByteArray m_name;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandSurface : public QWaylandObject
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandSurface : public WaylandObject
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandSurface)
-    Q_PROPERTY(QWaylandClient *client READ client CONSTANT)
+    Q_DECLARE_PRIVATE(WaylandSurface)
+    Q_PROPERTY(WaylandClient *client READ client CONSTANT)
     Q_PROPERTY(QRectF sourceGeometry READ sourceGeometry NOTIFY sourceGeometryChanged REVISION(1, 13))
     Q_PROPERTY(QSize destinationSize READ destinationSize NOTIFY destinationSizeChanged REVISION(1, 13))
     Q_PROPERTY(QSize bufferSize READ bufferSize NOTIFY bufferSizeChanged REVISION(1, 13))
     Q_PROPERTY(int bufferScale READ bufferScale NOTIFY bufferScaleChanged)
     Q_PROPERTY(Qt::ScreenOrientation contentOrientation READ contentOrientation NOTIFY contentOrientationChanged)
-    Q_PROPERTY(QWaylandSurface::Origin origin READ origin NOTIFY originChanged)
+    Q_PROPERTY(WaylandSurface::Origin origin READ origin NOTIFY originChanged)
     Q_PROPERTY(bool hasContent READ hasContent NOTIFY hasContentChanged)
     Q_PROPERTY(bool cursorSurface READ isCursorSurface WRITE markAsCursorSurface NOTIFY cursorSurfaceChanged)
     Q_PROPERTY(bool inhibitsIdle READ inhibitsIdle NOTIFY inhibitsIdleChanged REVISION(1, 14))
     Q_PROPERTY(bool isOpaque READ isOpaque NOTIFY isOpaqueChanged REVISION(6, 4))
-    Q_MOC_INCLUDE("qwaylanddrag.h")
-    Q_MOC_INCLUDE("qwaylandcompositor.h")
+    Q_MOC_INCLUDE("aurorawaylanddrag.h")
+    Q_MOC_INCLUDE("aurorawaylandcompositor.h")
 
     QML_NAMED_ELEMENT(WaylandSurfaceBase)
     QML_ADDED_IN_VERSION(1, 0)
@@ -92,18 +94,18 @@ public:
     };
     Q_ENUM(Origin)
 
-    QWaylandSurface();
-    QWaylandSurface(QWaylandCompositor *compositor, QWaylandClient *client, uint id, int version);
-    ~QWaylandSurface() override;
+    WaylandSurface();
+    WaylandSurface(WaylandCompositor *compositor, WaylandClient *client, uint id, int version);
+    ~WaylandSurface() override;
 
-    Q_INVOKABLE void initialize(QWaylandCompositor *compositor, QWaylandClient *client, uint id, int version);
+    Q_INVOKABLE void initialize(Aurora::Compositor::WaylandCompositor *compositor, Aurora::Compositor::WaylandClient *client, uint id, int version);
     bool isInitialized() const;
 
-    QWaylandClient *client() const;
+    WaylandClient *client() const;
     ::wl_client *waylandClient() const;
 
-    bool setRole(QWaylandSurfaceRole *role, wl_resource *errorResource, uint32_t errorCode);
-    QWaylandSurfaceRole *role() const;
+    bool setRole(WaylandSurfaceRole *role, wl_resource *errorResource, uint32_t errorCode);
+    WaylandSurfaceRole *role() const;
 
     bool hasContent() const;
 
@@ -116,7 +118,7 @@ public:
 
     Origin origin() const;
 
-    QWaylandCompositor *compositor() const;
+    WaylandCompositor *compositor() const;
 
     bool inputRegionContains(const QPoint &p) const;
     bool inputRegionContains(const QPointF &position) const;
@@ -127,12 +129,12 @@ public:
     Q_INVOKABLE void frameStarted();
     Q_INVOKABLE void sendFrameCallbacks();
 
-    QWaylandView *primaryView() const;
-    void setPrimaryView(QWaylandView *view);
+    WaylandView *primaryView() const;
+    void setPrimaryView(WaylandView *view);
 
-    QList<QWaylandView *> views() const;
+    QList<WaylandView *> views() const;
 
-    static QWaylandSurface *fromResource(::wl_resource *resource);
+    static WaylandSurface *fromResource(::wl_resource *resource);
     struct wl_resource *resource() const;
 
     void markAsCursorSurface(bool cursorSurface);
@@ -142,7 +144,7 @@ public:
     bool isOpaque() const;
 
 #if QT_CONFIG(im)
-    QWaylandInputMethodControl *inputMethodControl() const;
+    WaylandInputMethodControl *inputMethodControl() const;
 #endif
 
 public Q_SLOTS:
@@ -151,13 +153,13 @@ public Q_SLOTS:
 #endif
 
 protected:
-    QWaylandSurface(QWaylandSurfacePrivate &dptr);
+    WaylandSurface(WaylandSurfacePrivate &dptr);
 
 Q_SIGNALS:
     void hasContentChanged();
     void damaged(const QRegion &rect);
-    void parentChanged(QWaylandSurface *newParent, QWaylandSurface *oldParent);
-    void childAdded(QWaylandSurface *child);
+    void parentChanged(Aurora::Compositor::WaylandSurface *newParent, Aurora::Compositor::WaylandSurface *oldParent);
+    void childAdded(Aurora::Compositor::WaylandSurface *child);
     Q_REVISION(1, 13) void sourceGeometryChanged();
     Q_REVISION(1, 13) void destinationSizeChanged();
     Q_REVISION(1, 13) void bufferSizeChanged();
@@ -167,9 +169,9 @@ Q_SIGNALS:
     void surfaceDestroyed();
     void originChanged();
     void subsurfacePositionChanged(const QPoint &position);
-    void subsurfacePlaceAbove(QWaylandSurface *sibling);
-    void subsurfacePlaceBelow(QWaylandSurface *sibling);
-    void dragStarted(QWaylandDrag *drag);
+    void subsurfacePlaceAbove(Aurora::Compositor::WaylandSurface *sibling);
+    void subsurfacePlaceBelow(Aurora::Compositor::WaylandSurface *sibling);
+    void dragStarted(Aurora::Compositor::WaylandDrag *drag);
     void cursorSurfaceChanged();
     Q_REVISION(14) void inhibitsIdleChanged();
     Q_REVISION(6, 4) void isOpaqueChanged();
@@ -178,6 +180,8 @@ Q_SIGNALS:
     void redraw();
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDSURFACE_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDSURFACE_H

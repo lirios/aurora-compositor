@@ -30,18 +30,20 @@
 #ifndef BRCMEGLINTEGRATION_H
 #define BRCMEGLINTEGRATION_H
 
-#include <QtWaylandCompositor/private/qwlclientbufferintegration_p.h>
-#include "qwayland-server-brcm.h"
+#include <LiriAuroraCompositor/private/aurorawlclientbufferintegration_p.h>
+#include "aurora-server-brcm.h"
 
 #include <QtCore/QScopedPointer>
 
-#include <private/qwlclientbuffer_p.h>
+#include <private/aurorawlclientbuffer_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 class BrcmEglIntegrationPrivate;
 
-class BrcmEglIntegration : public QtWayland::ClientBufferIntegration, public QtWaylandServer::qt_brcm
+class BrcmEglIntegration : public QtWayland::ClientBufferIntegration, public PrivateServer::qt_brcm
 {
     Q_DECLARE_PRIVATE(BrcmEglIntegration)
 public:
@@ -64,9 +66,9 @@ class BrcmEglClientBuffer : public QtWayland::ClientBuffer
 public:
     BrcmEglClientBuffer(BrcmEglIntegration *integration, wl_resource *buffer);
 
-    QWaylandBufferRef::BufferFormatEgl bufferFormatEgl() const override;
+    WaylandBufferRef::BufferFormatEgl bufferFormatEgl() const override;
     QSize size() const override;
-    QWaylandSurface::Origin origin() const override;
+    WaylandSurface::Origin origin() const override;
     QOpenGLTexture *toOpenGlTexture(int plane) override;
 private:
     BrcmEglIntegration *m_integration = nullptr;
@@ -74,7 +76,9 @@ private:
 };
 
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif // BRCMEGLINTEGRATION_H
 

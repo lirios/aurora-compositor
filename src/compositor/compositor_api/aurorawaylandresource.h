@@ -27,26 +27,28 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDRESOURCE_H
-#define QWAYLANDRESOURCE_H
+#ifndef AURORA_COMPOSITOR_WAYLANDRESOURCE_H
+#define AURORA_COMPOSITOR_WAYLANDRESOURCE_H
 
 #include <QtCore/QObject>
-#include <QtWaylandCompositor/qtwaylandcompositorglobal.h>
-#include <QtWaylandCompositor/qtwaylandqmlinclude.h>
+#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/qtwaylandqmlinclude.h>
 
 struct wl_resource;
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandResource
+namespace Compositor {
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandResource
 {
     Q_GADGET
     QML_NAMED_ELEMENT(waylandresource)
     QML_UNCREATABLE("")
     QML_ADDED_IN_VERSION(1, 0)
 public:
-    QWaylandResource();
-    explicit QWaylandResource(wl_resource *resource);
+    WaylandResource();
+    explicit WaylandResource(wl_resource *resource);
 
     wl_resource *resource() const { return m_resource; }
 
@@ -54,8 +56,10 @@ private:
     wl_resource *m_resource = nullptr;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-Q_DECLARE_METATYPE(QWaylandResource)
+} // namespace Aurora
+
+Q_DECLARE_METATYPE(Aurora::Compositor::WaylandResource)
 
 #endif  /*QWAYLANDRESOURCE_H*/

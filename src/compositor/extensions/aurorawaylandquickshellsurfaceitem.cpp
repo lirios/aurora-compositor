@@ -27,24 +27,26 @@
 **
 ****************************************************************************/
 
-#include "qwaylandquickshellsurfaceitem.h"
-#include "qwaylandquickshellsurfaceitem_p.h"
+#include "aurorawaylandquickshellsurfaceitem.h"
+#include "aurorawaylandquickshellsurfaceitem_p.h"
 
-#include <QtWaylandCompositor/QWaylandShellSurface>
+#include <LiriAuroraCompositor/WaylandShellSurface>
 #include <QGuiApplication>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-QWaylandQuickShellSurfaceItem *QWaylandQuickShellSurfaceItemPrivate::maybeCreateAutoPopup(QWaylandShellSurface* shellSurface)
+namespace Compositor {
+
+WaylandQuickShellSurfaceItem *WaylandQuickShellSurfaceItemPrivate::maybeCreateAutoPopup(WaylandShellSurface* shellSurface)
 {
     if (!m_autoCreatePopupItems)
         return nullptr;
 
-    Q_Q(QWaylandQuickShellSurfaceItem);
-    auto *popupItem = new QWaylandQuickShellSurfaceItem(q);
+    Q_Q(WaylandQuickShellSurfaceItem);
+    auto *popupItem = new WaylandQuickShellSurfaceItem(q);
     popupItem->setShellSurface(shellSurface);
     popupItem->setAutoCreatePopupItems(true);
-    QObject::connect(popupItem, &QWaylandQuickShellSurfaceItem::surfaceDestroyed, [popupItem](){
+    QObject::connect(popupItem, &WaylandQuickShellSurfaceItem::surfaceDestroyed, [popupItem](){
         popupItem->deleteLater();
     });
     return popupItem;
@@ -52,9 +54,9 @@ QWaylandQuickShellSurfaceItem *QWaylandQuickShellSurfaceItemPrivate::maybeCreate
 
 /*!
  * \qmltype ShellSurfaceItem
- * \instantiates QWaylandQuickShellSurfaceItem
+ * \instantiates WaylandQuickShellSurfaceItem
  * \inherits WaylandQuickItem
- * \inqmlmodule QtWayland.Compositor
+ * \inqmlmodule Aurora.Compositor
  * \since 5.8
  * \brief A Qt Quick item type for displaying and interacting with a ShellSurface.
  *
@@ -65,28 +67,28 @@ QWaylandQuickShellSurfaceItem *QWaylandQuickShellSurfaceItemPrivate::maybeCreate
  */
 
 /*!
- * \class QWaylandQuickShellSurfaceItem
+ * \class WaylandQuickShellSurfaceItem
  * \inmodule QtWaylandCompositor
  * \since 5.8
- * \brief The QWaylandQuickShellSurfaceItem class provides a Qt Quick item that represents a QWaylandShellSurface.
+ * \brief The WaylandQuickShellSurfaceItem class provides a Qt Quick item that represents a WaylandShellSurface.
  *
  * This class is used to render \c wl_shell, \c xdg_shell or \c ivi_application surfaces as part of
  * a Qt Quick scene. It handles moving and resizing triggered by clicking on the window decorations.
  *
- * \sa QWaylandQuickItem, QWaylandWlShellSurface, QWaylandIviSurface
+ * \sa WaylandQuickItem, WaylandWlShellSurface, WaylandIviSurface
  */
 
 /*!
- * Constructs a QWaylandQuickWlShellSurfaceItem with the given \a parent.
+ * Constructs a WaylandQuickWlShellSurfaceItem with the given \a parent.
  */
-QWaylandQuickShellSurfaceItem::QWaylandQuickShellSurfaceItem(QQuickItem *parent)
-    : QWaylandQuickItem(*new QWaylandQuickShellSurfaceItemPrivate(), parent)
+WaylandQuickShellSurfaceItem::WaylandQuickShellSurfaceItem(QQuickItem *parent)
+    : WaylandQuickItem(*new WaylandQuickShellSurfaceItemPrivate(), parent)
 {
 }
 
-QWaylandQuickShellSurfaceItem::~QWaylandQuickShellSurfaceItem()
+WaylandQuickShellSurfaceItem::~WaylandQuickShellSurfaceItem()
 {
-    Q_D(QWaylandQuickShellSurfaceItem);
+    Q_D(WaylandQuickShellSurfaceItem);
 
     if (d->m_shellIntegration) {
         removeEventFilter(d->m_shellIntegration);
@@ -97,8 +99,8 @@ QWaylandQuickShellSurfaceItem::~QWaylandQuickShellSurfaceItem()
 /*!
  * \internal
  */
-QWaylandQuickShellSurfaceItem::QWaylandQuickShellSurfaceItem(QWaylandQuickShellSurfaceItemPrivate &dd, QQuickItem *parent)
-    : QWaylandQuickItem(dd, parent)
+WaylandQuickShellSurfaceItem::WaylandQuickShellSurfaceItem(WaylandQuickShellSurfaceItemPrivate &dd, QQuickItem *parent)
+    : WaylandQuickItem(dd, parent)
 {
 }
 
@@ -111,21 +113,21 @@ QWaylandQuickShellSurfaceItem::QWaylandQuickShellSurfaceItem(QWaylandQuickShellS
  */
 
 /*!
- * \property QWaylandQuickShellSurfaceItem::shellSurface
+ * \property WaylandQuickShellSurfaceItem::shellSurface
  *
- * This property holds the QWaylandShellSurface rendered by this QWaylandQuickShellSurfaceItem.
- * It may either be a QWaylandXdgSurfaceV5, QWaylandWlShellSurface or QWaylandIviSurface depending
+ * This property holds the WaylandShellSurface rendered by this WaylandQuickShellSurfaceItem.
+ * It may either be a WaylandXdgSurfaceV5, WaylandWlShellSurface or WaylandIviSurface depending
  * on which shell protocol is in use.
  */
-QWaylandShellSurface *QWaylandQuickShellSurfaceItem::shellSurface() const
+WaylandShellSurface *WaylandQuickShellSurfaceItem::shellSurface() const
 {
-    Q_D(const QWaylandQuickShellSurfaceItem);
+    Q_D(const WaylandQuickShellSurfaceItem);
     return d->m_shellSurface;
 }
 
-void QWaylandQuickShellSurfaceItem::setShellSurface(QWaylandShellSurface *shellSurface)
+void WaylandQuickShellSurfaceItem::setShellSurface(WaylandShellSurface *shellSurface)
 {
-    Q_D(QWaylandQuickShellSurfaceItem);
+    Q_D(WaylandQuickShellSurfaceItem);
     if (d->m_shellSurface == shellSurface)
         return;
 
@@ -154,21 +156,21 @@ void QWaylandQuickShellSurfaceItem::setShellSurface(QWaylandShellSurface *shellS
  */
 
 /*!
- * \property QWaylandQuickShellSurfaceItem::moveItem
+ * \property WaylandQuickShellSurfaceItem::moveItem
  *
- * This property holds the move item for this QWaylandQuickShellSurfaceItem. This is the item that
- * will be moved when the clients request the QWaylandShellSurface to be moved, maximized, resized
+ * This property holds the move item for this WaylandQuickShellSurfaceItem. This is the item that
+ * will be moved when the clients request the WaylandShellSurface to be moved, maximized, resized
  * etc. This property is useful when implementing server-side decorations.
  */
-QQuickItem *QWaylandQuickShellSurfaceItem::moveItem() const
+QQuickItem *WaylandQuickShellSurfaceItem::moveItem() const
 {
-    Q_D(const QWaylandQuickShellSurfaceItem);
-    return d->m_moveItem ? d->m_moveItem : const_cast<QWaylandQuickShellSurfaceItem *>(this);
+    Q_D(const WaylandQuickShellSurfaceItem);
+    return d->m_moveItem ? d->m_moveItem : const_cast<WaylandQuickShellSurfaceItem *>(this);
 }
 
-void QWaylandQuickShellSurfaceItem::setMoveItem(QQuickItem *moveItem)
+void WaylandQuickShellSurfaceItem::setMoveItem(QQuickItem *moveItem)
 {
-    Q_D(QWaylandQuickShellSurfaceItem);
+    Q_D(WaylandQuickShellSurfaceItem);
     moveItem = moveItem ? moveItem : this;
     if (this->moveItem() == moveItem)
         return;
@@ -184,20 +186,20 @@ void QWaylandQuickShellSurfaceItem::setMoveItem(QQuickItem *moveItem)
  */
 
 /*!
- * \property QWaylandQuickShellSurfaceItem::autoCreatePopupItems
+ * \property WaylandQuickShellSurfaceItem::autoCreatePopupItems
  *
- * This property holds whether QWaylandQuickShellSurfaceItems for popups
+ * This property holds whether WaylandQuickShellSurfaceItems for popups
  * parented to the shell surface managed by this item should automatically be created.
  */
-bool QWaylandQuickShellSurfaceItem::autoCreatePopupItems()
+bool WaylandQuickShellSurfaceItem::autoCreatePopupItems()
 {
-    Q_D(const QWaylandQuickShellSurfaceItem);
+    Q_D(const WaylandQuickShellSurfaceItem);
     return d->m_autoCreatePopupItems;
 }
 
-void QWaylandQuickShellSurfaceItem::setAutoCreatePopupItems(bool enabled)
+void WaylandQuickShellSurfaceItem::setAutoCreatePopupItems(bool enabled)
 {
-    Q_D(QWaylandQuickShellSurfaceItem);
+    Q_D(WaylandQuickShellSurfaceItem);
 
     if (enabled == d->m_autoCreatePopupItems)
         return;
@@ -207,15 +209,15 @@ void QWaylandQuickShellSurfaceItem::setAutoCreatePopupItems(bool enabled)
 }
 
 /*!
-\class QWaylandQuickShellEventFilter
-\brief QWaylandQuickShellEventFilter implements a Wayland popup grab
+\class WaylandQuickShellEventFilter
+\brief WaylandQuickShellEventFilter implements a Wayland popup grab
 \internal
 */
 
-void QWaylandQuickShellEventFilter::startFilter(QWaylandClient *client, CallbackFunction closePopups)
+void WaylandQuickShellEventFilter::startFilter(WaylandClient *client, CallbackFunction closePopups)
 {
     if (!self)
-        self = new QWaylandQuickShellEventFilter(qGuiApp);
+        self = new WaylandQuickShellEventFilter(qGuiApp);
     if (!self->eventFilterInstalled) {
         qGuiApp->installEventFilter(self);
         self->eventFilterInstalled = true;
@@ -224,7 +226,7 @@ void QWaylandQuickShellEventFilter::startFilter(QWaylandClient *client, Callback
     }
 }
 
-void QWaylandQuickShellEventFilter::cancelFilter()
+void WaylandQuickShellEventFilter::cancelFilter()
 {
     if (!self)
         return;
@@ -232,21 +234,21 @@ void QWaylandQuickShellEventFilter::cancelFilter()
         self->stopFilter();
 }
 
-void QWaylandQuickShellEventFilter::stopFilter()
+void WaylandQuickShellEventFilter::stopFilter()
 {
     if (eventFilterInstalled) {
         qGuiApp->removeEventFilter(this);
         eventFilterInstalled = false;
     }
 }
-QWaylandQuickShellEventFilter *QWaylandQuickShellEventFilter::self = nullptr;
+WaylandQuickShellEventFilter *WaylandQuickShellEventFilter::self = nullptr;
 
-QWaylandQuickShellEventFilter::QWaylandQuickShellEventFilter(QObject *parent)
+WaylandQuickShellEventFilter::WaylandQuickShellEventFilter(QObject *parent)
     : QObject(parent)
 {
 }
 
-bool QWaylandQuickShellEventFilter::eventFilter(QObject *receiver, QEvent *e)
+bool WaylandQuickShellEventFilter::eventFilter(QObject *receiver, QEvent *e)
 {
     if (e->type() == QEvent::MouseButtonPress || e->type() == QEvent::MouseButtonRelease) {
         bool press = e->type() == QEvent::MouseButtonPress;
@@ -261,7 +263,7 @@ bool QWaylandQuickShellEventFilter::eventFilter(QObject *receiver, QEvent *e)
             return false;
 
         QMouseEvent *event = static_cast<QMouseEvent*>(e);
-        QWaylandQuickShellSurfaceItem *shellSurfaceItem = qobject_cast<QWaylandQuickShellSurfaceItem*>(item);
+        WaylandQuickShellSurfaceItem *shellSurfaceItem = qobject_cast<WaylandQuickShellSurfaceItem*>(item);
         bool finalRelease = (event->type() == QEvent::MouseButtonRelease) && (event->buttons() == Qt::NoButton);
         bool popupClient = shellSurfaceItem && shellSurfaceItem->surface() && shellSurfaceItem->surface()->client() == client;
 
@@ -302,7 +304,7 @@ bool QWaylandQuickShellEventFilter::eventFilter(QObject *receiver, QEvent *e)
     return false;
 }
 
-void QWaylandQuickShellEventFilter::timerEvent(QTimerEvent *event)
+void WaylandQuickShellEventFilter::timerEvent(QTimerEvent *event)
 {
     if (event->timerId() == mousePressTimeout.timerId()) {
         mousePressTimeout.stop();
@@ -313,11 +315,11 @@ void QWaylandQuickShellEventFilter::timerEvent(QTimerEvent *event)
     }
 }
 
-static QWaylandQuickShellSurfaceItem *findSurfaceItemFromMoveItem(QQuickItem *moveItem)
+static WaylandQuickShellSurfaceItem *findSurfaceItemFromMoveItem(QQuickItem *moveItem)
 {
     if (Q_UNLIKELY(!moveItem))
         return nullptr;
-    if (auto *surf = qobject_cast<QWaylandQuickShellSurfaceItem *>(moveItem))
+    if (auto *surf = qobject_cast<WaylandQuickShellSurfaceItem *>(moveItem))
         return surf;
     for (auto *item : moveItem->childItems()) {
         if (auto *surf = findSurfaceItemFromMoveItem(item))
@@ -332,9 +334,9 @@ static QWaylandQuickShellSurfaceItem *findSurfaceItemFromMoveItem(QQuickItem *mo
     If we don't have staysOnTop, skip all surfaces with staysOnTop
     If we have staysOnBottom, skip all surfaces that don't have staysOnBottom
   */
-void QWaylandQuickShellSurfaceItemPrivate::raise()
+void WaylandQuickShellSurfaceItemPrivate::raise()
 {
-    Q_Q(QWaylandQuickShellSurfaceItem);
+    Q_Q(WaylandQuickShellSurfaceItem);
     auto *moveItem = q->moveItem();
     QQuickItem *parent = moveItem->parentItem();
     if (!parent)
@@ -358,9 +360,9 @@ void QWaylandQuickShellSurfaceItemPrivate::raise()
     If we don't have staysOnBottom, skip all surfaces with staysOnBottom
     If we have staysOnTop, skip all surfaces that don't have staysOnTop
   */
-void QWaylandQuickShellSurfaceItemPrivate::lower()
+void WaylandQuickShellSurfaceItemPrivate::lower()
 {
-    Q_Q(QWaylandQuickShellSurfaceItem);
+    Q_Q(WaylandQuickShellSurfaceItem);
     auto *moveItem = q->moveItem();
     QQuickItem *parent = moveItem->parentItem();
     if (!parent)
@@ -381,19 +383,19 @@ void QWaylandQuickShellSurfaceItemPrivate::lower()
 }
 
 /*!
- * \property QWaylandQuickShellSurfaceItem::staysOnTop
+ * \property WaylandQuickShellSurfaceItem::staysOnTop
  *
  * Keep this item above other Wayland surfaces
  */
-bool QWaylandQuickShellSurfaceItem::staysOnTop() const
+bool WaylandQuickShellSurfaceItem::staysOnTop() const
 {
-    Q_D(const QWaylandQuickShellSurfaceItem);
+    Q_D(const WaylandQuickShellSurfaceItem);
     return d->staysOnTop;
 }
 
-void QWaylandQuickShellSurfaceItem::setStaysOnTop(bool onTop)
+void WaylandQuickShellSurfaceItem::setStaysOnTop(bool onTop)
 {
-    Q_D(QWaylandQuickShellSurfaceItem);
+    Q_D(WaylandQuickShellSurfaceItem);
     if (d->staysOnTop == onTop)
         return;
     d->staysOnTop = onTop;
@@ -409,19 +411,19 @@ void QWaylandQuickShellSurfaceItem::setStaysOnTop(bool onTop)
 }
 
 /*!
- * \property QWaylandQuickShellSurfaceItem::staysOnBottom
+ * \property WaylandQuickShellSurfaceItem::staysOnBottom
  *
  * Keep this item above other Wayland surfaces
  */
-bool QWaylandQuickShellSurfaceItem::staysOnBottom() const
+bool WaylandQuickShellSurfaceItem::staysOnBottom() const
 {
-    Q_D(const QWaylandQuickShellSurfaceItem);
+    Q_D(const WaylandQuickShellSurfaceItem);
     return d->staysOnBottom;
 }
 
-void QWaylandQuickShellSurfaceItem::setStaysOnBottom(bool onBottom)
+void WaylandQuickShellSurfaceItem::setStaysOnBottom(bool onBottom)
 {
-    Q_D(QWaylandQuickShellSurfaceItem);
+    Q_D(WaylandQuickShellSurfaceItem);
     if (d->staysOnBottom == onBottom)
         return;
     d->staysOnBottom = onBottom;
@@ -436,4 +438,6 @@ void QWaylandQuickShellSurfaceItem::setStaysOnBottom(bool onBottom)
     Q_ASSERT(!(d->staysOnTop && d->staysOnBottom));
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

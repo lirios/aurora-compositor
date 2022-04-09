@@ -27,16 +27,18 @@
 **
 ****************************************************************************/
 
-#include "qwlhwintegration_p.h"
+#include "aurorawlhwintegration_p.h"
 
-#include <QtWaylandCompositor/QWaylandCompositor>
+#include <LiriAuroraCompositor/WaylandCompositor>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 namespace QtWayland {
 
-HardwareIntegration::HardwareIntegration(QWaylandCompositor *compositor)
-    : QWaylandCompositorExtensionTemplate<HardwareIntegration>(compositor)
+HardwareIntegration::HardwareIntegration(WaylandCompositor *compositor)
+    : WaylandCompositorExtensionTemplate<HardwareIntegration>(compositor)
     , qt_hardware_integration(compositor->display(), 1)
 {
 }
@@ -60,4 +62,6 @@ void HardwareIntegration::hardware_integration_bind_resource(Resource *resource)
 
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

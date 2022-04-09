@@ -29,8 +29,12 @@
 #include "testseat.h"
 #include <QMouseEvent>
 
-TestSeat::TestSeat(QWaylandCompositor *compositor, QWaylandSeat::CapabilityFlags caps)
-    : QWaylandSeat(compositor, caps)
+namespace Aurora {
+
+namespace Compositor {
+
+TestSeat::TestSeat(WaylandCompositor *compositor, WaylandSeat::CapabilityFlags caps)
+    : WaylandSeat(compositor, caps)
 {
     m_queryCount = 0;
 }
@@ -54,3 +58,7 @@ QList<QMouseEvent *> TestSeat::createMouseEvents(int count)
     }
     return m_events;
 }
+
+} // namespace Compositor
+
+} // namespace Aurora

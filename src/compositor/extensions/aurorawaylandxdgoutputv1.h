@@ -27,54 +27,56 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDXDGOUTPUTV1_H
-#define QWAYLANDXDGOUTPUTV1_H
+#ifndef AURORA_COMPOSITOR_WAYLANDXDGOUTPUTV1_H
+#define AURORA_COMPOSITOR_WAYLANDXDGOUTPUTV1_H
 
 #include <QRect>
-#include <QtWaylandCompositor/QWaylandCompositorExtension>
-#include <QtWaylandCompositor/qwaylandquickchildren.h>
+#include <LiriAuroraCompositor/WaylandCompositorExtension>
+#include <LiriAuroraCompositor/aurorawaylandquickchildren.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandOutput;
+namespace Compositor {
 
-class QWaylandXdgOutputManagerV1Private;
-class QWaylandXdgOutputV1Private;
+class WaylandOutput;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandXdgOutputManagerV1
-        : public QWaylandCompositorExtensionTemplate<QWaylandXdgOutputManagerV1>
+class WaylandXdgOutputManagerV1Private;
+class WaylandXdgOutputV1Private;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgOutputManagerV1
+        : public WaylandCompositorExtensionTemplate<WaylandXdgOutputManagerV1>
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandXdgOutputManagerV1)
+    Q_DECLARE_PRIVATE(WaylandXdgOutputManagerV1)
 public:
-    explicit QWaylandXdgOutputManagerV1();
-    QWaylandXdgOutputManagerV1(QWaylandCompositor *compositor);
+    explicit WaylandXdgOutputManagerV1();
+    WaylandXdgOutputManagerV1(WaylandCompositor *compositor);
 
     void initialize() override;
 
     static const wl_interface *interface();
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandXdgOutputV1 : public QObject
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgOutputV1 : public QObject
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandXdgOutputV1)
-    Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(QWaylandXdgOutputV1)
-    Q_PROPERTY(QWaylandXdgOutputManagerV1 *manager READ manager NOTIFY managerChanged)
-    Q_PROPERTY(QWaylandOutput *output READ output NOTIFY outputChanged)
+    Q_DECLARE_PRIVATE(WaylandXdgOutputV1)
+    Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandXdgOutputV1)
+    Q_PROPERTY(WaylandXdgOutputManagerV1 *manager READ manager NOTIFY managerChanged)
+    Q_PROPERTY(WaylandOutput *output READ output NOTIFY outputChanged)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString description READ description WRITE setDescription NOTIFY descriptionChanged)
     Q_PROPERTY(QPoint logicalPosition READ logicalPosition WRITE setLogicalPosition NOTIFY logicalPositionChanged)
     Q_PROPERTY(QSize logicalSize READ logicalSize WRITE setLogicalSize NOTIFY logicalSizeChanged)
     Q_PROPERTY(QRect logicalGeometry READ logicalGeometry NOTIFY logicalGeometryChanged)
-    Q_MOC_INCLUDE("qwaylandoutput.h")
+    Q_MOC_INCLUDE("aurorawaylandoutput.h")
 public:
-    QWaylandXdgOutputV1();
-    QWaylandXdgOutputV1(QWaylandOutput *output, QWaylandXdgOutputManagerV1 *manager);
-    ~QWaylandXdgOutputV1() override;
+    WaylandXdgOutputV1();
+    WaylandXdgOutputV1(WaylandOutput *output, WaylandXdgOutputManagerV1 *manager);
+    ~WaylandXdgOutputV1() override;
 
-    QWaylandXdgOutputManagerV1 *manager() const;
-    QWaylandOutput *output() const;
+    WaylandXdgOutputManagerV1 *manager() const;
+    WaylandOutput *output() const;
 
     QString name() const;
     void setName(const QString &name);
@@ -100,6 +102,8 @@ Q_SIGNALS:
     void descriptionChanged();
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDXDGOUTPUTV1_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDXDGOUTPUTV1_H

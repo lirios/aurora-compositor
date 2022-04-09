@@ -27,23 +27,25 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDKEYMAP_H
-#define QWAYLANDKEYMAP_H
+#ifndef AURORA_COMPOSITOR_WAYLANDKEYMAP_H
+#define AURORA_COMPOSITOR_WAYLANDKEYMAP_H
 
 #include <QtCore/QObject>
-#include <QtWaylandCompositor/qtwaylandcompositorglobal.h>
-#include <QtWaylandCompositor/qtwaylandqmlinclude.h>
-#include <QtWaylandCompositor/qwaylandquickchildren.h>
+#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/qtwaylandqmlinclude.h>
+#include <LiriAuroraCompositor/aurorawaylandquickchildren.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandKeymapPrivate;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandKeymap : public QObject
+class WaylandKeymapPrivate;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandKeymap : public QObject
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandKeymap)
-    Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(QWaylandKeymap)
+    Q_DECLARE_PRIVATE(WaylandKeymap)
+    Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandKeymap)
     Q_PROPERTY(QString layout READ layout WRITE setLayout NOTIFY layoutChanged)
     Q_PROPERTY(QString variant READ variant WRITE setVariant NOTIFY variantChanged)
     Q_PROPERTY(QString options READ options WRITE setOptions NOTIFY optionsChanged)
@@ -52,7 +54,7 @@ class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandKeymap : public QObject
     QML_NAMED_ELEMENT(WaylandKeymap)
     QML_ADDED_IN_VERSION(1, 0)
 public:
-    QWaylandKeymap(const QString &layout = QString(), const QString &variant = QString(), const QString &options = QString(),
+    WaylandKeymap(const QString &layout = QString(), const QString &variant = QString(), const QString &options = QString(),
                    const QString &model = QString(), const QString &rules = QString(), QObject *parent = nullptr);
 
     QString layout() const;
@@ -74,6 +76,8 @@ Q_SIGNALS:
     void modelChanged();
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif //QWAYLANDKEYMAP_H

@@ -27,8 +27,8 @@
 **
 ****************************************************************************/
 
-#include "qwaylandqttextinputmethod.h"
-#include "qwaylandqttextinputmethod_p.h"
+#include "aurorawaylandqttextinputmethod.h"
+#include "aurorawaylandqttextinputmethod_p.h"
 
 #include <QtGui/qevent.h>
 #include <QtGui/qguiapplication.h>
@@ -36,21 +36,23 @@
 #include <QtGui/qcolor.h>
 #include <QtGui/qtextformat.h>
 
-#include <QtWaylandCompositor/qwaylandcompositor.h>
-#include <QtWaylandCompositor/qwaylandsurface.h>
+#include <LiriAuroraCompositor/aurorawaylandcompositor.h>
+#include <LiriAuroraCompositor/aurorawaylandsurface.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-QWaylandQtTextInputMethodPrivate::QWaylandQtTextInputMethodPrivate(QWaylandCompositor *c)
+namespace Compositor {
+
+WaylandQtTextInputMethodPrivate::WaylandQtTextInputMethodPrivate(WaylandCompositor *c)
     : compositor(c)
 {
 }
 
-void QWaylandQtTextInputMethodPrivate::text_input_method_v1_enable(Resource *resource, struct ::wl_resource *surface)
+void WaylandQtTextInputMethodPrivate::text_input_method_v1_enable(Resource *resource, struct ::wl_resource *surface)
 {
-    Q_Q(QWaylandQtTextInputMethod);
+    Q_Q(WaylandQtTextInputMethod);
     if (this->resource == resource) {
-        QWaylandSurface *waylandSurface = QWaylandSurface::fromResource(surface);
+        WaylandSurface *waylandSurface = WaylandSurface::fromResource(surface);
         if (surface != nullptr) {
             enabledSurfaces[resource] = waylandSurface;
             emit q->surfaceEnabled(waylandSurface);
@@ -58,12 +60,12 @@ void QWaylandQtTextInputMethodPrivate::text_input_method_v1_enable(Resource *res
     }
 }
 
-void QWaylandQtTextInputMethodPrivate::text_input_method_v1_disable(Resource *resource, struct ::wl_resource *surface)
+void WaylandQtTextInputMethodPrivate::text_input_method_v1_disable(Resource *resource, struct ::wl_resource *surface)
 {
-    Q_Q(QWaylandQtTextInputMethod);
+    Q_Q(WaylandQtTextInputMethod);
     if (this->resource == resource) {
-        QWaylandSurface *waylandSurface = QWaylandSurface::fromResource(surface);
-        QWaylandSurface *enabledSurface = enabledSurfaces.take(resource);
+        WaylandSurface *waylandSurface = WaylandSurface::fromResource(surface);
+        WaylandSurface *enabledSurface = enabledSurfaces.take(resource);
 
         if (Q_UNLIKELY(enabledSurface != waylandSurface))
             qCWarning(qLcWaylandCompositorInputMethods) << "Disabled surface does not match the one currently enabled";
@@ -72,73 +74,73 @@ void QWaylandQtTextInputMethodPrivate::text_input_method_v1_disable(Resource *re
     }
 }
 
-void QWaylandQtTextInputMethodPrivate::text_input_method_v1_destroy(Resource *resource)
+void WaylandQtTextInputMethodPrivate::text_input_method_v1_destroy(Resource *resource)
 {
     if (this->resource == resource)
         wl_resource_destroy(resource->handle);
 }
 
-void QWaylandQtTextInputMethodPrivate::text_input_method_v1_reset(Resource *resource)
+void WaylandQtTextInputMethodPrivate::text_input_method_v1_reset(Resource *resource)
 {
     if (this->resource == resource)
         qApp->inputMethod()->reset();
 }
 
-void QWaylandQtTextInputMethodPrivate::text_input_method_v1_commit(Resource *resource)
+void WaylandQtTextInputMethodPrivate::text_input_method_v1_commit(Resource *resource)
 {
     if (this->resource == resource)
         qApp->inputMethod()->commit();
 }
 
-void QWaylandQtTextInputMethodPrivate::text_input_method_v1_show_input_panel(Resource *resource)
+void WaylandQtTextInputMethodPrivate::text_input_method_v1_show_input_panel(Resource *resource)
 {
     if (this->resource == resource)
         qApp->inputMethod()->show();
 }
 
-void QWaylandQtTextInputMethodPrivate::text_input_method_v1_hide_input_panel(Resource *resource)
+void WaylandQtTextInputMethodPrivate::text_input_method_v1_hide_input_panel(Resource *resource)
 {
     if (this->resource == resource)
         qApp->inputMethod()->hide();
 }
 
-void QWaylandQtTextInputMethodPrivate::text_input_method_v1_invoke_action(Resource *resource, int32_t type, int32_t cursorPosition)
+void WaylandQtTextInputMethodPrivate::text_input_method_v1_invoke_action(Resource *resource, int32_t type, int32_t cursorPosition)
 {
     if (this->resource == resource)
         qApp->inputMethod()->invokeAction(QInputMethod::Action(type), cursorPosition);
 }
 
-void QWaylandQtTextInputMethodPrivate::text_input_method_v1_update_cursor_rectangle(Resource *resource, int32_t x, int32_t y, int32_t width, int32_t height)
+void WaylandQtTextInputMethodPrivate::text_input_method_v1_update_cursor_rectangle(Resource *resource, int32_t x, int32_t y, int32_t width, int32_t height)
 {
     if (this->resource == resource)
         cursorRectangle = QRect(x, y, width, height);
 }
 
-void QWaylandQtTextInputMethodPrivate::text_input_method_v1_start_update(Resource *resource, int32_t queries)
+void WaylandQtTextInputMethodPrivate::text_input_method_v1_start_update(Resource *resource, int32_t queries)
 {
     if (this->resource == resource)
         updatingQueries = Qt::InputMethodQueries(queries);
 }
 
-void QWaylandQtTextInputMethodPrivate::text_input_method_v1_update_hints(Resource *resource, int32_t hints)
+void WaylandQtTextInputMethodPrivate::text_input_method_v1_update_hints(Resource *resource, int32_t hints)
 {
     if (this->resource == resource)
         this->hints = Qt::InputMethodHints(hints);
 }
 
-void QWaylandQtTextInputMethodPrivate::text_input_method_v1_update_anchor_position(Resource *resource, int32_t anchorPosition)
+void WaylandQtTextInputMethodPrivate::text_input_method_v1_update_anchor_position(Resource *resource, int32_t anchorPosition)
 {
     if (this->resource == resource)
         this->anchorPosition = anchorPosition;
 }
 
-void QWaylandQtTextInputMethodPrivate::text_input_method_v1_update_cursor_position(Resource *resource, int32_t cursorPosition)
+void WaylandQtTextInputMethodPrivate::text_input_method_v1_update_cursor_position(Resource *resource, int32_t cursorPosition)
 {
     if (this->resource == resource)
         this->cursorPosition = cursorPosition;
 }
 
-void QWaylandQtTextInputMethodPrivate::text_input_method_v1_update_surrounding_text(Resource *resource, const QString &surroundingText, int32_t surroundingTextOffset)
+void WaylandQtTextInputMethodPrivate::text_input_method_v1_update_surrounding_text(Resource *resource, const QString &surroundingText, int32_t surroundingTextOffset)
 {
     if (this->resource == resource) {
         this->surroundingText = surroundingText;
@@ -146,21 +148,21 @@ void QWaylandQtTextInputMethodPrivate::text_input_method_v1_update_surrounding_t
     }
 }
 
-void QWaylandQtTextInputMethodPrivate::text_input_method_v1_update_absolute_position(Resource *resource, int32_t absolutePosition)
+void WaylandQtTextInputMethodPrivate::text_input_method_v1_update_absolute_position(Resource *resource, int32_t absolutePosition)
 {
     if (this->resource == resource)
         this->absolutePosition = absolutePosition;
 }
 
-void QWaylandQtTextInputMethodPrivate::text_input_method_v1_update_preferred_language(Resource *resource, const QString &preferredLanguage)
+void WaylandQtTextInputMethodPrivate::text_input_method_v1_update_preferred_language(Resource *resource, const QString &preferredLanguage)
 {
     if (this->resource == resource)
         this->preferredLanguage = preferredLanguage;
 }
 
-void QWaylandQtTextInputMethodPrivate::text_input_method_v1_end_update(Resource *resource)
+void WaylandQtTextInputMethodPrivate::text_input_method_v1_end_update(Resource *resource)
 {
-    Q_Q(QWaylandQtTextInputMethod);
+    Q_Q(WaylandQtTextInputMethod);
     if (this->resource == resource && updatingQueries != 0) {
         Qt::InputMethodQueries queries = updatingQueries;
         updatingQueries = Qt::InputMethodQueries();
@@ -168,47 +170,47 @@ void QWaylandQtTextInputMethodPrivate::text_input_method_v1_end_update(Resource 
     }
 }
 
-void QWaylandQtTextInputMethodPrivate::text_input_method_v1_acknowledge_input_method(Resource *resource)
+void WaylandQtTextInputMethodPrivate::text_input_method_v1_acknowledge_input_method(Resource *resource)
 {
     if (this->resource == resource)
         waitingForSync = false;
 }
 
-QWaylandQtTextInputMethod::QWaylandQtTextInputMethod(QWaylandObject *container, QWaylandCompositor *compositor)
-    : QWaylandCompositorExtensionTemplate(container, *new QWaylandQtTextInputMethodPrivate(compositor))
+WaylandQtTextInputMethod::WaylandQtTextInputMethod(WaylandObject *container, WaylandCompositor *compositor)
+    : WaylandCompositorExtensionTemplate(container, *new WaylandQtTextInputMethodPrivate(compositor))
 {
-    connect(&d_func()->focusDestroyListener, &QWaylandDestroyListener::fired,
-            this, &QWaylandQtTextInputMethod::focusSurfaceDestroyed);
+    connect(&d_func()->focusDestroyListener, &WaylandDestroyListener::fired,
+            this, &WaylandQtTextInputMethod::focusSurfaceDestroyed);
 
-    connect(qGuiApp->inputMethod(), &QInputMethod::visibleChanged, this, &QWaylandQtTextInputMethod::sendVisibleChanged);
-    connect(qGuiApp->inputMethod(), &QInputMethod::keyboardRectangleChanged, this, &QWaylandQtTextInputMethod::sendKeyboardRectangleChanged);
-    connect(qGuiApp->inputMethod(), &QInputMethod::inputDirectionChanged, this, &QWaylandQtTextInputMethod::sendInputDirectionChanged);
-    connect(qGuiApp->inputMethod(), &QInputMethod::localeChanged, this, &QWaylandQtTextInputMethod::sendLocaleChanged);
+    connect(qGuiApp->inputMethod(), &QInputMethod::visibleChanged, this, &WaylandQtTextInputMethod::sendVisibleChanged);
+    connect(qGuiApp->inputMethod(), &QInputMethod::keyboardRectangleChanged, this, &WaylandQtTextInputMethod::sendKeyboardRectangleChanged);
+    connect(qGuiApp->inputMethod(), &QInputMethod::inputDirectionChanged, this, &WaylandQtTextInputMethod::sendInputDirectionChanged);
+    connect(qGuiApp->inputMethod(), &QInputMethod::localeChanged, this, &WaylandQtTextInputMethod::sendLocaleChanged);
 }
 
 
-QWaylandQtTextInputMethod::~QWaylandQtTextInputMethod()
+WaylandQtTextInputMethod::~WaylandQtTextInputMethod()
 {
 }
 
-void QWaylandQtTextInputMethod::focusSurfaceDestroyed()
+void WaylandQtTextInputMethod::focusSurfaceDestroyed()
 {
-    Q_D(QWaylandQtTextInputMethod);
+    Q_D(WaylandQtTextInputMethod);
     d->focusDestroyListener.reset();
     d->waitingForSync = false;
     d->resource = nullptr;
     d->focusedSurface = nullptr;
 }
 
-QWaylandSurface *QWaylandQtTextInputMethod::focusedSurface() const
+WaylandSurface *WaylandQtTextInputMethod::focusedSurface() const
 {
-    Q_D(const QWaylandQtTextInputMethod);
+    Q_D(const WaylandQtTextInputMethod);
     return d->focusedSurface;
 }
 
-QVariant QWaylandQtTextInputMethod::inputMethodQuery(Qt::InputMethodQuery property, QVariant argument) const
+QVariant WaylandQtTextInputMethod::inputMethodQuery(Qt::InputMethodQuery property, QVariant argument) const
 {
-    Q_D(const QWaylandQtTextInputMethod);
+    Q_D(const WaylandQtTextInputMethod);
     switch (property) {
     case Qt::ImHints:
         return int(d->hints);
@@ -241,9 +243,9 @@ QVariant QWaylandQtTextInputMethod::inputMethodQuery(Qt::InputMethodQuery proper
     }
 }
 
-void QWaylandQtTextInputMethod::sendKeyEvent(QKeyEvent *event)
+void WaylandQtTextInputMethod::sendKeyEvent(QKeyEvent *event)
 {
-    Q_D(QWaylandQtTextInputMethod);
+    Q_D(WaylandQtTextInputMethod);
     if (d->resource == nullptr || d->resource->handle == nullptr)
         return;
 
@@ -259,9 +261,9 @@ void QWaylandQtTextInputMethod::sendKeyEvent(QKeyEvent *event)
                 event->text());
 }
 
-void QWaylandQtTextInputMethod::sendInputMethodEvent(QInputMethodEvent *event)
+void WaylandQtTextInputMethod::sendInputMethodEvent(QInputMethodEvent *event)
 {
-    Q_D(QWaylandQtTextInputMethod);
+    Q_D(WaylandQtTextInputMethod);
     if (d->resource == nullptr || d->resource->handle == nullptr || d->compositor == nullptr)
         return;
 
@@ -359,17 +361,17 @@ void QWaylandQtTextInputMethod::sendInputMethodEvent(QInputMethodEvent *event)
         emit updateInputMethod(queries);
 }
 
-bool QWaylandQtTextInputMethod::isSurfaceEnabled(QWaylandSurface *surface) const
+bool WaylandQtTextInputMethod::isSurfaceEnabled(WaylandSurface *surface) const
 {
-    Q_D(const QWaylandQtTextInputMethod);
+    Q_D(const WaylandQtTextInputMethod);
     return d->enabledSurfaces.values().contains(surface);
 }
 
-void QWaylandQtTextInputMethod::setFocus(QWaylandSurface *surface)
+void WaylandQtTextInputMethod::setFocus(WaylandSurface *surface)
 {
-    Q_D(QWaylandQtTextInputMethod);
+    Q_D(WaylandQtTextInputMethod);
 
-    QWaylandQtTextInputMethodPrivate::Resource *resource = surface != nullptr ? d->resourceMap().value(surface->waylandClient()) : nullptr;
+    WaylandQtTextInputMethodPrivate::Resource *resource = surface != nullptr ? d->resourceMap().value(surface->waylandClient()) : nullptr;
     if (d->resource == resource)
         return;
 
@@ -399,27 +401,27 @@ void QWaylandQtTextInputMethod::setFocus(QWaylandSurface *surface)
     }
 }
 
-void QWaylandQtTextInputMethod::sendLocaleChanged()
+void WaylandQtTextInputMethod::sendLocaleChanged()
 {
-    Q_D(QWaylandQtTextInputMethod);
+    Q_D(WaylandQtTextInputMethod);
     if (d->resource == nullptr || d->resource->handle == nullptr)
         return;
 
     d->send_locale_changed(d->resource->handle, qGuiApp->inputMethod()->locale().bcp47Name());
 }
 
-void QWaylandQtTextInputMethod::sendInputDirectionChanged()
+void WaylandQtTextInputMethod::sendInputDirectionChanged()
 {
-    Q_D(QWaylandQtTextInputMethod);
+    Q_D(WaylandQtTextInputMethod);
     if (d->resource == nullptr || d->resource->handle == nullptr)
         return;
 
     d->send_input_direction_changed(d->resource->handle, int(qGuiApp->inputMethod()->inputDirection()));
 }
 
-void QWaylandQtTextInputMethod::sendKeyboardRectangleChanged()
+void WaylandQtTextInputMethod::sendKeyboardRectangleChanged()
 {
-    Q_D(QWaylandQtTextInputMethod);
+    Q_D(WaylandQtTextInputMethod);
     if (d->resource == nullptr || d->resource->handle == nullptr)
         return;
 
@@ -431,29 +433,31 @@ void QWaylandQtTextInputMethod::sendKeyboardRectangleChanged()
                                        wl_fixed_from_double(keyboardRectangle.height()));
 }
 
-void QWaylandQtTextInputMethod::sendVisibleChanged()
+void WaylandQtTextInputMethod::sendVisibleChanged()
 {
-    Q_D(QWaylandQtTextInputMethod);
+    Q_D(WaylandQtTextInputMethod);
     if (d->resource == nullptr || d->resource->handle == nullptr)
         return;
 
     d->send_visible_changed(d->resource->handle, int(qGuiApp->inputMethod()->isVisible()));
 }
 
-void QWaylandQtTextInputMethod::add(::wl_client *client, uint32_t id, int version)
+void WaylandQtTextInputMethod::add(::wl_client *client, uint32_t id, int version)
 {
-    Q_D(QWaylandQtTextInputMethod);
+    Q_D(WaylandQtTextInputMethod);
     d->add(client, id, version);
 }
 
-const struct wl_interface *QWaylandQtTextInputMethod::interface()
+const struct wl_interface *WaylandQtTextInputMethod::interface()
 {
-    return QWaylandQtTextInputMethodPrivate::interface();
+    return WaylandQtTextInputMethodPrivate::interface();
 }
 
-QByteArray QWaylandQtTextInputMethod::interfaceName()
+QByteArray WaylandQtTextInputMethod::interfaceName()
 {
-    return QWaylandQtTextInputMethodPrivate::interfaceName();
+    return WaylandQtTextInputMethodPrivate::interfaceName();
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

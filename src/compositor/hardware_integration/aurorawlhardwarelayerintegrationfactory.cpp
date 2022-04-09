@@ -27,15 +27,17 @@
 **
 ****************************************************************************/
 
-#include "qwlhardwarelayerintegrationfactory_p.h"
-#include "qwlhardwarelayerintegrationplugin_p.h"
-#include "qwlhardwarelayerintegration_p.h"
+#include "aurorawlhardwarelayerintegrationfactory_p.h"
+#include "aurorawlhardwarelayerintegrationplugin_p.h"
+#include "aurorawlhardwarelayerintegration_p.h"
 
 #include <QtCore/private/qfactoryloader_p.h>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDir>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 namespace QtWayland {
 
@@ -54,4 +56,6 @@ HardwareLayerIntegration *HardwareLayerIntegrationFactory::create(const QString 
 
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

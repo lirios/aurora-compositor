@@ -27,43 +27,47 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDTOUCH_H
-#define QWAYLANDTOUCH_H
+#ifndef AURORA_COMPOSITOR_WAYLANDTOUCH_H
+#define AURORA_COMPOSITOR_WAYLANDTOUCH_H
 
-#include <QtWaylandCompositor/QWaylandCompositorExtension>
+#include <LiriAuroraCompositor/WaylandCompositorExtension>
 
 #include <QtCore/QObject>
 #include <QtGui/QTouchEvent>
 
 struct wl_resource;
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandTouch;
-class QWaylandTouchPrivate;
-class QWaylandSeat;
-class QWaylandView;
-class QWaylandClient;
-class QWaylandSurface;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandTouch : public QWaylandObject
+class WaylandTouch;
+class WaylandTouchPrivate;
+class WaylandSeat;
+class WaylandView;
+class WaylandClient;
+class WaylandSurface;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandTouch : public WaylandObject
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandTouch)
+    Q_DECLARE_PRIVATE(WaylandTouch)
 public:
-    QWaylandTouch(QWaylandSeat *seat, QObject *parent = nullptr);
+    WaylandTouch(WaylandSeat *seat, QObject *parent = nullptr);
 
-    QWaylandSeat *seat() const;
-    QWaylandCompositor *compositor() const;
+    WaylandSeat *seat() const;
+    WaylandCompositor *compositor() const;
 
-    virtual uint sendTouchPointEvent(QWaylandSurface *surface, int id, const QPointF &position, Qt::TouchPointState state);
-    virtual void sendFrameEvent(QWaylandClient *client);
-    virtual void sendCancelEvent(QWaylandClient *client);
-    virtual void sendFullTouchEvent(QWaylandSurface *surface, QTouchEvent *event);
+    virtual uint sendTouchPointEvent(WaylandSurface *surface, int id, const QPointF &position, Qt::TouchPointState state);
+    virtual void sendFrameEvent(WaylandClient *client);
+    virtual void sendCancelEvent(WaylandClient *client);
+    virtual void sendFullTouchEvent(WaylandSurface *surface, QTouchEvent *event);
 
-    virtual void addClient(QWaylandClient *client, uint32_t id, uint32_t version);
+    virtual void addClient(WaylandClient *client, uint32_t id, uint32_t version);
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif  /*QWAYLANDTOUCH_H*/

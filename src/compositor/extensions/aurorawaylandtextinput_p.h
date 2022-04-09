@@ -27,44 +27,46 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDTEXTINPUT_P_H
-#define QWAYLANDTEXTINPUT_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDTEXTINPUT_P_H
+#define AURORA_COMPOSITOR_WAYLANDTEXTINPUT_P_H
 
-#include <QtWaylandCompositor/private/qwaylandcompositorextension_p.h>
-#include <QtWaylandCompositor/private/qwayland-server-text-input-unstable-v2.h>
-#include <QtWaylandCompositor/QWaylandDestroyListener>
+#include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
+#include <LiriAuroraCompositor/private/aurora-server-text-input-unstable-v2.h>
+#include <LiriAuroraCompositor/WaylandDestroyListener>
 
 #include <QtCore/QObject>
 #include <QtCore/QMap>
 #include <QtCore/QHash>
 #include <QtCore/QRect>
 #include <QtGui/QInputMethod>
-#include <QtWaylandCompositor/QWaylandSurface>
+#include <LiriAuroraCompositor/WaylandSurface>
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 class QInputMethodEvent;
 class QKeyEvent;
-class QWaylandCompositor;
-class QWaylandView;
+class WaylandCompositor;
+class WaylandView;
 
-class QWaylandTextInputClientState {
+class WaylandTextInputClientState {
 public:
-    QWaylandTextInputClientState();
+    WaylandTextInputClientState();
 
-    Qt::InputMethodQueries updatedQueries(const QWaylandTextInputClientState &other) const;
-    Qt::InputMethodQueries mergeChanged(const QWaylandTextInputClientState &other);
+    Qt::InputMethodQueries updatedQueries(const WaylandTextInputClientState &other) const;
+    Qt::InputMethodQueries mergeChanged(const WaylandTextInputClientState &other);
 
     Qt::InputMethodHints hints = Qt::ImhNone;
     QRect cursorRectangle;
@@ -76,11 +78,11 @@ public:
     Qt::InputMethodQueries changedState;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandTextInputPrivate : public QWaylandCompositorExtensionPrivate, public QtWaylandServer::zwp_text_input_v2
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandTextInputPrivate : public WaylandCompositorExtensionPrivate, public PrivateServer::zwp_text_input_v2
 {
-    Q_DECLARE_PUBLIC(QWaylandTextInput)
+    Q_DECLARE_PUBLIC(WaylandTextInput)
 public:
-    explicit QWaylandTextInputPrivate(QWaylandCompositor *compositor);
+    explicit WaylandTextInputPrivate(WaylandCompositor *compositor);
 
     void sendInputMethodEvent(QInputMethodEvent *event);
     void sendKeyEvent(QKeyEvent *event);
@@ -90,22 +92,22 @@ public:
 
     QVariant inputMethodQuery(Qt::InputMethodQuery property, QVariant argument) const;
 
-    void setFocus(QWaylandSurface *surface);
+    void setFocus(WaylandSurface *surface);
 
-    QWaylandCompositor *compositor = nullptr;
+    WaylandCompositor *compositor = nullptr;
 
-    QWaylandSurface *focus = nullptr;
+    WaylandSurface *focus = nullptr;
     Resource *focusResource = nullptr;
-    QWaylandDestroyListener focusDestroyListener;
+    WaylandDestroyListener focusDestroyListener;
 
     bool inputPanelVisible = false;
 
-    std::unique_ptr<QWaylandTextInputClientState> currentState;
-    std::unique_ptr<QWaylandTextInputClientState> pendingState;
+    std::unique_ptr<WaylandTextInputClientState> currentState;
+    std::unique_ptr<WaylandTextInputClientState> pendingState;
 
     uint32_t serial = 0;
 
-    QHash<Resource *, QWaylandSurface*> enabledSurfaces;
+    QHash<Resource *, WaylandSurface*> enabledSurfaces;
 
 protected:
     void zwp_text_input_v2_bind_resource(Resource *resource) override;
@@ -123,6 +125,8 @@ protected:
     void zwp_text_input_v2_update_state(Resource *resource, uint32_t serial, uint32_t flags) override;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDTEXTINPUT_P_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDTEXTINPUT_P_H

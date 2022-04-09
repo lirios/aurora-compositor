@@ -27,30 +27,32 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDCLIENTBUFFERINTEGRATION_H
-#define QWAYLANDCLIENTBUFFERINTEGRATION_H
+#ifndef AURORA_COMPOSITOR_WAYLANDCLIENTBUFFERINTEGRATION_H
+#define AURORA_COMPOSITOR_WAYLANDCLIENTBUFFERINTEGRATION_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWaylandCompositor/qtwaylandcompositorglobal.h>
-#include <QtWaylandCompositor/qwaylandsurface.h>
-#include <QtWaylandCompositor/qwaylandbufferref.h>
+#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/aurorawaylandsurface.h>
+#include <LiriAuroraCompositor/aurorawaylandbufferref.h>
 #include <QtCore/QSize>
 #include <QtCore/private/qglobal_p.h>
 #include <wayland-server-core.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandCompositor;
+namespace Compositor {
+
+class WaylandCompositor;
 class QOpenGLTexture;
 
 namespace QtWayland {
@@ -62,8 +64,8 @@ public:
     ClientBufferIntegration();
     virtual ~ClientBufferIntegration() { }
 
-    void setCompositor(QWaylandCompositor *compositor) { m_compositor = compositor; }
-    QWaylandCompositor *compositor() const { return m_compositor; }
+    void setCompositor(WaylandCompositor *compositor) { m_compositor = compositor; }
+    WaylandCompositor *compositor() const { return m_compositor; }
 
     virtual void initializeHardware(struct ::wl_display *display) = 0;
 
@@ -71,11 +73,13 @@ public:
     virtual bool isProtected(struct ::wl_resource *buffer) { Q_UNUSED(buffer); return false; }
 
 protected:
-    QWaylandCompositor *m_compositor = nullptr;
+    WaylandCompositor *m_compositor = nullptr;
 };
 
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDCLIENTBUFFERINTEGRATION_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDCLIENTBUFFERINTEGRATION_H

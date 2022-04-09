@@ -28,31 +28,33 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDQUICKOUTPUT_H
-#define QWAYLANDQUICKOUTPUT_H
+#ifndef AURORA_COMPOSITOR_WAYLANDQUICKOUTPUT_H
+#define AURORA_COMPOSITOR_WAYLANDQUICKOUTPUT_H
 
 #include <QtQuick/QQuickWindow>
-#include <QtWaylandCompositor/qwaylandoutput.h>
-#include <QtWaylandCompositor/qwaylandquickchildren.h>
+#include <LiriAuroraCompositor/aurorawaylandoutput.h>
+#include <LiriAuroraCompositor/aurorawaylandquickchildren.h>
 
 QT_REQUIRE_CONFIG(wayland_compositor_quick);
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandQuickCompositor;
+namespace Compositor {
+
+class WaylandQuickCompositor;
 class QQuickWindow;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandQuickOutput : public QWaylandOutput, public QQmlParserStatus
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandQuickOutput : public WaylandOutput, public QQmlParserStatus
 {
     Q_INTERFACES(QQmlParserStatus)
     Q_OBJECT
-    Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(QWaylandQuickOutput)
+    Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandQuickOutput)
     Q_PROPERTY(bool automaticFrameCallback READ automaticFrameCallback WRITE setAutomaticFrameCallback NOTIFY automaticFrameCallbackChanged)
     QML_NAMED_ELEMENT(WaylandOutput)
     QML_ADDED_IN_VERSION(1, 0)
 public:
-    QWaylandQuickOutput();
-    QWaylandQuickOutput(QWaylandCompositor *compositor, QWindow *window);
+    WaylandQuickOutput();
+    WaylandQuickOutput(WaylandCompositor *compositor, QWindow *window);
 
     void update() override;
 
@@ -79,6 +81,8 @@ private:
     bool m_automaticFrameCallback = true;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif

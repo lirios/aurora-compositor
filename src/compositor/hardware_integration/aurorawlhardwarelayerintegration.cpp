@@ -27,12 +27,16 @@
 **
 ****************************************************************************/
 
-#include "qwlhardwarelayerintegration_p.h"
+#include "aurorawlhardwarelayerintegration_p.h"
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 namespace QtWayland {
 
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

@@ -27,38 +27,40 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDTEXTINPUT_H
-#define QWAYLANDTEXTINPUT_H
+#ifndef AURORA_COMPOSITOR_WAYLANDTEXTINPUT_H
+#define AURORA_COMPOSITOR_WAYLANDTEXTINPUT_H
 
-#include <QtWaylandCompositor/QWaylandCompositorExtension>
+#include <LiriAuroraCompositor/WaylandCompositorExtension>
 
 struct wl_client;
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandTextInputPrivate;
+namespace Compositor {
+
+class WaylandTextInputPrivate;
 
 class QInputMethodEvent;
 class QKeyEvent;
-class QWaylandSurface;
+class WaylandSurface;
 
-class QWaylandTextInput : public QWaylandCompositorExtensionTemplate<QWaylandTextInput>
+class WaylandTextInput : public WaylandCompositorExtensionTemplate<WaylandTextInput>
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandTextInput)
+    Q_DECLARE_PRIVATE(WaylandTextInput)
 public:
-    explicit QWaylandTextInput(QWaylandObject *container, QWaylandCompositor *compositor);
-    ~QWaylandTextInput() override;
+    explicit WaylandTextInput(WaylandObject *container, WaylandCompositor *compositor);
+    ~WaylandTextInput() override;
 
     void sendInputMethodEvent(QInputMethodEvent *event);
     void sendKeyEvent(QKeyEvent *event);
 
     QVariant inputMethodQuery(Qt::InputMethodQuery property, QVariant argument) const;
 
-    QWaylandSurface *focus() const;
-    void setFocus(QWaylandSurface *surface);
+    WaylandSurface *focus() const;
+    void setFocus(WaylandSurface *surface);
 
-    bool isSurfaceEnabled(QWaylandSurface *surface) const;
+    bool isSurfaceEnabled(WaylandSurface *surface) const;
 
     void add(::wl_client *client, uint32_t id, int version);
     static const struct wl_interface *interface();
@@ -66,8 +68,8 @@ public:
 
 Q_SIGNALS:
     void updateInputMethod(Qt::InputMethodQueries queries);
-    void surfaceEnabled(QWaylandSurface *surface);
-    void surfaceDisabled(QWaylandSurface *surface);
+    void surfaceEnabled(WaylandSurface *surface);
+    void surfaceDisabled(WaylandSurface *surface);
 
 private:
     void focusSurfaceDestroyed(void *);
@@ -76,6 +78,8 @@ private:
     void sendLocale();
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDTEXTINPUT_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDTEXTINPUT_H

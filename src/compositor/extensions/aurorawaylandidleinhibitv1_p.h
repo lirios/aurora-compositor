@@ -27,55 +27,59 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDIDLEINHIBITV1_P_H
-#define QWAYLANDIDLEINHIBITV1_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDIDLEINHIBITV1_P_H
+#define AURORA_COMPOSITOR_WAYLANDIDLEINHIBITV1_P_H
 
-#include <QtWaylandCompositor/QWaylandSurface>
-#include <QtWaylandCompositor/QWaylandIdleInhibitManagerV1>
-#include <QtWaylandCompositor/private/qwaylandcompositorextension_p.h>
-#include <QtWaylandCompositor/private/qwayland-server-idle-inhibit-unstable-v1.h>
+#include <LiriAuroraCompositor/WaylandSurface>
+#include <LiriAuroraCompositor/WaylandIdleInhibitManagerV1>
+#include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
+#include <LiriAuroraCompositor/private/aurora-server-idle-inhibit-unstable-v1.h>
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandIdleInhibitManagerV1Private
-        : public QWaylandCompositorExtensionPrivate
-        , public QtWaylandServer::zwp_idle_inhibit_manager_v1
+namespace Compositor {
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandIdleInhibitManagerV1Private
+        : public WaylandCompositorExtensionPrivate
+        , public PrivateServer::zwp_idle_inhibit_manager_v1
 {
-    Q_DECLARE_PUBLIC(QWaylandIdleInhibitManagerV1)
+    Q_DECLARE_PUBLIC(WaylandIdleInhibitManagerV1)
 public:
-    explicit QWaylandIdleInhibitManagerV1Private() = default;
+    explicit WaylandIdleInhibitManagerV1Private() = default;
 
     class Q_WAYLANDCOMPOSITOR_EXPORT Inhibitor
-            : public QtWaylandServer::zwp_idle_inhibitor_v1
+            : public PrivateServer::zwp_idle_inhibitor_v1
     {
     public:
-        explicit Inhibitor(QWaylandSurface *surface, wl_client *client, quint32 id, quint32 version);
+        explicit Inhibitor(WaylandSurface *surface, wl_client *client, quint32 id, quint32 version);
 
     protected:
         void zwp_idle_inhibitor_v1_destroy_resource(Resource *resource) override;
         void zwp_idle_inhibitor_v1_destroy(Resource *resource) override;
 
     private:
-        QPointer<QWaylandSurface> m_surface;
+        QPointer<WaylandSurface> m_surface;
     };
 
-    static QWaylandIdleInhibitManagerV1Private *get(QWaylandIdleInhibitManagerV1 *manager) { return manager ? manager->d_func() : nullptr; }
+    static WaylandIdleInhibitManagerV1Private *get(WaylandIdleInhibitManagerV1 *manager) { return manager ? manager->d_func() : nullptr; }
 
 protected:
     void zwp_idle_inhibit_manager_v1_create_inhibitor(Resource *resource, uint32_t id, wl_resource *surfaceResource) override;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDIDLEINHIBITV1_P_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDIDLEINHIBITV1_P_H

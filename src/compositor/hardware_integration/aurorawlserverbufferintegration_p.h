@@ -27,14 +27,14 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDSERVERBUFFERINTEGRATION_H
-#define QWAYLANDSERVERBUFFERINTEGRATION_H
+#ifndef AURORA_COMPOSITOR_WAYLANDSERVERBUFFERINTEGRATION_H
+#define AURORA_COMPOSITOR_WAYLANDSERVERBUFFERINTEGRATION_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -45,14 +45,16 @@
 #include <QtCore/QSize>
 #include <QtGui/qopengl.h>
 
-#include <QtWaylandCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
 
 struct wl_client;
 struct wl_resource;
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandCompositor;
+namespace Compositor {
+
+class WaylandCompositor;
 class QOpenGLContext;
 class QOpenGLTexture;
 class QImage;
@@ -93,7 +95,7 @@ public:
     ServerBufferIntegration();
     virtual ~ServerBufferIntegration();
 
-    virtual bool initializeHardware(QWaylandCompositor *);
+    virtual bool initializeHardware(WaylandCompositor *);
 
     virtual bool supportsFormat(ServerBuffer::Format format) const = 0;
     virtual ServerBuffer *createServerBufferFromImage(const QImage &qimage, ServerBuffer::Format format) = 0;
@@ -109,6 +111,8 @@ public:
 
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif //QWAYLANDSERVERBUFFERINTEGRATION_H

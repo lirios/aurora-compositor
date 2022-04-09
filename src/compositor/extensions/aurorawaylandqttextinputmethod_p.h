@@ -27,15 +27,15 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDQTTEXTINPUTMETHOD_P_H
-#define QWAYLANDQTTEXTINPUTMETHOD_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDQTTEXTINPUTMETHOD_P_H
+#define AURORA_COMPOSITOR_WAYLANDQTTEXTINPUTMETHOD_P_H
 
 
-#include "qwaylandqttextinputmethod.h"
+#include "aurorawaylandqttextinputmethod.h"
 
-#include <QtWaylandCompositor/private/qwaylandcompositorextension_p.h>
-#include <QtWaylandCompositor/private/qwayland-server-qt-text-input-method-unstable-v1.h>
-#include <QtWaylandCompositor/qwaylanddestroylistener.h>
+#include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
+#include <LiriAuroraCompositor/private/aurora-server-qt-text-input-method-unstable-v1.h>
+#include <LiriAuroraCompositor/aurorawaylanddestroylistener.h>
 
 #include <QtCore/qrect.h>
 #include <QtCore/qhash.h>
@@ -44,29 +44,31 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandCompositor;
-class QWaylandSurface;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandQtTextInputMethodPrivate : public QWaylandCompositorExtensionPrivate, public QtWaylandServer::qt_text_input_method_v1
+class WaylandCompositor;
+class WaylandSurface;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandQtTextInputMethodPrivate : public WaylandCompositorExtensionPrivate, public PrivateServer::qt_text_input_method_v1
 {
-    Q_DECLARE_PUBLIC(QWaylandQtTextInputMethod)
+    Q_DECLARE_PUBLIC(WaylandQtTextInputMethod)
 public:
-    explicit QWaylandQtTextInputMethodPrivate(QWaylandCompositor *compositor);
+    explicit WaylandQtTextInputMethodPrivate(WaylandCompositor *compositor);
 
-    QWaylandCompositor *compositor;
-    QWaylandSurface *focusedSurface = nullptr;
+    WaylandCompositor *compositor;
+    WaylandSurface *focusedSurface = nullptr;
     Resource *resource = nullptr;
-    QHash<Resource * , QWaylandSurface *> enabledSurfaces;
-    QWaylandDestroyListener focusDestroyListener;
+    QHash<Resource * , WaylandSurface *> enabledSurfaces;
+    WaylandDestroyListener focusDestroyListener;
     bool inputPanelVisible = false;
     bool waitingForSync = false;
 
@@ -101,6 +103,8 @@ private:
     void text_input_method_v1_acknowledge_input_method(Resource *resource) override;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDQTTEXTINPUTMETHOD_P_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDQTTEXTINPUTMETHOD_P_H

@@ -28,28 +28,28 @@
 **
 ****************************************************************************/
 
-#include "qwaylandsurface.h"
-#include "qwaylandsurface_p.h"
+#include "aurorawaylandsurface.h"
+#include "aurorawaylandsurface_p.h"
 
-#include "wayland_wrapper/qwlbuffermanager_p.h"
-#include "wayland_wrapper/qwlregion_p.h"
-#include <QtWaylandCompositor/private/qtwaylandcompositorglobal_p.h>
+#include "wayland_wrapper/aurorawlbuffermanager_p.h"
+#include "wayland_wrapper/aurorawlregion_p.h"
+#include <LiriAuroraCompositor/private/qtwaylandcompositorglobal_p.h>
 #if QT_CONFIG(wayland_datadevice)
-#include "wayland_wrapper/qwldatadevice_p.h"
-#include "wayland_wrapper/qwldatadevicemanager_p.h"
+#include "wayland_wrapper/aurorawldatadevice_p.h"
+#include "wayland_wrapper/aurorawldatadevicemanager_p.h"
 #endif
 
-#include "qwaylandinputmethodcontrol_p.h"
+#include "aurorawaylandinputmethodcontrol_p.h"
 
-#include <QtWaylandCompositor/QWaylandCompositor>
-#include <QtWaylandCompositor/QWaylandClient>
-#include <QtWaylandCompositor/QWaylandView>
-#include <QtWaylandCompositor/QWaylandBufferRef>
+#include <LiriAuroraCompositor/WaylandCompositor>
+#include <LiriAuroraCompositor/WaylandClient>
+#include <LiriAuroraCompositor/WaylandView>
+#include <LiriAuroraCompositor/WaylandBufferRef>
 
-#include <QtWaylandCompositor/private/qwaylandcompositor_p.h>
-#include <QtWaylandCompositor/private/qwaylandview_p.h>
-#include <QtWaylandCompositor/private/qwaylandseat_p.h>
-#include <QtWaylandCompositor/private/qwaylandutils_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandcompositor_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandview_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandseat_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandutils_p.h>
 
 #include <QtCore/private/qobject_p.h>
 
@@ -59,12 +59,14 @@
 #include <QtCore/QDebug>
 #include <QtCore/QtMath>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 namespace QtWayland {
 class FrameCallback {
 public:
-    FrameCallback(QWaylandSurface *surf, wl_resource *res)
+    FrameCallback(WaylandSurface *surf, wl_resource *res)
         : surface(surf)
         , resource(res)
     {
@@ -89,10 +91,10 @@ public:
     {
         FrameCallback *_this = static_cast<FrameCallback *>(wl_resource_get_user_data(res));
         if (_this->surface)
-            QWaylandSurfacePrivate::get(_this->surface)->removeFrameCallback(_this);
+            WaylandSurfacePrivate::get(_this->surface)->removeFrameCallback(_this);
         delete _this;
     }
-    QWaylandSurface *surface = nullptr;
+    WaylandSurface *surface = nullptr;
     wl_resource *resource = nullptr;
     bool canSend = false;
 };
@@ -103,13 +105,13 @@ static QRegion infiniteRegion() {
 }
 
 #ifndef QT_NO_DEBUG
-QList<QWaylandSurfacePrivate *> QWaylandSurfacePrivate::uninitializedSurfaces;
+QList<WaylandSurfacePrivate *> WaylandSurfacePrivate::uninitializedSurfaces;
 #endif
 
-QWaylandSurfacePrivate::QWaylandSurfacePrivate()
+WaylandSurfacePrivate::WaylandSurfacePrivate()
     : inputRegion(infiniteRegion())
 {
-    pending.buffer = QWaylandBufferRef();
+    pending.buffer = WaylandBufferRef();
     pending.newlyAttached = false;
     pending.inputRegion = infiniteRegion();
     pending.bufferScale = 1;
@@ -118,14 +120,14 @@ QWaylandSurfacePrivate::QWaylandSurfacePrivate()
 #endif
 }
 
-QWaylandSurfacePrivate::~QWaylandSurfacePrivate()
+WaylandSurfacePrivate::~WaylandSurfacePrivate()
 {
     for (int i = 0; i < views.size(); i++) {
-        QWaylandViewPrivate::get(views.at(i))->markSurfaceAsDestroyed(q_func());
+        WaylandViewPrivate::get(views.at(i))->markSurfaceAsDestroyed(q_func());
     }
     views.clear();
 
-    bufferRef = QWaylandBufferRef();
+    bufferRef = WaylandBufferRef();
 
     for (QtWayland::FrameCallback *c : qAsConst(pendingFrameCallbacks))
         c->destroy();
@@ -133,18 +135,18 @@ QWaylandSurfacePrivate::~QWaylandSurfacePrivate()
         c->destroy();
 }
 
-void QWaylandSurfacePrivate::removeFrameCallback(QtWayland::FrameCallback *callback)
+void WaylandSurfacePrivate::removeFrameCallback(QtWayland::FrameCallback *callback)
 {
     pendingFrameCallbacks.removeOne(callback);
     frameCallbacks.removeOne(callback);
 }
 
-void QWaylandSurfacePrivate::notifyViewsAboutDestruction()
+void WaylandSurfacePrivate::notifyViewsAboutDestruction()
 {
-    Q_Q(QWaylandSurface);
+    Q_Q(WaylandSurface);
     const auto viewsCopy = views; // Views will be removed from the list when marked as destroyed
-    for (QWaylandView *view : viewsCopy) {
-        QWaylandViewPrivate::get(view)->markSurfaceAsDestroyed(q);
+    for (WaylandView *view : viewsCopy) {
+        WaylandViewPrivate::get(view)->markSurfaceAsDestroyed(q);
     }
     if (hasContent) {
         hasContent = false;
@@ -153,29 +155,29 @@ void QWaylandSurfacePrivate::notifyViewsAboutDestruction()
 }
 
 #ifndef QT_NO_DEBUG
-void QWaylandSurfacePrivate::addUninitializedSurface(QWaylandSurfacePrivate *surface)
+void WaylandSurfacePrivate::addUninitializedSurface(WaylandSurfacePrivate *surface)
 {
     Q_ASSERT(!surface->isInitialized);
     Q_ASSERT(!uninitializedSurfaces.contains(surface));
     uninitializedSurfaces.append(surface);
 }
 
-void QWaylandSurfacePrivate::removeUninitializedSurface(QWaylandSurfacePrivate *surface)
+void WaylandSurfacePrivate::removeUninitializedSurface(WaylandSurfacePrivate *surface)
 {
     Q_ASSERT(surface->isInitialized);
     bool removed = uninitializedSurfaces.removeOne(surface);
     Q_ASSERT(removed);
 }
 
-bool QWaylandSurfacePrivate::hasUninitializedSurface()
+bool WaylandSurfacePrivate::hasUninitializedSurface()
 {
     return uninitializedSurfaces.size();
 }
 #endif
 
-void QWaylandSurfacePrivate::surface_destroy_resource(Resource *)
+void WaylandSurfacePrivate::surface_destroy_resource(Resource *)
 {
-    Q_Q(QWaylandSurface);
+    Q_Q(WaylandSurface);
     notifyViewsAboutDestruction();
 
     destroyed = true;
@@ -183,14 +185,14 @@ void QWaylandSurfacePrivate::surface_destroy_resource(Resource *)
     q->destroy();
 }
 
-void QWaylandSurfacePrivate::surface_destroy(Resource *resource)
+void WaylandSurfacePrivate::surface_destroy(Resource *resource)
 {
     wl_resource_destroy(resource->handle);
 }
 
-void QWaylandSurfacePrivate::surface_attach(Resource *, struct wl_resource *buffer, int x, int y)
+void WaylandSurfacePrivate::surface_attach(Resource *, struct wl_resource *buffer, int x, int y)
 {
-    pending.buffer = QWaylandBufferRef(getBuffer(buffer));
+    pending.buffer = WaylandBufferRef(getBuffer(buffer));
     pending.offset = QPoint(x, y);
     pending.newlyAttached = true;
 }
@@ -201,7 +203,7 @@ void QWaylandSurfacePrivate::surface_attach(Resource *, struct wl_resource *buff
     surface_damage or surface_damage_buffer within one frame for one surface.
 */
 
-void QWaylandSurfacePrivate::surface_damage(Resource *, int32_t x, int32_t y, int32_t width, int32_t height)
+void WaylandSurfacePrivate::surface_damage(Resource *, int32_t x, int32_t y, int32_t width, int32_t height)
 {
     if (Q_UNLIKELY(pending.damageInBufferCoordinates && !pending.damage.isNull()))
         qCWarning(qLcWaylandCompositor) << "Unsupported: Client is using both wl_surface.damage_buffer and wl_surface.damage.";
@@ -209,7 +211,7 @@ void QWaylandSurfacePrivate::surface_damage(Resource *, int32_t x, int32_t y, in
     pending.damageInBufferCoordinates = false;
 }
 
-void QWaylandSurfacePrivate::surface_damage_buffer(Resource *, int32_t x, int32_t y, int32_t width, int32_t height)
+void WaylandSurfacePrivate::surface_damage_buffer(Resource *, int32_t x, int32_t y, int32_t width, int32_t height)
 {
     if (Q_UNLIKELY(!pending.damageInBufferCoordinates && !pending.damage.isNull()))
         qCWarning(qLcWaylandCompositor) << "Unsupported: Client is using both wl_surface.damage_buffer and wl_surface.damage.";
@@ -217,19 +219,19 @@ void QWaylandSurfacePrivate::surface_damage_buffer(Resource *, int32_t x, int32_
     pending.damageInBufferCoordinates = true;
 }
 
-void QWaylandSurfacePrivate::surface_frame(Resource *resource, uint32_t callback)
+void WaylandSurfacePrivate::surface_frame(Resource *resource, uint32_t callback)
 {
-    Q_Q(QWaylandSurface);
+    Q_Q(WaylandSurface);
     struct wl_resource *frame_callback = wl_resource_create(resource->client(), &wl_callback_interface, wl_callback_interface.version, callback);
     pendingFrameCallbacks << new QtWayland::FrameCallback(q, frame_callback);
 }
 
-void QWaylandSurfacePrivate::surface_set_opaque_region(Resource *, struct wl_resource *region)
+void WaylandSurfacePrivate::surface_set_opaque_region(Resource *, struct wl_resource *region)
 {
     pending.opaqueRegion = region ? QtWayland::Region::fromResource(region)->region() : QRegion();
 }
 
-void QWaylandSurfacePrivate::surface_set_input_region(Resource *, struct wl_resource *region)
+void WaylandSurfacePrivate::surface_set_input_region(Resource *, struct wl_resource *region)
 {
     if (region) {
         pending.inputRegion = QtWayland::Region::fromResource(region)->region();
@@ -238,9 +240,9 @@ void QWaylandSurfacePrivate::surface_set_input_region(Resource *, struct wl_reso
     }
 }
 
-void QWaylandSurfacePrivate::surface_commit(Resource *)
+void WaylandSurfacePrivate::surface_commit(Resource *)
 {
-    Q_Q(QWaylandSurface);
+    Q_Q(WaylandSurface);
 
     // Needed in order to know whether we want to emit signals later
     QSize oldBufferSize = bufferSize;
@@ -292,7 +294,7 @@ void QWaylandSurfacePrivate::surface_commit(Resource *)
         viewport->checkCommittedState();
 
     // Clear per-commit state
-    pending.buffer = QWaylandBufferRef();
+    pending.buffer = WaylandBufferRef();
     pending.offset = QPoint();
     pending.newlyAttached = false;
     pending.damage = QRegion();
@@ -332,10 +334,10 @@ void QWaylandSurfacePrivate::surface_commit(Resource *)
     emit q->redraw();
 }
 
-void QWaylandSurfacePrivate::surface_set_buffer_transform(Resource *resource, int32_t orientation)
+void WaylandSurfacePrivate::surface_set_buffer_transform(Resource *resource, int32_t orientation)
 {
     Q_UNUSED(resource);
-    Q_Q(QWaylandSurface);
+    Q_Q(WaylandSurface);
     QScreen *screen = QGuiApplication::primaryScreen();
     bool isPortrait = screen->primaryOrientation() == Qt::PortraitOrientation;
     Qt::ScreenOrientation oldOrientation = contentOrientation;
@@ -356,41 +358,41 @@ void QWaylandSurfacePrivate::surface_set_buffer_transform(Resource *resource, in
         emit q->contentOrientationChanged();
 }
 
-void QWaylandSurfacePrivate::surface_set_buffer_scale(QtWaylandServer::wl_surface::Resource *resource, int32_t scale)
+void WaylandSurfacePrivate::surface_set_buffer_scale(PrivateServer::wl_surface::Resource *resource, int32_t scale)
 {
     Q_UNUSED(resource);
     pending.bufferScale = scale;
 }
 
-QtWayland::ClientBuffer *QWaylandSurfacePrivate::getBuffer(struct ::wl_resource *buffer)
+QtWayland::ClientBuffer *WaylandSurfacePrivate::getBuffer(struct ::wl_resource *buffer)
 {
-    QtWayland::BufferManager *bufMan = QWaylandCompositorPrivate::get(compositor)->bufferManager();
+    QtWayland::BufferManager *bufMan = WaylandCompositorPrivate::get(compositor)->bufferManager();
     return bufMan->getBuffer(buffer);
 }
 
 /*!
- * \class QWaylandSurfaceRole
+ * \class WaylandSurfaceRole
  * \inmodule QtWaylandCompositor
  * \since 5.8
- * \brief The QWaylandSurfaceRole class represents the role of the surface in context of wl_surface.
+ * \brief The WaylandSurfaceRole class represents the role of the surface in context of wl_surface.
  *
- * QWaylandSurfaceRole is used to represent the role of a QWaylandSurface. According to the protocol
+ * WaylandSurfaceRole is used to represent the role of a WaylandSurface. According to the protocol
  * specification, the role of a surface is permanent once set, and if the same surface is later
  * reused for a different role, this constitutes a protocol error. Setting the surface to the same
  * role multiple times is not an error.
  *
- * As an example, the QWaylandXdgShell can assign either "popup" or "toplevel" roles to surfaces.
+ * As an example, the WaylandXdgShell can assign either "popup" or "toplevel" roles to surfaces.
  * If \c get_toplevel is requested on a surface which has previously received a \c get_popup
  * request, then the compositor will issue a protocol error.
  *
- * Roles are compared by pointer value, so any two objects of QWaylandSurfaceRole will be considered
+ * Roles are compared by pointer value, so any two objects of WaylandSurfaceRole will be considered
  * different roles, regardless of what their \l{name()}{names} are. A typical way of assigning a
- * role is to have a static QWaylandSurfaceRole object to represent it.
+ * role is to have a static WaylandSurfaceRole object to represent it.
  *
  * \code
  * class MyShellSurfaceSubType
  * {
- *     static QWaylandSurfaceRole s_role;
+ *     static WaylandSurfaceRole s_role;
  *     // ...
  * };
  *
@@ -401,23 +403,23 @@ QtWayland::ClientBuffer *QWaylandSurfacePrivate::getBuffer(struct ::wl_resource 
  */
 
 /*!
- * \fn QWaylandSurfaceRole::QWaylandSurfaceRole(const QByteArray &name)
+ * \fn WaylandSurfaceRole::WaylandSurfaceRole(const QByteArray &name)
  *
- * Creates a QWaylandSurfaceRole and assigns it \a name. The name is used in error messages
- * involving this QWaylandSurfaceRole.
+ * Creates a WaylandSurfaceRole and assigns it \a name. The name is used in error messages
+ * involving this WaylandSurfaceRole.
  */
 
 /*!
- * \fn const QByteArray QWaylandSurfaceRole::name()
+ * \fn const QByteArray WaylandSurfaceRole::name()
  *
- * Returns the name of the QWaylandSurfaceRole. The name is used in error messages involving this
- * QWaylandSurfaceRole, for example if an attempt is made to change the role of a surface.
+ * Returns the name of the WaylandSurfaceRole. The name is used in error messages involving this
+ * WaylandSurfaceRole, for example if an attempt is made to change the role of a surface.
  */
 
 /*!
  * \qmltype WaylandSurface
- * \instantiates QWaylandSurface
- * \inqmlmodule QtWayland.Compositor
+ * \instantiates WaylandSurface
+ * \inqmlmodule Aurora.Compositor
  * \since 5.8
  * \brief Represents a rectangular area on an output device.
  *
@@ -426,29 +428,29 @@ QtWayland::ClientBuffer *QWaylandSurfacePrivate::getBuffer(struct ::wl_resource 
  */
 
 /*!
- * \class QWaylandSurface
+ * \class WaylandSurface
  * \inmodule QtWaylandCompositor
  * \since 5.8
- * \brief The QWaylandSurface class represents a rectangular area on an output device.
+ * \brief The WaylandSurface class represents a rectangular area on an output device.
  *
  * This class encapsulates a rectangular area of pixels that is displayed on an output device. It
  * corresponds to the interface \c wl_surface in the Wayland protocol.
  */
 
 /*!
- * Constructs a an uninitialized QWaylandSurface.
+ * Constructs a an uninitialized WaylandSurface.
  */
-QWaylandSurface::QWaylandSurface()
-    : QWaylandObject(*new QWaylandSurfacePrivate())
+WaylandSurface::WaylandSurface()
+    : WaylandObject(*new WaylandSurfacePrivate())
 {
 }
 
 /*!
- * Constructs and initializes a QWaylandSurface for the given \a compositor and \a client, and with the given \a id
+ * Constructs and initializes a WaylandSurface for the given \a compositor and \a client, and with the given \a id
  * and \a version.
  */
-QWaylandSurface::QWaylandSurface(QWaylandCompositor *compositor, QWaylandClient *client, uint id, int version)
-    : QWaylandObject(*new QWaylandSurfacePrivate())
+WaylandSurface::WaylandSurface(WaylandCompositor *compositor, WaylandClient *client, uint id, int version)
+    : WaylandObject(*new WaylandSurfacePrivate())
 {
     initialize(compositor, client, id, version);
 }
@@ -456,19 +458,19 @@ QWaylandSurface::QWaylandSurface(QWaylandCompositor *compositor, QWaylandClient 
 /*!
  * \internal
  */
-QWaylandSurface::QWaylandSurface(QWaylandSurfacePrivate &dptr)
-    : QWaylandObject(dptr)
+WaylandSurface::WaylandSurface(WaylandSurfacePrivate &dptr)
+    : WaylandObject(dptr)
 {
 }
 
 /*!
- * Destroys the QWaylandSurface.
+ * Destroys the WaylandSurface.
  */
-QWaylandSurface::~QWaylandSurface()
+WaylandSurface::~WaylandSurface()
 {
-    Q_D(QWaylandSurface);
+    Q_D(WaylandSurface);
     if (d->compositor)
-        QWaylandCompositorPrivate::get(d->compositor)->unregisterSurface(this);
+        WaylandCompositorPrivate::get(d->compositor)->unregisterSurface(this);
     d->notifyViewsAboutDestruction();
 }
 
@@ -480,30 +482,30 @@ QWaylandSurface::~QWaylandSurface()
  */
 
 /*!
- * Initializes the QWaylandSurface with the given \a compositor and \a client, and with the given \a id
+ * Initializes the WaylandSurface with the given \a compositor and \a client, and with the given \a id
  * and \a version.
  */
-void QWaylandSurface::initialize(QWaylandCompositor *compositor, QWaylandClient *client, uint id, int version)
+void WaylandSurface::initialize(WaylandCompositor *compositor, WaylandClient *client, uint id, int version)
 {
-    Q_D(QWaylandSurface);
+    Q_D(WaylandSurface);
     d->compositor = compositor;
     d->client = client;
     d->init(client->client(), id, version);
     d->isInitialized = true;
 #if QT_CONFIG(im)
-    d->inputMethodControl = new QWaylandInputMethodControl(this);
+    d->inputMethodControl = new WaylandInputMethodControl(this);
 #endif
 #ifndef QT_NO_DEBUG
-    QWaylandSurfacePrivate::removeUninitializedSurface(d);
+    WaylandSurfacePrivate::removeUninitializedSurface(d);
 #endif
 }
 
 /*!
- * Returns true if the QWaylandSurface has been initialized.
+ * Returns true if the WaylandSurface has been initialized.
  */
-bool QWaylandSurface::isInitialized() const
+bool WaylandSurface::isInitialized() const
 {
-    Q_D(const QWaylandSurface);
+    Q_D(const WaylandSurface);
     return d->isInitialized;
 }
 
@@ -514,13 +516,13 @@ bool QWaylandSurface::isInitialized() const
  */
 
 /*!
- * \property QWaylandSurface::client
+ * \property WaylandSurface::client
  *
- * This property holds the client using this QWaylandSurface.
+ * This property holds the client using this WaylandSurface.
  */
-QWaylandClient *QWaylandSurface::client() const
+WaylandClient *WaylandSurface::client() const
 {
-    Q_D(const QWaylandSurface);
+    Q_D(const WaylandSurface);
     if (isDestroyed() || !compositor() || !compositor()->clients().contains(d->client))
         return nullptr;
 
@@ -528,9 +530,9 @@ QWaylandClient *QWaylandSurface::client() const
 }
 
 /*!
- * Holds the \c wl_client using this QWaylandSurface.
+ * Holds the \c wl_client using this WaylandSurface.
  */
-::wl_client *QWaylandSurface::waylandClient() const
+::wl_client *WaylandSurface::waylandClient() const
 {
     if (auto *c = client())
         return c->client();
@@ -545,13 +547,13 @@ QWaylandClient *QWaylandSurface::client() const
  */
 
 /*!
- * \property QWaylandSurface::hasContent
+ * \property WaylandSurface::hasContent
  *
- * This property holds whether the QWaylandSurface has content.
+ * This property holds whether the WaylandSurface has content.
  */
-bool QWaylandSurface::hasContent() const
+bool WaylandSurface::hasContent() const
 {
-    Q_D(const QWaylandSurface);
+    Q_D(const WaylandSurface);
     return d->hasContent;
 }
 
@@ -569,10 +571,10 @@ bool QWaylandSurface::hasContent() const
  */
 
 /*!
- * \property QWaylandSurface::sourceGeometry
+ * \property WaylandSurface::sourceGeometry
  * \since 5.13
  *
- * This property describes the portion of the attached QWaylandBuffer that should
+ * This property describes the portion of the attached WaylandBuffer that should
  * be drawn on the screen. The coordinates are from the corner of the buffer and are
  * scaled by \l bufferScale.
  *
@@ -580,9 +582,9 @@ bool QWaylandSurface::hasContent() const
  * \sa bufferSize
  * \sa destinationSize
  */
-QRectF QWaylandSurface::sourceGeometry() const
+QRectF WaylandSurface::sourceGeometry() const
 {
-    Q_D(const QWaylandSurface);
+    Q_D(const WaylandSurface);
     return d->sourceGeometry;
 }
 
@@ -597,7 +599,7 @@ QRectF QWaylandSurface::sourceGeometry() const
  */
 
 /*!
- * \property QWaylandSurface::destinationSize
+ * \property WaylandSurface::destinationSize
  * \since 5.13
  *
  * This property holds the size of this WaylandSurface in surface coordinates.
@@ -605,9 +607,9 @@ QRectF QWaylandSurface::sourceGeometry() const
  * \sa bufferScale
  * \sa bufferSize
  */
-QSize QWaylandSurface::destinationSize() const
+QSize WaylandSurface::destinationSize() const
 {
-    Q_D(const QWaylandSurface);
+    Q_D(const WaylandSurface);
     return d->destinationSize;
 }
 
@@ -624,9 +626,9 @@ QSize QWaylandSurface::destinationSize() const
  */
 
 /*!
- * \property QWaylandSurface::bufferSize
+ * \property WaylandSurface::bufferSize
  *
- * This property holds the size of the current buffer of this QWaylandSurface in pixels,
+ * This property holds the size of the current buffer of this WaylandSurface in pixels,
  * not in surface coordinates.
  *
  * For the size in surface coordinates, use \l destinationSize instead.
@@ -634,9 +636,9 @@ QSize QWaylandSurface::destinationSize() const
  * \sa destinationSize
  * \sa bufferScale
  */
-QSize QWaylandSurface::bufferSize() const
+QSize WaylandSurface::bufferSize() const
 {
-    Q_D(const QWaylandSurface);
+    Q_D(const WaylandSurface);
     return d->bufferSize;
 }
 
@@ -649,15 +651,15 @@ QSize QWaylandSurface::bufferSize() const
  */
 
 /*!
- * \property QWaylandSurface::bufferScale
+ * \property WaylandSurface::bufferScale
  *
- * This property holds the QWaylandSurface's buffer scale. The buffer scale
+ * This property holds the WaylandSurface's buffer scale. The buffer scale
  * lets a client supply higher resolution buffer data for use on high
  * resolution outputs.
  */
-int QWaylandSurface::bufferScale() const
+int WaylandSurface::bufferScale() const
 {
-    Q_D(const QWaylandSurface);
+    Q_D(const WaylandSurface);
     return d->bufferScale;
 }
 
@@ -670,22 +672,22 @@ int QWaylandSurface::bufferScale() const
  */
 
 /*!
- * \property QWaylandSurface::contentOrientation
+ * \property WaylandSurface::contentOrientation
  *
- * This property holds the orientation of the QWaylandSurface's contents.
+ * This property holds the orientation of the WaylandSurface's contents.
  *
- * \sa QWaylandOutput::transform
+ * \sa WaylandOutput::transform
  */
-Qt::ScreenOrientation QWaylandSurface::contentOrientation() const
+Qt::ScreenOrientation WaylandSurface::contentOrientation() const
 {
-    Q_D(const QWaylandSurface);
+    Q_D(const WaylandSurface);
     return d->contentOrientation;
 }
 
 /*!
- * \enum QWaylandSurface::Origin
+ * \enum WaylandSurface::Origin
  *
- * This enum type is used to specify the origin of a QWaylandSurface's buffer.
+ * This enum type is used to specify the origin of a WaylandSurface's buffer.
  *
  * \value OriginTopLeft The origin is the top left corner of the buffer.
  * \value OriginBottomLeft The origin is the bottom left corner of the buffer.
@@ -705,32 +707,32 @@ Qt::ScreenOrientation QWaylandSurface::contentOrientation() const
  */
 
 /*!
- * \property QWaylandSurface::origin
+ * \property WaylandSurface::origin
  *
- * This property holds the origin of the QWaylandSurface's buffer, or
- * QWaylandSurface::OriginTopLeft if the surface has no buffer.
+ * This property holds the origin of the WaylandSurface's buffer, or
+ * WaylandSurface::OriginTopLeft if the surface has no buffer.
  */
-QWaylandSurface::Origin QWaylandSurface::origin() const
+WaylandSurface::Origin WaylandSurface::origin() const
 {
-    Q_D(const QWaylandSurface);
+    Q_D(const WaylandSurface);
     return d->bufferRef.origin();
 }
 
 /*!
- * Returns the compositor for this QWaylandSurface.
+ * Returns the compositor for this WaylandSurface.
  */
-QWaylandCompositor *QWaylandSurface::compositor() const
+WaylandCompositor *WaylandSurface::compositor() const
 {
-    Q_D(const QWaylandSurface);
+    Q_D(const WaylandSurface);
     return d->compositor;
 }
 
 /*!
  * Prepares all frame callbacks for sending.
  */
-void QWaylandSurface::frameStarted()
+void WaylandSurface::frameStarted()
 {
-    Q_D(QWaylandSurface);
+    Q_D(WaylandSurface);
     for (QtWayland::FrameCallback *c : qAsConst(d->frameCallbacks))
         c->canSend = true;
 }
@@ -738,9 +740,9 @@ void QWaylandSurface::frameStarted()
 /*!
  * Sends pending frame callbacks.
  */
-void QWaylandSurface::sendFrameCallbacks()
+void WaylandSurface::sendFrameCallbacks()
 {
-    Q_D(QWaylandSurface);
+    Q_D(WaylandSurface);
     uint time = d->compositor->currentTimeMsecs();
     int i = 0;
     while (i < d->frameCallbacks.size()) {
@@ -755,24 +757,24 @@ void QWaylandSurface::sendFrameCallbacks()
 }
 
 /*!
- * Returns \c true if the QWaylandSurface's input region contains the point \a p.
+ * Returns \c true if the WaylandSurface's input region contains the point \a p.
  * Otherwise returns \c false.
  */
-bool QWaylandSurface::inputRegionContains(const QPoint &p) const
+bool WaylandSurface::inputRegionContains(const QPoint &p) const
 {
-    Q_D(const QWaylandSurface);
+    Q_D(const WaylandSurface);
     return d->inputRegion.contains(p);
 }
 
 /*!
- * Returns \c true if the QWaylandSurface's input region contains the point \a position.
+ * Returns \c true if the WaylandSurface's input region contains the point \a position.
  * Otherwise returns \c false.
  *
  * \since 5.14
  */
-bool QWaylandSurface::inputRegionContains(const QPointF &position) const
+bool WaylandSurface::inputRegionContains(const QPointF &position) const
 {
-    Q_D(const QWaylandSurface);
+    Q_D(const WaylandSurface);
     // QRegion::contains operates in integers. If a region has a rect (0,0,10,10), (0,0) is
     // inside while (10,10) is outside. Therefore, we can't use QPoint::toPoint(), which will
     // round upwards, meaning the point (-0.25,-0.25) would be rounded to (0,0) and count as
@@ -789,11 +791,11 @@ bool QWaylandSurface::inputRegionContains(const QPointF &position) const
  */
 
 /*!
- * Destroys the QWaylandSurface.
+ * Destroys the WaylandSurface.
  */
-void QWaylandSurface::destroy()
+void WaylandSurface::destroy()
 {
-    Q_D(QWaylandSurface);
+    Q_D(WaylandSurface);
     d->deref();
 }
 
@@ -804,11 +806,11 @@ void QWaylandSurface::destroy()
  */
 
 /*!
- * Returns true if the QWaylandSurface has been destroyed. Otherwise returns false.
+ * Returns true if the WaylandSurface has been destroyed. Otherwise returns false.
  */
-bool QWaylandSurface::isDestroyed() const
+bool WaylandSurface::isDestroyed() const
 {
-    Q_D(const QWaylandSurface);
+    Q_D(const WaylandSurface);
     return d->destroyed;
 }
 
@@ -819,13 +821,13 @@ bool QWaylandSurface::isDestroyed() const
  */
 
 /*!
- * \property QWaylandSurface::cursorSurface
+ * \property WaylandSurface::cursorSurface
  *
- * This property holds whether the QWaylandSurface is a cursor surface.
+ * This property holds whether the WaylandSurface is a cursor surface.
  */
-void QWaylandSurface::markAsCursorSurface(bool cursorSurface)
+void WaylandSurface::markAsCursorSurface(bool cursorSurface)
 {
-    Q_D(QWaylandSurface);
+    Q_D(WaylandSurface);
     if (d->isCursorSurface == cursorSurface)
         return;
 
@@ -833,9 +835,9 @@ void QWaylandSurface::markAsCursorSurface(bool cursorSurface)
     emit cursorSurfaceChanged();
 }
 
-bool QWaylandSurface::isCursorSurface() const
+bool WaylandSurface::isCursorSurface() const
 {
-    Q_D(const QWaylandSurface);
+    Q_D(const WaylandSurface);
     return d->isCursorSurface;
 }
 
@@ -850,17 +852,17 @@ bool QWaylandSurface::isCursorSurface() const
  */
 
 /*!
- * \property QWaylandSurface::inhibitsIdle
+ * \property WaylandSurface::inhibitsIdle
  * \since 5.14
  *
  * This property holds whether this surface is intended to inhibit the idle
  * behavior of the compositor such as screen blanking, locking and screen saving.
  *
- * \sa QWaylandIdleInhibitManagerV1
+ * \sa WaylandIdleInhibitManagerV1
  */
-bool QWaylandSurface::inhibitsIdle() const
+bool WaylandSurface::inhibitsIdle() const
 {
-    Q_D(const QWaylandSurface);
+    Q_D(const WaylandSurface);
     return !d->idleInhibitors.isEmpty();
 }
 
@@ -873,22 +875,22 @@ bool QWaylandSurface::inhibitsIdle() const
  */
 
 /*!
- *  \property QWaylandSurface::isOpaque
+ *  \property WaylandSurface::isOpaque
  *  \since 6.4
  *
  *  This property holds whether the surface is fully opaque, as reported by the
  *  client through the set_opaque_region request.
  */
-bool QWaylandSurface::isOpaque() const
+bool WaylandSurface::isOpaque() const
 {
-    Q_D(const QWaylandSurface);
+    Q_D(const WaylandSurface);
     return d->isOpaque;
 }
 
 #if QT_CONFIG(im)
-QWaylandInputMethodControl *QWaylandSurface::inputMethodControl() const
+WaylandInputMethodControl *WaylandSurface::inputMethodControl() const
 {
-    Q_D(const QWaylandSurface);
+    Q_D(const WaylandSurface);
     return d->inputMethodControl;
 }
 #endif
@@ -899,14 +901,14 @@ QWaylandInputMethodControl *QWaylandSurface::inputMethodControl() const
  * function is useful for updating clients which do not have keyboard focus.
  */
 #if QT_CONFIG(clipboard)
-void QWaylandSurface::updateSelection()
+void WaylandSurface::updateSelection()
 {
-    Q_D(QWaylandSurface);
-    QWaylandSeat *seat = d->compositor->defaultSeat();
+    Q_D(WaylandSurface);
+    WaylandSeat *seat = d->compositor->defaultSeat();
     if (seat) {
-        const QtWayland::DataDevice *dataDevice = QWaylandSeatPrivate::get(seat)->dataDevice();
+        const QtWayland::DataDevice *dataDevice = WaylandSeatPrivate::get(seat)->dataDevice();
         if (dataDevice) {
-            QWaylandCompositorPrivate::get(d->compositor)->dataDeviceManager()->offerRetainedSelection(
+            WaylandCompositorPrivate::get(d->compositor)->dataDeviceManager()->offerRetainedSelection(
                         dataDevice->resourceMap().value(d->resource()->client())->handle);
         }
     }
@@ -914,35 +916,35 @@ void QWaylandSurface::updateSelection()
 #endif
 
 /*!
- * Returns this QWaylandSurface's primary view.
+ * Returns this WaylandSurface's primary view.
  *
- * \sa QWaylandView::advance(), QWaylandSurface::setPrimaryView()
+ * \sa WaylandView::advance(), WaylandSurface::setPrimaryView()
  */
-QWaylandView *QWaylandSurface::primaryView() const
+WaylandView *WaylandSurface::primaryView() const
 {
-    Q_D(const QWaylandSurface);
+    Q_D(const WaylandSurface);
     if (d->views.isEmpty())
         return nullptr;
     return d->views.first();
 }
 
 /*!
- * Sets this QWaylandSurface's primary view to \a view, in case there are
+ * Sets this WaylandSurface's primary view to \a view, in case there are
  * multiple views of this surface. The primary view is the view that
  * governs the client's refresh rate. It takes care of discarding buffer
- * references when QWaylandView::advance() is called. See the documentation
- * for QWaylandView::advance() for more details.
+ * references when WaylandView::advance() is called. See the documentation
+ * for WaylandView::advance() for more details.
  *
- * In shell surface integrations, such as QWaylandWlShellIntegration and
- * QWaylandXdgShellV5Integration, maximize and fullscreen requests from the
+ * In shell surface integrations, such as WaylandWlShellIntegration and
+ * WaylandXdgShellV5Integration, maximize and fullscreen requests from the
  * client will only have an effect if the integration has the primary view
  * of the surface.
  *
- * \sa QWaylandView::advance()
+ * \sa WaylandView::advance()
  */
-void QWaylandSurface::setPrimaryView(QWaylandView *view)
+void WaylandSurface::setPrimaryView(WaylandView *view)
 {
-    Q_D(QWaylandSurface);
+    Q_D(WaylandSurface);
 
     if (!view)
         return;
@@ -958,30 +960,30 @@ void QWaylandSurface::setPrimaryView(QWaylandView *view)
 }
 
 /*!
- * Returns the views for this QWaylandSurface.
+ * Returns the views for this WaylandSurface.
  */
-QList<QWaylandView *> QWaylandSurface::views() const
+QList<WaylandView *> WaylandSurface::views() const
 {
-    Q_D(const QWaylandSurface);
+    Q_D(const WaylandSurface);
     return d->views;
 }
 
 /*!
- * Returns the QWaylandSurface corresponding to the Wayland resource \a resource.
+ * Returns the WaylandSurface corresponding to the Wayland resource \a resource.
  */
-QWaylandSurface *QWaylandSurface::fromResource(::wl_resource *resource)
+WaylandSurface *WaylandSurface::fromResource(::wl_resource *resource)
 {
-    if (auto p = QtWayland::fromResource<QWaylandSurfacePrivate *>(resource))
+    if (auto p = QtWayland::fromResource<WaylandSurfacePrivate *>(resource))
         return p->q_func();
     return nullptr;
 }
 
 /*!
- * Returns the Wayland resource corresponding to this QWaylandSurface.
+ * Returns the Wayland resource corresponding to this WaylandSurface.
  */
-struct wl_resource *QWaylandSurface::resource() const
+struct wl_resource *WaylandSurface::resource() const
 {
-    Q_D(const QWaylandSurface);
+    Q_D(const WaylandSurface);
     return d->resource()->handle;
 }
 
@@ -992,7 +994,7 @@ struct wl_resource *QWaylandSurface::resource() const
  * protocol error to the \a errorResource and send an \a errorCode to the client. Enforcing this
  * requirement is the main purpose of the surface role.
  *
- * The \a role is compared by pointer value. Any two objects of QWaylandSurfaceRole will be
+ * The \a role is compared by pointer value. Any two objects of WaylandSurfaceRole will be
  * considered different roles, regardless of their names.
  *
  * The surface role is set internally by protocol implementations when a surface is adopted for a
@@ -1002,9 +1004,9 @@ struct wl_resource *QWaylandSurface::resource() const
  *
  * Returns true if a role can be assigned; false otherwise.
  */
-bool QWaylandSurface::setRole(QWaylandSurfaceRole *role, wl_resource *errorResource, uint32_t errorCode)
+bool WaylandSurface::setRole(WaylandSurfaceRole *role, wl_resource *errorResource, uint32_t errorCode)
 {
-    Q_D(QWaylandSurface);
+    Q_D(WaylandSurface);
 
     if (d->role && d->role != role) {
             wl_resource_post_error(errorResource, errorCode,
@@ -1018,29 +1020,29 @@ bool QWaylandSurface::setRole(QWaylandSurfaceRole *role, wl_resource *errorResou
     return true;
 }
 
-QWaylandSurfaceRole *QWaylandSurface::role() const
+WaylandSurfaceRole *WaylandSurface::role() const
 {
-    Q_D(const QWaylandSurface);
+    Q_D(const WaylandSurface);
     return d->role;
 }
 
-QWaylandSurfacePrivate *QWaylandSurfacePrivate::get(QWaylandSurface *surface)
+WaylandSurfacePrivate *WaylandSurfacePrivate::get(WaylandSurface *surface)
 {
     return surface ? surface->d_func() : nullptr;
 }
 
-void QWaylandSurfacePrivate::ref()
+void WaylandSurfacePrivate::ref()
 {
     ++refCount;
 }
 
-void QWaylandSurfacePrivate::deref()
+void WaylandSurfacePrivate::deref()
 {
     if (--refCount == 0)
-        QWaylandCompositorPrivate::get(compositor)->destroySurface(q_func());
+        WaylandCompositorPrivate::get(compositor)->destroySurface(q_func());
 }
 
-void QWaylandSurfacePrivate::refView(QWaylandView *view)
+void WaylandSurfacePrivate::refView(WaylandView *view)
 {
     if (views.contains(view))
         return;
@@ -1050,7 +1052,7 @@ void QWaylandSurfacePrivate::refView(QWaylandView *view)
     view->bufferCommitted(bufferRef, QRect(QPoint(0,0), bufferRef.size()));
 }
 
-void QWaylandSurfacePrivate::derefView(QWaylandView *view)
+void WaylandSurfacePrivate::derefView(WaylandView *view)
 {
     int nViews = views.removeAll(view);
 
@@ -1059,10 +1061,10 @@ void QWaylandSurfacePrivate::derefView(QWaylandView *view)
     }
 }
 
-void QWaylandSurfacePrivate::initSubsurface(QWaylandSurface *parent, wl_client *client, int id, int version)
+void WaylandSurfacePrivate::initSubsurface(WaylandSurface *parent, wl_client *client, int id, int version)
 {
-    Q_Q(QWaylandSurface);
-    QWaylandSurface *oldParent = nullptr; // TODO: implement support for switching parents
+    Q_Q(WaylandSurface);
+    WaylandSurface *oldParent = nullptr; // TODO: implement support for switching parents
 
     subsurface = new Subsurface(this);
     subsurface->init(client, id, version);
@@ -1071,7 +1073,7 @@ void QWaylandSurfacePrivate::initSubsurface(QWaylandSurface *parent, wl_client *
     emit parent->childAdded(q);
 }
 
-void QWaylandSurfacePrivate::Subsurface::subsurface_set_position(wl_subsurface::Resource *resource, int32_t x, int32_t y)
+void WaylandSurfacePrivate::Subsurface::subsurface_set_position(wl_subsurface::Resource *resource, int32_t x, int32_t y)
 {
     Q_UNUSED(resource);
     position = QPoint(x,y);
@@ -1079,26 +1081,26 @@ void QWaylandSurfacePrivate::Subsurface::subsurface_set_position(wl_subsurface::
 
 }
 
-void QWaylandSurfacePrivate::Subsurface::subsurface_place_above(wl_subsurface::Resource *resource, struct wl_resource *sibling)
+void WaylandSurfacePrivate::Subsurface::subsurface_place_above(wl_subsurface::Resource *resource, struct wl_resource *sibling)
 {
     Q_UNUSED(resource);
-    emit surface->q_func()->subsurfacePlaceAbove(QWaylandSurface::fromResource(sibling));
+    emit surface->q_func()->subsurfacePlaceAbove(WaylandSurface::fromResource(sibling));
 }
 
-void QWaylandSurfacePrivate::Subsurface::subsurface_place_below(wl_subsurface::Resource *resource, struct wl_resource *sibling)
+void WaylandSurfacePrivate::Subsurface::subsurface_place_below(wl_subsurface::Resource *resource, struct wl_resource *sibling)
 {
     Q_UNUSED(resource);
-    emit surface->q_func()->subsurfacePlaceBelow(QWaylandSurface::fromResource(sibling));
+    emit surface->q_func()->subsurfacePlaceBelow(WaylandSurface::fromResource(sibling));
 }
 
-void QWaylandSurfacePrivate::Subsurface::subsurface_set_sync(wl_subsurface::Resource *resource)
+void WaylandSurfacePrivate::Subsurface::subsurface_set_sync(wl_subsurface::Resource *resource)
 {
     Q_UNUSED(resource);
     // TODO: sync/desync implementation
     qDebug() << Q_FUNC_INFO;
 }
 
-void QWaylandSurfacePrivate::Subsurface::subsurface_set_desync(wl_subsurface::Resource *resource)
+void WaylandSurfacePrivate::Subsurface::subsurface_set_desync(wl_subsurface::Resource *resource)
 {
     Q_UNUSED(resource);
     // TODO: sync/desync implementation
@@ -1112,7 +1114,7 @@ void QWaylandSurfacePrivate::Subsurface::subsurface_set_desync(wl_subsurface::Re
  */
 
 /*!
- * \fn void QWaylandSurface::childAdded(QWaylandSurface *child)
+ * \fn void WaylandSurface::childAdded(WaylandSurface *child)
  *
  * This signal is emitted when a wl_subsurface, \a child, has been added to the surface.
  */
@@ -1124,7 +1126,7 @@ void QWaylandSurfacePrivate::Subsurface::subsurface_set_desync(wl_subsurface::Re
  */
 
 /*!
- * \fn void QWaylandSurface::surfaceDestroyed()
+ * \fn void WaylandSurface::surfaceDestroyed()
  *
  * This signal is emitted when the corresponing wl_surface is destroyed.
  */
@@ -1136,7 +1138,7 @@ void QWaylandSurfacePrivate::Subsurface::subsurface_set_desync(wl_subsurface::Re
  */
 
 /*!
- * \fn void QWaylandSurface::dragStarted(QWaylandDrag *drag)
+ * \fn void WaylandSurface::dragStarted(WaylandDrag *drag)
  *
  * This signal is emitted when a \a drag has started from this surface.
  */
@@ -1152,10 +1154,12 @@ void QWaylandSurfacePrivate::Subsurface::subsurface_set_desync(wl_subsurface::Re
  */
 
 /*!
- * \fn void parentChanged(QWaylandSurface *newParent, QWaylandSurface *oldParent)
+ * \fn void parentChanged(WaylandSurface *newParent, WaylandSurface *oldParent)
  *
  * This signal is emitted when the client has requested that this surface should be a
  * subsurface of \a newParent.
  */
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

@@ -27,54 +27,56 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDEXTENSION_H
-#define QWAYLANDEXTENSION_H
+#ifndef AURORA_COMPOSITOR_WAYLANDEXTENSION_H
+#define AURORA_COMPOSITOR_WAYLANDEXTENSION_H
 
-#include <QtWaylandCompositor/qtwaylandcompositorglobal.h>
-#include <QtWaylandCompositor/qtwaylandqmlinclude.h>
+#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/qtwaylandqmlinclude.h>
 
 #include <QtCore/QObject>
 
 struct wl_interface;
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandCompositor;
-class QWaylandCompositorExtension;
-class QWaylandCompositorExtensionPrivate;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandObject : public QObject
+class WaylandCompositor;
+class WaylandCompositorExtension;
+class WaylandCompositorExtensionPrivate;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandObject : public QObject
 {
     Q_OBJECT
 public:
-    ~QWaylandObject() override;
+    ~WaylandObject() override;
 
-    QWaylandCompositorExtension *extension(const QByteArray &name);
-    QWaylandCompositorExtension *extension(const wl_interface *interface);
-    QList<QWaylandCompositorExtension *> extensions() const;
-    void addExtension(QWaylandCompositorExtension *extension);
-    void removeExtension(QWaylandCompositorExtension *extension);
+    WaylandCompositorExtension *extension(const QByteArray &name);
+    WaylandCompositorExtension *extension(const wl_interface *interface);
+    QList<WaylandCompositorExtension *> extensions() const;
+    void addExtension(WaylandCompositorExtension *extension);
+    void removeExtension(WaylandCompositorExtension *extension);
 
 protected:
-    QWaylandObject(QObject *parent = nullptr);
-    QWaylandObject(QObjectPrivate &d, QObject *parent = nullptr);
-    QList<QWaylandCompositorExtension *> extension_vector;
+    WaylandObject(QObject *parent = nullptr);
+    WaylandObject(QObjectPrivate &d, QObject *parent = nullptr);
+    QList<WaylandCompositorExtension *> extension_vector;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandCompositorExtension : public QWaylandObject
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandCompositorExtension : public WaylandObject
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandCompositorExtension)
+    Q_DECLARE_PRIVATE(WaylandCompositorExtension)
     QML_NAMED_ELEMENT(WaylandExtension)
     QML_ADDED_IN_VERSION(1, 0)
     QML_UNCREATABLE("")
 public:
-    QWaylandCompositorExtension();
-    QWaylandCompositorExtension(QWaylandObject *container);
-    ~QWaylandCompositorExtension() override;
+    WaylandCompositorExtension();
+    WaylandCompositorExtension(WaylandObject *container);
+    ~WaylandCompositorExtension() override;
 
-    QWaylandObject *extensionContainer() const;
-    void setExtensionContainer(QWaylandObject *container);
+    WaylandObject *extensionContainer() const;
+    void setExtensionContainer(WaylandObject *container);
 
     virtual void initialize();
     bool isInitialized() const;
@@ -82,22 +84,22 @@ public:
     virtual const struct wl_interface *extensionInterface() const = 0;
 
 protected:
-    QWaylandCompositorExtension(QWaylandCompositorExtensionPrivate &dd);
-    QWaylandCompositorExtension(QWaylandObject *container, QWaylandCompositorExtensionPrivate &dd);
+    WaylandCompositorExtension(WaylandCompositorExtensionPrivate &dd);
+    WaylandCompositorExtension(WaylandObject *container, WaylandCompositorExtensionPrivate &dd);
 
     bool event(QEvent *event) override;
 };
 
 template <typename T>
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandCompositorExtensionTemplate : public QWaylandCompositorExtension
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandCompositorExtensionTemplate : public WaylandCompositorExtension
 {
 public:
-    QWaylandCompositorExtensionTemplate()
-        : QWaylandCompositorExtension()
+    WaylandCompositorExtensionTemplate()
+        : WaylandCompositorExtension()
     { }
 
-    QWaylandCompositorExtensionTemplate(QWaylandObject *container)
-        : QWaylandCompositorExtension(container)
+    WaylandCompositorExtensionTemplate(WaylandObject *container)
+        : WaylandCompositorExtension(container)
     { }
 
     const struct wl_interface *extensionInterface() const override
@@ -105,22 +107,24 @@ public:
         return T::interface();
     }
 
-    static T *findIn(QWaylandObject *container)
+    static T *findIn(WaylandObject *container)
     {
         if (!container) return nullptr;
         return qobject_cast<T *>(container->extension(T::interfaceName()));
     }
 
 protected:
-    QWaylandCompositorExtensionTemplate(QWaylandCompositorExtensionPrivate &dd)
-        : QWaylandCompositorExtension(dd)
+    WaylandCompositorExtensionTemplate(WaylandCompositorExtensionPrivate &dd)
+        : WaylandCompositorExtension(dd)
     { }
 
-    QWaylandCompositorExtensionTemplate(QWaylandObject *container, QWaylandCompositorExtensionPrivate &dd)
-        : QWaylandCompositorExtension(container,dd)
+    WaylandCompositorExtensionTemplate(WaylandObject *container, WaylandCompositorExtensionPrivate &dd)
+        : WaylandCompositorExtension(container,dd)
     { }
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif

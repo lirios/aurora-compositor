@@ -27,17 +27,19 @@
 **
 ****************************************************************************/
 
-#include "qwlbuffermanager_p.h"
-#include <QWaylandCompositor>
-#include <QtWaylandCompositor/private/qwaylandcompositor_p.h>
-#include <QtWaylandCompositor/private/qwlclientbufferintegration_p.h>
+#include "aurorawlbuffermanager_p.h"
+#include <AuroraWaylandCompositor>
+#include <LiriAuroraCompositor/private/aurorawaylandcompositor_p.h>
+#include <LiriAuroraCompositor/private/aurorawlclientbufferintegration_p.h>
 #include <QDebug>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 namespace QtWayland {
 
-BufferManager::BufferManager(QWaylandCompositor *compositor)
+BufferManager::BufferManager(WaylandCompositor *compositor)
     : QObject(compositor)
     , m_compositor(compositor)
 {
@@ -76,7 +78,7 @@ ClientBuffer *BufferManager::getBuffer(wl_resource *buffer_resource)
 
     ClientBuffer *newBuffer = nullptr;
 
-    for (auto *integration : QWaylandCompositorPrivate::get(m_compositor)->clientBufferIntegrations()) {
+    for (auto *integration : WaylandCompositorPrivate::get(m_compositor)->clientBufferIntegrations()) {
         newBuffer = integration->createBufferFor(buffer_resource);
         if (newBuffer)
             break;
@@ -112,4 +114,6 @@ void BufferManager::destroy_listener_callback(wl_listener *listener, void *data)
 }
 
 }
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

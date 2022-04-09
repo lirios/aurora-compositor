@@ -33,9 +33,13 @@
 #include <QSize>
 #include <QString>
 
-#include "qwayland-xdg-output-unstable-v1.h"
+#include "aurora-client-xdg-output-unstable-v1.h"
 
-class MockXdgOutputV1 : public QtWayland::zxdg_output_v1
+namespace Aurora {
+
+namespace Compositor {
+
+class MockXdgOutputV1 : public Aurora::Client::PrivateClient::zxdg_output_v1
 {
 public:
     explicit MockXdgOutputV1(struct ::zxdg_output_v1 *object);
@@ -60,5 +64,9 @@ protected:
     void zxdg_output_v1_name(const QString &name) override;
     void zxdg_output_v1_description(const QString &description) override;
 };
+
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif // MOCKXDGOUTPUTV1_H

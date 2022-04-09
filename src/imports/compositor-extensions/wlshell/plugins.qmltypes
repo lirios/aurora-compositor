@@ -8,11 +8,11 @@ import QtQuick.tooling 1.2
 
 Module {
     dependencies: ["QtQuick 2.0"]
-    Component { name: "QWaylandCompositorExtension"; prototype: "QWaylandObject" }
-    Component { name: "QWaylandObject"; prototype: "QObject" }
+    Component { name: "WaylandCompositorExtension"; prototype: "WaylandObject" }
+    Component { name: "WaylandObject"; prototype: "QObject" }
     Component {
-        name: "QWaylandShell"
-        prototype: "QWaylandCompositorExtension"
+        name: "WaylandShell"
+        prototype: "WaylandCompositorExtension"
         Enum {
             name: "FocusPolicy"
             values: {
@@ -23,36 +23,36 @@ Module {
         Property { name: "focusPolicy"; type: "FocusPolicy" }
     }
     Component {
-        name: "QWaylandShellSurface"
-        prototype: "QWaylandCompositorExtension"
+        name: "WaylandShellSurface"
+        prototype: "WaylandCompositorExtension"
         Property { name: "windowType"; type: "Qt::WindowType"; isReadonly: true }
     }
     Component {
-        name: "QWaylandWlShell"
-        prototype: "QWaylandShell"
+        name: "WaylandWlShell"
+        prototype: "WaylandShell"
         Signal {
             name: "wlShellSurfaceRequested"
-            Parameter { name: "surface"; type: "QWaylandSurface"; isPointer: true }
-            Parameter { name: "resource"; type: "QWaylandResource" }
+            Parameter { name: "surface"; type: "WaylandSurface"; isPointer: true }
+            Parameter { name: "resource"; type: "WaylandResource" }
         }
         Signal {
             name: "wlShellSurfaceCreated"
-            Parameter { name: "shellSurface"; type: "QWaylandWlShellSurface"; isPointer: true }
+            Parameter { name: "shellSurface"; type: "WaylandWlShellSurface"; isPointer: true }
         }
         Method { name: "closeAllPopups" }
     }
     Component {
-        name: "QWaylandWlShellQuickExtension"
+        name: "WaylandWlShellQuickExtension"
         defaultProperty: "data"
-        prototype: "QWaylandWlShell"
+        prototype: "WaylandWlShell"
         exports: ["QtWayland.Compositor.WlShell/WlShell 1.0"]
         exportMetaObjectRevisions: [0]
         Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
     }
     Component {
-        name: "QWaylandWlShellSurface"
+        name: "WaylandWlShellSurface"
         defaultProperty: "data"
-        prototype: "QWaylandShellSurface"
+        prototype: "WaylandShellSurface"
         exports: ["QtWayland.Compositor.WlShell/WlShellSurface 1.0"]
         exportMetaObjectRevisions: [0]
         Enum {
@@ -79,24 +79,24 @@ Module {
             }
         }
         Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-        Property { name: "surface"; type: "QWaylandSurface"; isReadonly: true; isPointer: true }
-        Property { name: "shell"; type: "QWaylandWlShell"; isReadonly: true; isPointer: true }
+        Property { name: "surface"; type: "WaylandSurface"; isReadonly: true; isPointer: true }
+        Property { name: "shell"; type: "WaylandWlShell"; isReadonly: true; isPointer: true }
         Property { name: "title"; type: "string"; isReadonly: true }
         Property { name: "className"; type: "string"; isReadonly: true }
         Signal { name: "pong" }
         Signal {
             name: "startMove"
-            Parameter { name: "seat"; type: "QWaylandSeat"; isPointer: true }
+            Parameter { name: "seat"; type: "WaylandSeat"; isPointer: true }
         }
         Signal {
             name: "startResize"
-            Parameter { name: "seat"; type: "QWaylandSeat"; isPointer: true }
+            Parameter { name: "seat"; type: "WaylandSeat"; isPointer: true }
             Parameter { name: "edges"; type: "ResizeEdge" }
         }
         Signal { name: "setDefaultToplevel" }
         Signal {
             name: "setTransient"
-            Parameter { name: "parentSurface"; type: "QWaylandSurface"; isPointer: true }
+            Parameter { name: "parentSurface"; type: "WaylandSurface"; isPointer: true }
             Parameter { name: "relativeToParent"; type: "QPoint" }
             Parameter { name: "inactive"; type: "bool" }
         }
@@ -104,24 +104,24 @@ Module {
             name: "setFullScreen"
             Parameter { name: "method"; type: "FullScreenMethod" }
             Parameter { name: "framerate"; type: "uint" }
-            Parameter { name: "output"; type: "QWaylandOutput"; isPointer: true }
+            Parameter { name: "output"; type: "WaylandOutput"; isPointer: true }
         }
         Signal {
             name: "setPopup"
-            Parameter { name: "seat"; type: "QWaylandSeat"; isPointer: true }
-            Parameter { name: "parentSurface"; type: "QWaylandSurface"; isPointer: true }
+            Parameter { name: "seat"; type: "WaylandSeat"; isPointer: true }
+            Parameter { name: "parentSurface"; type: "WaylandSurface"; isPointer: true }
             Parameter { name: "relativeToParent"; type: "QPoint" }
         }
         Signal {
             name: "setMaximized"
-            Parameter { name: "output"; type: "QWaylandOutput"; isPointer: true }
+            Parameter { name: "output"; type: "WaylandOutput"; isPointer: true }
         }
         Method { name: "ping" }
         Method {
             name: "initialize"
-            Parameter { name: "shell"; type: "QWaylandWlShell"; isPointer: true }
-            Parameter { name: "surface"; type: "QWaylandSurface"; isPointer: true }
-            Parameter { name: "resource"; type: "QWaylandResource" }
+            Parameter { name: "shell"; type: "WaylandWlShell"; isPointer: true }
+            Parameter { name: "surface"; type: "WaylandSurface"; isPointer: true }
+            Parameter { name: "resource"; type: "WaylandResource" }
         }
         Method {
             name: "sizeForResize"

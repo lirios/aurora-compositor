@@ -27,9 +27,11 @@
 **
 ****************************************************************************/
 
-#include "qwlserverbufferintegration_p.h"
+#include "aurorawlserverbufferintegration_p.h"
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 namespace QtWayland {
 
@@ -58,7 +60,7 @@ ServerBufferIntegration::ServerBufferIntegration()
 ServerBufferIntegration::~ServerBufferIntegration()
 { }
 
-bool ServerBufferIntegration::initializeHardware(QWaylandCompositor *compositor)
+bool ServerBufferIntegration::initializeHardware(WaylandCompositor *compositor)
 {
     Q_UNUSED(compositor);
     return true;
@@ -66,4 +68,6 @@ bool ServerBufferIntegration::initializeHardware(QWaylandCompositor *compositor)
 
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

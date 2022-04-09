@@ -27,20 +27,22 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDSHELL_H
-#define QWAYLANDSHELL_H
+#ifndef AURORA_COMPOSITOR_WAYLANDSHELL_H
+#define AURORA_COMPOSITOR_WAYLANDSHELL_H
 
-#include <QtWaylandCompositor/qtwaylandqmlinclude.h>
-#include <QtWaylandCompositor/qwaylandcompositorextension.h>
+#include <LiriAuroraCompositor/qtwaylandqmlinclude.h>
+#include <LiriAuroraCompositor/aurorawaylandcompositorextension.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandShellPrivate;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandShell : public QWaylandCompositorExtension
+class WaylandShellPrivate;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandShell : public WaylandCompositorExtension
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandShell)
+    Q_DECLARE_PRIVATE(WaylandShell)
     Q_PROPERTY(FocusPolicy focusPolicy READ focusPolicy WRITE setFocusPolicy NOTIFY focusPolicyChanged)
 
     QML_NAMED_ELEMENT(Shell)
@@ -53,8 +55,8 @@ public:
     };
     Q_ENUM(FocusPolicy)
 
-    QWaylandShell();
-    QWaylandShell(QWaylandObject *waylandObject);
+    WaylandShell();
+    WaylandShell(WaylandObject *waylandObject);
 
     FocusPolicy focusPolicy() const;
     void setFocusPolicy(FocusPolicy focusPolicy);
@@ -63,20 +65,20 @@ Q_SIGNALS:
     void focusPolicyChanged();
 
 protected:
-    explicit QWaylandShell(QWaylandShellPrivate &dd);
-    explicit QWaylandShell(QWaylandObject *container, QWaylandShellPrivate &dd);
+    explicit WaylandShell(WaylandShellPrivate &dd);
+    explicit WaylandShell(WaylandObject *container, WaylandShellPrivate &dd);
 };
 
 template <typename T>
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandShellTemplate : public QWaylandShell
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandShellTemplate : public WaylandShell
 {
 public:
-    QWaylandShellTemplate()
-        : QWaylandShell()
+    WaylandShellTemplate()
+        : WaylandShell()
     { }
 
-    QWaylandShellTemplate(QWaylandObject *container)
-        : QWaylandShell(container)
+    WaylandShellTemplate(WaylandObject *container)
+        : WaylandShell(container)
     { }
 
     const struct wl_interface *extensionInterface() const override
@@ -84,22 +86,24 @@ public:
         return T::interface();
     }
 
-    static T *findIn(QWaylandObject *container)
+    static T *findIn(WaylandObject *container)
     {
         if (!container) return nullptr;
         return qobject_cast<T *>(container->extension(T::interfaceName()));
     }
 
 protected:
-    QWaylandShellTemplate(QWaylandShellPrivate &dd)
-        : QWaylandShell(dd)
+    WaylandShellTemplate(WaylandShellPrivate &dd)
+        : WaylandShell(dd)
     { }
 
-    QWaylandShellTemplate(QWaylandObject *container, QWaylandShellPrivate &dd)
-        : QWaylandShell(container,dd)
+    WaylandShellTemplate(WaylandObject *container, WaylandShellPrivate &dd)
+        : WaylandShell(container,dd)
     { }
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDSHELL_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDSHELL_H

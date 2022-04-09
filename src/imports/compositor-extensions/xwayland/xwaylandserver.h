@@ -27,7 +27,7 @@
 #include <QtCore/QString>
 #include <QtCore/QProcess>
 
-#include <QtWaylandCompositor/QWaylandCompositor>
+#include <LiriAuroraCompositor/WaylandCompositor>
 
 struct wl_client;
 
@@ -36,10 +36,10 @@ class ServerProcess;
 class XWaylandServer : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QWaylandCompositor *compositor READ compositor CONSTANT)
+    Q_PROPERTY(WaylandCompositor *compositor READ compositor CONSTANT)
     Q_PROPERTY(QString displayName READ displayName NOTIFY displayNameChanged)
 public:
-    XWaylandServer(QWaylandCompositor *compositor, QObject *parent = nullptr);
+    XWaylandServer(WaylandCompositor *compositor, QObject *parent = nullptr);
     ~XWaylandServer();
 
     inline int wmFd() const {
@@ -50,7 +50,7 @@ public:
         return m_client;
     }
 
-    QWaylandCompositor *compositor() const;
+    WaylandCompositor *compositor() const;
     QString displayName() const;
 
     bool start();
@@ -62,7 +62,7 @@ Q_SIGNALS:
     void failedToStart();
 
 private:
-    QWaylandCompositor *m_compositor;
+    WaylandCompositor *m_compositor;
 
     int m_display;
     QString m_displayName;

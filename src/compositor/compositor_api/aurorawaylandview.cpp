@@ -27,26 +27,28 @@
 **
 ****************************************************************************/
 
-#include "qwaylandview.h"
-#include "qwaylandview_p.h"
-#include "qwaylandsurface.h"
-#include <QtWaylandCompositor/QWaylandSeat>
-#include <QtWaylandCompositor/QWaylandCompositor>
+#include "aurorawaylandview.h"
+#include "aurorawaylandview_p.h"
+#include "aurorawaylandsurface.h"
+#include <LiriAuroraCompositor/WaylandSeat>
+#include <LiriAuroraCompositor/WaylandCompositor>
 
-#include <QtWaylandCompositor/private/qwaylandsurface_p.h>
-#include <QtWaylandCompositor/private/qwaylandoutput_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandsurface_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandoutput_p.h>
 
 #include <QtCore/QMutex>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-void QWaylandViewPrivate::markSurfaceAsDestroyed(QWaylandSurface *surface)
+namespace Compositor {
+
+void WaylandViewPrivate::markSurfaceAsDestroyed(WaylandSurface *surface)
 {
-    Q_Q(QWaylandView);
+    Q_Q(WaylandView);
     Q_ASSERT(surface == this->surface);
 
     setSurface(nullptr);
-    QPointer<QWaylandView> deleteGuard(q);
+    QPointer<WaylandView> deleteGuard(q);
     emit q->surfaceDestroyed();
     if (!deleteGuard.isNull())
         clearFrontBuffer();
@@ -54,8 +56,8 @@ void QWaylandViewPrivate::markSurfaceAsDestroyed(QWaylandSurface *surface)
 
 /*!
  * \qmltype WaylandView
- * \instantiates QWaylandView
- * \inqmlmodule QtWayland.Compositor
+ * \instantiates WaylandView
+ * \inqmlmodule Aurora.Compositor
  * \since 5.8
  * \brief Represents a view of a surface on an output.
  *
@@ -65,36 +67,36 @@ void QWaylandViewPrivate::markSurfaceAsDestroyed(QWaylandSurface *surface)
  */
 
 /*!
- * \class QWaylandView
+ * \class WaylandView
  * \inmodule QtWaylandCompositor
  * \since 5.8
- * \brief The QWaylandView class represents a view of a surface on an output.
+ * \brief The WaylandView class represents a view of a surface on an output.
  *
- * The QWaylandView corresponds to the presentation of a surface on a specific
+ * The WaylandView corresponds to the presentation of a surface on a specific
  * output, managing the buffers that contain the contents to be rendered.
  * You can have several views into the same surface.
  */
 
 /*!
- * Constructs a QWaylandView with the given \a renderObject and \a parent.
+ * Constructs a WaylandView with the given \a renderObject and \a parent.
  */
-QWaylandView::QWaylandView(QObject *renderObject, QObject *parent)
-    : QObject(*new QWaylandViewPrivate(),parent)
+WaylandView::WaylandView(QObject *renderObject, QObject *parent)
+    : QObject(*new WaylandViewPrivate(),parent)
 {
     d_func()->renderObject = renderObject;
 }
 
 /*!
- * Destroys the QWaylandView.
+ * Destroys the WaylandView.
  */
-QWaylandView::~QWaylandView()
+WaylandView::~WaylandView()
 {
-    Q_D(QWaylandView);
+    Q_D(WaylandView);
     if (d->surface) {
         if (d->output)
-            QWaylandOutputPrivate::get(d->output)->removeView(this, d->surface);
+            WaylandOutputPrivate::get(d->output)->removeView(this, d->surface);
 
-        QWaylandSurfacePrivate::get(d->surface)->derefView(this);
+        WaylandSurfacePrivate::get(d->surface)->derefView(this);
     }
 
 }
@@ -103,9 +105,9 @@ QWaylandView::~QWaylandView()
 * \internal
 *  Didn't we decide to remove this property?
 */
-QObject *QWaylandView::renderObject() const
+QObject *WaylandView::renderObject() const
 {
-    Q_D(const QWaylandView);
+    Q_D(const WaylandView);
     return d->renderObject;
 }
 
@@ -116,50 +118,50 @@ QObject *QWaylandView::renderObject() const
  */
 
 /*!
- * \property QWaylandView::surface
+ * \property WaylandView::surface
  *
- * This property holds the surface viewed by this QWaylandView.
+ * This property holds the surface viewed by this WaylandView.
  */
-QWaylandSurface *QWaylandView::surface() const
+WaylandSurface *WaylandView::surface() const
 {
-    Q_D(const QWaylandView);
+    Q_D(const WaylandView);
     return d->surface;
 }
 
 
-void QWaylandViewPrivate::setSurface(QWaylandSurface *newSurface)
+void WaylandViewPrivate::setSurface(WaylandSurface *newSurface)
 {
-    Q_Q(QWaylandView);
+    Q_Q(WaylandView);
     if (surface) {
-        QWaylandSurfacePrivate::get(surface)->derefView(q);
+        WaylandSurfacePrivate::get(surface)->derefView(q);
         if (output)
-            QWaylandOutputPrivate::get(output)->removeView(q, surface);
+            WaylandOutputPrivate::get(output)->removeView(q, surface);
     }
 
     surface = newSurface;
 
-    nextBuffer = QWaylandBufferRef();
+    nextBuffer = WaylandBufferRef();
     nextBufferCommitted = false;
     nextDamage = QRegion();
 
     if (surface) {
-        QWaylandSurfacePrivate::get(surface)->refView(q);
+        WaylandSurfacePrivate::get(surface)->refView(q);
         if (output)
-            QWaylandOutputPrivate::get(output)->addView(q, surface);
+            WaylandOutputPrivate::get(output)->addView(q, surface);
     }
 }
 
-void QWaylandViewPrivate::clearFrontBuffer()
+void WaylandViewPrivate::clearFrontBuffer()
 {
     if (!bufferLocked) {
-        currentBuffer = QWaylandBufferRef();
+        currentBuffer = WaylandBufferRef();
         currentDamage = QRegion();
     }
 }
 
-void QWaylandView::setSurface(QWaylandSurface *newSurface)
+void WaylandView::setSurface(WaylandSurface *newSurface)
 {
-    Q_D(QWaylandView);
+    Q_D(WaylandView);
     if (d->surface == newSurface)
         return;
 
@@ -175,29 +177,29 @@ void QWaylandView::setSurface(QWaylandSurface *newSurface)
  */
 
 /*!
- * \property QWaylandView::output
+ * \property WaylandView::output
  *
  * This property holds the output on which this view displays its surface.
  */
-QWaylandOutput *QWaylandView::output() const
+WaylandOutput *WaylandView::output() const
 {
-    Q_D(const QWaylandView);
+    Q_D(const WaylandView);
     return d->output;
 }
 
-void QWaylandView::setOutput(QWaylandOutput *newOutput)
+void WaylandView::setOutput(WaylandOutput *newOutput)
 {
-    Q_D(QWaylandView);
+    Q_D(WaylandView);
     if (d->output == newOutput)
         return;
 
     if (d->output && d->surface)
-        QWaylandOutputPrivate::get(d->output)->removeView(this, d->surface);
+        WaylandOutputPrivate::get(d->output)->removeView(this, d->surface);
 
     d->output = newOutput;
 
     if (d->output && d->surface)
-        QWaylandOutputPrivate::get(d->output)->addView(this, d->surface);
+        WaylandOutputPrivate::get(d->output)->addView(this, d->surface);
 
     emit outputChanged();
 }
@@ -210,9 +212,9 @@ void QWaylandView::setOutput(QWaylandOutput *newOutput)
  *
  * Subclasses that reimplement this function \e must call the base implementation.
  */
-void QWaylandView::bufferCommitted(const QWaylandBufferRef &buffer, const QRegion &damage)
+void WaylandView::bufferCommitted(const WaylandBufferRef &buffer, const QRegion &damage)
 {
-    Q_D(QWaylandView);
+    Q_D(WaylandView);
     QMutexLocker locker(&d->bufferMutex);
     d->nextBuffer = buffer;
     d->nextDamage = damage;
@@ -226,9 +228,9 @@ void QWaylandView::bufferCommitted(const QWaylandBufferRef &buffer, const QRegio
  *
  * \sa currentBuffer(), currentDamage()
  */
-bool QWaylandView::advance()
+bool WaylandView::advance()
 {
-    Q_D(QWaylandView);
+    Q_D(WaylandView);
 
     if (!d->nextBufferCommitted && !d->forceAdvanceSucceed)
         return false;
@@ -238,7 +240,7 @@ bool QWaylandView::advance()
 
     if (d->surface && d->surface->primaryView() == this) {
         const auto views = d->surface->views();
-        for (QWaylandView *view : views) {
+        for (WaylandView *view : views) {
             if (view != this && view->allowDiscardFrontBuffer() && view->d_func()->currentBuffer == d->currentBuffer)
                 view->discardCurrentBuffer();
         }
@@ -255,20 +257,20 @@ bool QWaylandView::advance()
 /*!
  * Force the view to discard its current buffer, to allow it to be reused on the client side.
  */
-void QWaylandView::discardCurrentBuffer()
+void WaylandView::discardCurrentBuffer()
 {
-    Q_D(QWaylandView);
+    Q_D(WaylandView);
     QMutexLocker locker(&d->bufferMutex);
-    d->currentBuffer = QWaylandBufferRef();
+    d->currentBuffer = WaylandBufferRef();
     d->forceAdvanceSucceed = true;
 }
 
 /*!
  * Returns a reference to this view's current buffer.
  */
-QWaylandBufferRef QWaylandView::currentBuffer()
+WaylandBufferRef WaylandView::currentBuffer()
 {
-    Q_D(QWaylandView);
+    Q_D(WaylandView);
     QMutexLocker locker(&d->bufferMutex);
     return d->currentBuffer;
 }
@@ -276,9 +278,9 @@ QWaylandBufferRef QWaylandView::currentBuffer()
 /*!
  * Returns the current damage region of this view.
  */
-QRegion QWaylandView::currentDamage()
+QRegion WaylandView::currentDamage()
 {
-    Q_D(QWaylandView);
+    Q_D(WaylandView);
     QMutexLocker locker(&d->bufferMutex);
     return d->currentDamage;
 }
@@ -294,7 +296,7 @@ QRegion QWaylandView::currentDamage()
  */
 
 /*!
- * \property QWaylandView::bufferLocked
+ * \property WaylandView::bufferLocked
  *
  * This property holds whether the view's buffer is currently locked. When
  * the buffer is locked, advance() will not advance to the next buffer
@@ -302,15 +304,15 @@ QRegion QWaylandView::currentDamage()
  *
  * The default is \c false.
  */
-bool QWaylandView::isBufferLocked() const
+bool WaylandView::isBufferLocked() const
 {
-    Q_D(const QWaylandView);
+    Q_D(const WaylandView);
     return d->bufferLocked;
 }
 
-void QWaylandView::setBufferLocked(bool locked)
+void WaylandView::setBufferLocked(bool locked)
 {
-    Q_D(QWaylandView);
+    Q_D(WaylandView);
     if (d->bufferLocked == locked)
         return;
     d->bufferLocked = locked;
@@ -327,7 +329,7 @@ void QWaylandView::setBufferLocked(bool locked)
  */
 
 /*!
- * \property QWaylandView::allowDiscardFrontBuffer
+ * \property WaylandView::allowDiscardFrontBuffer
  *
  * By default, the view locks the current buffer until advance() is called. Set this property
  * to \c true to allow Qt to release the buffer when the primary view is no longer using it.
@@ -335,15 +337,15 @@ void QWaylandView::setBufferLocked(bool locked)
  * This can be used to avoid the situation where a secondary view that updates on a lower
  * frequency will throttle the frame rate of the client application.
  */
-bool QWaylandView::allowDiscardFrontBuffer() const
+bool WaylandView::allowDiscardFrontBuffer() const
 {
-    Q_D(const QWaylandView);
+    Q_D(const WaylandView);
     return d->allowDiscardFrontBuffer;
 }
 
-void QWaylandView::setAllowDiscardFrontBuffer(bool discard)
+void WaylandView::setAllowDiscardFrontBuffer(bool discard)
 {
-    Q_D(QWaylandView);
+    Q_D(WaylandView);
     if (d->allowDiscardFrontBuffer == discard)
         return;
     d->allowDiscardFrontBuffer = discard;
@@ -351,41 +353,43 @@ void QWaylandView::setAllowDiscardFrontBuffer(bool discard)
 }
 
 /*!
- * Makes this QWaylandView the primary view for the surface.
+ * Makes this WaylandView the primary view for the surface.
  *
- * It has no effect if this QWaylandView is not holding any QWaylandSurface
+ * It has no effect if this WaylandView is not holding any WaylandSurface
  *
- * \sa QWaylandSurface::primaryView
+ * \sa WaylandSurface::primaryView
  */
-void QWaylandView::setPrimary()
+void WaylandView::setPrimary()
 {
-    Q_D(QWaylandView);
+    Q_D(WaylandView);
     if (d->surface)
         d->surface->setPrimaryView(this);
     else
-        qWarning("Calling setPrimary() on a QWaylandView without a surface has no effect.");
+        qWarning("Calling setPrimary() on a WaylandView without a surface has no effect.");
 }
 
 /*!
- * Returns true if this QWaylandView is the primary view for the QWaylandSurface
+ * Returns true if this WaylandView is the primary view for the WaylandSurface
  *
- * \sa QWaylandSurface::primaryView
+ * \sa WaylandSurface::primaryView
  */
-bool QWaylandView::isPrimary() const
+bool WaylandView::isPrimary() const
 {
-    Q_D(const QWaylandView);
+    Q_D(const WaylandView);
     return d->surface && d->surface->primaryView() == this;
 }
 
 /*!
- * Returns the Wayland surface resource for this QWaylandView.
+ * Returns the Wayland surface resource for this WaylandView.
  */
-struct wl_resource *QWaylandView::surfaceResource() const
+struct wl_resource *WaylandView::surfaceResource() const
 {
-    Q_D(const QWaylandView);
+    Q_D(const WaylandView);
     if (!d->surface)
         return nullptr;
     return d->surface->resource();
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

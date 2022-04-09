@@ -21,8 +21,8 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#include <QtWaylandCompositor/QWaylandClient>
-#include <QtWaylandCompositor/QWaylandCompositor>
+#include <LiriAuroraCompositor/WaylandClient>
+#include <LiriAuroraCompositor/WaylandCompositor>
 
 #include "xwayland.h"
 #include "xwaylandmanager.h"
@@ -63,12 +63,12 @@ void XWayland::setEnabled(bool enabled)
     Q_EMIT enabledChanged();
 }
 
-QWaylandCompositor *XWayland::compositor() const
+WaylandCompositor *XWayland::compositor() const
 {
     return m_compositor;
 }
 
-void XWayland::setCompositor(QWaylandCompositor *compositor)
+void XWayland::setCompositor(WaylandCompositor *compositor)
 {
     if (m_compositor) {
         qCWarning(XWAYLAND, "Cannot move XWayland to another compositor");
@@ -125,7 +125,7 @@ void XWayland::initialize()
     // Try to find a compositor among parents
     if (!m_compositor) {
         for (QObject *p = parent(); p != nullptr; p = p->parent()) {
-            if (auto c = qobject_cast<QWaylandCompositor *>(p)) {
+            if (auto c = qobject_cast<WaylandCompositor *>(p)) {
                 setCompositor(c);
                 break;
             }
@@ -147,7 +147,7 @@ void XWayland::initialize()
     }
 
     // Handle surface cration
-    connect(m_compositor, &QWaylandCompositor::surfaceCreated,
+    connect(m_compositor, &WaylandCompositor::surfaceCreated,
             this, &XWayland::handleSurfaceCreated);
 
     // Instantiate the server
@@ -173,10 +173,10 @@ void XWayland::handleServerStarted(const QString &displayName)
     m_manager->start(m_server->wmFd());
 }
 
-void XWayland::handleSurfaceCreated(QWaylandSurface *surface)
+void XWayland::handleSurfaceCreated(WaylandSurface *surface)
 {
     // We are only interested in surfaces from Xwayland
-    QWaylandClient *client = surface->client();
+    WaylandClient *client = surface->client();
     if (client && client->client() != m_server->client())
         return;
 

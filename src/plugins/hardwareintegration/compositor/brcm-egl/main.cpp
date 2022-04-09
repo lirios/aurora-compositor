@@ -27,12 +27,14 @@
 **
 ****************************************************************************/
 
-#include <QtWaylandCompositor/private/qwlclientbufferintegrationplugin_p.h>
+#include <LiriAuroraCompositor/private/aurorawlclientbufferintegrationplugin_p.h>
 #include "brcmeglintegration.h"
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandBrcmClientBufferIntegrationPlugin : public QtWayland::ClientBufferIntegrationPlugin
+namespace Compositor {
+
+class WaylandBrcmClientBufferIntegrationPlugin : public QtWayland::ClientBufferIntegrationPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QtWaylandClientBufferIntegrationFactoryInterface_iid FILE "brcm-egl.json")
@@ -40,13 +42,15 @@ public:
     QtWayland::ClientBufferIntegration *create(const QString&, const QStringList&) override;
 };
 
-QtWayland::ClientBufferIntegration *QWaylandBrcmClientBufferIntegrationPlugin::create(const QString& system, const QStringList& paramList)
+QtWayland::ClientBufferIntegration *WaylandBrcmClientBufferIntegrationPlugin::create(const QString& system, const QStringList& paramList)
 {
     Q_UNUSED(paramList);
     Q_UNUSED(system);
     return new BrcmEglIntegration();
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #include "main.moc"

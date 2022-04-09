@@ -30,10 +30,10 @@
 #ifndef LINUXDMABUF_H
 #define LINUXDMABUF_H
 
-#include "qwayland-server-linux-dmabuf-unstable-v1.h"
+#include "aurora-server-linux-dmabuf-unstable-v1.h"
 
-#include <QtWaylandCompositor/private/qwayland-server-wayland.h>
-#include <QtWaylandCompositor/private/qwlclientbufferintegration_p.h>
+#include <LiriAuroraCompositor/private/aurora-server-wayland.h>
+#include <LiriAuroraCompositor/private/aurorawlclientbufferintegration_p.h>
 
 #include <QtOpenGL/QOpenGLTexture>
 #include <QtCore/QObject>
@@ -64,10 +64,12 @@ typedef EGLBoolean (EGLAPIENTRYP PFNEGLBINDWAYLANDDISPLAYWL) (EGLDisplay dpy, st
 typedef EGLBoolean (EGLAPIENTRYP PFNEGLUNBINDWAYLANDDISPLAYWL) (EGLDisplay dpy, struct wl_display *display);
 #endif
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandCompositor;
-class QWaylandResource;
+namespace Compositor {
+
+class WaylandCompositor;
+class WaylandResource;
 class LinuxDmabufParams;
 class LinuxDmabufClientBufferIntegration;
 
@@ -78,7 +80,7 @@ struct Plane {
     uint64_t modifiers = 0;
 };
 
-class LinuxDmabuf : public QtWaylandServer::zwp_linux_dmabuf_v1
+class LinuxDmabuf : public PrivateServer::zwp_linux_dmabuf_v1
 {
 public:
     explicit LinuxDmabuf(wl_display *display, LinuxDmabufClientBufferIntegration *clientBufferIntegration);
@@ -94,7 +96,7 @@ private:
     LinuxDmabufClientBufferIntegration *m_clientBufferIntegration;
 };
 
-class LinuxDmabufParams : public QtWaylandServer::zwp_linux_buffer_params_v1
+class LinuxDmabufParams : public PrivateServer::zwp_linux_buffer_params_v1
 {
 public:
     explicit LinuxDmabufParams(LinuxDmabufClientBufferIntegration *clientBufferIntegration, wl_resource *resource);
@@ -119,7 +121,7 @@ protected:
     friend class LinuxDmabufClientBufferIntegrationPrivate;
 };
 
-class LinuxDmabufWlBuffer : public QtWaylandServer::wl_buffer
+class LinuxDmabufWlBuffer : public PrivateServer::wl_buffer
 {
 public:
     explicit LinuxDmabufWlBuffer(::wl_client *client, LinuxDmabufClientBufferIntegration *clientBufferIntegration, uint id = 0);
@@ -153,6 +155,8 @@ private:
     friend class LinuxDmabufParams;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif // LINUXDMABUF_H

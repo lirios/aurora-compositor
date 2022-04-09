@@ -27,72 +27,74 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDWLSHELL_P_H
-#define QWAYLANDWLSHELL_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDWLSHELL_P_H
+#define AURORA_COMPOSITOR_WAYLANDWLSHELL_P_H
 
-#include <QtWaylandCompositor/qtwaylandcompositorglobal.h>
-#include <QtWaylandCompositor/qwaylandsurface.h>
-#include <QtWaylandCompositor/private/qwaylandcompositorextension_p.h>
-#include <QtWaylandCompositor/private/qwaylandshell_p.h>
-#include <QtWaylandCompositor/QWaylandWlShellSurface>
-#include <QtWaylandCompositor/QWaylandSeat>
+#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/aurorawaylandsurface.h>
+#include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandshell_p.h>
+#include <LiriAuroraCompositor/WaylandWlShellSurface>
+#include <LiriAuroraCompositor/WaylandSeat>
 
 #include <wayland-server-core.h>
 #include <QHash>
 #include <QPoint>
 #include <QSet>
 
-#include <QtWaylandCompositor/private/qwayland-server-wayland.h>
+#include <LiriAuroraCompositor/private/aurora-server-wayland.h>
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandWlShellPrivate
-                                        : public QWaylandShellPrivate
-                                        , public QtWaylandServer::wl_shell
+namespace Compositor {
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandWlShellPrivate
+                                        : public WaylandShellPrivate
+                                        , public PrivateServer::wl_shell
 {
-    Q_DECLARE_PUBLIC(QWaylandWlShell)
+    Q_DECLARE_PUBLIC(WaylandWlShell)
 public:
-    QWaylandWlShellPrivate();
+    WaylandWlShellPrivate();
 
-    void unregisterShellSurface(QWaylandWlShellSurface *shellSurface);
+    void unregisterShellSurface(WaylandWlShellSurface *shellSurface);
 
-    static QWaylandWlShellPrivate *get(QWaylandWlShell *shell) { return shell->d_func(); }
+    static WaylandWlShellPrivate *get(WaylandWlShell *shell) { return shell->d_func(); }
 
 protected:
     void shell_get_shell_surface(Resource *resource, uint32_t id, struct ::wl_resource *surface) override;
 
-    QList<QWaylandWlShellSurface *> m_shellSurfaces;
+    QList<WaylandWlShellSurface *> m_shellSurfaces;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandWlShellSurfacePrivate
-                                        : public QWaylandCompositorExtensionPrivate
-                                        , public QtWaylandServer::wl_shell_surface
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandWlShellSurfacePrivate
+                                        : public WaylandCompositorExtensionPrivate
+                                        , public PrivateServer::wl_shell_surface
 {
-    Q_DECLARE_PUBLIC(QWaylandWlShellSurface)
+    Q_DECLARE_PUBLIC(WaylandWlShellSurface)
 public:
-    QWaylandWlShellSurfacePrivate();
-    ~QWaylandWlShellSurfacePrivate() override;
+    WaylandWlShellSurfacePrivate();
+    ~WaylandWlShellSurfacePrivate() override;
 
-    static QWaylandWlShellSurfacePrivate *get(QWaylandWlShellSurface *surface) { return surface->d_func(); }
+    static WaylandWlShellSurfacePrivate *get(WaylandWlShellSurface *surface) { return surface->d_func(); }
 
     void ping(uint32_t serial);
 
     void setWindowType(Qt::WindowType windowType);
 
 private:
-    QWaylandWlShell *m_shell = nullptr;
-    QPointer<QWaylandSurface> m_surface;
+    WaylandWlShell *m_shell = nullptr;
+    QPointer<WaylandSurface> m_surface;
 
     QSet<uint32_t> m_pings;
 
@@ -135,9 +137,11 @@ private:
     void shell_surface_set_class(Resource *resource,
                                  const QString &class_) override;
 
-    static QWaylandSurfaceRole s_role;
+    static WaylandSurfaceRole s_role;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDWLSHELL_P_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDWLSHELL_P_H

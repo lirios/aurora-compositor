@@ -28,17 +28,17 @@
 **
 ****************************************************************************/
 
-#include "qwaylandoutput.h"
-#include "qwaylandoutput_p.h"
+#include "aurorawaylandoutput.h"
+#include "aurorawaylandoutput_p.h"
 
-#include <QtWaylandCompositor/QWaylandCompositor>
-#include <QtWaylandCompositor/QWaylandView>
+#include <LiriAuroraCompositor/WaylandCompositor>
+#include <LiriAuroraCompositor/WaylandView>
 
-#include <QtWaylandCompositor/private/qwaylandsurface_p.h>
-#include <QtWaylandCompositor/private/qwaylandcompositor_p.h>
-#include <QtWaylandCompositor/private/qwaylandview_p.h>
-#include <QtWaylandCompositor/private/qwaylandutils_p.h>
-#include <QtWaylandCompositor/private/qwaylandxdgoutputv1_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandsurface_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandcompositor_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandview_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandutils_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandxdgoutputv1_p.h>
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QtMath>
@@ -47,67 +47,69 @@
 #include <QtGui/QScreen>
 #include <private/qobject_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-static QtWaylandServer::wl_output::subpixel toWlSubpixel(const QWaylandOutput::Subpixel &value)
+namespace Compositor {
+
+static PrivateServer::wl_output::subpixel toWlSubpixel(const WaylandOutput::Subpixel &value)
 {
     switch (value) {
-    case QWaylandOutput::SubpixelUnknown:
-        return QtWaylandServer::wl_output::subpixel_unknown;
-    case QWaylandOutput::SubpixelNone:
-        return QtWaylandServer::wl_output::subpixel_none;
-    case QWaylandOutput::SubpixelHorizontalRgb:
-        return QtWaylandServer::wl_output::subpixel_horizontal_rgb;
-    case QWaylandOutput::SubpixelHorizontalBgr:
-        return QtWaylandServer::wl_output::subpixel_horizontal_bgr;
-    case QWaylandOutput::SubpixelVerticalRgb:
-        return QtWaylandServer::wl_output::subpixel_vertical_rgb;
-    case QWaylandOutput::SubpixelVerticalBgr:
-        return QtWaylandServer::wl_output::subpixel_vertical_bgr;
+    case WaylandOutput::SubpixelUnknown:
+        return PrivateServer::wl_output::subpixel_unknown;
+    case WaylandOutput::SubpixelNone:
+        return PrivateServer::wl_output::subpixel_none;
+    case WaylandOutput::SubpixelHorizontalRgb:
+        return PrivateServer::wl_output::subpixel_horizontal_rgb;
+    case WaylandOutput::SubpixelHorizontalBgr:
+        return PrivateServer::wl_output::subpixel_horizontal_bgr;
+    case WaylandOutput::SubpixelVerticalRgb:
+        return PrivateServer::wl_output::subpixel_vertical_rgb;
+    case WaylandOutput::SubpixelVerticalBgr:
+        return PrivateServer::wl_output::subpixel_vertical_bgr;
     default:
         break;
     }
 
-    return QtWaylandServer::wl_output::subpixel_unknown;
+    return PrivateServer::wl_output::subpixel_unknown;
 }
 
-static QtWaylandServer::wl_output::transform toWlTransform(const QWaylandOutput::Transform &value)
+static PrivateServer::wl_output::transform toWlTransform(const WaylandOutput::Transform &value)
 {
     switch (value) {
-    case QWaylandOutput::Transform90:
-        return QtWaylandServer::wl_output::transform_90;
-    case QWaylandOutput::Transform180:
-        return QtWaylandServer::wl_output::transform_180;
-    case QWaylandOutput::Transform270:
-        return QtWaylandServer::wl_output::transform_270;
-    case QWaylandOutput::TransformFlipped:
-        return QtWaylandServer::wl_output::transform_flipped;
-    case QWaylandOutput::TransformFlipped90:
-        return QtWaylandServer::wl_output::transform_flipped_90;
-    case QWaylandOutput::TransformFlipped180:
-        return QtWaylandServer::wl_output::transform_flipped_180;
-    case QWaylandOutput::TransformFlipped270:
-        return QtWaylandServer::wl_output::transform_flipped_270;
+    case WaylandOutput::Transform90:
+        return PrivateServer::wl_output::transform_90;
+    case WaylandOutput::Transform180:
+        return PrivateServer::wl_output::transform_180;
+    case WaylandOutput::Transform270:
+        return PrivateServer::wl_output::transform_270;
+    case WaylandOutput::TransformFlipped:
+        return PrivateServer::wl_output::transform_flipped;
+    case WaylandOutput::TransformFlipped90:
+        return PrivateServer::wl_output::transform_flipped_90;
+    case WaylandOutput::TransformFlipped180:
+        return PrivateServer::wl_output::transform_flipped_180;
+    case WaylandOutput::TransformFlipped270:
+        return PrivateServer::wl_output::transform_flipped_270;
     default:
         break;
     }
 
-    return QtWaylandServer::wl_output::transform_normal;
+    return PrivateServer::wl_output::transform_normal;
 }
 
-QWaylandOutputPrivate::QWaylandOutputPrivate()
+WaylandOutputPrivate::WaylandOutputPrivate()
 {
 }
 
-QWaylandOutputPrivate::~QWaylandOutputPrivate()
+WaylandOutputPrivate::~WaylandOutputPrivate()
 {
 }
 
-void QWaylandOutputPrivate::output_bind_resource(Resource *resource)
+void WaylandOutputPrivate::output_bind_resource(Resource *resource)
 {
     sendGeometry(resource);
 
-    for (const QWaylandOutputMode &mode : modes)
+    for (const WaylandOutputMode &mode : modes)
         sendMode(resource, mode);
 
     if (resource->version() >= 2) {
@@ -116,7 +118,7 @@ void QWaylandOutputPrivate::output_bind_resource(Resource *resource)
     }
 }
 
-void QWaylandOutputPrivate::_q_handleMaybeWindowPixelSizeChanged()
+void WaylandOutputPrivate::_q_handleMaybeWindowPixelSizeChanged()
 {
     if (!window)
         return;
@@ -129,15 +131,15 @@ void QWaylandOutputPrivate::_q_handleMaybeWindowPixelSizeChanged()
     }
 }
 
-void QWaylandOutputPrivate::_q_handleWindowDestroyed()
+void WaylandOutputPrivate::_q_handleWindowDestroyed()
 {
-    Q_Q(QWaylandOutput);
+    Q_Q(WaylandOutput);
     window = nullptr;
     emit q->windowChanged();
     emit q->windowDestroyed();
 }
 
-void QWaylandOutputPrivate::sendGeometry(const Resource *resource)
+void WaylandOutputPrivate::sendGeometry(const Resource *resource)
 {
     send_geometry(resource->handle,
                   position.x(), position.y(),
@@ -146,7 +148,7 @@ void QWaylandOutputPrivate::sendGeometry(const Resource *resource)
                   toWlTransform(transform));
 }
 
-void QWaylandOutputPrivate::sendGeometryInfo()
+void WaylandOutputPrivate::sendGeometryInfo()
 {
     for (const Resource *resource : resourceMap().values()) {
         sendGeometry(resource);
@@ -155,42 +157,42 @@ void QWaylandOutputPrivate::sendGeometryInfo()
     }
 
     if (xdgOutput)
-        QWaylandXdgOutputV1Private::get(xdgOutput)->sendDone();
+        WaylandXdgOutputV1Private::get(xdgOutput)->sendDone();
 }
 
-void QWaylandOutputPrivate::sendMode(const Resource *resource, const QWaylandOutputMode &mode)
+void WaylandOutputPrivate::sendMode(const Resource *resource, const WaylandOutputMode &mode)
 {
     quint32 flags = 0;
     if (currentMode == modes.indexOf(mode))
-        flags |= QtWaylandServer::wl_output::mode_current;
+        flags |= PrivateServer::wl_output::mode_current;
     if (preferredMode == modes.indexOf(mode))
-        flags |= QtWaylandServer::wl_output::mode_preferred;
+        flags |= PrivateServer::wl_output::mode_preferred;
 
     send_mode(resource->handle, flags,
               mode.size().width(), mode.size().height(),
               mode.refreshRate());
 }
 
-void QWaylandOutputPrivate::sendModesInfo()
+void WaylandOutputPrivate::sendModesInfo()
 {
     for (const Resource *resource : resourceMap().values()) {
-        for (const QWaylandOutputMode &mode : modes)
+        for (const WaylandOutputMode &mode : modes)
             sendMode(resource, mode);
         if (resource->version() >= 2)
             send_done(resource->handle);
     }
 
     if (xdgOutput)
-        QWaylandXdgOutputV1Private::get(xdgOutput)->sendDone();
+        WaylandXdgOutputV1Private::get(xdgOutput)->sendDone();
 }
 
-void QWaylandOutputPrivate::handleWindowPixelSizeChanged()
+void WaylandOutputPrivate::handleWindowPixelSizeChanged()
 {
-    Q_Q(QWaylandOutput);
+    Q_Q(WaylandOutput);
     Q_ASSERT(window);
     if (sizeFollowsWindow && currentMode <= modes.size() - 1) {
         if (currentMode >= 0) {
-            QWaylandOutputMode mode = modes.at(currentMode);
+            WaylandOutputMode mode = modes.at(currentMode);
             mode.setSize(windowPixelSize);
             modes.replace(currentMode, mode);
             emit q->geometryChanged();
@@ -201,7 +203,7 @@ void QWaylandOutputPrivate::handleWindowPixelSizeChanged()
             // We didn't add a mode during the initialization because the window
             // size was invalid, let's add it now
             int mHzRefreshRate = qFloor(window->screen()->refreshRate() * 1000);
-            QWaylandOutputMode mode(windowPixelSize, mHzRefreshRate);
+            WaylandOutputMode mode(windowPixelSize, mHzRefreshRate);
             if (mode.isValid()) {
                 modes.clear();
                 q->addMode(mode, true);
@@ -211,7 +213,7 @@ void QWaylandOutputPrivate::handleWindowPixelSizeChanged()
     }
 }
 
-void QWaylandOutputPrivate::addView(QWaylandView *view, QWaylandSurface *surface)
+void WaylandOutputPrivate::addView(WaylandView *view, WaylandSurface *surface)
 {
     for (int i = 0; i < surfaceViews.size(); i++) {
         if (surface == surfaceViews.at(i).surface) {
@@ -222,12 +224,12 @@ void QWaylandOutputPrivate::addView(QWaylandView *view, QWaylandSurface *surface
         }
     }
 
-    surfaceViews.append(QWaylandSurfaceViewMapper(surface,view));
+    surfaceViews.append(WaylandSurfaceViewMapper(surface,view));
 }
 
-void QWaylandOutputPrivate::removeView(QWaylandView *view, QWaylandSurface *surface)
+void WaylandOutputPrivate::removeView(WaylandView *view, WaylandSurface *surface)
 {
-    Q_Q(QWaylandOutput);
+    Q_Q(WaylandOutput);
     for (int i = 0; i < surfaceViews.size(); i++) {
         if (surface == surfaceViews.at(i).surface) {
             bool removed = surfaceViews[i].views.removeOne(view);
@@ -242,15 +244,15 @@ void QWaylandOutputPrivate::removeView(QWaylandView *view, QWaylandSurface *surf
     qWarning("%s Could not find view %p for surface %p to remove. Possible invalid state", Q_FUNC_INFO, view, surface);
 }
 
-QWaylandOutput::QWaylandOutput()
-    : QWaylandObject(*new QWaylandOutputPrivate())
+WaylandOutput::WaylandOutput()
+    : WaylandObject(*new WaylandOutputPrivate())
 {
 }
 
 /*!
    \qmltype WaylandOutput
-   \instantiates QWaylandOutput
-   \inqmlmodule QtWayland.Compositor
+   \instantiates WaylandOutput
+   \inqmlmodule Aurora.Compositor
    \since 5.8
    \brief Provides access to a displayable area managed by the compositor.
 
@@ -265,12 +267,12 @@ QWaylandOutput::QWaylandOutput()
 */
 
 /*!
-   \class QWaylandOutput
+   \class WaylandOutput
    \inmodule QtWaylandCompositor
    \since 5.8
-   \brief The QWaylandOutput class represents a displayable area managed by the compositor.
+   \brief The WaylandOutput class represents a displayable area managed by the compositor.
 
-   The QWaylandOutput manages a rectangular area within bounds of the compositor's
+   The WaylandOutput manages a rectangular area within bounds of the compositor's
    geometry, to use it for displaying client content. This could, for instance, be
    a screen managed by the WaylandCompositor.
 
@@ -278,53 +280,53 @@ QWaylandOutput::QWaylandOutput()
 */
 
 /*!
- * Constructs a QWaylandOutput in \a compositor and with the specified \a window. The
- * \l{QWaylandCompositor::create()}{create()} function must be called on the
- * \a compositor before constructing a QWaylandOutput for it.
+ * Constructs a WaylandOutput in \a compositor and with the specified \a window. The
+ * \l{WaylandCompositor::create()}{create()} function must be called on the
+ * \a compositor before constructing a WaylandOutput for it.
  *
- * The QWaylandOutput object is initialized later, in reaction to an event.
+ * The WaylandOutput object is initialized later, in reaction to an event.
  * At this point it is added as an output for the \a compositor. If it is the
- * first QWaylandOutput object created for this \a compositor, it becomes the
- * \l{QWaylandCompositor::defaultOutput()}{default output}.
+ * first WaylandOutput object created for this \a compositor, it becomes the
+ * \l{WaylandCompositor::defaultOutput()}{default output}.
  */
-QWaylandOutput::QWaylandOutput(QWaylandCompositor *compositor, QWindow *window)
-    : QWaylandObject(*new QWaylandOutputPrivate())
+WaylandOutput::WaylandOutput(WaylandCompositor *compositor, QWindow *window)
+    : WaylandObject(*new WaylandOutputPrivate())
 {
-    Q_D(QWaylandOutput);
+    Q_D(WaylandOutput);
     d->compositor = compositor;
     d->window = window;
-    QWaylandCompositorPrivate::get(compositor)->addPolishObject(this);
+    WaylandCompositorPrivate::get(compositor)->addPolishObject(this);
 }
 
 /*!
- * Destroys the QWaylandOutput.
+ * Destroys the WaylandOutput.
  */
-QWaylandOutput::~QWaylandOutput()
+WaylandOutput::~WaylandOutput()
 {
-    Q_D(QWaylandOutput);
+    Q_D(WaylandOutput);
     if (d->compositor)
-        QWaylandCompositorPrivate::get(d->compositor)->removeOutput(this);
+        WaylandCompositorPrivate::get(d->compositor)->removeOutput(this);
 }
 
 /*!
  * \internal
  */
-void QWaylandOutput::initialize()
+void WaylandOutput::initialize()
 {
-    Q_D(QWaylandOutput);
+    Q_D(WaylandOutput);
 
     Q_ASSERT(!d->initialized);
     Q_ASSERT(d->compositor);
     Q_ASSERT(d->compositor->isCreated());
 
     if (!d->window && d->sizeFollowsWindow) {
-        qWarning("Setting QWaylandOutput::sizeFollowsWindow without a window has no effect");
+        qWarning("Setting WaylandOutput::sizeFollowsWindow without a window has no effect");
     }
 
     // Replace modes with one that follows the window size and refresh rate,
     // but only if window size is valid
     if (d->window && d->sizeFollowsWindow) {
-        QWaylandOutputMode mode(d->window->size() * d->window->devicePixelRatio(),
+        WaylandOutputMode mode(d->window->size() * d->window->devicePixelRatio(),
                                 qFloor(d->window->screen()->refreshRate() * 1000));
         if (mode.isValid()) {
             d->modes.clear();
@@ -333,13 +335,13 @@ void QWaylandOutput::initialize()
         }
     }
 
-    QWaylandCompositorPrivate::get(d->compositor)->addOutput(this);
+    WaylandCompositorPrivate::get(d->compositor)->addOutput(this);
 
     if (d->window) {
-        QObjectPrivate::connect(d->window, &QWindow::widthChanged, d, &QWaylandOutputPrivate::_q_handleMaybeWindowPixelSizeChanged);
-        QObjectPrivate::connect(d->window, &QWindow::heightChanged, d, &QWaylandOutputPrivate::_q_handleMaybeWindowPixelSizeChanged);
-        QObjectPrivate::connect(d->window, &QWindow::screenChanged, d, &QWaylandOutputPrivate::_q_handleMaybeWindowPixelSizeChanged);
-        QObjectPrivate::connect(d->window, &QObject::destroyed, d, &QWaylandOutputPrivate::_q_handleWindowDestroyed);
+        QObjectPrivate::connect(d->window, &QWindow::widthChanged, d, &WaylandOutputPrivate::_q_handleMaybeWindowPixelSizeChanged);
+        QObjectPrivate::connect(d->window, &QWindow::heightChanged, d, &WaylandOutputPrivate::_q_handleMaybeWindowPixelSizeChanged);
+        QObjectPrivate::connect(d->window, &QWindow::screenChanged, d, &WaylandOutputPrivate::_q_handleMaybeWindowPixelSizeChanged);
+        QObjectPrivate::connect(d->window, &QObject::destroyed, d, &WaylandOutputPrivate::_q_handleWindowDestroyed);
     }
 
     d->init(d->compositor->display(), 2);
@@ -348,11 +350,11 @@ void QWaylandOutput::initialize()
 }
 
 /*!
- * Returns the QWaylandOutput corresponding to \a resource.
+ * Returns the WaylandOutput corresponding to \a resource.
  */
-QWaylandOutput *QWaylandOutput::fromResource(wl_resource *resource)
+WaylandOutput *WaylandOutput::fromResource(wl_resource *resource)
 {
-    if (auto p = QtWayland::fromResource<QWaylandOutputPrivate *>(resource))
+    if (auto p = QtWayland::fromResource<WaylandOutputPrivate *>(resource))
         return p->q_func();
     return nullptr;
 }
@@ -360,10 +362,10 @@ QWaylandOutput *QWaylandOutput::fromResource(wl_resource *resource)
 /*!
  * \internal
  */
-struct ::wl_resource *QWaylandOutput::resourceForClient(QWaylandClient *client) const
+struct ::wl_resource *WaylandOutput::resourceForClient(WaylandClient *client) const
 {
-    Q_D(const QWaylandOutput);
-    QWaylandOutputPrivate::Resource *r = d->resourceMap().value(client->client());
+    Q_D(const WaylandOutput);
+    WaylandOutputPrivate::Resource *r = d->resourceMap().value(client->client());
     if (r)
         return r->handle;
 
@@ -371,13 +373,13 @@ struct ::wl_resource *QWaylandOutput::resourceForClient(QWaylandClient *client) 
 }
 
 /*!
- * Schedules a QEvent::UpdateRequest to be delivered to the QWaylandOutput's \l{window()}{window}.
+ * Schedules a QEvent::UpdateRequest to be delivered to the WaylandOutput's \l{window()}{window}.
  *
  * \sa QWindow::requestUpdate()
  */
-void QWaylandOutput::update()
+void WaylandOutput::update()
 {
-    Q_D(QWaylandOutput);
+    Q_D(WaylandOutput);
     if (!d->window)
         return;
     d->window->requestUpdate();
@@ -393,9 +395,9 @@ void QWaylandOutput::update()
  */
 
 /*!
- * Returns the compositor for this QWaylandOutput.
+ * Returns the compositor for this WaylandOutput.
  */
-QWaylandCompositor *QWaylandOutput::compositor() const
+WaylandCompositor *WaylandOutput::compositor() const
 {
     return d_func()->compositor;
 }
@@ -403,24 +405,24 @@ QWaylandCompositor *QWaylandOutput::compositor() const
 /*!
  * \internal
  */
-void QWaylandOutput::setCompositor(QWaylandCompositor *compositor)
+void WaylandOutput::setCompositor(WaylandCompositor *compositor)
 {
-    Q_D(QWaylandOutput);
+    Q_D(WaylandOutput);
 
     if (d->compositor == compositor)
         return;
 
     if (d->initialized) {
-        qWarning("Setting QWaylandCompositor %p on QWaylandOutput %p is not supported after QWaylandOutput has been initialized\n", compositor, this);
+        qWarning("Setting WaylandCompositor %p on WaylandOutput %p is not supported after WaylandOutput has been initialized\n", compositor, this);
         return;
     }
     if (d->compositor && d->compositor != compositor) {
-        qWarning("Possible initialization error. Moving QWaylandOutput %p between compositor instances.\n", this);
+        qWarning("Possible initialization error. Moving WaylandOutput %p between compositor instances.\n", this);
     }
 
     d->compositor = compositor;
 
-    QWaylandCompositorPrivate::get(compositor)->addPolishObject(this);
+    WaylandCompositorPrivate::get(compositor)->addPolishObject(this);
 }
 
 /*!
@@ -430,18 +432,18 @@ void QWaylandOutput::setCompositor(QWaylandCompositor *compositor)
  */
 
 /*!
- * \property QWaylandOutput::manufacturer
+ * \property WaylandOutput::manufacturer
  *
- * This property holds a textual description of the manufacturer of this QWaylandOutput.
+ * This property holds a textual description of the manufacturer of this WaylandOutput.
  */
-QString QWaylandOutput::manufacturer() const
+QString WaylandOutput::manufacturer() const
 {
     return d_func()->manufacturer;
 }
 
-void QWaylandOutput::setManufacturer(const QString &manufacturer)
+void WaylandOutput::setManufacturer(const QString &manufacturer)
 {
-    Q_D(QWaylandOutput);
+    Q_D(WaylandOutput);
 
     if (d->manufacturer == manufacturer)
         return;
@@ -458,18 +460,18 @@ void QWaylandOutput::setManufacturer(const QString &manufacturer)
  */
 
 /*!
- * \property QWaylandOutput::model
+ * \property WaylandOutput::model
  *
- * This property holds a textual description of the model of this QWaylandOutput.
+ * This property holds a textual description of the model of this WaylandOutput.
  */
-QString QWaylandOutput::model() const
+QString WaylandOutput::model() const
 {
     return d_func()->model;
 }
 
-void QWaylandOutput::setModel(const QString &model)
+void WaylandOutput::setModel(const QString &model)
 {
-    Q_D(QWaylandOutput);
+    Q_D(WaylandOutput);
 
     if (d->model == model)
         return;
@@ -486,18 +488,18 @@ void QWaylandOutput::setModel(const QString &model)
  */
 
 /*!
- * \property QWaylandOutput::position
+ * \property WaylandOutput::position
  *
- * This property holds the position of this QWaylandOutput in the compositor's coordinate system.
+ * This property holds the position of this WaylandOutput in the compositor's coordinate system.
  */
-QPoint QWaylandOutput::position() const
+QPoint WaylandOutput::position() const
 {
     return d_func()->position;
 }
 
-void QWaylandOutput::setPosition(const QPoint &pt)
+void WaylandOutput::setPosition(const QPoint &pt)
 {
-    Q_D(QWaylandOutput);
+    Q_D(WaylandOutput);
     if (d->position == pt)
         return;
 
@@ -512,9 +514,9 @@ void QWaylandOutput::setPosition(const QPoint &pt)
 /*!
  * Returns the list of modes.
  */
-QList<QWaylandOutputMode> QWaylandOutput::modes() const
+QList<WaylandOutputMode> WaylandOutput::modes() const
 {
-    Q_D(const QWaylandOutput);
+    Q_D(const WaylandOutput);
     return d->modes.toList();
 }
 
@@ -523,9 +525,9 @@ QList<QWaylandOutputMode> QWaylandOutput::modes() const
  * if \a preferred is \c true.
  * Please note there can only be one preferred mode.
  */
-void QWaylandOutput::addMode(const QWaylandOutputMode &mode, bool preferred)
+void WaylandOutput::addMode(const WaylandOutputMode &mode, bool preferred)
 {
-    Q_D(QWaylandOutput);
+    Q_D(WaylandOutput);
 
     if (!mode.isValid()) {
         qWarning("Cannot add an invalid mode");
@@ -545,32 +547,32 @@ void QWaylandOutput::addMode(const QWaylandOutputMode &mode, bool preferred)
  * Returns the output's size in pixels and refresh rate in mHz.
  * If the current mode is not set it will return an invalid mode.
  *
- * \sa QWaylandOutput::modes
- * \sa QWaylandOutputMode
+ * \sa WaylandOutput::modes
+ * \sa WaylandOutputMode
  */
-QWaylandOutputMode QWaylandOutput::currentMode() const
+WaylandOutputMode WaylandOutput::currentMode() const
 {
-    Q_D(const QWaylandOutput);
+    Q_D(const WaylandOutput);
 
     if (d->currentMode >= 0 && d->currentMode <= d->modes.size() - 1)
         return d->modes.at(d->currentMode);
-    return QWaylandOutputMode();
+    return WaylandOutputMode();
 }
 
 /*!
  * Sets the current mode.
  * The mode \a mode must have been previously added.
  *
- * \sa QWaylandOutput::modes
- * \sa QWaylandOutputMode
+ * \sa WaylandOutput::modes
+ * \sa WaylandOutputMode
  */
-void QWaylandOutput::setCurrentMode(const QWaylandOutputMode &mode)
+void WaylandOutput::setCurrentMode(const WaylandOutputMode &mode)
 {
-    Q_D(QWaylandOutput);
+    Q_D(WaylandOutput);
 
     int index = d->modes.indexOf(mode);
     if (index < 0) {
-        qWarning("Cannot set an unknown QWaylandOutput mode as current");
+        qWarning("Cannot set an unknown WaylandOutput mode as current");
         return;
     }
 
@@ -591,15 +593,15 @@ void QWaylandOutput::setCurrentMode(const QWaylandOutputMode &mode)
  */
 
 /*!
- * \property QWaylandOutput::geometry
+ * \property WaylandOutput::geometry
  *
- * This property holds the geometry of the QWaylandOutput.
+ * This property holds the geometry of the WaylandOutput.
  *
- * \sa QWaylandOutput::currentMode
+ * \sa WaylandOutput::currentMode
  */
-QRect QWaylandOutput::geometry() const
+QRect WaylandOutput::geometry() const
 {
-    Q_D(const QWaylandOutput);
+    Q_D(const WaylandOutput);
     return QRect(d->position, currentMode().size());
 }
 
@@ -610,21 +612,21 @@ QRect QWaylandOutput::geometry() const
  * The available geometry is in output coordinates space, starts from 0,0 and it's as big
  * as the output by default.
  *
- * \sa QWaylandOutput::geometry
+ * \sa WaylandOutput::geometry
  */
 
 /*!
- * \property QWaylandOutput::availableGeometry
+ * \property WaylandOutput::availableGeometry
  *
- * This property holds the geometry of the QWaylandOutput available for displaying content.
+ * This property holds the geometry of the WaylandOutput available for displaying content.
  * The available geometry is in output coordinates space, starts from 0,0 and it's as big
  * as the output by default.
  *
- * \sa QWaylandOutput::currentMode, QWaylandOutput::geometry
+ * \sa WaylandOutput::currentMode, WaylandOutput::geometry
  */
-QRect QWaylandOutput::availableGeometry() const
+QRect WaylandOutput::availableGeometry() const
 {
-    Q_D(const QWaylandOutput);
+    Q_D(const WaylandOutput);
 
     if (!d->availableGeometry.isValid())
         return QRect(QPoint(0, 0), currentMode().size());
@@ -632,9 +634,9 @@ QRect QWaylandOutput::availableGeometry() const
     return d->availableGeometry;
 }
 
-void QWaylandOutput::setAvailableGeometry(const QRect &availableGeometry)
+void WaylandOutput::setAvailableGeometry(const QRect &availableGeometry)
 {
-    Q_D(QWaylandOutput);
+    Q_D(WaylandOutput);
     if (d->availableGeometry == availableGeometry)
         return;
 
@@ -651,24 +653,24 @@ void QWaylandOutput::setAvailableGeometry(const QRect &availableGeometry)
  *
  * This property holds the physical size of the WaylandOutput in millimeters.
  *
- * \sa QWaylandOutput::geometry
+ * \sa WaylandOutput::geometry
  */
 
 /*!
- * \property QWaylandOutput::physicalSize
+ * \property WaylandOutput::physicalSize
  *
- * This property holds the physical size of the QWaylandOutput in millimeters.
+ * This property holds the physical size of the WaylandOutput in millimeters.
  *
- * \sa QWaylandOutput::geometry, QWaylandOutput::currentMode
+ * \sa WaylandOutput::geometry, WaylandOutput::currentMode
  */
-QSize QWaylandOutput::physicalSize() const
+QSize WaylandOutput::physicalSize() const
 {
     return d_func()->physicalSize;
 }
 
-void QWaylandOutput::setPhysicalSize(const QSize &size)
+void WaylandOutput::setPhysicalSize(const QSize &size)
 {
-    Q_D(QWaylandOutput);
+    Q_D(WaylandOutput);
     if (d->physicalSize == size)
         return;
 
@@ -680,9 +682,9 @@ void QWaylandOutput::setPhysicalSize(const QSize &size)
 }
 
 /*!
- * \enum QWaylandOutput::Subpixel
+ * \enum WaylandOutput::Subpixel
  *
- * This enum type is used to specify the subpixel arrangement of a QWaylandOutput.
+ * This enum type is used to specify the subpixel arrangement of a WaylandOutput.
  *
  * \value SubpixelUnknown The subpixel arrangement is not set.
  * \value SubpixelNone There are no subpixels.
@@ -691,7 +693,7 @@ void QWaylandOutput::setPhysicalSize(const QSize &size)
  * \value SubpixelVerticalRgb The subpixels are arranged vertically in red, green, blue order.
  * \value SubpixelVerticalBgr The subpixels are arranged vertically in blue, green, red order.
  *
- * \sa QWaylandOutput::subpixel
+ * \sa WaylandOutput::subpixel
  */
 
 /*!
@@ -712,19 +714,19 @@ void QWaylandOutput::setPhysicalSize(const QSize &size)
  */
 
 /*!
- * \property QWaylandOutput::subpixel
+ * \property WaylandOutput::subpixel
  *
- * This property holds the subpixel arrangement of this QWaylandOutput. The default is
- * QWaylandOutput::SubpixelUnknown.
+ * This property holds the subpixel arrangement of this WaylandOutput. The default is
+ * WaylandOutput::SubpixelUnknown.
  */
-QWaylandOutput::Subpixel QWaylandOutput::subpixel() const
+WaylandOutput::Subpixel WaylandOutput::subpixel() const
 {
     return d_func()->subpixel;
 }
 
-void QWaylandOutput::setSubpixel(const Subpixel &subpixel)
+void WaylandOutput::setSubpixel(const Subpixel &subpixel)
 {
-    Q_D(QWaylandOutput);
+    Q_D(WaylandOutput);
     if (d->subpixel == subpixel)
         return;
 
@@ -735,9 +737,9 @@ void QWaylandOutput::setSubpixel(const Subpixel &subpixel)
     Q_EMIT subpixelChanged();
 }
 
-/*! \enum QWaylandOutput::Transform
+/*! \enum WaylandOutput::Transform
  *
- * This enum type is used to specify the orientation of a QWaylandOutput.
+ * This enum type is used to specify the orientation of a WaylandOutput.
  *
  * \value TransformNormal The orientation is normal.
  * \value Transform90 The orientation is rotated 90 degrees.
@@ -748,14 +750,14 @@ void QWaylandOutput::setSubpixel(const Subpixel &subpixel)
  * \value TransformFlipped180 The orientation is mirrored, and rotated 180 degrees.
  * \value TransformFlipped270 The orientation is mirrored, and rotated 270 degrees.
  *
- * \sa QWaylandOutput::transform
+ * \sa WaylandOutput::transform
 */
 
 /*!
  * \qmlproperty enum QtWaylandCompositor::WaylandOutput::transform
  *
- * This property holds the transformation that the QWaylandCompositor applies to a surface
- * to compensate for the orientation of the QWaylandOutput.
+ * This property holds the transformation that the WaylandCompositor applies to a surface
+ * to compensate for the orientation of the WaylandOutput.
  *
  * \list
  * \li WaylandOutput.TransformNormal The orientation is normal.
@@ -772,21 +774,21 @@ void QWaylandOutput::setSubpixel(const Subpixel &subpixel)
  */
 
 /*!
- * \property QWaylandOutput::transform
+ * \property WaylandOutput::transform
  *
- * This property holds the transformation that the QWaylandCompositor applies to a surface
- * to compensate for the orientation of the QWaylandOutput.
+ * This property holds the transformation that the WaylandCompositor applies to a surface
+ * to compensate for the orientation of the WaylandOutput.
  *
- * The default is QWaylandOutput::TransformNormal.
+ * The default is WaylandOutput::TransformNormal.
  */
-QWaylandOutput::Transform QWaylandOutput::transform() const
+WaylandOutput::Transform WaylandOutput::transform() const
 {
     return d_func()->transform;
 }
 
-void QWaylandOutput::setTransform(const Transform &transform)
+void WaylandOutput::setTransform(const Transform &transform)
 {
-    Q_D(QWaylandOutput);
+    Q_D(WaylandOutput);
     if (d->transform == transform)
         return;
 
@@ -810,9 +812,9 @@ void QWaylandOutput::setTransform(const Transform &transform)
  */
 
 /*!
- * \property QWaylandOutput::scaleFactor
+ * \property WaylandOutput::scaleFactor
  *
- * This property holds the factor by which the QWaylandCompositor scales surface buffers
+ * This property holds the factor by which the WaylandCompositor scales surface buffers
  * before they are displayed. This is used on high density output devices where unscaled content
  * would be too small to be practical. The client can in turn set the scale factor of its
  * buffer to match the output if it prefers to provide high resolution content that is
@@ -820,21 +822,21 @@ void QWaylandOutput::setTransform(const Transform &transform)
  *
  * The default is 1 (no scaling).
  */
-int QWaylandOutput::scaleFactor() const
+int WaylandOutput::scaleFactor() const
 {
     return d_func()->scaleFactor;
 }
 
-void QWaylandOutput::setScaleFactor(int scale)
+void WaylandOutput::setScaleFactor(int scale)
 {
-    Q_D(QWaylandOutput);
+    Q_D(WaylandOutput);
     if (d->scaleFactor == scale)
         return;
 
     d->scaleFactor = scale;
 
     const auto resMap = d->resourceMap();
-    for (QWaylandOutputPrivate::Resource *resource : resMap) {
+    for (WaylandOutputPrivate::Resource *resource : resMap) {
         if (resource->version() >= 2) {
             d->send_scale(resource->handle, scale);
             d->send_done(resource->handle);
@@ -844,7 +846,7 @@ void QWaylandOutput::setScaleFactor(int scale)
     Q_EMIT scaleFactorChanged();
 
     if (d->xdgOutput)
-        QWaylandXdgOutputV1Private::get(d->xdgOutput)->sendDone();
+        WaylandXdgOutputV1Private::get(d->xdgOutput)->sendDone();
 }
 
 /*!
@@ -860,9 +862,9 @@ void QWaylandOutput::setScaleFactor(int scale)
  */
 
 /*!
- * \property QWaylandOutput::sizeFollowsWindow
+ * \property WaylandOutput::sizeFollowsWindow
  *
- * This property controls whether the size of the QWaylandOutput matches the
+ * This property controls whether the size of the WaylandOutput matches the
  * size of its window.
  *
  * If this property is true, all modes previously added are replaced by a
@@ -870,14 +872,14 @@ void QWaylandOutput::setScaleFactor(int scale)
  *
  * The default is false.
  */
-bool QWaylandOutput::sizeFollowsWindow() const
+bool WaylandOutput::sizeFollowsWindow() const
 {
     return d_func()->sizeFollowsWindow;
 }
 
-void QWaylandOutput::setSizeFollowsWindow(bool follow)
+void WaylandOutput::setSizeFollowsWindow(bool follow)
 {
-    Q_D(QWaylandOutput);
+    Q_D(WaylandOutput);
 
     if (follow != d->sizeFollowsWindow) {
         d->sizeFollowsWindow = follow;
@@ -895,22 +897,22 @@ void QWaylandOutput::setSizeFollowsWindow(bool follow)
  */
 
 /*!
- * \property QWaylandOutput::window
+ * \property WaylandOutput::window
  *
- * This property holds the QWindow for this QWaylandOutput.
+ * This property holds the QWindow for this WaylandOutput.
  */
-QWindow *QWaylandOutput::window() const
+QWindow *WaylandOutput::window() const
 {
     return d_func()->window;
 }
 
-void QWaylandOutput::setWindow(QWindow *window)
+void WaylandOutput::setWindow(QWindow *window)
 {
-    Q_D(QWaylandOutput);
+    Q_D(WaylandOutput);
     if (d->window == window)
         return;
     if (d->initialized) {
-        qWarning("Setting QWindow %p on QWaylandOutput %p is not supported after QWaylandOutput has been initialized\n", window, this);
+        qWarning("Setting QWindow %p on WaylandOutput %p is not supported after WaylandOutput has been initialized\n", window, this);
         return;
     }
     d->window = window;
@@ -918,13 +920,13 @@ void QWaylandOutput::setWindow(QWindow *window)
 }
 
 /*!
- * Informs QWaylandOutput that a frame has started.
+ * Informs WaylandOutput that a frame has started.
  */
-void QWaylandOutput::frameStarted()
+void WaylandOutput::frameStarted()
 {
-    Q_D(QWaylandOutput);
+    Q_D(WaylandOutput);
     for (int i = 0; i < d->surfaceViews.size(); i++) {
-        QWaylandSurfaceViewMapper &surfacemapper = d->surfaceViews[i];
+        WaylandSurfaceViewMapper &surfacemapper = d->surfaceViews[i];
         if (surfacemapper.maybePrimaryView())
             surfacemapper.surface->frameStarted();
     }
@@ -933,18 +935,18 @@ void QWaylandOutput::frameStarted()
 /*!
  * Sends pending frame callbacks.
  */
-void QWaylandOutput::sendFrameCallbacks()
+void WaylandOutput::sendFrameCallbacks()
 {
-    Q_D(QWaylandOutput);
+    Q_D(WaylandOutput);
     for (int i = 0; i < d->surfaceViews.size(); i++) {
-        const QWaylandSurfaceViewMapper &surfacemapper = d->surfaceViews.at(i);
+        const WaylandSurfaceViewMapper &surfacemapper = d->surfaceViews.at(i);
         if (surfacemapper.surface && surfacemapper.surface->hasContent()) {
             if (!surfacemapper.has_entered) {
                 surfaceEnter(surfacemapper.surface);
                 d->surfaceViews[i].has_entered = true;
             }
             if (auto primaryView = surfacemapper.maybePrimaryView()) {
-                if (!QWaylandViewPrivate::get(primaryView)->independentFrameCallback)
+                if (!WaylandViewPrivate::get(primaryView)->independentFrameCallback)
                     surfacemapper.surface->sendFrameCallbacks();
             }
         }
@@ -955,39 +957,41 @@ void QWaylandOutput::sendFrameCallbacks()
 /*!
  * \internal
  */
-void QWaylandOutput::surfaceEnter(QWaylandSurface *surface)
+void WaylandOutput::surfaceEnter(WaylandSurface *surface)
 {
     if (!surface)
         return;
 
     auto clientResource = resourceForClient(surface->client());
     if (clientResource)
-        QWaylandSurfacePrivate::get(surface)->send_enter(clientResource);
+        WaylandSurfacePrivate::get(surface)->send_enter(clientResource);
 }
 
 /*!
  * \internal
  */
-void QWaylandOutput::surfaceLeave(QWaylandSurface *surface)
+void WaylandOutput::surfaceLeave(WaylandSurface *surface)
 {
     if (!surface || !surface->client())
         return;
 
     auto *clientResource = resourceForClient(surface->client());
     if (clientResource)
-        QWaylandSurfacePrivate::get(surface)->send_leave(clientResource);
+        WaylandSurfacePrivate::get(surface)->send_leave(clientResource);
 }
 
 /*!
  * \internal
  */
-bool QWaylandOutput::event(QEvent *event)
+bool WaylandOutput::event(QEvent *event)
 {
     if (event->type() == QEvent::Polish)
         initialize();
     return QObject::event(event);
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#include "moc_qwaylandoutput.cpp"
+} // namespace Aurora
+
+#include "moc_aurorawaylandoutput.cpp"

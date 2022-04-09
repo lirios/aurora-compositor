@@ -26,11 +26,18 @@
 **
 ****************************************************************************/
 
-#include "qwaylandcompositor.h"
-#include "qwaylandsurface.h"
-#include "qwaylandwlshell.h"
+#ifndef TESTCOMPOSITOR_H
+#define TESTCOMPOSITOR_H
 
-class TestCompositor : public QWaylandCompositor
+#include <LiriAuroraCompositor/WaylandCompositor>
+#include <LiriAuroraCompositor/WaylandSurface>
+#include <LiriAuroraCompositor/WaylandWlShell>
+
+namespace Aurora {
+
+namespace Compositor {
+
+class TestCompositor : public WaylandCompositor
 {
     Q_OBJECT
 public:
@@ -39,16 +46,21 @@ public:
     void flushClients();
 
 public slots:
-    void onSurfaceCreated(QWaylandSurface *surface);
-    void onSurfaceAboutToBeDestroyed(QWaylandSurface *surface);
+    void onSurfaceCreated(Aurora::Compositor::WaylandSurface *surface);
+    void onSurfaceAboutToBeDestroyed(Aurora::Compositor::WaylandSurface *surface);
 
 protected:
-    QWaylandSeat *createSeat() override;
-    QWaylandKeyboard *createKeyboardDevice(QWaylandSeat *seat) override;
+    WaylandSeat *createSeat() override;
+    WaylandKeyboard *createKeyboardDevice(WaylandSeat *seat) override;
 
 public:
-    QList<QWaylandSurface *> surfaces;
-    QWaylandWlShell* shell;
+    QList<WaylandSurface *> surfaces;
+    WaylandWlShell* shell;
     bool m_createSeat;
 };
 
+} // namespace Compositor
+
+} // namespace Aurora
+
+#endif // TESTCOMPOSITOR_H

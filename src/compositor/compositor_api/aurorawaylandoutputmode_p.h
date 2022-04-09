@@ -27,34 +27,38 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDOUTPUTMODE_P_H
-#define QWAYLANDOUTPUTMODE_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDOUTPUTMODE_P_H
+#define AURORA_COMPOSITOR_WAYLANDOUTPUTMODE_P_H
 
-#include <QtWaylandCompositor/QWaylandOutput>
+#include <LiriAuroraCompositor/WaylandOutput>
 #include <QtCore/private/qglobal_p.h>
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandOutputModePrivate
+namespace Compositor {
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandOutputModePrivate
 {
 public:
-    QWaylandOutputModePrivate() {}
+    WaylandOutputModePrivate() {}
 
     QSize size;
     int refreshRate = 60000;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDOUTPUTMODE_P_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDOUTPUTMODE_P_H

@@ -37,25 +37,27 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDTEXTINPUTMANAGERV4_H
-#define QWAYLANDTEXTINPUTMANAGERV4_H
+#ifndef AURORA_COMPOSITOR_WAYLANDTEXTINPUTMANAGERV4_H
+#define AURORA_COMPOSITOR_WAYLANDTEXTINPUTMANAGERV4_H
 
-#include <QtWaylandCompositor/QWaylandCompositorExtension>
+#include <LiriAuroraCompositor/WaylandCompositorExtension>
 
 #include <QtCore/QSize>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandTextInputManagerV4Private;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandTextInputManagerV4 : public QWaylandCompositorExtensionTemplate<QWaylandTextInputManagerV4>
+class WaylandTextInputManagerV4Private;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandTextInputManagerV4 : public WaylandCompositorExtensionTemplate<WaylandTextInputManagerV4>
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandTextInputManagerV4)
+    Q_DECLARE_PRIVATE(WaylandTextInputManagerV4)
 public:
-    QWaylandTextInputManagerV4();
-    explicit QWaylandTextInputManagerV4(QWaylandCompositor *compositor);
-    ~QWaylandTextInputManagerV4() override;
+    WaylandTextInputManagerV4();
+    explicit WaylandTextInputManagerV4(WaylandCompositor *compositor);
+    ~WaylandTextInputManagerV4() override;
 
     void initialize() override;
 
@@ -63,6 +65,8 @@ public:
     static QByteArray interfaceName();
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDTEXTINPUTMANAGERV4_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDTEXTINPUTMANAGERV4_H

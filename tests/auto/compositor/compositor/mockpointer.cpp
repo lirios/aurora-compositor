@@ -28,6 +28,10 @@
 
 #include "mockpointer.h"
 
+namespace Aurora {
+
+namespace Compositor {
+
 static void pointerEnter(void *pointer, struct wl_pointer *wlPointer, uint serial, struct wl_surface *surface, wl_fixed_t x, wl_fixed_t y)
 {
     Q_UNUSED(wlPointer);
@@ -95,3 +99,7 @@ MockPointer::~MockPointer()
 {
     wl_pointer_destroy(m_pointer);
 }
+
+} // namespace Compositor
+
+} // namespace Aurora

@@ -34,14 +34,14 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 #include <QtCore/qglobal.h>
-#include <QtWaylandCompositor/qtwaylandcompositor-config.h>
+#include <LiriAuroraCompositor/qtwaylandcompositor-config.h>
 
 #if QT_CONFIG(wayland_compositor_quick)
 #include <QtQml/qqml.h>
@@ -51,7 +51,11 @@
 #define QML_ADDED_IN_VERSION(x, y)
 #endif
 
-QT_BEGIN_NAMESPACE
-QT_END_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif // QTWAYLANDQMLINCLUDE_H

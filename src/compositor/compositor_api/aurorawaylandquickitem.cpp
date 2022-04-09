@@ -27,24 +27,24 @@
 **
 ****************************************************************************/
 
-#include "qwaylandquickitem.h"
-#include "qwaylandquickitem_p.h"
-#include "qwaylandquicksurface.h"
-#include "qwaylandinputmethodcontrol.h"
-#include "qwaylandtextinput.h"
+#include "aurorawaylandquickitem.h"
+#include "aurorawaylandquickitem_p.h"
+#include "aurorawaylandquicksurface.h"
+#include "aurorawaylandinputmethodcontrol.h"
+#include "aurorawaylandtextinput.h"
 #if QT_WAYLAND_TEXT_INPUT_V4_WIP
-#include "qwaylandtextinputv4.h"
+#include "aurorawaylandtextinputv4.h"
 #endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
-#include "qwaylandqttextinputmethod.h"
-#include "qwaylandquickoutput.h"
-#include <QtWaylandCompositor/qwaylandcompositor.h>
-#include <QtWaylandCompositor/qwaylandseat.h>
-#include <QtWaylandCompositor/qwaylandbufferref.h>
+#include "aurorawaylandqttextinputmethod.h"
+#include "aurorawaylandquickoutput.h"
+#include <LiriAuroraCompositor/aurorawaylandcompositor.h>
+#include <LiriAuroraCompositor/aurorawaylandseat.h>
+#include <LiriAuroraCompositor/aurorawaylandbufferref.h>
 #if QT_CONFIG(draganddrop)
-#include <QtWaylandCompositor/QWaylandDrag>
+#include <LiriAuroraCompositor/WaylandDrag>
 #endif
-#include <QtWaylandCompositor/private/qwlclientbufferintegration_p.h>
-#include <QtWaylandCompositor/private/qwaylandsurface_p.h>
+#include <LiriAuroraCompositor/private/aurorawlclientbufferintegration_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandsurface_p.h>
 
 #if QT_CONFIG(opengl)
 #  include <QtOpenGL/QOpenGLTexture>
@@ -74,7 +74,9 @@
 #define GL_TEXTURE_EXTERNAL_OES 0x8D65
 #endif
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 #if QT_CONFIG(opengl)
 static const struct {
@@ -144,19 +146,19 @@ static const struct {
     }
 };
 
-QWaylandBufferMaterialShader::QWaylandBufferMaterialShader(QWaylandBufferRef::BufferFormatEgl format)
+WaylandBufferMaterialShader::WaylandBufferMaterialShader(WaylandBufferRef::BufferFormatEgl format)
 {
     Q_UNUSED(format);
     setShaderFileName(VertexStage, QString::fromLatin1(bufferTypes[format].vertexShaderSourceFile));
     auto fragmentShaderSourceFile = QString::fromLatin1(bufferTypes[format].fragmentShaderSourceFile);
 
-    if (format == QWaylandBufferRef::BufferFormatEgl_EXTERNAL_OES)
+    if (format == WaylandBufferRef::BufferFormatEgl_EXTERNAL_OES)
         setupExternalOESShader(fragmentShaderSourceFile);
     else
         setShaderFileName(FragmentStage, fragmentShaderSourceFile);
 }
 
-void QWaylandBufferMaterialShader::setupExternalOESShader(const QString &shaderFilename)
+void WaylandBufferMaterialShader::setupExternalOESShader(const QString &shaderFilename)
 {
 #if QT_CONFIG(opengl)
     QFile shaderFile(shaderFilename);
@@ -232,7 +234,7 @@ void QWaylandBufferMaterialShader::setupExternalOESShader(const QString &shaderF
 #endif
 }
 
-bool QWaylandBufferMaterialShader::updateUniformData(RenderState &state, QSGMaterial *, QSGMaterial *)
+bool WaylandBufferMaterialShader::updateUniformData(RenderState &state, QSGMaterial *, QSGMaterial *)
 {
     bool changed = false;
     QByteArray *buf = state.uniformData();
@@ -253,12 +255,12 @@ bool QWaylandBufferMaterialShader::updateUniformData(RenderState &state, QSGMate
     return changed;
 }
 
-void QWaylandBufferMaterialShader::updateSampledImage(RenderState &state, int binding, QSGTexture **texture,
+void WaylandBufferMaterialShader::updateSampledImage(RenderState &state, int binding, QSGTexture **texture,
                                                       QSGMaterial *newMaterial, QSGMaterial *)
 {
     Q_UNUSED(state);
 
-    QWaylandBufferMaterial *material = static_cast<QWaylandBufferMaterial *>(newMaterial);
+    WaylandBufferMaterial *material = static_cast<WaylandBufferMaterial *>(newMaterial);
     switch (binding) {
     case 1:
         *texture = material->m_scenegraphTextures.at(0);
@@ -280,18 +282,18 @@ void QWaylandBufferMaterialShader::updateSampledImage(RenderState &state, int bi
         (*texture)->commitTextureOperations(state.rhi(), state.resourceUpdateBatch());
 }
 
-QWaylandBufferMaterial::QWaylandBufferMaterial(QWaylandBufferRef::BufferFormatEgl format)
+WaylandBufferMaterial::WaylandBufferMaterial(WaylandBufferRef::BufferFormatEgl format)
     : m_format(format)
 {
     setFlag(bufferTypes[m_format].materialFlags);
 }
 
-QWaylandBufferMaterial::~QWaylandBufferMaterial()
+WaylandBufferMaterial::~WaylandBufferMaterial()
 {
     qDeleteAll(m_scenegraphTextures);
 }
 
-void QWaylandBufferMaterial::setTextureForPlane(int plane,
+void WaylandBufferMaterial::setTextureForPlane(int plane,
                                                 QOpenGLTexture *texture,
                                                 QSGTexture *scenegraphTexture)
 {
@@ -316,7 +318,7 @@ void QWaylandBufferMaterial::setTextureForPlane(int plane,
     }
 }
 
-void QWaylandBufferMaterial::bind()
+void WaylandBufferMaterial::bind()
 {
     ensureTextures(bufferTypes[m_format].planeCount);
 
@@ -335,19 +337,19 @@ void QWaylandBufferMaterial::bind()
     }
 }
 
-QSGMaterialType *QWaylandBufferMaterial::type() const
+QSGMaterialType *WaylandBufferMaterial::type() const
 {
     return const_cast<QSGMaterialType *>(&bufferTypes[m_format].materialType);
 }
 
-QSGMaterialShader *QWaylandBufferMaterial::createShader(QSGRendererInterface::RenderMode renderMode) const
+QSGMaterialShader *WaylandBufferMaterial::createShader(QSGRendererInterface::RenderMode renderMode) const
 {
     Q_UNUSED(renderMode);
-    return new QWaylandBufferMaterialShader(m_format);
+    return new WaylandBufferMaterialShader(m_format);
 }
 
 
-void QWaylandBufferMaterial::setTextureParameters(GLenum target)
+void WaylandBufferMaterial::setTextureParameters(GLenum target)
 {
     QOpenGLFunctions *gl = QOpenGLContext::currentContext()->functions();
     gl->glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -357,7 +359,7 @@ void QWaylandBufferMaterial::setTextureParameters(GLenum target)
 }
 
 //TODO move this into a separate centralized texture management class
-void QWaylandBufferMaterial::ensureTextures(int count)
+void WaylandBufferMaterial::ensureTextures(int count)
 {
     for (int plane = m_textures.size(); plane < count; plane++) {
         m_textures << nullptr;
@@ -365,17 +367,17 @@ void QWaylandBufferMaterial::ensureTextures(int count)
     }
 }
 
-void QWaylandBufferMaterial::setBufferRef(QWaylandQuickItem *surfaceItem, const QWaylandBufferRef &ref)
+void WaylandBufferMaterial::setBufferRef(WaylandQuickItem *surfaceItem, const WaylandBufferRef &ref)
 {
     m_bufferRef = ref;
     for (int plane = 0; plane < bufferTypes[ref.bufferFormatEgl()].planeCount; plane++) {
         if (auto texture = ref.toOpenGLTexture(plane)) {
             QQuickWindow::CreateTextureOptions opt;
-            QWaylandQuickSurface *waylandSurface = qobject_cast<QWaylandQuickSurface *>(surfaceItem->surface());
+            WaylandQuickSurface *waylandSurface = qobject_cast<WaylandQuickSurface *>(surfaceItem->surface());
             if (waylandSurface != nullptr && waylandSurface->useTextureAlpha() && !waylandSurface->isOpaque())
                 opt |= QQuickWindow::TextureHasAlphaChannel;
             QSGTexture *scenegraphTexture;
-            if (ref.bufferFormatEgl() == QWaylandBufferRef::BufferFormatEgl_EXTERNAL_OES) {
+            if (ref.bufferFormatEgl() == WaylandBufferRef::BufferFormatEgl_EXTERNAL_OES) {
                 scenegraphTexture = QNativeInterface::QSGOpenGLTexture::fromNativeExternalOES(texture->textureId(),
                                                                                               surfaceItem->window(),
                                                                                               ref.size(),
@@ -395,21 +397,21 @@ void QWaylandBufferMaterial::setBufferRef(QWaylandQuickItem *surfaceItem, const 
 }
 #endif // QT_CONFIG(opengl)
 
-QMutex *QWaylandQuickItemPrivate::mutex = nullptr;
+QMutex *WaylandQuickItemPrivate::mutex = nullptr;
 
-class QWaylandSurfaceTextureProvider : public QSGTextureProvider
+class WaylandSurfaceTextureProvider : public QSGTextureProvider
 {
 public:
-    QWaylandSurfaceTextureProvider()
+    WaylandSurfaceTextureProvider()
     {
     }
 
-    ~QWaylandSurfaceTextureProvider() override
+    ~WaylandSurfaceTextureProvider() override
     {
         delete m_sgTex;
     }
 
-    void setBufferRef(QWaylandQuickItem *surfaceItem, const QWaylandBufferRef &buffer)
+    void setBufferRef(WaylandQuickItem *surfaceItem, const WaylandBufferRef &buffer)
     {
         Q_ASSERT(QThread::currentThread() == thread());
         m_ref = buffer;
@@ -421,7 +423,7 @@ public:
             } else {
 #if QT_CONFIG(opengl)
                 QQuickWindow::CreateTextureOptions opt;
-                QWaylandQuickSurface *surface = qobject_cast<QWaylandQuickSurface *>(surfaceItem->surface());
+                WaylandQuickSurface *surface = qobject_cast<WaylandQuickSurface *>(surfaceItem->surface());
                 if (surface && surface->useTextureAlpha()  && !surface->isOpaque()) {
                     opt |= QQuickWindow::TextureHasAlphaChannel;
                 }
@@ -449,13 +451,13 @@ public:
 private:
     bool m_smooth = false;
     QSGTexture *m_sgTex = nullptr;
-    QWaylandBufferRef m_ref;
+    WaylandBufferRef m_ref;
 };
 
 /*!
  * \qmltype WaylandQuickItem
- * \instantiates QWaylandQuickItem
- * \inqmlmodule QtWayland.Compositor
+ * \instantiates WaylandQuickItem
+ * \inqmlmodule Aurora.Compositor
  * \since 5.8
  * \brief Provides a Qt Quick item that represents a WaylandView.
  *
@@ -465,21 +467,21 @@ private:
  */
 
 /*!
- * \class QWaylandQuickItem
+ * \class WaylandQuickItem
  * \inmodule QtWaylandCompositor
  * \since 5.8
- * \brief The QWaylandQuickItem class provides a Qt Quick item representing a QWaylandView.
+ * \brief The WaylandQuickItem class provides a Qt Quick item representing a WaylandView.
  *
- * When writing a QWaylandCompositor in Qt Quick, this class can be used to display a
+ * When writing a WaylandCompositor in Qt Quick, this class can be used to display a
  * client's contents on an output device and will pass user input to the
  * client.
  */
 
 /*!
- * Constructs a QWaylandQuickItem with the given \a parent.
+ * Constructs a WaylandQuickItem with the given \a parent.
  */
-QWaylandQuickItem::QWaylandQuickItem(QQuickItem *parent)
-    : QQuickItem(*new QWaylandQuickItemPrivate(), parent)
+WaylandQuickItem::WaylandQuickItem(QQuickItem *parent)
+    : QQuickItem(*new WaylandQuickItemPrivate(), parent)
 {
     d_func()->init();
 }
@@ -487,19 +489,19 @@ QWaylandQuickItem::QWaylandQuickItem(QQuickItem *parent)
 /*!
  * \internal
  */
-QWaylandQuickItem::QWaylandQuickItem(QWaylandQuickItemPrivate &dd, QQuickItem *parent)
+WaylandQuickItem::WaylandQuickItem(WaylandQuickItemPrivate &dd, QQuickItem *parent)
     : QQuickItem(dd, parent)
 {
     d_func()->init();
 }
 
 /*!
- * Destroy the QWaylandQuickItem.
+ * Destroy the WaylandQuickItem.
  */
-QWaylandQuickItem::~QWaylandQuickItem()
+WaylandQuickItem::~WaylandQuickItem()
 {
-    Q_D(QWaylandQuickItem);
-    disconnect(this, &QQuickItem::windowChanged, this, &QWaylandQuickItem::updateWindow);
+    Q_D(WaylandQuickItem);
+    disconnect(this, &QQuickItem::windowChanged, this, &WaylandQuickItem::updateWindow);
     QMutexLocker locker(d->mutex);
     if (d->provider)
         d->provider->deleteLater();
@@ -512,22 +514,22 @@ QWaylandQuickItem::~QWaylandQuickItem()
  */
 
 /*!
- * \property QWaylandQuickItem::compositor
+ * \property WaylandQuickItem::compositor
  *
- * This property holds the compositor for the surface rendered by this QWaylandQuickItem.
+ * This property holds the compositor for the surface rendered by this WaylandQuickItem.
  */
-QWaylandCompositor *QWaylandQuickItem::compositor() const
+WaylandCompositor *WaylandQuickItem::compositor() const
 {
-    Q_D(const QWaylandQuickItem);
+    Q_D(const WaylandQuickItem);
     return d->view->surface() ? d->view->surface()->compositor() : nullptr;
 }
 
 /*!
- * Returns the view rendered by this QWaylandQuickItem.
+ * Returns the view rendered by this WaylandQuickItem.
  */
-QWaylandView *QWaylandQuickItem::view() const
+WaylandView *WaylandQuickItem::view() const
 {
-    Q_D(const QWaylandQuickItem);
+    Q_D(const WaylandQuickItem);
     return d->view.data();
 }
 
@@ -538,24 +540,24 @@ QWaylandView *QWaylandQuickItem::view() const
  */
 
 /*!
- * \property QWaylandQuickItem::surface
+ * \property WaylandQuickItem::surface
  *
- * This property holds the surface rendered by this QWaylandQuickItem.
+ * This property holds the surface rendered by this WaylandQuickItem.
  */
 
-QWaylandSurface *QWaylandQuickItem::surface() const
+WaylandSurface *WaylandQuickItem::surface() const
 {
-    Q_D(const QWaylandQuickItem);
+    Q_D(const WaylandQuickItem);
     return d->view->surface();
 }
 
-void QWaylandQuickItem::setSurface(QWaylandSurface *surface)
+void WaylandQuickItem::setSurface(WaylandSurface *surface)
 {
-    Q_D(QWaylandQuickItem);
-    QWaylandSurface *oldSurf = d->view->surface();
-    QWaylandCompositor *oldComp = d->view->surface() ? d->view->surface()->compositor() : nullptr;
+    Q_D(WaylandQuickItem);
+    WaylandSurface *oldSurf = d->view->surface();
+    WaylandCompositor *oldComp = d->view->surface() ? d->view->surface()->compositor() : nullptr;
     d->view->setSurface(surface);
-    QWaylandCompositor *newComp = d->view->surface() ? d->view->surface()->compositor() : nullptr;
+    WaylandCompositor *newComp = d->view->surface() ? d->view->surface()->compositor() : nullptr;
     if (oldComp != newComp)
         emit compositorChanged();
     if (oldSurf != surface)
@@ -566,32 +568,32 @@ void QWaylandQuickItem::setSurface(QWaylandSurface *surface)
 /*!
  * \qmlproperty enum QtWaylandCompositor::WaylandQuickItem::origin
  *
- * This property holds the origin of the QWaylandQuickItem.
+ * This property holds the origin of the WaylandQuickItem.
  */
 
 /*!
- * \property QWaylandQuickItem::origin
+ * \property WaylandQuickItem::origin
  *
- * This property holds the origin of the QWaylandQuickItem.
+ * This property holds the origin of the WaylandQuickItem.
  */
-QWaylandSurface::Origin QWaylandQuickItem::origin() const
+WaylandSurface::Origin WaylandQuickItem::origin() const
 {
-    Q_D(const QWaylandQuickItem);
+    Q_D(const WaylandQuickItem);
     return d->origin;
 }
 
-bool QWaylandQuickItem::isTextureProvider() const
+bool WaylandQuickItem::isTextureProvider() const
 {
-    Q_D(const QWaylandQuickItem);
+    Q_D(const WaylandQuickItem);
     return QQuickItem::isTextureProvider() || d->provider;
 }
 
 /*!
- * Returns the texture provider of this QWaylandQuickItem.
+ * Returns the texture provider of this WaylandQuickItem.
  */
-QSGTextureProvider *QWaylandQuickItem::textureProvider() const
+QSGTextureProvider *WaylandQuickItem::textureProvider() const
 {
-    Q_D(const QWaylandQuickItem);
+    Q_D(const WaylandQuickItem);
 
     if (QQuickItem::isTextureProvider())
         return QQuickItem::textureProvider();
@@ -602,9 +604,9 @@ QSGTextureProvider *QWaylandQuickItem::textureProvider() const
 /*!
  * \internal
  */
-void QWaylandQuickItem::mousePressEvent(QMouseEvent *event)
+void WaylandQuickItem::mousePressEvent(QMouseEvent *event)
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     if (!d->shouldSendInputEvents()) {
         event->ignore();
         return;
@@ -615,7 +617,7 @@ void QWaylandQuickItem::mousePressEvent(QMouseEvent *event)
         return;
     }
 
-    QWaylandSeat *seat = compositor()->seatFor(event);
+    WaylandSeat *seat = compositor()->seatFor(event);
 
     if (d->focusOnClick)
         takeFocus(seat);
@@ -628,17 +630,17 @@ void QWaylandQuickItem::mousePressEvent(QMouseEvent *event)
 /*!
  * \internal
  */
-void QWaylandQuickItem::mouseMoveEvent(QMouseEvent *event)
+void WaylandQuickItem::mouseMoveEvent(QMouseEvent *event)
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     if (d->shouldSendInputEvents()) {
-        QWaylandSeat *seat = compositor()->seatFor(event);
+        WaylandSeat *seat = compositor()->seatFor(event);
 #if QT_CONFIG(draganddrop)
         if (d->isDragging) {
-            QWaylandQuickOutput *currentOutput = qobject_cast<QWaylandQuickOutput *>(view()->output());
+            WaylandQuickOutput *currentOutput = qobject_cast<WaylandQuickOutput *>(view()->output());
             //TODO: also check if dragging onto other outputs
-            QWaylandQuickItem *targetItem = qobject_cast<QWaylandQuickItem *>(currentOutput->pickClickableItem(mapToScene(event->position())));
-            QWaylandSurface *targetSurface = targetItem ? targetItem->surface() : nullptr;
+            WaylandQuickItem *targetItem = qobject_cast<WaylandQuickItem *>(currentOutput->pickClickableItem(mapToScene(event->position())));
+            WaylandSurface *targetSurface = targetItem ? targetItem->surface() : nullptr;
             if (targetSurface) {
                 QPointF position = mapToItem(targetItem, event->position());
                 QPointF surfacePosition = targetItem->mapToSurface(position);
@@ -659,11 +661,11 @@ void QWaylandQuickItem::mouseMoveEvent(QMouseEvent *event)
 /*!
  * \internal
  */
-void QWaylandQuickItem::mouseReleaseEvent(QMouseEvent *event)
+void WaylandQuickItem::mouseReleaseEvent(QMouseEvent *event)
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     if (d->shouldSendInputEvents()) {
-        QWaylandSeat *seat = compositor()->seatFor(event);
+        WaylandSeat *seat = compositor()->seatFor(event);
 #if QT_CONFIG(draganddrop)
         if (d->isDragging) {
             d->isDragging = false;
@@ -682,15 +684,15 @@ void QWaylandQuickItem::mouseReleaseEvent(QMouseEvent *event)
 /*!
  * \internal
  */
-void QWaylandQuickItem::hoverEnterEvent(QHoverEvent *event)
+void WaylandQuickItem::hoverEnterEvent(QHoverEvent *event)
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     if (!inputRegionContains(event->position())) {
         event->ignore();
         return;
     }
     if (d->shouldSendInputEvents()) {
-        QWaylandSeat *seat = compositor()->seatFor(event);
+        WaylandSeat *seat = compositor()->seatFor(event);
         seat->sendMouseMoveEvent(d->view.data(), event->position(), mapToScene(event->position()));
         d->hoverPos = event->position();
     } else {
@@ -701,9 +703,9 @@ void QWaylandQuickItem::hoverEnterEvent(QHoverEvent *event)
 /*!
  * \internal
  */
-void QWaylandQuickItem::hoverMoveEvent(QHoverEvent *event)
+void WaylandQuickItem::hoverMoveEvent(QHoverEvent *event)
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     if (surface()) {
         if (!inputRegionContains(event->position())) {
             event->ignore();
@@ -711,7 +713,7 @@ void QWaylandQuickItem::hoverMoveEvent(QHoverEvent *event)
         }
     }
     if (d->shouldSendInputEvents()) {
-        QWaylandSeat *seat = compositor()->seatFor(event);
+        WaylandSeat *seat = compositor()->seatFor(event);
         if (event->position() != d->hoverPos) {
             seat->sendMouseMoveEvent(d->view.data(), mapToSurface(event->position()), mapToScene(event->position()));
             d->hoverPos = event->position();
@@ -724,11 +726,11 @@ void QWaylandQuickItem::hoverMoveEvent(QHoverEvent *event)
 /*!
  * \internal
  */
-void QWaylandQuickItem::hoverLeaveEvent(QHoverEvent *event)
+void WaylandQuickItem::hoverLeaveEvent(QHoverEvent *event)
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     if (d->shouldSendInputEvents()) {
-        QWaylandSeat *seat = compositor()->seatFor(event);
+        WaylandSeat *seat = compositor()->seatFor(event);
         seat->setMouseFocus(nullptr);
     } else {
         event->ignore();
@@ -739,16 +741,16 @@ void QWaylandQuickItem::hoverLeaveEvent(QHoverEvent *event)
 /*!
  * \internal
  */
-void QWaylandQuickItem::wheelEvent(QWheelEvent *event)
+void WaylandQuickItem::wheelEvent(QWheelEvent *event)
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     if (d->shouldSendInputEvents()) {
         if (!inputRegionContains(event->position())) {
             event->ignore();
             return;
         }
 
-        QWaylandSeat *seat = compositor()->seatFor(event);
+        WaylandSeat *seat = compositor()->seatFor(event);
         // TODO: fix this to send a single event, when diagonal scrolling is supported
         if (event->angleDelta().x() != 0)
             seat->sendMouseWheelEvent(Qt::Horizontal, event->angleDelta().x());
@@ -763,11 +765,11 @@ void QWaylandQuickItem::wheelEvent(QWheelEvent *event)
 /*!
  * \internal
  */
-void QWaylandQuickItem::keyPressEvent(QKeyEvent *event)
+void WaylandQuickItem::keyPressEvent(QKeyEvent *event)
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     if (d->shouldSendInputEvents()) {
-        QWaylandSeat *seat = compositor()->seatFor(event);
+        WaylandSeat *seat = compositor()->seatFor(event);
         if (seat->setKeyboardFocus(d->view->surface()))
             seat->sendFullKeyEvent(event);
         else
@@ -780,11 +782,11 @@ void QWaylandQuickItem::keyPressEvent(QKeyEvent *event)
 /*!
  * \internal
  */
-void QWaylandQuickItem::keyReleaseEvent(QKeyEvent *event)
+void WaylandQuickItem::keyReleaseEvent(QKeyEvent *event)
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     if (d->shouldSendInputEvents() && hasFocus()) {
-        QWaylandSeat *seat = compositor()->seatFor(event);
+        WaylandSeat *seat = compositor()->seatFor(event);
         seat->sendFullKeyEvent(event);
     } else {
         event->ignore();
@@ -794,11 +796,11 @@ void QWaylandQuickItem::keyReleaseEvent(QKeyEvent *event)
 /*!
  * \internal
  */
-void QWaylandQuickItem::touchEvent(QTouchEvent *event)
+void WaylandQuickItem::touchEvent(QTouchEvent *event)
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     if (d->shouldSendInputEvents() && d->touchEventsEnabled) {
-        QWaylandSeat *seat = compositor()->seatFor(event);
+        WaylandSeat *seat = compositor()->seatFor(event);
 
         QPointF pointPos;
         const QList<QTouchEvent::TouchPoint> &points = event->points();
@@ -829,9 +831,9 @@ void QWaylandQuickItem::touchEvent(QTouchEvent *event)
     }
 }
 
-void QWaylandQuickItem::touchUngrabEvent()
+void WaylandQuickItem::touchUngrabEvent()
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
 
     if (d->shouldSendInputEvents())
         for (auto seat : d->touchingSeats)
@@ -844,9 +846,9 @@ void QWaylandQuickItem::touchUngrabEvent()
 /*!
  * \internal
  */
-void QWaylandQuickItem::inputMethodEvent(QInputMethodEvent *event)
+void WaylandQuickItem::inputMethodEvent(QInputMethodEvent *event)
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     if (d->shouldSendInputEvents()) {
         d->oldSurface->inputMethodControl()->inputMethodEvent(event);
     } else {
@@ -858,38 +860,38 @@ void QWaylandQuickItem::inputMethodEvent(QInputMethodEvent *event)
 /*!
  * \internal
  */
-void QWaylandQuickItem::surfaceChangedEvent(QWaylandSurface *newSurface, QWaylandSurface *oldSurface)
+void WaylandQuickItem::surfaceChangedEvent(WaylandSurface *newSurface, WaylandSurface *oldSurface)
 {
     Q_UNUSED(newSurface);
     Q_UNUSED(oldSurface);
 }
 
-void QWaylandQuickItem::handleSubsurfaceAdded(QWaylandSurface *childSurface)
+void WaylandQuickItem::handleSubsurfaceAdded(WaylandSurface *childSurface)
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     if (d->subsurfaceHandler.isNull()) {
-        QWaylandQuickItem *childItem = new QWaylandQuickItem;
+        WaylandQuickItem *childItem = new WaylandQuickItem;
         childItem->setSurface(childSurface);
         childItem->setVisible(true);
         childItem->setParentItem(this);
         childItem->setParent(this);
-        connect(childSurface, &QWaylandSurface::subsurfacePositionChanged, childItem, &QWaylandQuickItem::handleSubsurfacePosition);
-        connect(childSurface, &QWaylandSurface::destroyed, childItem, &QObject::deleteLater);
+        connect(childSurface, &WaylandSurface::subsurfacePositionChanged, childItem, &WaylandQuickItem::handleSubsurfacePosition);
+        connect(childSurface, &WaylandSurface::destroyed, childItem, &QObject::deleteLater);
     } else {
-        bool success = QMetaObject::invokeMethod(d->subsurfaceHandler, "handleSubsurfaceAdded", Q_ARG(QWaylandSurface *, childSurface));
+        bool success = QMetaObject::invokeMethod(d->subsurfaceHandler, "handleSubsurfaceAdded", Q_ARG(WaylandSurface *, childSurface));
         if (!success)
             success = QMetaObject::invokeMethod(d->subsurfaceHandler, "handleSubsurfaceAdded",
                                                 Q_ARG(QVariant, QVariant::fromValue(childSurface)));
 
         if (!success)
-            qWarning("QWaylandQuickItem: subsurfaceHandler does not implement handleSubsurfaceAdded()");
+            qWarning("WaylandQuickItem: subsurfaceHandler does not implement handleSubsurfaceAdded()");
     }
 }
 
-void QWaylandQuickItem::handlePlaceAbove(QWaylandSurface *referenceSurface)
+void WaylandQuickItem::handlePlaceAbove(WaylandSurface *referenceSurface)
 {
-    Q_D(QWaylandQuickItem);
-    auto *parent = qobject_cast<QWaylandQuickItem*>(parentItem());
+    Q_D(WaylandQuickItem);
+    auto *parent = qobject_cast<WaylandQuickItem*>(parentItem());
     if (!parent)
         return;
 
@@ -898,15 +900,15 @@ void QWaylandQuickItem::handlePlaceAbove(QWaylandSurface *referenceSurface)
     } else if (auto *sibling = d->findSibling(referenceSurface)) {
         d->placeAboveSibling(sibling);
     } else {
-        qWarning() << "Couldn't find QWaylandQuickItem for surface" << referenceSurface
+        qWarning() << "Couldn't find WaylandQuickItem for surface" << referenceSurface
                    << "when handling wl_subsurface.place_above";
     }
 }
 
-void QWaylandQuickItem::handlePlaceBelow(QWaylandSurface *referenceSurface)
+void WaylandQuickItem::handlePlaceBelow(WaylandSurface *referenceSurface)
 {
-    Q_D(QWaylandQuickItem);
-    QWaylandQuickItem *parent = qobject_cast<QWaylandQuickItem*>(parentItem());
+    Q_D(WaylandQuickItem);
+    WaylandQuickItem *parent = qobject_cast<WaylandQuickItem*>(parentItem());
     if (!parent)
         return;
 
@@ -915,7 +917,7 @@ void QWaylandQuickItem::handlePlaceBelow(QWaylandSurface *referenceSurface)
     } else if (auto *sibling = d->findSibling(referenceSurface)) {
         d->placeBelowSibling(sibling);
     } else {
-        qWarning() << "Couldn't find QWaylandQuickItem for surface" << referenceSurface
+        qWarning() << "Couldn't find WaylandQuickItem for surface" << referenceSurface
                    << "when handling wl_subsurface.place_below";
     }
 }
@@ -944,15 +946,15 @@ void QWaylandQuickItem::handlePlaceBelow(QWaylandSurface *referenceSurface)
  */
 
 
-QObject *QWaylandQuickItem::subsurfaceHandler() const
+QObject *WaylandQuickItem::subsurfaceHandler() const
 {
-    Q_D(const QWaylandQuickItem);
+    Q_D(const WaylandQuickItem);
     return d->subsurfaceHandler.data();
 }
 
-void QWaylandQuickItem::setSubsurfaceHandler(QObject *handler)
+void WaylandQuickItem::setSubsurfaceHandler(QObject *handler)
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     if (d->subsurfaceHandler.data() != handler) {
         d->subsurfaceHandler = handler;
         emit subsurfaceHandlerChanged();
@@ -960,19 +962,19 @@ void QWaylandQuickItem::setSubsurfaceHandler(QObject *handler)
 }
 
 /*!
- * \property QWaylandQuickItem::output
+ * \property WaylandQuickItem::output
  *
  * This property holds the output on which this item is displayed.
  */
-QWaylandOutput *QWaylandQuickItem::output() const
+WaylandOutput *WaylandQuickItem::output() const
 {
-    Q_D(const QWaylandQuickItem);
+    Q_D(const WaylandQuickItem);
     return d->view->output();
 }
 
-void QWaylandQuickItem::setOutput(QWaylandOutput *output)
+void WaylandQuickItem::setOutput(WaylandOutput *output)
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     d->view->setOutput(output);
 }
 
@@ -985,22 +987,22 @@ void QWaylandQuickItem::setOutput(QWaylandOutput *output)
  * The default is false.
  */
 /*!
- * \property QWaylandQuickItem::bufferLocked
+ * \property WaylandQuickItem::bufferLocked
  *
  * This property holds whether the item's buffer is currently locked. As long as
  * the buffer is locked, it will not be released and returned to the client.
  *
  * The default is false.
  */
-bool QWaylandQuickItem::isBufferLocked() const
+bool WaylandQuickItem::isBufferLocked() const
 {
-    Q_D(const QWaylandQuickItem);
+    Q_D(const WaylandQuickItem);
     return d->view->isBufferLocked();
 }
 
-void QWaylandQuickItem::setBufferLocked(bool locked)
+void WaylandQuickItem::setBufferLocked(bool locked)
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     d->view->setBufferLocked(locked);
 
     // Apply the latest surface size
@@ -1009,22 +1011,22 @@ void QWaylandQuickItem::setBufferLocked(bool locked)
 }
 
 /*!
- * \property QWaylandQuickItem::allowDiscardFrontBuffer
+ * \property WaylandQuickItem::allowDiscardFrontBuffer
  *
  * By default, the item locks the current buffer until a new buffer is available
  * and updatePaintNode() is called. Set this property to true to allow Qt to release the buffer
  * immediately when the throttling view is no longer using it. This is useful for items that have
  * slow update intervals.
  */
-bool QWaylandQuickItem::allowDiscardFrontBuffer() const
+bool WaylandQuickItem::allowDiscardFrontBuffer() const
 {
-    Q_D(const QWaylandQuickItem);
+    Q_D(const WaylandQuickItem);
     return d->view->allowDiscardFrontBuffer();
 }
 
-void QWaylandQuickItem::setAllowDiscardFrontBuffer(bool discard)
+void WaylandQuickItem::setAllowDiscardFrontBuffer(bool discard)
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     d->view->setAllowDiscardFrontBuffer(discard);
 }
 
@@ -1035,54 +1037,54 @@ void QWaylandQuickItem::setAllowDiscardFrontBuffer(bool discard)
  */
 
 /*!
- * Makes this QWaylandQuickItem's view the primary view for the surface.
+ * Makes this WaylandQuickItem's view the primary view for the surface.
  *
- * \sa QWaylandSurface::primaryView
+ * \sa WaylandSurface::primaryView
  */
-void QWaylandQuickItem::setPrimary()
+void WaylandQuickItem::setPrimary()
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     d->view->setPrimary();
 }
 
 /*!
  * \internal
  */
-void QWaylandQuickItem::handleSurfaceChanged()
+void WaylandQuickItem::handleSurfaceChanged()
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     if (d->oldSurface) {
-        disconnect(d->oldSurface.data(), &QWaylandSurface::hasContentChanged, this, &QWaylandQuickItem::surfaceMappedChanged);
-        disconnect(d->oldSurface.data(), &QWaylandSurface::parentChanged, this, &QWaylandQuickItem::parentChanged);
-        disconnect(d->oldSurface.data(), &QWaylandSurface::destinationSizeChanged, this, &QWaylandQuickItem::updateSize);
-        disconnect(d->oldSurface.data(), &QWaylandSurface::bufferScaleChanged, this, &QWaylandQuickItem::updateSize);
-        disconnect(d->oldSurface.data(), &QWaylandSurface::configure, this, &QWaylandQuickItem::updateBuffer);
-        disconnect(d->oldSurface.data(), &QWaylandSurface::redraw, this, &QQuickItem::update);
-        disconnect(d->oldSurface.data(), &QWaylandSurface::childAdded, this, &QWaylandQuickItem::handleSubsurfaceAdded);
-        disconnect(d->oldSurface.data(), &QWaylandSurface::subsurfacePlaceAbove, this, &QWaylandQuickItem::handlePlaceAbove);
-        disconnect(d->oldSurface.data(), &QWaylandSurface::subsurfacePlaceBelow, this, &QWaylandQuickItem::handlePlaceBelow);
+        disconnect(d->oldSurface.data(), &WaylandSurface::hasContentChanged, this, &WaylandQuickItem::surfaceMappedChanged);
+        disconnect(d->oldSurface.data(), &WaylandSurface::parentChanged, this, &WaylandQuickItem::parentChanged);
+        disconnect(d->oldSurface.data(), &WaylandSurface::destinationSizeChanged, this, &WaylandQuickItem::updateSize);
+        disconnect(d->oldSurface.data(), &WaylandSurface::bufferScaleChanged, this, &WaylandQuickItem::updateSize);
+        disconnect(d->oldSurface.data(), &WaylandSurface::configure, this, &WaylandQuickItem::updateBuffer);
+        disconnect(d->oldSurface.data(), &WaylandSurface::redraw, this, &QQuickItem::update);
+        disconnect(d->oldSurface.data(), &WaylandSurface::childAdded, this, &WaylandQuickItem::handleSubsurfaceAdded);
+        disconnect(d->oldSurface.data(), &WaylandSurface::subsurfacePlaceAbove, this, &WaylandQuickItem::handlePlaceAbove);
+        disconnect(d->oldSurface.data(), &WaylandSurface::subsurfacePlaceBelow, this, &WaylandQuickItem::handlePlaceBelow);
 #if QT_CONFIG(draganddrop)
-        disconnect(d->oldSurface.data(), &QWaylandSurface::dragStarted, this, &QWaylandQuickItem::handleDragStarted);
+        disconnect(d->oldSurface.data(), &WaylandSurface::dragStarted, this, &WaylandQuickItem::handleDragStarted);
 #endif
 #if QT_CONFIG(im)
-        disconnect(d->oldSurface->inputMethodControl(), &QWaylandInputMethodControl::updateInputMethod, this, &QWaylandQuickItem::updateInputMethod);
+        disconnect(d->oldSurface->inputMethodControl(), &WaylandInputMethodControl::updateInputMethod, this, &WaylandQuickItem::updateInputMethod);
 #endif
     }
-    if (QWaylandSurface *newSurface = d->view->surface()) {
-        connect(newSurface, &QWaylandSurface::hasContentChanged, this, &QWaylandQuickItem::surfaceMappedChanged);
-        connect(newSurface, &QWaylandSurface::parentChanged, this, &QWaylandQuickItem::parentChanged);
-        connect(newSurface, &QWaylandSurface::destinationSizeChanged, this, &QWaylandQuickItem::updateSize);
-        connect(newSurface, &QWaylandSurface::bufferScaleChanged, this, &QWaylandQuickItem::updateSize);
-        connect(newSurface, &QWaylandSurface::configure, this, &QWaylandQuickItem::updateBuffer);
-        connect(newSurface, &QWaylandSurface::redraw, this, &QQuickItem::update);
-        connect(newSurface, &QWaylandSurface::childAdded, this, &QWaylandQuickItem::handleSubsurfaceAdded);
-        connect(newSurface, &QWaylandSurface::subsurfacePlaceAbove, this, &QWaylandQuickItem::handlePlaceAbove);
-        connect(newSurface, &QWaylandSurface::subsurfacePlaceBelow, this, &QWaylandQuickItem::handlePlaceBelow);
+    if (WaylandSurface *newSurface = d->view->surface()) {
+        connect(newSurface, &WaylandSurface::hasContentChanged, this, &WaylandQuickItem::surfaceMappedChanged);
+        connect(newSurface, &WaylandSurface::parentChanged, this, &WaylandQuickItem::parentChanged);
+        connect(newSurface, &WaylandSurface::destinationSizeChanged, this, &WaylandQuickItem::updateSize);
+        connect(newSurface, &WaylandSurface::bufferScaleChanged, this, &WaylandQuickItem::updateSize);
+        connect(newSurface, &WaylandSurface::configure, this, &WaylandQuickItem::updateBuffer);
+        connect(newSurface, &WaylandSurface::redraw, this, &QQuickItem::update);
+        connect(newSurface, &WaylandSurface::childAdded, this, &WaylandQuickItem::handleSubsurfaceAdded);
+        connect(newSurface, &WaylandSurface::subsurfacePlaceAbove, this, &WaylandQuickItem::handlePlaceAbove);
+        connect(newSurface, &WaylandSurface::subsurfacePlaceBelow, this, &WaylandQuickItem::handlePlaceBelow);
 #if QT_CONFIG(draganddrop)
-        connect(newSurface, &QWaylandSurface::dragStarted, this, &QWaylandQuickItem::handleDragStarted);
+        connect(newSurface, &WaylandSurface::dragStarted, this, &WaylandQuickItem::handleDragStarted);
 #endif
 #if QT_CONFIG(im)
-        connect(newSurface->inputMethodControl(), &QWaylandInputMethodControl::updateInputMethod, this, &QWaylandQuickItem::updateInputMethod);
+        connect(newSurface->inputMethodControl(), &WaylandInputMethodControl::updateInputMethod, this, &WaylandQuickItem::updateInputMethod);
 #endif
 
         if (newSurface->origin() != d->origin) {
@@ -1090,10 +1092,10 @@ void QWaylandQuickItem::handleSurfaceChanged()
             emit originChanged();
         }
         if (window()) {
-            QWaylandOutput *output = newSurface->compositor()->outputFor(window());
+            WaylandOutput *output = newSurface->compositor()->outputFor(window());
             d->view->setOutput(output);
         }
-        for (auto subsurface : QWaylandSurfacePrivate::get(newSurface)->subsurfaceChildren) {
+        for (auto subsurface : WaylandSurfacePrivate::get(newSurface)->subsurfaceChildren) {
             if (!subsurface.isNull())
                 handleSubsurfaceAdded(subsurface.data());
         }
@@ -1111,14 +1113,14 @@ void QWaylandQuickItem::handleSurfaceChanged()
  * Calling this function causes the item to take the focus of the
  * input \a device.
  */
-void QWaylandQuickItem::takeFocus(QWaylandSeat *device)
+void WaylandQuickItem::takeFocus(WaylandSeat *device)
 {
     forceActiveFocus();
 
     if (!surface() || !surface()->client())
         return;
 
-    QWaylandSeat *target = device;
+    WaylandSeat *target = device;
     if (!target) {
         target = compositor()->defaultSeat();
     }
@@ -1127,22 +1129,22 @@ void QWaylandQuickItem::takeFocus(QWaylandSeat *device)
     qCDebug(qLcWaylandCompositorInputMethods) << Q_FUNC_INFO << " surface:" << surface()
         << ", client:" << surface()->client()
         << ", textinputprotocol:" << (int)(surface()->client()->textInputProtocols());
-    if (surface()->client()->textInputProtocols().testFlag(QWaylandClient::TextInputProtocol::TextInputV2)) {
-        QWaylandTextInput *textInput = QWaylandTextInput::findIn(target);
+    if (surface()->client()->textInputProtocols().testFlag(WaylandClient::TextInputProtocol::TextInputV2)) {
+        WaylandTextInput *textInput = WaylandTextInput::findIn(target);
         if (textInput)
             textInput->setFocus(surface());
     }
 
 #if QT_WAYLAND_TEXT_INPUT_V4_WIP
-    if (surface()->client()->textInputProtocols().testFlag(QWaylandClient::TextInputProtocol::TextInputV4)) {
-        QWaylandTextInputV4 *textInputV4 = QWaylandTextInputV4::findIn(target);
+    if (surface()->client()->textInputProtocols().testFlag(WaylandClient::TextInputProtocol::TextInputV4)) {
+        WaylandTextInputV4 *textInputV4 = WaylandTextInputV4::findIn(target);
         if (textInputV4)
             textInputV4->setFocus(surface());
     }
 #endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
 
-    if (surface()->client()->textInputProtocols().testFlag(QWaylandClient::TextInputProtocol::QtTextInputMethodV1)) {
-        QWaylandQtTextInputMethod *textInputMethod = QWaylandQtTextInputMethod::findIn(target);
+    if (surface()->client()->textInputProtocols().testFlag(WaylandClient::TextInputProtocol::QtTextInputMethodV1)) {
+        WaylandQtTextInputMethod *textInputMethod = WaylandQtTextInputMethod::findIn(target);
         if (textInputMethod)
             textInputMethod->setFocus(surface());
     }
@@ -1151,7 +1153,7 @@ void QWaylandQuickItem::takeFocus(QWaylandSeat *device)
 /*!
  * \internal
  */
-void QWaylandQuickItem::surfaceMappedChanged()
+void WaylandQuickItem::surfaceMappedChanged()
 {
     update();
 }
@@ -1159,7 +1161,7 @@ void QWaylandQuickItem::surfaceMappedChanged()
 /*!
  * \internal
  */
-void QWaylandQuickItem::parentChanged(QWaylandSurface *newParent, QWaylandSurface *oldParent)
+void WaylandQuickItem::parentChanged(WaylandSurface *newParent, WaylandSurface *oldParent)
 {
     Q_UNUSED(oldParent);
 
@@ -1174,9 +1176,9 @@ void QWaylandQuickItem::parentChanged(QWaylandSurface *newParent, QWaylandSurfac
 /*!
  * \internal
  */
-void QWaylandQuickItem::updateSize()
+void WaylandQuickItem::updateSize()
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
 
     // No resize if buffer is locked
     if (isBufferLocked()) {
@@ -1201,22 +1203,22 @@ void QWaylandQuickItem::updateSize()
  */
 
 /*!
- * \property QWaylandQuickItem::focusOnClick
+ * \property WaylandQuickItem::focusOnClick
  *
- * This property specifies whether the QWaylandQuickItem should take focus when
+ * This property specifies whether the WaylandQuickItem should take focus when
  * it is clicked or touched.
  *
  * The default is \c true.
  */
-bool QWaylandQuickItem::focusOnClick() const
+bool WaylandQuickItem::focusOnClick() const
 {
-    Q_D(const QWaylandQuickItem);
+    Q_D(const WaylandQuickItem);
     return d->focusOnClick;
 }
 
-void QWaylandQuickItem::setFocusOnClick(bool focus)
+void WaylandQuickItem::setFocusOnClick(bool focus)
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     if (d->focusOnClick == focus)
         return;
 
@@ -1228,9 +1230,9 @@ void QWaylandQuickItem::setFocusOnClick(bool focus)
  * Returns \c true if the input region of this item's surface contains the
  * position given by \a localPosition.
  */
-bool QWaylandQuickItem::inputRegionContains(const QPointF &localPosition) const
+bool WaylandQuickItem::inputRegionContains(const QPointF &localPosition) const
 {
-    if (QWaylandSurface *s = surface())
+    if (WaylandSurface *s = surface())
         return s->inputRegionContains(mapToSurface(localPosition));
     return false;
 }
@@ -1248,9 +1250,9 @@ bool QWaylandQuickItem::inputRegionContains(const QPointF &localPosition) const
  * point within the Wayland surface's coordinate system, and returns the mapped
  * coordinate.
  */
-QPointF QWaylandQuickItem::mapToSurface(const QPointF &point) const
+QPointF WaylandQuickItem::mapToSurface(const QPointF &point) const
 {
-    Q_D(const QWaylandQuickItem);
+    Q_D(const WaylandQuickItem);
     if (!surface() || surface()->destinationSize().isEmpty())
         return point / d->scaleFactor();
 
@@ -1274,9 +1276,9 @@ QPointF QWaylandQuickItem::mapToSurface(const QPointF &point) const
  *
  * \since 5.13
  */
-QPointF QWaylandQuickItem::mapFromSurface(const QPointF &point) const
+QPointF WaylandQuickItem::mapFromSurface(const QPointF &point) const
 {
-    Q_D(const QWaylandQuickItem);
+    Q_D(const WaylandQuickItem);
     if (!surface() || surface()->destinationSize().isEmpty())
         return point * d->scaleFactor();
 
@@ -1287,14 +1289,14 @@ QPointF QWaylandQuickItem::mapFromSurface(const QPointF &point) const
 }
 
 #if QT_CONFIG(im)
-QVariant QWaylandQuickItem::inputMethodQuery(Qt::InputMethodQuery query) const
+QVariant WaylandQuickItem::inputMethodQuery(Qt::InputMethodQuery query) const
 {
     return inputMethodQuery(query, QVariant());
 }
 
-QVariant QWaylandQuickItem::inputMethodQuery(Qt::InputMethodQuery query, QVariant argument) const
+QVariant WaylandQuickItem::inputMethodQuery(Qt::InputMethodQuery query, QVariant argument) const
 {
-    Q_D(const QWaylandQuickItem);
+    Q_D(const WaylandQuickItem);
 
     if (query == Qt::ImEnabled)
         return QVariant((flags() & ItemAcceptsInputMethod) != 0);
@@ -1316,22 +1318,22 @@ QVariant QWaylandQuickItem::inputMethodQuery(Qt::InputMethodQuery query, QVarian
 */
 
 /*!
-    \property QWaylandQuickItem::paintEnabled
+    \property WaylandQuickItem::paintEnabled
 
     Holds \c true if the item is hidden, though the texture
     is still updated. As opposed to hiding the item by
     setting \l{QQuickItem::}{visible} to \c false, setting this property to \c false
     will not prevent mouse or keyboard input from reaching item.
 */
-bool QWaylandQuickItem::isPaintEnabled() const
+bool WaylandQuickItem::isPaintEnabled() const
 {
-    Q_D(const QWaylandQuickItem);
+    Q_D(const WaylandQuickItem);
     return d->paintEnabled;
 }
 
-void QWaylandQuickItem::setPaintEnabled(bool enabled)
+void WaylandQuickItem::setPaintEnabled(bool enabled)
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
 
     if (enabled != d->paintEnabled) {
         d->paintEnabled = enabled;
@@ -1349,20 +1351,20 @@ void QWaylandQuickItem::setPaintEnabled(bool enabled)
 */
 
 /*!
-    \property QWaylandQuickItem::touchEventsEnabled
+    \property WaylandQuickItem::touchEventsEnabled
 
     This property holds \c true if touch events are forwarded to the client
     surface, \c false otherwise.
 */
-bool QWaylandQuickItem::touchEventsEnabled() const
+bool WaylandQuickItem::touchEventsEnabled() const
 {
-    Q_D(const QWaylandQuickItem);
+    Q_D(const WaylandQuickItem);
     return d->touchEventsEnabled;
 }
 
-void QWaylandQuickItem::updateBuffer(bool hasBuffer)
+void WaylandQuickItem::updateBuffer(bool hasBuffer)
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     Q_UNUSED(hasBuffer);
     if (d->origin != surface()->origin()) {
         d->origin = surface()->origin();
@@ -1370,27 +1372,27 @@ void QWaylandQuickItem::updateBuffer(bool hasBuffer)
     }
 }
 
-void QWaylandQuickItem::updateWindow()
+void WaylandQuickItem::updateWindow()
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
 
     QQuickWindow *newWindow = window();
     if (newWindow == d->connectedWindow)
         return;
 
     if (d->connectedWindow) {
-        disconnect(d->connectedWindow, &QQuickWindow::beforeSynchronizing, this, &QWaylandQuickItem::beforeSync);
-        disconnect(d->connectedWindow, &QQuickWindow::screenChanged, this, &QWaylandQuickItem::updateSize);
+        disconnect(d->connectedWindow, &QQuickWindow::beforeSynchronizing, this, &WaylandQuickItem::beforeSync);
+        disconnect(d->connectedWindow, &QQuickWindow::screenChanged, this, &WaylandQuickItem::updateSize);
     }
 
     d->connectedWindow = newWindow;
 
     if (d->connectedWindow) {
-        connect(d->connectedWindow, &QQuickWindow::beforeSynchronizing, this, &QWaylandQuickItem::beforeSync, Qt::DirectConnection);
-        connect(d->connectedWindow, &QQuickWindow::screenChanged, this, &QWaylandQuickItem::updateSize); // new screen may have new dpr
+        connect(d->connectedWindow, &QQuickWindow::beforeSynchronizing, this, &WaylandQuickItem::beforeSync, Qt::DirectConnection);
+        connect(d->connectedWindow, &QQuickWindow::screenChanged, this, &WaylandQuickItem::updateSize); // new screen may have new dpr
 
         if (compositor()) {
-            QWaylandOutput *output = compositor()->outputFor(d->connectedWindow);
+            WaylandOutput *output = compositor()->outputFor(d->connectedWindow);
             Q_ASSERT(output);
             d->view->setOutput(output);
         }
@@ -1399,26 +1401,26 @@ void QWaylandQuickItem::updateWindow()
     }
 }
 
-void QWaylandQuickItem::updateOutput()
+void WaylandQuickItem::updateOutput()
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     if (d->view->output() == d->connectedOutput)
         return;
 
     if (d->connectedOutput)
-        disconnect(d->connectedOutput, &QWaylandOutput::scaleFactorChanged, this, &QWaylandQuickItem::updateSize);
+        disconnect(d->connectedOutput, &WaylandOutput::scaleFactorChanged, this, &WaylandQuickItem::updateSize);
 
     d->connectedOutput = d->view->output();
 
     if (d->connectedOutput)
-        connect(d->connectedOutput, &QWaylandOutput::scaleFactorChanged, this, &QWaylandQuickItem::updateSize);
+        connect(d->connectedOutput, &WaylandOutput::scaleFactorChanged, this, &WaylandQuickItem::updateSize);
 
     updateSize();
 }
 
-void QWaylandQuickItem::beforeSync()
+void WaylandQuickItem::beforeSync()
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     if (d->view->advance()) {
         d->newTexture = true;
         update();
@@ -1426,9 +1428,9 @@ void QWaylandQuickItem::beforeSync()
 }
 
 #if QT_CONFIG(im)
-void QWaylandQuickItem::updateInputMethod(Qt::InputMethodQueries queries)
+void WaylandQuickItem::updateInputMethod(Qt::InputMethodQueries queries)
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
 
     setFlag(QQuickItem::ItemAcceptsInputMethod,
             d->oldSurface ? d->oldSurface->inputMethodControl()->enabled() : false);
@@ -1450,21 +1452,21 @@ void QWaylandQuickItem::updateInputMethod(Qt::InputMethodQueries queries)
  */
 
 /*!
- * \fn void QWaylandQuickItem::surfaceDestroyed()
+ * \fn void WaylandQuickItem::surfaceDestroyed()
  *
  * This signal is emitted when the client has destroyed the \c wl_surface associated
- * with the QWaylandQuickItem. The handler for this signal is expected to either destroy the
- * QWaylandQuickItem immediately or start a close animation and then destroy the Item.
+ * with the WaylandQuickItem. The handler for this signal is expected to either destroy the
+ * WaylandQuickItem immediately or start a close animation and then destroy the Item.
  *
  * If an animation is started, bufferLocked should be set to ensure the item keeps its content
  * until the animation finishes
  *
- * \sa QWaylandQuickItem::bufferLocked
+ * \sa WaylandQuickItem::bufferLocked
  */
 
-QSGNode *QWaylandQuickItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data)
+QSGNode *WaylandQuickItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data)
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     d->lastMatrix = data->transformNode->combinedMatrix();
     const bool bufferHasContent = d->view->currentBuffer().hasContent();
 
@@ -1476,8 +1478,8 @@ QSGNode *QWaylandQuickItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeDat
         return nullptr;
     }
 
-    QWaylandBufferRef ref = d->view->currentBuffer();
-    const bool invertY = ref.origin() == QWaylandSurface::OriginBottomLeft;
+    WaylandBufferRef ref = d->view->currentBuffer();
+    const bool invertY = ref.origin() == WaylandSurface::OriginBottomLeft;
     const QRectF rect = invertY ? QRectF(0, height(), width(), -height())
                                 : QRectF(0, 0, width(), height());
 
@@ -1505,7 +1507,7 @@ QSGNode *QWaylandQuickItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeDat
         }
 
         if (!d->provider)
-            d->provider = new QWaylandSurfaceTextureProvider();
+            d->provider = new WaylandSurfaceTextureProvider();
 
         if (d->newTexture) {
             d->newTexture = false;
@@ -1541,13 +1543,13 @@ QSGNode *QWaylandQuickItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeDat
     }
 
     QSGGeometry *geometry = node->geometry();
-    QWaylandBufferMaterial *material = static_cast<QWaylandBufferMaterial *>(node->material());
+    WaylandBufferMaterial *material = static_cast<WaylandBufferMaterial *>(node->material());
 
     if (!geometry)
         geometry = new QSGGeometry(QSGGeometry::defaultAttributes_TexturedPoint2D(), 4);
 
     if (!material)
-        material = new QWaylandBufferMaterial(ref.bufferFormatEgl());
+        material = new WaylandBufferMaterial(ref.bufferFormatEgl());
 
     if (d->newTexture) {
         d->newTexture = false;
@@ -1579,24 +1581,24 @@ QSGNode *QWaylandQuickItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeDat
 #endif // QT_CONFIG(opengl)
 }
 
-void QWaylandQuickItem::setTouchEventsEnabled(bool enabled)
+void WaylandQuickItem::setTouchEventsEnabled(bool enabled)
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     if (d->touchEventsEnabled != enabled) {
         d->touchEventsEnabled = enabled;
         emit touchEventsEnabledChanged();
     }
 }
 
-bool QWaylandQuickItem::inputEventsEnabled() const
+bool WaylandQuickItem::inputEventsEnabled() const
 {
-    Q_D(const QWaylandQuickItem);
+    Q_D(const WaylandQuickItem);
     return d->inputEventsEnabled;
 }
 
-void QWaylandQuickItem::setInputEventsEnabled(bool enabled)
+void WaylandQuickItem::setInputEventsEnabled(bool enabled)
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     if (d->inputEventsEnabled != enabled) {
         if (enabled)
             setEnabled(true);
@@ -1605,15 +1607,15 @@ void QWaylandQuickItem::setInputEventsEnabled(bool enabled)
     }
 }
 
-void QWaylandQuickItem::lower()
+void WaylandQuickItem::lower()
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     d->lower();
 }
 
-void QWaylandQuickItemPrivate::lower()
+void WaylandQuickItemPrivate::lower()
 {
-    Q_Q(QWaylandQuickItem);
+    Q_Q(WaylandQuickItem);
     QQuickItem *parent = q->parentItem();
     Q_ASSERT(parent);
     QQuickItem *bottom = parent->childItems().constFirst();
@@ -1621,15 +1623,15 @@ void QWaylandQuickItemPrivate::lower()
         q->stackBefore(bottom);
 }
 
-void QWaylandQuickItem::raise()
+void WaylandQuickItem::raise()
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     d->raise();
 }
 
-void QWaylandQuickItemPrivate::raise()
+void WaylandQuickItemPrivate::raise()
 {
-    Q_Q(QWaylandQuickItem);
+    Q_Q(WaylandQuickItem);
     QQuickItem *parent = q->parentItem();
     Q_ASSERT(parent);
     QQuickItem *top = parent->childItems().constLast();
@@ -1637,7 +1639,7 @@ void QWaylandQuickItemPrivate::raise()
         q->stackAfter(top);
 }
 
-void QWaylandQuickItem::sendMouseMoveEvent(const QPointF &position, QWaylandSeat *seat)
+void WaylandQuickItem::sendMouseMoveEvent(const QPointF &position, WaylandSeat *seat)
 {
     if (seat == nullptr)
         seat = compositor()->defaultSeat();
@@ -1655,23 +1657,23 @@ void QWaylandQuickItem::sendMouseMoveEvent(const QPointF &position, QWaylandSeat
  *
  * Sets the position of this item relative to the parent item.
  */
-void QWaylandQuickItem::handleSubsurfacePosition(const QPoint &pos)
+void WaylandQuickItem::handleSubsurfacePosition(const QPoint &pos)
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     QQuickItem::setPosition(pos * d->scaleFactor());
 }
 
 #if QT_CONFIG(draganddrop)
-void QWaylandQuickItem::handleDragStarted(QWaylandDrag *drag)
+void WaylandQuickItem::handleDragStarted(WaylandDrag *drag)
 {
-    Q_D(QWaylandQuickItem);
+    Q_D(WaylandQuickItem);
     Q_ASSERT(drag->origin() == surface());
     drag->seat()->setMouseFocus(nullptr);
     d->isDragging = true;
 }
 #endif
 
-qreal QWaylandQuickItemPrivate::scaleFactor() const
+qreal WaylandQuickItemPrivate::scaleFactor() const
 {
     qreal f = view->output() ? view->output()->scaleFactor() : 1;
 #if !defined(Q_OS_MACOS)
@@ -1681,48 +1683,48 @@ qreal QWaylandQuickItemPrivate::scaleFactor() const
     return f;
 }
 
-QWaylandQuickItem *QWaylandQuickItemPrivate::findSibling(QWaylandSurface *surface) const
+WaylandQuickItem *WaylandQuickItemPrivate::findSibling(WaylandSurface *surface) const
 {
-    Q_Q(const QWaylandQuickItem);
+    Q_Q(const WaylandQuickItem);
     auto *parent = q->parentItem();
     if (!parent)
         return nullptr;
 
     const auto siblings = q->parentItem()->childItems();
     for (auto *sibling : siblings) {
-        auto *waylandItem = qobject_cast<QWaylandQuickItem *>(sibling);
+        auto *waylandItem = qobject_cast<WaylandQuickItem *>(sibling);
         if (waylandItem && waylandItem->surface() == surface)
             return waylandItem;
     }
     return nullptr;
 }
 
-void QWaylandQuickItemPrivate::placeAboveSibling(QWaylandQuickItem *sibling)
+void WaylandQuickItemPrivate::placeAboveSibling(WaylandQuickItem *sibling)
 {
-    Q_Q(QWaylandQuickItem);
+    Q_Q(WaylandQuickItem);
     q->stackAfter(sibling);
     q->setZ(sibling->z());
     belowParent = sibling->d_func()->belowParent;
 }
 
-void QWaylandQuickItemPrivate::placeBelowSibling(QWaylandQuickItem *sibling)
+void WaylandQuickItemPrivate::placeBelowSibling(WaylandQuickItem *sibling)
 {
-    Q_Q(QWaylandQuickItem);
+    Q_Q(WaylandQuickItem);
     q->stackBefore(sibling);
     q->setZ(sibling->z());
     belowParent = sibling->d_func()->belowParent;
 }
 
 //### does not handle changes in z value if parent is a subsurface
-void QWaylandQuickItemPrivate::placeAboveParent()
+void WaylandQuickItemPrivate::placeAboveParent()
 {
-    Q_Q(QWaylandQuickItem);
+    Q_Q(WaylandQuickItem);
     const auto siblings = q->parentItem()->childItems();
 
     // Stack below first (bottom) sibling above parent
     bool foundSibling = false;
     for (auto it = siblings.cbegin(); it != siblings.cend(); ++it) {
-        QWaylandQuickItem *sibling = qobject_cast<QWaylandQuickItem*>(*it);
+        WaylandQuickItem *sibling = qobject_cast<WaylandQuickItem*>(*it);
         if (sibling && !sibling->d_func()->belowParent) {
             q->stackBefore(sibling);
             foundSibling = true;
@@ -1739,15 +1741,15 @@ void QWaylandQuickItemPrivate::placeAboveParent()
 }
 
 //### does not handle changes in z value if parent is a subsurface
-void QWaylandQuickItemPrivate::placeBelowParent()
+void WaylandQuickItemPrivate::placeBelowParent()
 {
-    Q_Q(QWaylandQuickItem);
+    Q_Q(WaylandQuickItem);
     const auto siblings = q->parentItem()->childItems();
 
     // Stack above last (top) sibling below parent
     bool foundSibling = false;
     for (auto it = siblings.crbegin(); it != siblings.crend(); ++it) {
-        QWaylandQuickItem *sibling = qobject_cast<QWaylandQuickItem*>(*it);
+        WaylandQuickItem *sibling = qobject_cast<WaylandQuickItem*>(*it);
         if (sibling && sibling->d_func()->belowParent) {
             q->stackAfter(sibling);
             foundSibling = true;
@@ -1763,4 +1765,6 @@ void QWaylandQuickItemPrivate::placeBelowParent()
     belowParent = true;
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

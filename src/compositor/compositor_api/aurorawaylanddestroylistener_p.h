@@ -27,44 +27,48 @@
 **
 ****************************************************************************/
 
-#ifndef QTWAYLAND_QWLLISTENER_H
-#define QTWAYLAND_QWLLISTENER_H
+#ifndef AURORA_WAYLAND_DESTROYLISTENER_P_H
+#define AURORA_WAYLAND_DESTROYLISTENER_P_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWaylandCompositor/QWaylandDestroyListener>
+#include <LiriAuroraCompositor/WaylandDestroyListener>
 
 #include <QtCore/private/qobject_p.h>
 
 #include <wayland-server-core.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandDestroyListenerPrivate : public QObjectPrivate
+namespace Compositor {
+
+class WaylandDestroyListenerPrivate : public QObjectPrivate
 {
 public:
-    Q_DECLARE_PUBLIC(QWaylandDestroyListener)
+    Q_DECLARE_PUBLIC(WaylandDestroyListener)
 
-    QWaylandDestroyListenerPrivate();
+    WaylandDestroyListenerPrivate();
 
     static void handler(wl_listener *listener, void *data);
 
     struct Listener {
         wl_listener listener;
-        QWaylandDestroyListenerPrivate *parent = nullptr;
+        WaylandDestroyListenerPrivate *parent = nullptr;
     };
     Listener listener;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif
+} // namespace Aurora
+
+#endif // AURORA_WAYLAND_DESTROYLISTENER_P_H

@@ -31,7 +31,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#include <QtWaylandCompositor/QWaylandOutput>
+#include <LiriAuroraCompositor/WaylandOutput>
 
 #include "xwaylandquickshellintegration.h"
 #include "xwaylandquickshellsurfaceitem.h"

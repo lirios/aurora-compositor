@@ -27,47 +27,49 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDSURFACEVIEW_H
-#define QWAYLANDSURFACEVIEW_H
+#ifndef AURORA_COMPOSITOR_WAYLANDSURFACEVIEW_H
+#define AURORA_COMPOSITOR_WAYLANDSURFACEVIEW_H
 
-#include <QtWaylandCompositor/QWaylandBufferRef>
-#include <QtWaylandCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/WaylandBufferRef>
+#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
 
 #include <QtCore/QPointF>
 #include <QtCore/QObject>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandSurface;
-class QWaylandViewPrivate;
-class QWaylandOutput;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandView : public QObject
+class WaylandSurface;
+class WaylandViewPrivate;
+class WaylandOutput;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandView : public QObject
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandView)
+    Q_DECLARE_PRIVATE(WaylandView)
     Q_PROPERTY(QObject *renderObject READ renderObject CONSTANT)
-    Q_PROPERTY(QWaylandSurface *surface READ surface WRITE setSurface NOTIFY surfaceChanged)
-    Q_PROPERTY(QWaylandOutput *output READ output WRITE setOutput NOTIFY outputChanged)
+    Q_PROPERTY(WaylandSurface *surface READ surface WRITE setSurface NOTIFY surfaceChanged)
+    Q_PROPERTY(WaylandOutput *output READ output WRITE setOutput NOTIFY outputChanged)
     Q_PROPERTY(bool bufferLocked READ isBufferLocked WRITE setBufferLocked NOTIFY bufferLockedChanged)
     Q_PROPERTY(bool allowDiscardFrontBuffer READ allowDiscardFrontBuffer WRITE setAllowDiscardFrontBuffer NOTIFY allowDiscardFrontBufferChanged)
-    Q_MOC_INCLUDE("qwaylandoutput.h")
+    Q_MOC_INCLUDE("aurorawaylandoutput.h")
 public:
-    QWaylandView(QObject *renderObject = nullptr, QObject *parent = nullptr);
-    ~QWaylandView() override;
+    WaylandView(QObject *renderObject = nullptr, QObject *parent = nullptr);
+    ~WaylandView() override;
 
     QObject *renderObject() const;
 
-    QWaylandSurface *surface() const;
-    void setSurface(QWaylandSurface *surface);
+    WaylandSurface *surface() const;
+    void setSurface(WaylandSurface *surface);
 
-    QWaylandOutput *output() const;
-    void setOutput(QWaylandOutput *output);
+    WaylandOutput *output() const;
+    void setOutput(WaylandOutput *output);
 
-    virtual void bufferCommitted(const QWaylandBufferRef &buffer, const QRegion &damage);
+    virtual void bufferCommitted(const WaylandBufferRef &buffer, const QRegion &damage);
     virtual bool advance();
     virtual void discardCurrentBuffer();
-    virtual QWaylandBufferRef currentBuffer();
+    virtual WaylandBufferRef currentBuffer();
     virtual QRegion currentDamage();
 
     bool isBufferLocked() const;
@@ -89,6 +91,8 @@ Q_SIGNALS:
     void allowDiscardFrontBufferChanged();
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif

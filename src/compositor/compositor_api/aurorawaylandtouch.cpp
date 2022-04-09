@@ -27,32 +27,34 @@
 **
 ****************************************************************************/
 
-#include "qwaylandtouch.h"
-#include "qwaylandtouch_p.h"
+#include "aurorawaylandtouch.h"
+#include "aurorawaylandtouch_p.h"
 
-#include <QtWaylandCompositor/QWaylandCompositor>
-#include <QtWaylandCompositor/QWaylandSeat>
-#include <QtWaylandCompositor/QWaylandView>
-#include <QtWaylandCompositor/QWaylandClient>
+#include <LiriAuroraCompositor/WaylandCompositor>
+#include <LiriAuroraCompositor/WaylandSeat>
+#include <LiriAuroraCompositor/WaylandView>
+#include <LiriAuroraCompositor/WaylandClient>
 
-#include <QtWaylandCompositor/private/qwlqttouch_p.h>
+#include <LiriAuroraCompositor/private/aurorawlqttouch_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-QWaylandTouchPrivate::QWaylandTouchPrivate(QWaylandTouch *touch, QWaylandSeat *seat)
+namespace Compositor {
+
+WaylandTouchPrivate::WaylandTouchPrivate(WaylandTouch *touch, WaylandSeat *seat)
     : seat(seat)
 {
     Q_UNUSED(touch);
 }
 
-void QWaylandTouchPrivate::touch_release(Resource *resource)
+void WaylandTouchPrivate::touch_release(Resource *resource)
 {
     wl_resource_destroy(resource->handle);
 }
 
-uint QWaylandTouchPrivate::sendDown(QWaylandSurface *surface, uint32_t time, int touch_id, const QPointF &position)
+uint WaylandTouchPrivate::sendDown(WaylandSurface *surface, uint32_t time, int touch_id, const QPointF &position)
 {
-    Q_Q(QWaylandTouch);
+    Q_Q(WaylandTouch);
     auto focusResource = resourceMap().value(surface->client()->client());
     if (!focusResource)
         return 0;
@@ -64,7 +66,7 @@ uint QWaylandTouchPrivate::sendDown(QWaylandSurface *surface, uint32_t time, int
     return serial;
 }
 
-uint QWaylandTouchPrivate::sendUp(QWaylandClient *client, uint32_t time, int touch_id)
+uint WaylandTouchPrivate::sendUp(WaylandClient *client, uint32_t time, int touch_id)
 {
     auto focusResource = resourceMap().value(client->client());
 
@@ -77,7 +79,7 @@ uint QWaylandTouchPrivate::sendUp(QWaylandClient *client, uint32_t time, int tou
     return serial;
 }
 
-void QWaylandTouchPrivate::sendMotion(QWaylandClient *client, uint32_t time, int touch_id, const QPointF &position)
+void WaylandTouchPrivate::sendMotion(WaylandClient *client, uint32_t time, int touch_id, const QPointF &position)
 {
     auto focusResource = resourceMap().value(client->client());
 
@@ -88,7 +90,7 @@ void QWaylandTouchPrivate::sendMotion(QWaylandClient *client, uint32_t time, int
                          wl_fixed_from_double(position.x()), wl_fixed_from_double(position.y()));
 }
 
-int QWaylandTouchPrivate::toSequentialWaylandId(int touchId)
+int WaylandTouchPrivate::toSequentialWaylandId(int touchId)
 {
     const int waylandId = ids.indexOf(touchId);
     if (waylandId != -1)
@@ -103,38 +105,38 @@ int QWaylandTouchPrivate::toSequentialWaylandId(int touchId)
 }
 
 /*!
- * \class QWaylandTouch
+ * \class WaylandTouch
  * \inmodule QtWaylandCompositor
  * \since 5.8
- * \brief The QWaylandTouch class provides access to a touch device.
+ * \brief The WaylandTouch class provides access to a touch device.
  *
- * This class provides access to the touch device in a QWaylandSeat. It corresponds to
+ * This class provides access to the touch device in a WaylandSeat. It corresponds to
  * the Wayland interface wl_touch.
  */
 
 /*!
- * Constructs a QWaylandTouch for the \a seat and with the given \a parent.
+ * Constructs a WaylandTouch for the \a seat and with the given \a parent.
  */
-QWaylandTouch::QWaylandTouch(QWaylandSeat *seat, QObject *parent)
-    : QWaylandObject(*new QWaylandTouchPrivate(this, seat), parent)
+WaylandTouch::WaylandTouch(WaylandSeat *seat, QObject *parent)
+    : WaylandObject(*new WaylandTouchPrivate(this, seat), parent)
 {
 }
 
 /*!
- * Returns the input device for this QWaylandTouch.
+ * Returns the input device for this WaylandTouch.
  */
-QWaylandSeat *QWaylandTouch::seat() const
+WaylandSeat *WaylandTouch::seat() const
 {
-    Q_D(const QWaylandTouch);
+    Q_D(const WaylandTouch);
     return d->seat;
 }
 
 /*!
- * Returns the compositor for this QWaylandTouch.
+ * Returns the compositor for this WaylandTouch.
  */
-QWaylandCompositor *QWaylandTouch::compositor() const
+WaylandCompositor *WaylandTouch::compositor() const
 {
-    Q_D(const QWaylandTouch);
+    Q_D(const WaylandTouch);
     return d->compositor();
 }
 
@@ -144,9 +146,9 @@ QWaylandCompositor *QWaylandTouch::compositor() const
  *
  * Returns the serial of the down or up event if sent, otherwise 0.
  */
-uint QWaylandTouch::sendTouchPointEvent(QWaylandSurface *surface, int id, const QPointF &position, Qt::TouchPointState state)
+uint WaylandTouch::sendTouchPointEvent(WaylandSurface *surface, int id, const QPointF &position, Qt::TouchPointState state)
 {
-    Q_D(QWaylandTouch);
+    Q_D(WaylandTouch);
     uint32_t time = compositor()->currentTimeMsecs();
     uint serial = 0;
     switch (state) {
@@ -174,9 +176,9 @@ uint QWaylandTouch::sendTouchPointEvent(QWaylandSurface *surface, int id, const 
  * Sends a touch frame event to the touch device of a \a client. This indicates the end of a
  * contact point list.
  */
-void QWaylandTouch::sendFrameEvent(QWaylandClient *client)
+void WaylandTouch::sendFrameEvent(WaylandClient *client)
 {
-    Q_D(QWaylandTouch);
+    Q_D(WaylandTouch);
     auto focusResource = d->resourceMap().value(client->client());
     if (focusResource)
         d->send_frame(focusResource->handle);
@@ -185,9 +187,9 @@ void QWaylandTouch::sendFrameEvent(QWaylandClient *client)
 /*!
  * Sends a touch cancel event to the touch device of a \a client.
  */
-void QWaylandTouch::sendCancelEvent(QWaylandClient *client)
+void WaylandTouch::sendCancelEvent(WaylandClient *client)
 {
-    Q_D(QWaylandTouch);
+    Q_D(WaylandTouch);
     auto focusResource = d->resourceMap().value(client->client());
     if (focusResource)
         d->send_cancel(focusResource->handle);
@@ -199,9 +201,9 @@ void QWaylandTouch::sendCancelEvent(QWaylandClient *client)
  *
  * \sa sendTouchPointEvent(), sendFrameEvent()
  */
-void QWaylandTouch::sendFullTouchEvent(QWaylandSurface *surface, QTouchEvent *event)
+void WaylandTouch::sendFullTouchEvent(WaylandSurface *surface, QTouchEvent *event)
 {
-    Q_D(QWaylandTouch);
+    Q_D(WaylandTouch);
     if (event->type() == QEvent::TouchCancel) {
         sendCancelEvent(surface->client());
         return;
@@ -230,10 +232,12 @@ void QWaylandTouch::sendFullTouchEvent(QWaylandSurface *surface, QTouchEvent *ev
 /*!
  * \internal
  */
-void QWaylandTouch::addClient(QWaylandClient *client, uint32_t id, uint32_t version)
+void WaylandTouch::addClient(WaylandClient *client, uint32_t id, uint32_t version)
 {
-    Q_D(QWaylandTouch);
-    d->add(client->client(), id, qMin<uint32_t>(QtWaylandServer::wl_touch::interfaceVersion(), version));
+    Q_D(WaylandTouch);
+    d->add(client->client(), id, qMin<uint32_t>(PrivateServer::wl_touch::interfaceVersion(), version));
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

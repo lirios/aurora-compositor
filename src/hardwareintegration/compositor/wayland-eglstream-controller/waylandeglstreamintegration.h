@@ -29,11 +29,13 @@
 #ifndef WAYLANDEGLSTREAMINTEGRATION_H
 #define WAYLANDEGLSTREAMINTEGRATION_H
 
-#include <QtWaylandCompositor/private/qwlclientbufferintegration_p.h>
+#include <LiriAuroraCompositor/private/aurorawlclientbufferintegration_p.h>
 #include <QtCore/QScopedPointer>
-#include <QtWaylandCompositor/private/qwlclientbuffer_p.h>
+#include <LiriAuroraCompositor/private/aurorawlclientbuffer_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 class WaylandEglStreamClientBufferIntegrationPrivate;
 
@@ -62,9 +64,9 @@ class WaylandEglStreamClientBuffer : public QtWayland::ClientBuffer
 public:
     ~WaylandEglStreamClientBuffer() override;
 
-    QWaylandBufferRef::BufferFormatEgl bufferFormatEgl() const override;
+    WaylandBufferRef::BufferFormatEgl bufferFormatEgl() const override;
     QSize size() const override;
-    QWaylandSurface::Origin origin() const override;
+    WaylandSurface::Origin origin() const override;
     QOpenGLTexture *toOpenGlTexture(int plane) override;
     void setCommitted(QRegion &damage) override;
 
@@ -78,6 +80,8 @@ private:
     WaylandEglStreamClientBufferIntegration *m_integration = nullptr;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif // WAYLANDEGLSTREAMINTEGRATION_H

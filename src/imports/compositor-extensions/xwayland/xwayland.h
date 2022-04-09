@@ -28,7 +28,7 @@
 #include <QtCore/QLoggingCategory>
 #include <QtQml/QQmlParserStatus>
 
-#include <QtWaylandCompositor/QWaylandSurface>
+#include <LiriAuroraCompositor/WaylandSurface>
 
 Q_DECLARE_LOGGING_CATEGORY(XWAYLAND)
 Q_DECLARE_LOGGING_CATEGORY(XWAYLAND_TRACE)
@@ -41,7 +41,7 @@ class XWayland : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
-    Q_PROPERTY(QWaylandCompositor *compositor READ compositor WRITE setCompositor NOTIFY compositorChanged)
+    Q_PROPERTY(WaylandCompositor *compositor READ compositor WRITE setCompositor NOTIFY compositorChanged)
     Q_PROPERTY(XWaylandManager *manager READ manager WRITE setManager NOTIFY managerChanged)
     Q_PROPERTY(QString displayName READ displayName NOTIFY displayNameChanged)
     Q_INTERFACES(QQmlParserStatus)
@@ -51,8 +51,8 @@ public:
     bool isEnabled() const;
     void setEnabled(bool enabled);
 
-    QWaylandCompositor *compositor() const;
-    void setCompositor(QWaylandCompositor *compositor);
+    WaylandCompositor *compositor() const;
+    void setCompositor(WaylandCompositor *compositor);
 
     XWaylandManager *manager() const;
     void setManager(XWaylandManager *manager);
@@ -75,10 +75,10 @@ Q_SIGNALS:
 
 private Q_SLOTS:
     void handleServerStarted(const QString &displayName);
-    void handleSurfaceCreated(QWaylandSurface *surface);
+    void handleSurfaceCreated(WaylandSurface *surface);
 
 private:
-    QWaylandCompositor *m_compositor;
+    WaylandCompositor *m_compositor;
     bool m_enabled;
     bool m_initialized;
     XWaylandServer *m_server;

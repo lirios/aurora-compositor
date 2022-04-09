@@ -46,7 +46,7 @@
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <QtWaylandCompositor/QWaylandCompositor>
+#include <LiriAuroraCompositor/WaylandCompositor>
 
 #include "xcbwrapper.h"
 #include "xcbproperties.h"
@@ -153,17 +153,17 @@ void XWaylandShellSurface::setSurfaceId(quint32 id)
     m_surfaceId = id;
 }
 
-QWaylandSurface *XWaylandShellSurface::surface() const
+WaylandSurface *XWaylandShellSurface::surface() const
 {
     return m_surface;
 }
 
-void XWaylandShellSurface::setSurface(QWaylandSurface *surface)
+void XWaylandShellSurface::setSurface(WaylandSurface *surface)
 {
     if (m_surface) {
-        disconnect(m_wm->compositor(), &QWaylandCompositor::defaultSeatChanged,
+        disconnect(m_wm->compositor(), &WaylandCompositor::defaultSeatChanged,
                 this, &XWaylandShellSurface::handleSeatChanged);
-        disconnect(m_surface, &QWaylandSurface::surfaceDestroyed,
+        disconnect(m_surface, &WaylandSurface::surfaceDestroyed,
                    this, &XWaylandShellSurface::handleSurfaceDestroyed);
     }
 
@@ -171,7 +171,7 @@ void XWaylandShellSurface::setSurface(QWaylandSurface *surface)
     Q_EMIT surfaceChanged();
 
     if (m_surface) {
-        connect(m_surface, &QWaylandSurface::surfaceDestroyed,
+        connect(m_surface, &WaylandSurface::surfaceDestroyed,
                 this, &XWaylandShellSurface::handleSurfaceDestroyed);
 
         qCDebug(XWAYLAND) << "Assign surface" << surface << "to shell surface for" << m_window;
@@ -180,7 +180,7 @@ void XWaylandShellSurface::setSurface(QWaylandSurface *surface)
         Q_EMIT m_wm->shellSurfaceCreated(this);
 
         handleSeatChanged(m_wm->compositor()->defaultSeat(), nullptr);
-        connect(m_wm->compositor(), &QWaylandCompositor::defaultSeatChanged,
+        connect(m_wm->compositor(), &WaylandCompositor::defaultSeatChanged,
                 this, &XWaylandShellSurface::handleSeatChanged);
 
         Q_EMIT mapped();
@@ -640,7 +640,7 @@ void XWaylandShellSurface::sendResize(const QSizeF &size)
     xcb_flush(Xcb::connection());
 }
 
-void XWaylandShellSurface::maximize(QWaylandOutput *output)
+void XWaylandShellSurface::maximize(WaylandOutput *output)
 {
     Q_UNUSED(output);
 
@@ -701,18 +701,18 @@ xcb_window_t XWaylandShellSurface::window() const
     return m_window;
 }
 
-void XWaylandShellSurface::handleSeatChanged(QWaylandSeat *newSeat, QWaylandSeat *oldSeat)
+void XWaylandShellSurface::handleSeatChanged(WaylandSeat *newSeat, WaylandSeat *oldSeat)
 {
     if (oldSeat)
-        disconnect(oldSeat, &QWaylandSeat::keyboardFocusChanged,
+        disconnect(oldSeat, &WaylandSeat::keyboardFocusChanged,
                    this, &XWaylandShellSurface::handleFocusChanged);
 
     if (newSeat)
-        connect(newSeat, &QWaylandSeat::keyboardFocusChanged,
+        connect(newSeat, &WaylandSeat::keyboardFocusChanged,
                 this, &XWaylandShellSurface::handleFocusChanged);
 }
 
-void XWaylandShellSurface::handleFocusChanged(QWaylandSurface *newSurface, QWaylandSurface *oldSurface)
+void XWaylandShellSurface::handleFocusChanged(WaylandSurface *newSurface, WaylandSurface *oldSurface)
 {
     XWaylandShellSurface *newShellSurface = m_wm->shellSurfaceFromSurface(newSurface);
     XWaylandShellSurface *oldShellSurface = m_wm->shellSurfaceFromSurface(oldSurface);

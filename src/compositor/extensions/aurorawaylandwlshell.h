@@ -27,41 +27,43 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDWLSHELL_H
-#define QWAYLANDWLSHELL_H
+#ifndef AURORA_COMPOSITOR_WAYLANDWLSHELL_H
+#define AURORA_COMPOSITOR_WAYLANDWLSHELL_H
 
-#include <QtWaylandCompositor/QWaylandCompositorExtension>
-#include <QtWaylandCompositor/QWaylandResource>
-#include <QtWaylandCompositor/QWaylandShell>
-#include <QtWaylandCompositor/QWaylandShellSurface>
-#include <QtWaylandCompositor/qwaylandquickchildren.h>
+#include <LiriAuroraCompositor/WaylandCompositorExtension>
+#include <LiriAuroraCompositor/WaylandResource>
+#include <LiriAuroraCompositor/WaylandShell>
+#include <LiriAuroraCompositor/WaylandShellSurface>
+#include <LiriAuroraCompositor/aurorawaylandquickchildren.h>
 
 #include <QtCore/QSize>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandWlShellPrivate;
-class QWaylandWlShellSurfacePrivate;
-class QWaylandSurface;
-class QWaylandClient;
-class QWaylandSeat;
-class QWaylandOutput;
-class QWaylandSurfaceRole;
-class QWaylandWlShellSurface;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandWlShell : public QWaylandShellTemplate<QWaylandWlShell>
+class WaylandWlShellPrivate;
+class WaylandWlShellSurfacePrivate;
+class WaylandSurface;
+class WaylandClient;
+class WaylandSeat;
+class WaylandOutput;
+class WaylandSurfaceRole;
+class WaylandWlShellSurface;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandWlShell : public WaylandShellTemplate<WaylandWlShell>
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandWlShell)
+    Q_DECLARE_PRIVATE(WaylandWlShell)
 public:
-    QWaylandWlShell();
-    QWaylandWlShell(QWaylandCompositor *compositor);
+    WaylandWlShell();
+    WaylandWlShell(WaylandCompositor *compositor);
 
     void initialize() override;
-    QList<QWaylandWlShellSurface *> shellSurfaces() const;
-    QList<QWaylandWlShellSurface *> shellSurfacesForClient(QWaylandClient* client) const;
-    QList<QWaylandWlShellSurface *> mappedPopups() const;
-    QWaylandClient *popupClient() const;
+    QList<WaylandWlShellSurface *> shellSurfaces() const;
+    QList<WaylandWlShellSurface *> shellSurfacesForClient(WaylandClient* client) const;
+    QList<WaylandWlShellSurface *> mappedPopups() const;
+    WaylandClient *popupClient() const;
 
     static const struct wl_interface *interface();
     static QByteArray interfaceName();
@@ -70,20 +72,20 @@ public Q_SLOTS:
     void closeAllPopups();
 
 Q_SIGNALS:
-    void wlShellSurfaceRequested(QWaylandSurface *surface, const QWaylandResource &resource);
-    void wlShellSurfaceCreated(QWaylandWlShellSurface *shellSurface);
+    void wlShellSurfaceRequested(WaylandSurface *surface, const WaylandResource &resource);
+    void wlShellSurfaceCreated(WaylandWlShellSurface *shellSurface);
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandWlShellSurface : public QWaylandShellSurfaceTemplate<QWaylandWlShellSurface>
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandWlShellSurface : public WaylandShellSurfaceTemplate<WaylandWlShellSurface>
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandWlShellSurface)
-    Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(QWaylandWlShellSurface)
-    Q_PROPERTY(QWaylandSurface *surface READ surface NOTIFY surfaceChanged)
-    Q_PROPERTY(QWaylandWlShell *shell READ shell NOTIFY shellChanged)
+    Q_DECLARE_PRIVATE(WaylandWlShellSurface)
+    Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandWlShellSurface)
+    Q_PROPERTY(WaylandSurface *surface READ surface NOTIFY surfaceChanged)
+    Q_PROPERTY(WaylandWlShell *shell READ shell NOTIFY shellChanged)
     Q_PROPERTY(QString title READ title NOTIFY titleChanged)
     Q_PROPERTY(QString className READ className NOTIFY classNameChanged)
-    Q_MOC_INCLUDE("qwaylandsurface.h")
+    Q_MOC_INCLUDE("aurorawaylandsurface.h")
 
 public:
     enum FullScreenMethod {
@@ -107,32 +109,32 @@ public:
     };
     Q_ENUM(ResizeEdge);
 
-    QWaylandWlShellSurface();
-    QWaylandWlShellSurface(QWaylandWlShell *shell, QWaylandSurface *surface, const QWaylandResource &resource);
-    ~QWaylandWlShellSurface() override;
+    WaylandWlShellSurface();
+    WaylandWlShellSurface(WaylandWlShell *shell, WaylandSurface *surface, const WaylandResource &resource);
+    ~WaylandWlShellSurface() override;
 
-    Q_INVOKABLE void initialize(QWaylandWlShell *shell, QWaylandSurface *surface, const QWaylandResource &resource);
+    Q_INVOKABLE void initialize(WaylandWlShell *shell, WaylandSurface *surface, const WaylandResource &resource);
 
     QString title() const;
     QString className() const;
 
-    QWaylandSurface *surface() const;
-    QWaylandWlShell *shell() const;
+    WaylandSurface *surface() const;
+    WaylandWlShell *shell() const;
 
     Qt::WindowType windowType() const override;
 
     static const struct wl_interface *interface();
     static QByteArray interfaceName();
-    static QWaylandSurfaceRole *role();
+    static WaylandSurfaceRole *role();
 
-    static QWaylandWlShellSurface *fromResource(wl_resource *res);
+    static WaylandWlShellSurface *fromResource(wl_resource *res);
 
     Q_INVOKABLE QSize sizeForResize(const QSizeF &size, const QPointF &delta, ResizeEdge edges);
     Q_INVOKABLE void sendConfigure(const QSize &size, ResizeEdge edges);
     Q_INVOKABLE void sendPopupDone();
 
 #if QT_CONFIG(wayland_compositor_quick)
-    QWaylandQuickShellIntegration *createIntegration(QWaylandQuickShellSurfaceItem *item) override;
+    WaylandQuickShellIntegration *createIntegration(WaylandQuickShellSurfaceItem *item) override;
 #endif
 
 public Q_SLOTS:
@@ -144,19 +146,21 @@ Q_SIGNALS:
     void titleChanged();
     void classNameChanged();
     void pong();
-    void startMove(QWaylandSeat *seat);
-    void startResize(QWaylandSeat *seat, ResizeEdge edges);
+    void startMove(WaylandSeat *seat);
+    void startResize(WaylandSeat *seat, ResizeEdge edges);
 
     void setDefaultToplevel();
-    void setTransient(QWaylandSurface *parentSurface, const QPoint &relativeToParent, bool inactive);
-    void setFullScreen(FullScreenMethod method, uint framerate, QWaylandOutput *output);
-    void setPopup(QWaylandSeat *seat, QWaylandSurface *parentSurface, const QPoint &relativeToParent);
-    void setMaximized(QWaylandOutput *output);
+    void setTransient(WaylandSurface *parentSurface, const QPoint &relativeToParent, bool inactive);
+    void setFullScreen(FullScreenMethod method, uint framerate, WaylandOutput *output);
+    void setPopup(WaylandSeat *seat, WaylandSurface *parentSurface, const QPoint &relativeToParent);
+    void setMaximized(WaylandOutput *output);
 
 private:
     void initialize() override;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif  /*QWAYLANDWLSHELL_H*/

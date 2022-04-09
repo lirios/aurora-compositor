@@ -30,13 +30,15 @@
 #include "linuxdmabuf.h"
 #include "linuxdmabufclientbufferintegration.h"
 
-#include <QtWaylandCompositor/QWaylandCompositor>
+#include <LiriAuroraCompositor/WaylandCompositor>
 
 #include <drm_fourcc.h>
 #include <drm_mode.h>
 #include <unistd.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 LinuxDmabuf::LinuxDmabuf(wl_display *display, LinuxDmabufClientBufferIntegration *clientBufferIntegration)
     : zwp_linux_dmabuf_v1(display, 3 /*version*/)
@@ -319,4 +321,6 @@ void LinuxDmabufWlBuffer::buffer_destroy_resource(Resource *resource)
     delete this;
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

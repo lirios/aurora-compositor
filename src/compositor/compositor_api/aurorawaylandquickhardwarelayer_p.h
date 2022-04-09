@@ -27,43 +27,45 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDQUICKHARDWARELAYER_P_H
-#define QWAYLANDQUICKHARDWARELAYER_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDQUICKHARDWARELAYER_P_H
+#define AURORA_COMPOSITOR_WAYLANDQUICKHARDWARELAYER_P_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWaylandCompositor/QWaylandQuickItem>
+#include <LiriAuroraCompositor/AuroraWaylandQuickItem>
 #include <QtCore/private/qglobal_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandQuickHardwareLayerPrivate;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandQuickHardwareLayer : public QObject, public QQmlParserStatus
+class WaylandQuickHardwareLayerPrivate;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandQuickHardwareLayer : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
-    Q_DECLARE_PRIVATE(QWaylandQuickHardwareLayer)
+    Q_DECLARE_PRIVATE(WaylandQuickHardwareLayer)
     Q_PROPERTY(int stackingLevel READ stackingLevel WRITE setStackingLevel NOTIFY stackingLevelChanged)
     QML_NAMED_ELEMENT(WaylandHardwareLayer)
     QML_ADDED_IN_VERSION(1, 2)
 public:
-    explicit QWaylandQuickHardwareLayer(QObject *parent = nullptr);
-    ~QWaylandQuickHardwareLayer() override;
+    explicit WaylandQuickHardwareLayer(QObject *parent = nullptr);
+    ~WaylandQuickHardwareLayer() override;
 
     int stackingLevel() const;
     void setStackingLevel(int level);
 
-    QWaylandQuickItem *waylandItem() const;
+    WaylandQuickItem *waylandItem() const;
 
     void classBegin() override;
     void componentComplete() override;
@@ -75,6 +77,8 @@ Q_SIGNALS:
     void stackingLevelChanged();
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDQUICKHARDWARELAYER_P_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDQUICKHARDWARELAYER_P_H

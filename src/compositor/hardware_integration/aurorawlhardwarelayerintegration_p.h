@@ -27,30 +27,32 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDHARDWARELAYERINTEGRATION_H
-#define QWAYLANDHARDWARELAYERINTEGRATION_H
+#ifndef AURORA_COMPOSITOR_WAYLANDHARDWARELAYERINTEGRATION_H
+#define AURORA_COMPOSITOR_WAYLANDHARDWARELAYERINTEGRATION_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWaylandCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
 
 #include <QObject>
 #include <private/qglobal_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 class QPoint;
 
-class QWaylandQuickHardwareLayer;
+class WaylandQuickHardwareLayer;
 
 namespace QtWayland {
 
@@ -62,12 +64,14 @@ public:
         : QObject(parent)
     {}
     ~HardwareLayerIntegration() override {}
-    virtual void add(QWaylandQuickHardwareLayer *) {}
-    virtual void remove(QWaylandQuickHardwareLayer *) {}
+    virtual void add(WaylandQuickHardwareLayer *) {}
+    virtual void remove(WaylandQuickHardwareLayer *) {}
 };
 
 } // namespace QtWayland
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDHARDWARELAYERINTEGRATION_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDHARDWARELAYERINTEGRATION_H

@@ -38,37 +38,39 @@
 #include <QMatrix4x4>
 #include <QRunnable>
 
-#include "qwaylandclient.h"
-#include "qwaylandquickcompositor.h"
-#include "qwaylandquicksurface.h"
-#include "qwaylandquickoutput.h"
-#include "qwaylandquickitem.h"
-#include "qwaylandoutput.h"
-#include <QtWaylandCompositor/private/qwaylandcompositor_p.h>
-#include <QtWaylandCompositor/QWaylandViewporter>
-#include "qwaylandsurfacegrabber.h"
+#include "aurorawaylandclient.h"
+#include "aurorawaylandquickcompositor.h"
+#include "aurorawaylandquicksurface.h"
+#include "aurorawaylandquickoutput.h"
+#include "aurorawaylandquickitem.h"
+#include "aurorawaylandoutput.h"
+#include <LiriAuroraCompositor/private/aurorawaylandcompositor_p.h>
+#include <LiriAuroraCompositor/WaylandViewporter>
+#include "aurorawaylandsurfacegrabber.h"
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandQuickCompositorPrivate : public QWaylandCompositorPrivate
+namespace Compositor {
+
+class WaylandQuickCompositorPrivate : public WaylandCompositorPrivate
 {
 public:
-    explicit QWaylandQuickCompositorPrivate(QWaylandCompositor *compositor)
-        : QWaylandCompositorPrivate(compositor)
-        , m_viewporter(new QWaylandViewporter(compositor))
+    explicit WaylandQuickCompositorPrivate(WaylandCompositor *compositor)
+        : WaylandCompositorPrivate(compositor)
+        , m_viewporter(new WaylandViewporter(compositor))
     {
     }
 protected:
-    QWaylandSurface *createDefaultSurface() override
+    WaylandSurface *createDefaultSurface() override
     {
-        return new QWaylandQuickSurface();
+        return new WaylandQuickSurface();
     }
 private:
-    QScopedPointer<QWaylandViewporter> m_viewporter;
+    QScopedPointer<WaylandViewporter> m_viewporter;
 };
 
-QWaylandQuickCompositor::QWaylandQuickCompositor(QObject *parent)
-    : QWaylandCompositor(*new QWaylandQuickCompositorPrivate(this), parent)
+WaylandQuickCompositor::WaylandQuickCompositor(QObject *parent)
+    : WaylandCompositor(*new WaylandQuickCompositorPrivate(this), parent)
 {
 }
 
@@ -83,7 +85,7 @@ QWaylandQuickCompositor::QWaylandQuickCompositor(QObject *parent)
  * surfaces in the compositor using the \c wl_shell interface.
  *
  * \qml
- * import QtWayland.Compositor
+ * import Aurora.Compositor
  *
  * WaylandCompositor {
  *     WlShell {
@@ -93,37 +95,37 @@ QWaylandQuickCompositor::QWaylandQuickCompositor(QObject *parent)
  * \endqml
  */
 
-void QWaylandQuickCompositor::create()
+void WaylandQuickCompositor::create()
 {
-    QWaylandCompositor::create();
+    WaylandCompositor::create();
 }
 
 
-void QWaylandQuickCompositor::classBegin()
+void WaylandQuickCompositor::classBegin()
 {
-    QWaylandCompositorPrivate::get(this)->preInit();
+    WaylandCompositorPrivate::get(this)->preInit();
 }
 
-void QWaylandQuickCompositor::componentComplete()
+void WaylandQuickCompositor::componentComplete()
 {
     create();
 }
 
 /*!
  * Grab the surface content from the given \a buffer.
- * Reimplemented from QWaylandCompositor::grabSurface.
+ * Reimplemented from WaylandCompositor::grabSurface.
  */
-void QWaylandQuickCompositor::grabSurface(QWaylandSurfaceGrabber *grabber, const QWaylandBufferRef &buffer)
+void WaylandQuickCompositor::grabSurface(WaylandSurfaceGrabber *grabber, const WaylandBufferRef &buffer)
 {
     if (buffer.isSharedMemory()) {
-        QWaylandCompositor::grabSurface(grabber, buffer);
+        WaylandCompositor::grabSurface(grabber, buffer);
         return;
     }
 
 #if QT_CONFIG(opengl)
-    QWaylandQuickOutput *output = static_cast<QWaylandQuickOutput *>(defaultOutput());
+    WaylandQuickOutput *output = static_cast<WaylandQuickOutput *>(defaultOutput());
     if (!output) {
-        emit grabber->failed(QWaylandSurfaceGrabber::RendererNotReady);
+        emit grabber->failed(WaylandSurfaceGrabber::RendererNotReady);
         return;
     }
 
@@ -132,8 +134,8 @@ void QWaylandQuickCompositor::grabSurface(QWaylandSurfaceGrabber *grabber, const
     class GrabState : public QRunnable
     {
     public:
-        QWaylandSurfaceGrabber *grabber = nullptr;
-        QWaylandBufferRef buffer;
+        WaylandSurfaceGrabber *grabber = nullptr;
+        WaylandBufferRef buffer;
 
         void run() override
         {
@@ -145,7 +147,7 @@ void QWaylandQuickCompositor::grabSurface(QWaylandSurfaceGrabber *grabber, const
             glViewport(0, 0, buffer.size().width(), buffer.size().height());
 
             QOpenGLTextureBlitter::Origin surfaceOrigin =
-                buffer.origin() == QWaylandSurface::OriginTopLeft
+                buffer.origin() == WaylandSurface::OriginTopLeft
                 ? QOpenGLTextureBlitter::OriginTopLeft
                 : QOpenGLTextureBlitter::OriginBottomLeft;
 
@@ -163,8 +165,10 @@ void QWaylandQuickCompositor::grabSurface(QWaylandSurfaceGrabber *grabber, const
     state->buffer = buffer;
     static_cast<QQuickWindow *>(output->window())->scheduleRenderJob(state, QQuickWindow::AfterRenderingStage);
 #else
-    emit grabber->failed(QWaylandSurfaceGrabber::UnknownBufferType);
+    emit grabber->failed(WaylandSurfaceGrabber::UnknownBufferType);
 #endif
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

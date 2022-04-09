@@ -37,22 +37,26 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDMIMEHELPER_H
-#define QWAYLANDMIMEHELPER_H
+#ifndef AURORA_COMPOSITOR_WAYLANDMIMEHELPER_H
+#define AURORA_COMPOSITOR_WAYLANDMIMEHELPER_H
 
 #include <QString>
 #include <QByteArray>
 #include <QMimeData>
 #include <private/qglobal_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandMimeHelper
+namespace Compositor {
+
+class WaylandMimeHelper
 {
 public:
     static QByteArray getByteArray(QMimeData *mimeData, const QString &mimeType);
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif

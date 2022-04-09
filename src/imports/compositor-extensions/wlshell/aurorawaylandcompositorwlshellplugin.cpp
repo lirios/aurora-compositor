@@ -30,15 +30,15 @@
 #include <QtQml/qqmlextensionplugin.h>
 #include <QtQml/qqml.h>
 
-#include <QtWaylandCompositor/qwaylandquickextension.h>
-#include <QtWaylandCompositor/qwaylandwlshell.h>
+#include <LiriAuroraCompositor/aurorawaylandquickextension.h>
+#include <LiriAuroraCompositor/aurorawaylandwlshell.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(QWaylandWlShell)
+namespace Compositor {
 
 /*!
-    \qmlmodule QtWayland.Compositor.WlShell
+    \qmlmodule Aurora.Compositor.WlShell
     \title Qt Wayland WlShell extension
     \ingroup qmlmodules
     \brief Provides a Qt API for the WlShell extension.
@@ -53,11 +53,13 @@ Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(QWaylandWlShell)
     \section2 Usage
     To use this module, import it like this:
     \qml
-    import QtWayland.Compositor.WlShell
+    import Aurora.Compositor.WlShell
     \endqml
 */
 
-class QWaylandCompositorWlShellPlugin : public QQmlExtensionPlugin
+Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(WaylandWlShell)
+
+class WaylandCompositorWlShellPlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
@@ -71,11 +73,13 @@ public:
     static void defineModule(const char *uri)
     {
         qmlRegisterModule(uri, QT_VERSION_MAJOR, QT_VERSION_MINOR);
-        qmlRegisterType<QWaylandWlShellQuickExtension>(uri, 1, 0, "WlShell");
-        qmlRegisterType<QWaylandWlShellSurface>(uri, 1, 0, "WlShellSurface");
+        qmlRegisterType<WaylandWlShellQuickExtension>(uri, 1, 0, "WlShell");
+        qmlRegisterType<WaylandWlShellSurface>(uri, 1, 0, "WlShellSurface");
     }
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#include "qwaylandcompositorwlshellplugin.moc"
+} // namespace Aurora
+
+#include "aurorawaylandcompositorwlshellplugin.moc"

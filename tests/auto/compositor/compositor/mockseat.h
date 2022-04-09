@@ -25,6 +25,7 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
+
 #ifndef MOCKSEAT
 #define MOCKSEAT
 
@@ -33,6 +34,10 @@
 
 #include <QObject>
 #include "wayland-wayland-client-protocol.h"
+
+namespace Aurora {
+
+namespace Compositor {
 
 class MockSeat : public QObject
 {
@@ -51,4 +56,8 @@ private:
     QScopedPointer<MockKeyboard> m_keyboard;
 };
 
-#endif
+} // namespace Compositor
+
+} // namespace Aurora
+
+#endif // MOCKSEAT_H

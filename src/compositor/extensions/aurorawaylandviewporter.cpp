@@ -27,82 +27,84 @@
 **
 ****************************************************************************/
 
-#include "qwaylandviewporter_p.h"
+#include "aurorawaylandviewporter_p.h"
 
-#include <QtWaylandCompositor/QWaylandSurface>
-#include <QtWaylandCompositor/QWaylandCompositor>
+#include <LiriAuroraCompositor/WaylandSurface>
+#include <LiriAuroraCompositor/WaylandCompositor>
 
-#include <QtWaylandCompositor/private/qwaylandsurface_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandsurface_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 /*!
-    \class QWaylandViewporter
+    \class WaylandViewporter
     \inmodule QtWaylandCompositor
     \since 5.13
     \brief Provides an extension for surface resizing and cropping.
 
-    The QWaylandViewporter extension provides a way for clients to resize and crop surface
+    The WaylandViewporter extension provides a way for clients to resize and crop surface
     contents.
 
-    QWaylandViewporter corresponds to the Wayland interface, \c wp_viewporter.
+    WaylandViewporter corresponds to the Wayland interface, \c wp_viewporter.
 */
 
 /*!
-    Constructs a QWaylandViewporter object.
+    Constructs a WaylandViewporter object.
 */
-QWaylandViewporter::QWaylandViewporter()
-    : QWaylandCompositorExtensionTemplate<QWaylandViewporter>(*new QWaylandViewporterPrivate)
+WaylandViewporter::WaylandViewporter()
+    : WaylandCompositorExtensionTemplate<WaylandViewporter>(*new WaylandViewporterPrivate)
 {
 }
 
 /*!
- * Constructs a QWaylandViewporter object for the provided \a compositor.
+ * Constructs a WaylandViewporter object for the provided \a compositor.
  */
-QWaylandViewporter::QWaylandViewporter(QWaylandCompositor *compositor)
-    : QWaylandCompositorExtensionTemplate<QWaylandViewporter>(compositor, *new QWaylandViewporterPrivate())
+WaylandViewporter::WaylandViewporter(WaylandCompositor *compositor)
+    : WaylandCompositorExtensionTemplate<WaylandViewporter>(compositor, *new WaylandViewporterPrivate())
 {
 }
 
 /*!
     Initializes the extension.
 */
-void QWaylandViewporter::initialize()
+void WaylandViewporter::initialize()
 {
-    Q_D(QWaylandViewporter);
+    Q_D(WaylandViewporter);
 
-    QWaylandCompositorExtensionTemplate::initialize();
-    auto *compositor = static_cast<QWaylandCompositor *>(extensionContainer());
+    WaylandCompositorExtensionTemplate::initialize();
+    auto *compositor = static_cast<WaylandCompositor *>(extensionContainer());
     if (!compositor) {
-        qWarning() << "Failed to find QWaylandCompositor when initializing QWaylandViewporter";
+        qWarning() << "Failed to find WaylandCompositor when initializing WaylandViewporter";
         return;
     }
     d->init(compositor->display(), 1);
 }
 
 /*!
-    Returns the Wayland interface for the QWaylandViewporter.
+    Returns the Wayland interface for the WaylandViewporter.
 */
-const wl_interface *QWaylandViewporter::interface()
+const wl_interface *WaylandViewporter::interface()
 {
-    return QWaylandViewporterPrivate::interface();
+    return WaylandViewporterPrivate::interface();
 }
 
-void QWaylandViewporterPrivate::wp_viewporter_destroy(Resource *resource)
+void WaylandViewporterPrivate::wp_viewporter_destroy(Resource *resource)
 {
     // Viewport objects are allowed ot outlive the viewporter
     wl_resource_destroy(resource->handle);
 }
 
-void QWaylandViewporterPrivate::wp_viewporter_get_viewport(Resource *resource, uint id, wl_resource *surfaceResource)
+void WaylandViewporterPrivate::wp_viewporter_get_viewport(Resource *resource, uint id, wl_resource *surfaceResource)
 {
-    auto *surface = QWaylandSurface::fromResource(surfaceResource);
+    auto *surface = WaylandSurface::fromResource(surfaceResource);
     if (!surface) {
         qWarning() << "Couldn't find surface for viewporter";
         return;
     }
 
-    auto *surfacePrivate = QWaylandSurfacePrivate::get(surface);
+    auto *surfacePrivate = WaylandSurfacePrivate::get(surface);
     if (surfacePrivate->viewport) {
         wl_resource_post_error(resource->handle, WP_VIEWPORTER_ERROR_VIEWPORT_EXISTS,
                                "viewport already exists for surface");
@@ -112,17 +114,17 @@ void QWaylandViewporterPrivate::wp_viewporter_get_viewport(Resource *resource, u
     surfacePrivate->viewport = new Viewport(surface, resource->client(), id);
 }
 
-QWaylandViewporterPrivate::Viewport::Viewport(QWaylandSurface *surface, wl_client *client, int id)
-    : QtWaylandServer::wp_viewport(client, id, /*version*/ 1)
+WaylandViewporterPrivate::Viewport::Viewport(WaylandSurface *surface, wl_client *client, int id)
+    : PrivateServer::wp_viewport(client, id, /*version*/ 1)
     , m_surface(surface)
 {
     Q_ASSERT(surface);
 }
 
-QWaylandViewporterPrivate::Viewport::~Viewport()
+WaylandViewporterPrivate::Viewport::~Viewport()
 {
     if (m_surface) {
-        auto *surfacePrivate = QWaylandSurfacePrivate::get(m_surface);
+        auto *surfacePrivate = WaylandSurfacePrivate::get(m_surface);
         Q_ASSERT(surfacePrivate->viewport == this);
         surfacePrivate->viewport = nullptr;
     }
@@ -131,9 +133,9 @@ QWaylandViewporterPrivate::Viewport::~Viewport()
 // This function has to be called immediately after a surface is committed, before no
 // other client events have been dispatched, or we may incorrectly error out on an
 // incomplete pending state. See comment below.
-void QWaylandViewporterPrivate::Viewport::checkCommittedState()
+void WaylandViewporterPrivate::Viewport::checkCommittedState()
 {
-    auto *surfacePrivate = QWaylandSurfacePrivate::get(m_surface);
+    auto *surfacePrivate = WaylandSurfacePrivate::get(m_surface);
 
     // We can't use the current state for destination/source when checking,
     // as that has fallbacks to the buffer size so we can't distinguish
@@ -163,23 +165,23 @@ void QWaylandViewporterPrivate::Viewport::checkCommittedState()
 }
 
 
-void QWaylandViewporterPrivate::Viewport::wp_viewport_destroy_resource(Resource *resource)
+void WaylandViewporterPrivate::Viewport::wp_viewport_destroy_resource(Resource *resource)
 {
     Q_UNUSED(resource);
     delete this;
 }
 
-void QWaylandViewporterPrivate::Viewport::wp_viewport_destroy(Resource *resource)
+void WaylandViewporterPrivate::Viewport::wp_viewport_destroy(Resource *resource)
 {
     if (m_surface) {
-        auto *surfacePrivate = QWaylandSurfacePrivate::get(m_surface);
+        auto *surfacePrivate = WaylandSurfacePrivate::get(m_surface);
         surfacePrivate->pending.destinationSize = QSize();
         surfacePrivate->pending.sourceGeometry = QRectF();
     }
     wl_resource_destroy(resource->handle);
 }
 
-void QWaylandViewporterPrivate::Viewport::wp_viewport_set_source(QtWaylandServer::wp_viewport::Resource *resource, wl_fixed_t x, wl_fixed_t y, wl_fixed_t width, wl_fixed_t height)
+void WaylandViewporterPrivate::Viewport::wp_viewport_set_source(PrivateServer::wp_viewport::Resource *resource, wl_fixed_t x, wl_fixed_t y, wl_fixed_t width, wl_fixed_t height)
 {
     Q_UNUSED(resource);
 
@@ -194,7 +196,7 @@ void QWaylandViewporterPrivate::Viewport::wp_viewport_set_source(QtWaylandServer
     QRectF sourceGeometry(position, size);
 
     if (sourceGeometry == QRectF(-1, -1, -1, -1)) {
-        auto *surfacePrivate = QWaylandSurfacePrivate::get(m_surface);
+        auto *surfacePrivate = WaylandSurfacePrivate::get(m_surface);
         surfacePrivate->pending.sourceGeometry = QRectF();
         return;
     }
@@ -211,11 +213,11 @@ void QWaylandViewporterPrivate::Viewport::wp_viewport_set_source(QtWaylandServer
         return;
     }
 
-    auto *surfacePrivate = QWaylandSurfacePrivate::get(m_surface);
+    auto *surfacePrivate = WaylandSurfacePrivate::get(m_surface);
     surfacePrivate->pending.sourceGeometry = sourceGeometry;
 }
 
-void QWaylandViewporterPrivate::Viewport::wp_viewport_set_destination(QtWaylandServer::wp_viewport::Resource *resource, int32_t width, int32_t height)
+void WaylandViewporterPrivate::Viewport::wp_viewport_set_destination(PrivateServer::wp_viewport::Resource *resource, int32_t width, int32_t height)
 {
     Q_UNUSED(resource);
 
@@ -231,8 +233,10 @@ void QWaylandViewporterPrivate::Viewport::wp_viewport_set_destination(QtWaylandS
                                "negative size in set_destination");
         return;
     }
-    auto *surfacePrivate = QWaylandSurfacePrivate::get(m_surface);
+    auto *surfacePrivate = WaylandSurfacePrivate::get(m_surface);
     surfacePrivate->pending.destinationSize = destinationSize;
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

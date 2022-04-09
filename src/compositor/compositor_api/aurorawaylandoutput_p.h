@@ -29,46 +29,48 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDOUTPUT_P_H
-#define QWAYLANDOUTPUT_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDOUTPUT_P_H
+#define AURORA_COMPOSITOR_WAYLANDOUTPUT_P_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWaylandCompositor/qtwaylandcompositorglobal.h>
-#include <QtWaylandCompositor/QWaylandOutput>
-#include <QtWaylandCompositor/QWaylandClient>
-#include <QtWaylandCompositor/QWaylandSurface>
-#include <QtWaylandCompositor/QWaylandXdgOutputV1>
+#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/WaylandOutput>
+#include <LiriAuroraCompositor/WaylandClient>
+#include <LiriAuroraCompositor/WaylandSurface>
+#include <LiriAuroraCompositor/WaylandXdgOutputV1>
 
-#include <QtWaylandCompositor/private/qwayland-server-wayland.h>
+#include <LiriAuroraCompositor/private/aurora-server-wayland.h>
 
 #include <QtCore/QList>
 #include <QtCore/QRect>
 
 #include <QtCore/private/qobject_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-struct QWaylandSurfaceViewMapper
+namespace Compositor {
+
+struct WaylandSurfaceViewMapper
 {
-    QWaylandSurfaceViewMapper()
+    WaylandSurfaceViewMapper()
     {}
 
-    QWaylandSurfaceViewMapper(QWaylandSurface *s, QWaylandView *v)
+    WaylandSurfaceViewMapper(WaylandSurface *s, WaylandView *v)
         : surface(s)
         , views(1, v)
     {}
 
-    QWaylandView *maybePrimaryView() const
+    WaylandView *maybePrimaryView() const
     {
         for (int i = 0; i < views.size(); i++) {
             if (surface && surface->primaryView() == views.at(i))
@@ -77,33 +79,33 @@ struct QWaylandSurfaceViewMapper
         return nullptr;
     }
 
-    QWaylandSurface *surface = nullptr;
-    QList<QWaylandView *> views;
+    WaylandSurface *surface = nullptr;
+    QList<WaylandView *> views;
     bool has_entered = false;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandOutputPrivate : public QObjectPrivate, public QtWaylandServer::wl_output
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandOutputPrivate : public QObjectPrivate, public PrivateServer::wl_output
 {
 public:
-    Q_DECLARE_PUBLIC(QWaylandOutput)
+    Q_DECLARE_PUBLIC(WaylandOutput)
 
-    QWaylandOutputPrivate();
+    WaylandOutputPrivate();
 
-    ~QWaylandOutputPrivate() override;
-    static QWaylandOutputPrivate *get(QWaylandOutput *output) { return output->d_func(); }
+    ~WaylandOutputPrivate() override;
+    static WaylandOutputPrivate *get(WaylandOutput *output) { return output->d_func(); }
 
-    void addView(QWaylandView *view, QWaylandSurface *surface);
-    void removeView(QWaylandView *view, QWaylandSurface *surface);
+    void addView(WaylandView *view, WaylandSurface *surface);
+    void removeView(WaylandView *view, WaylandSurface *surface);
 
     void sendGeometry(const Resource *resource);
     void sendGeometryInfo();
 
-    void sendMode(const Resource *resource, const QWaylandOutputMode &mode);
+    void sendMode(const Resource *resource, const WaylandOutputMode &mode);
     void sendModesInfo();
 
     void handleWindowPixelSizeChanged();
 
-    QPointer<QWaylandXdgOutputV1> xdgOutput;
+    QPointer<WaylandXdgOutputV1> xdgOutput;
 
 protected:
     void output_bind_resource(Resource *resource) override;
@@ -112,30 +114,32 @@ private:
     void _q_handleMaybeWindowPixelSizeChanged();
     void _q_handleWindowDestroyed();
 
-    QWaylandCompositor *compositor = nullptr;
+    WaylandCompositor *compositor = nullptr;
     QWindow *window = nullptr;
     QString manufacturer;
     QString model;
     QPoint position;
-    QList<QWaylandOutputMode> modes;
+    QList<WaylandOutputMode> modes;
     int currentMode = -1;
     int preferredMode = -1;
     QRect availableGeometry;
-    QList<QWaylandSurfaceViewMapper> surfaceViews;
+    QList<WaylandSurfaceViewMapper> surfaceViews;
     QSize physicalSize;
-    QWaylandOutput::Subpixel subpixel = QWaylandOutput::SubpixelUnknown;
-    QWaylandOutput::Transform transform = QWaylandOutput::TransformNormal;
+    WaylandOutput::Subpixel subpixel = WaylandOutput::SubpixelUnknown;
+    WaylandOutput::Transform transform = WaylandOutput::TransformNormal;
     int scaleFactor = 1;
     bool sizeFollowsWindow = false;
     bool initialized = false;
     QSize windowPixelSize;
 
-    Q_DISABLE_COPY(QWaylandOutputPrivate)
+    Q_DISABLE_COPY(WaylandOutputPrivate)
 
-    friend class QWaylandXdgOutputManagerV1Private;
+    friend class WaylandXdgOutputManagerV1Private;
 };
 
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif  /*QWAYLANDOUTPUT_P_H*/

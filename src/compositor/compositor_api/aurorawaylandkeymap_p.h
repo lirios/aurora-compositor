@@ -27,30 +27,32 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDKEYMAP_P_H
-#define QWAYLANDKEYMAP_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDKEYMAP_P_H
+#define AURORA_COMPOSITOR_WAYLANDKEYMAP_P_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWaylandCompositor/qwaylandkeymap.h>
+#include <LiriAuroraCompositor/aurorawaylandkeymap.h>
 #include <QtCore/private/qobject_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandKeymapPrivate : public QObjectPrivate
+namespace Compositor {
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandKeymapPrivate : public QObjectPrivate
 {
-    Q_DECLARE_PUBLIC(QWaylandKeymap)
+    Q_DECLARE_PUBLIC(WaylandKeymap)
 public:
-    QWaylandKeymapPrivate(const QString &layout, const QString &variant, const QString &options,
+    WaylandKeymapPrivate(const QString &layout, const QString &variant, const QString &options,
                           const QString &model, const QString &rules);
 
     QString m_layout;
@@ -60,6 +62,8 @@ public:
     QString m_model;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDKEYMAP_P_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDKEYMAP_P_H

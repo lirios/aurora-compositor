@@ -27,42 +27,44 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDXDGSHELL_H
-#define QWAYLANDXDGSHELL_H
+#ifndef AURORA_COMPOSITOR_WAYLANDXDGSHELL_H
+#define AURORA_COMPOSITOR_WAYLANDXDGSHELL_H
 
-#include <QtWaylandCompositor/QWaylandCompositorExtension>
-#include <QtWaylandCompositor/QWaylandResource>
-#include <QtWaylandCompositor/QWaylandShell>
-#include <QtWaylandCompositor/QWaylandShellSurface>
-#include <QtWaylandCompositor/qwaylandquickchildren.h>
+#include <LiriAuroraCompositor/WaylandCompositorExtension>
+#include <LiriAuroraCompositor/WaylandResource>
+#include <LiriAuroraCompositor/WaylandShell>
+#include <LiriAuroraCompositor/WaylandShellSurface>
+#include <LiriAuroraCompositor/aurorawaylandquickchildren.h>
 
 #include <QtCore/QRect>
 
 struct wl_resource;
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandClient;
-class QWaylandOutput;
-class QWaylandSeat;
-class QWaylandSurface;
-class QWaylandSurfaceRole;
-class QWaylandXdgShellPrivate;
-class QWaylandXdgSurface;
-class QWaylandXdgSurfacePrivate;
-class QWaylandXdgToplevel;
-class QWaylandXdgToplevelPrivate;
-class QWaylandXdgPopup;
-class QWaylandXdgPopupPrivate;
-class QWaylandXdgPositioner;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandXdgShell : public QWaylandShellTemplate<QWaylandXdgShell>
+class WaylandClient;
+class WaylandOutput;
+class WaylandSeat;
+class WaylandSurface;
+class WaylandSurfaceRole;
+class WaylandXdgShellPrivate;
+class WaylandXdgSurface;
+class WaylandXdgSurfacePrivate;
+class WaylandXdgToplevel;
+class WaylandXdgToplevelPrivate;
+class WaylandXdgPopup;
+class WaylandXdgPopupPrivate;
+class WaylandXdgPositioner;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgShell : public WaylandShellTemplate<WaylandXdgShell>
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandXdgShell)
+    Q_DECLARE_PRIVATE(WaylandXdgShell)
 public:
-    explicit QWaylandXdgShell();
-    explicit QWaylandXdgShell(QWaylandCompositor *compositor);
+    explicit WaylandXdgShell();
+    explicit WaylandXdgShell(WaylandCompositor *compositor);
 
     void initialize() override;
 
@@ -70,51 +72,51 @@ public:
     static QByteArray interfaceName();
 
 public Q_SLOTS:
-    uint ping(QWaylandClient *client);
+    uint ping(WaylandClient *client);
 
 Q_SIGNALS:
-    void xdgSurfaceCreated(QWaylandXdgSurface *xdgSurface);
-    void toplevelCreated(QWaylandXdgToplevel *toplevel, QWaylandXdgSurface *xdgSurface);
-    void popupCreated(QWaylandXdgPopup *popup, QWaylandXdgSurface *xdgSurface);
+    void xdgSurfaceCreated(WaylandXdgSurface *xdgSurface);
+    void toplevelCreated(WaylandXdgToplevel *toplevel, WaylandXdgSurface *xdgSurface);
+    void popupCreated(WaylandXdgPopup *popup, WaylandXdgSurface *xdgSurface);
     void pong(uint serial);
 
 private Q_SLOTS:
-    void handleSeatChanged(QWaylandSeat *newSeat, QWaylandSeat *oldSeat);
-    void handleFocusChanged(QWaylandSurface *newSurface, QWaylandSurface *oldSurface);
+    void handleSeatChanged(WaylandSeat *newSeat, WaylandSeat *oldSeat);
+    void handleFocusChanged(WaylandSurface *newSurface, WaylandSurface *oldSurface);
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandXdgSurface : public QWaylandShellSurfaceTemplate<QWaylandXdgSurface>
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgSurface : public WaylandShellSurfaceTemplate<WaylandXdgSurface>
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandXdgSurface)
-    Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(QWaylandXdgSurface)
-    Q_PROPERTY(QWaylandXdgShell *shell READ shell NOTIFY shellChanged)
-    Q_PROPERTY(QWaylandSurface *surface READ surface NOTIFY surfaceChanged)
-    Q_PROPERTY(QWaylandXdgToplevel *toplevel READ toplevel NOTIFY toplevelCreated)
-    Q_PROPERTY(QWaylandXdgPopup *popup READ popup NOTIFY popupCreated)
+    Q_DECLARE_PRIVATE(WaylandXdgSurface)
+    Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandXdgSurface)
+    Q_PROPERTY(WaylandXdgShell *shell READ shell NOTIFY shellChanged)
+    Q_PROPERTY(WaylandSurface *surface READ surface NOTIFY surfaceChanged)
+    Q_PROPERTY(WaylandXdgToplevel *toplevel READ toplevel NOTIFY toplevelCreated)
+    Q_PROPERTY(WaylandXdgPopup *popup READ popup NOTIFY popupCreated)
     Q_PROPERTY(QRect windowGeometry READ windowGeometry NOTIFY windowGeometryChanged)
-    Q_MOC_INCLUDE("qwaylandsurface.h")
+    Q_MOC_INCLUDE("aurorawaylandsurface.h")
 
 public:
-    explicit QWaylandXdgSurface();
-    explicit QWaylandXdgSurface(QWaylandXdgShell* xdgShell, QWaylandSurface *surface, const QWaylandResource &resource);
+    explicit WaylandXdgSurface();
+    explicit WaylandXdgSurface(WaylandXdgShell* xdgShell, WaylandSurface *surface, const WaylandResource &resource);
 
-    Q_INVOKABLE void initialize(QWaylandXdgShell* xdgShell, QWaylandSurface *surface, const QWaylandResource &resource);
+    Q_INVOKABLE void initialize(WaylandXdgShell* xdgShell, WaylandSurface *surface, const WaylandResource &resource);
 
     Qt::WindowType windowType() const override;
 
-    QWaylandXdgShell *shell() const;
-    QWaylandSurface *surface() const;
-    QWaylandXdgToplevel *toplevel() const;
-    QWaylandXdgPopup *popup() const;
+    WaylandXdgShell *shell() const;
+    WaylandSurface *surface() const;
+    WaylandXdgToplevel *toplevel() const;
+    WaylandXdgPopup *popup() const;
     QRect windowGeometry() const;
 
     static const struct wl_interface *interface();
     static QByteArray interfaceName();
-    static QWaylandXdgSurface *fromResource(::wl_resource *resource);
+    static WaylandXdgSurface *fromResource(::wl_resource *resource);
 
 #if QT_CONFIG(wayland_compositor_quick)
-    QWaylandQuickShellIntegration *createIntegration(QWaylandQuickShellSurfaceItem *item) override;
+    WaylandQuickShellIntegration *createIntegration(WaylandQuickShellSurfaceItem *item) override;
 #endif
 
 Q_SIGNALS:
@@ -132,12 +134,12 @@ private Q_SLOTS:
     void handleBufferScaleChanged();
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandXdgToplevel : public QObject
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgToplevel : public QObject
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandXdgToplevel)
-    Q_PROPERTY(QWaylandXdgSurface *xdgSurface READ xdgSurface CONSTANT)
-    Q_PROPERTY(QWaylandXdgToplevel *parentToplevel READ parentToplevel NOTIFY parentToplevelChanged)
+    Q_DECLARE_PRIVATE(WaylandXdgToplevel)
+    Q_PROPERTY(WaylandXdgSurface *xdgSurface READ xdgSurface CONSTANT)
+    Q_PROPERTY(WaylandXdgToplevel *parentToplevel READ parentToplevel NOTIFY parentToplevelChanged)
     Q_PROPERTY(QString title READ title NOTIFY titleChanged)
     Q_PROPERTY(QString appId READ appId NOTIFY appIdChanged)
     Q_PROPERTY(QSize maxSize READ maxSize NOTIFY maxSizeChanged)
@@ -168,17 +170,17 @@ public:
     };
     Q_ENUM(DecorationMode)
 
-    explicit QWaylandXdgToplevel(QWaylandXdgSurface *xdgSurface, QWaylandResource &resource);
-    ~QWaylandXdgToplevel() override;
+    explicit WaylandXdgToplevel(WaylandXdgSurface *xdgSurface, WaylandResource &resource);
+    ~WaylandXdgToplevel() override;
 
-    QWaylandXdgSurface *xdgSurface() const;
-    QWaylandXdgToplevel *parentToplevel() const;
+    WaylandXdgSurface *xdgSurface() const;
+    WaylandXdgToplevel *parentToplevel() const;
 
     QString title() const;
     QString appId() const;
     QSize maxSize() const;
     QSize minSize() const;
-    QList<QWaylandXdgToplevel::State> states() const;
+    QList<WaylandXdgToplevel::State> states() const;
     bool maximized() const;
     bool fullscreen() const;
     bool resizing() const;
@@ -194,8 +196,8 @@ public:
     Q_INVOKABLE uint sendFullscreen(const QSize &size);
     Q_INVOKABLE uint sendResizing(const QSize &maxSize);
 
-    static QWaylandSurfaceRole *role();
-    static QWaylandXdgToplevel *fromResource(::wl_resource *resource);
+    static WaylandSurfaceRole *role();
+    static WaylandXdgToplevel *fromResource(::wl_resource *resource);
 
 Q_SIGNALS:
     void parentToplevelChanged();
@@ -203,18 +205,18 @@ Q_SIGNALS:
     void appIdChanged();
     void maxSizeChanged();
     void minSizeChanged();
-    void startMove(QWaylandSeat *seat);
-    void startResize(QWaylandSeat *seat, Qt::Edges edges);
+    void startMove(WaylandSeat *seat);
+    void startResize(WaylandSeat *seat, Qt::Edges edges);
     void statesChanged();
     void maximizedChanged();
     void fullscreenChanged();
     void resizingChanged();
     void activatedChanged();
 
-    void showWindowMenu(QWaylandSeat *seat, const QPoint &localSurfacePosition);
+    void showWindowMenu(WaylandSeat *seat, const QPoint &localSurfacePosition);
     void setMaximized();
     void unsetMaximized();
-    void setFullscreen(QWaylandOutput *output);
+    void setFullscreen(WaylandOutput *output);
     void unsetFullscreen();
     void setMinimized();
 
@@ -224,12 +226,12 @@ private:
     QList<int> statesAsInts() const;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandXdgPopup : public QObject
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgPopup : public QObject
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandXdgPopup)
-    Q_PROPERTY(QWaylandXdgSurface *xdgSurface READ xdgSurface CONSTANT)
-    Q_PROPERTY(QWaylandXdgSurface *parentXdgSurface READ parentXdgSurface CONSTANT)
+    Q_DECLARE_PRIVATE(WaylandXdgPopup)
+    Q_PROPERTY(WaylandXdgSurface *xdgSurface READ xdgSurface CONSTANT)
+    Q_PROPERTY(WaylandXdgSurface *parentXdgSurface READ parentXdgSurface CONSTANT)
     Q_PROPERTY(QRect configuredGeometry READ configuredGeometry NOTIFY configuredGeometryChanged)
 
     // Positioner properties
@@ -243,8 +245,8 @@ class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandXdgPopup : public QObject
     Q_PROPERTY(QSize positionerSize READ positionerSize CONSTANT)
     Q_PROPERTY(QPoint unconstrainedPosition READ unconstrainedPosition CONSTANT)
 public:
-    QWaylandXdgSurface *xdgSurface() const;
-    QWaylandXdgSurface *parentXdgSurface() const;
+    WaylandXdgSurface *xdgSurface() const;
+    WaylandXdgSurface *parentXdgSurface() const;
     QRect configuredGeometry() const;
 
     // Positioner properties
@@ -261,17 +263,19 @@ public:
     Q_INVOKABLE uint sendConfigure(const QRect &geometry);
     Q_REVISION(1, 14) Q_INVOKABLE void sendPopupDone();
 
-    static QWaylandSurfaceRole *role();
+    static WaylandSurfaceRole *role();
 
 Q_SIGNALS:
     void configuredGeometryChanged();
 
 private:
-    explicit QWaylandXdgPopup(QWaylandXdgSurface *xdgSurface, QWaylandXdgSurface *parentXdgSurface,
-                              QWaylandXdgPositioner *positioner, QWaylandResource &resource);
-    friend class QWaylandXdgSurfacePrivate;
+    explicit WaylandXdgPopup(WaylandXdgSurface *xdgSurface, WaylandXdgSurface *parentXdgSurface,
+                              WaylandXdgPositioner *positioner, WaylandResource &resource);
+    friend class WaylandXdgSurfacePrivate;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDXDGSHELL_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDXDGSHELL_H

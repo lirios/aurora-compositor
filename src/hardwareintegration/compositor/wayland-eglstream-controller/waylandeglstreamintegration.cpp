@@ -30,7 +30,7 @@
 #include "waylandeglstreamintegration.h"
 #include "waylandeglstreamcontroller.h"
 
-#include <QtWaylandCompositor/QWaylandCompositor>
+#include <LiriAuroraCompositor/WaylandCompositor>
 #include <QtOpenGL/QOpenGLTexture>
 #include <QtGui/QGuiApplication>
 #include <QtGui/QOpenGLContext>
@@ -39,8 +39,8 @@
 #include <QtGui/private/qeglstreamconvenience_p.h>
 #include <qpa/qplatformnativeinterface.h>
 
-#include <QtWaylandCompositor/private/qwaylandcompositor_p.h>
-#include <QtWaylandCompositor/private/qwlbuffermanager_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandcompositor_p.h>
+#include <LiriAuroraCompositor/private/aurorawlbuffermanager_p.h>
 
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
@@ -94,7 +94,9 @@
 #define EGL_PLATFORM_X11_KHR        0x31D5
 #endif
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 /* Needed for compatibility with Mesa older than 10.0. */
 typedef EGLBoolean (EGLAPIENTRYP PFNEGLQUERYWAYLANDBUFFERWL_compat) (EGLDisplay dpy, struct wl_resource *buffer, EGLint attribute, EGLint *value);
@@ -298,7 +300,7 @@ void WaylandEglStreamClientBufferIntegration::attachEglStreamConsumer(struct ::w
     Q_UNUSED(wl_surface);
 
     auto *clientBuffer = new WaylandEglStreamClientBuffer(this, wl_buffer);
-    auto *bufferManager = QWaylandCompositorPrivate::get(m_compositor)->bufferManager();
+    auto *bufferManager = WaylandCompositorPrivate::get(m_compositor)->bufferManager();
     bufferManager->registerBuffer(wl_buffer, clientBuffer);
 
     d->initEglStream(clientBuffer, wl_buffer);
@@ -393,9 +395,9 @@ WaylandEglStreamClientBuffer::~WaylandEglStreamClientBuffer()
 }
 
 
-QWaylandBufferRef::BufferFormatEgl WaylandEglStreamClientBuffer::bufferFormatEgl() const
+WaylandBufferRef::BufferFormatEgl WaylandEglStreamClientBuffer::bufferFormatEgl() const
 {
-    return QWaylandBufferRef::BufferFormatEgl_EXTERNAL_OES;
+    return WaylandBufferRef::BufferFormatEgl_EXTERNAL_OES;
 }
 
 
@@ -404,9 +406,9 @@ QSize WaylandEglStreamClientBuffer::size() const
     return d->size;
 }
 
-QWaylandSurface::Origin WaylandEglStreamClientBuffer::origin() const
+WaylandSurface::Origin WaylandEglStreamClientBuffer::origin() const
 {
-    return d->isYInverted ? QWaylandSurface::OriginTopLeft : QWaylandSurface::OriginBottomLeft;
+    return d->isYInverted ? WaylandSurface::OriginTopLeft : WaylandSurface::OriginBottomLeft;
 }
 
 QOpenGLTexture *WaylandEglStreamClientBuffer::toOpenGlTexture(int plane)
@@ -428,4 +430,6 @@ void WaylandEglStreamClientBuffer::setCommitted(QRegion &damage)
     p->handleEglstreamTexture(this);
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

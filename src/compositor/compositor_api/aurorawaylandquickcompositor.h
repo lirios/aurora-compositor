@@ -27,35 +27,39 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDQUICKCOMPOSITOR_H
-#define QWAYLANDQUICKCOMPOSITOR_H
+#ifndef AURORA_COMPOSITOR_WAYLANDQUICKCOMPOSITOR_H
+#define AURORA_COMPOSITOR_WAYLANDQUICKCOMPOSITOR_H
 
-#include <QtWaylandCompositor/qwaylandcompositor.h>
+#include <LiriAuroraCompositor/aurorawaylandcompositor.h>
 #include <QtQml/QQmlParserStatus>
 
 QT_REQUIRE_CONFIG(wayland_compositor_quick);
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 class QQuickWindow;
-class QWaylandQuickCompositorPrivate;
-class QWaylandView;
+class WaylandQuickCompositorPrivate;
+class WaylandView;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandQuickCompositor : public QWaylandCompositor, public QQmlParserStatus
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandQuickCompositor : public WaylandCompositor, public QQmlParserStatus
 {
     Q_INTERFACES(QQmlParserStatus)
     Q_OBJECT
 public:
-    QWaylandQuickCompositor(QObject *parent = nullptr);
+    WaylandQuickCompositor(QObject *parent = nullptr);
     void create() override;
 
-    void grabSurface(QWaylandSurfaceGrabber *grabber, const QWaylandBufferRef &buffer) override;
+    void grabSurface(WaylandSurfaceGrabber *grabber, const WaylandBufferRef &buffer) override;
 
 protected:
     void classBegin() override;
     void componentComplete() override;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif

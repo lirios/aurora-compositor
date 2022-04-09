@@ -27,29 +27,33 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDIDLEINHIBITV1_H
-#define QWAYLANDIDLEINHIBITV1_H
+#ifndef AURORA_COMPOSITOR_WAYLANDIDLEINHIBITV1_H
+#define AURORA_COMPOSITOR_WAYLANDIDLEINHIBITV1_H
 
-#include <QtWaylandCompositor/QWaylandCompositorExtension>
+#include <LiriAuroraCompositor/WaylandCompositorExtension>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandIdleInhibitManagerV1Private;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandIdleInhibitManagerV1 : public QWaylandCompositorExtensionTemplate<QWaylandIdleInhibitManagerV1>
+class WaylandIdleInhibitManagerV1Private;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandIdleInhibitManagerV1 : public WaylandCompositorExtensionTemplate<WaylandIdleInhibitManagerV1>
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandIdleInhibitManagerV1)
+    Q_DECLARE_PRIVATE(WaylandIdleInhibitManagerV1)
 public:
-    QWaylandIdleInhibitManagerV1();
-    explicit QWaylandIdleInhibitManagerV1(QWaylandCompositor *compositor);
-    ~QWaylandIdleInhibitManagerV1();
+    WaylandIdleInhibitManagerV1();
+    explicit WaylandIdleInhibitManagerV1(WaylandCompositor *compositor);
+    ~WaylandIdleInhibitManagerV1();
 
     void initialize() override;
 
     static const struct wl_interface *interface();
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDIDLEINHIBITV1_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDIDLEINHIBITV1_H

@@ -37,42 +37,44 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDTEXTINPUTV4_P_H
-#define QWAYLANDTEXTINPUTV4_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDTEXTINPUTV4_P_H
+#define AURORA_COMPOSITOR_WAYLANDTEXTINPUTV4_P_H
 
-#include <QtWaylandCompositor/private/qwaylandcompositorextension_p.h>
-#include <QtWaylandCompositor/private/qwayland-server-text-input-unstable-v4-wip.h>
-#include <QtWaylandCompositor/QWaylandDestroyListener>
+#include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
+#include <LiriAuroraCompositor/private/aurora-server-text-input-unstable-v4-wip.h>
+#include <LiriAuroraCompositor/WaylandDestroyListener>
 
 #include <QtCore/QObject>
 #include <QtCore/QRect>
 #include <QtGui/QInputMethod>
-#include <QtWaylandCompositor/QWaylandSurface>
+#include <LiriAuroraCompositor/WaylandSurface>
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 class QInputMethodEvent;
 class QKeyEvent;
-class QWaylandCompositor;
-class QWaylandView;
+class WaylandCompositor;
+class WaylandView;
 
-class QWaylandTextInputV4ClientState {
+class WaylandTextInputV4ClientState {
 public:
-    QWaylandTextInputV4ClientState();
+    WaylandTextInputV4ClientState();
 
-    Qt::InputMethodQueries updatedQueries(const QWaylandTextInputV4ClientState &other) const;
-    Qt::InputMethodQueries mergeChanged(const QWaylandTextInputV4ClientState &other);
+    Qt::InputMethodQueries updatedQueries(const WaylandTextInputV4ClientState &other) const;
+    Qt::InputMethodQueries mergeChanged(const WaylandTextInputV4ClientState &other);
 
     Qt::InputMethodHints hints = Qt::ImhNone;
     QRect cursorRectangle;
@@ -83,35 +85,35 @@ public:
     Qt::InputMethodQueries changedState;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandTextInputV4Private : public QWaylandCompositorExtensionPrivate, public QtWaylandServer::zwp_text_input_v4
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandTextInputV4Private : public WaylandCompositorExtensionPrivate, public PrivateServer::zwp_text_input_v4
 {
-    Q_DECLARE_PUBLIC(QWaylandTextInputV4)
+    Q_DECLARE_PUBLIC(WaylandTextInputV4)
 public:
-    explicit QWaylandTextInputV4Private(QWaylandCompositor *compositor);
+    explicit WaylandTextInputV4Private(WaylandCompositor *compositor);
 
     void sendInputMethodEvent(QInputMethodEvent *event);
     void sendKeyEvent(QKeyEvent *event);
 
     QVariant inputMethodQuery(Qt::InputMethodQuery property, QVariant argument) const;
 
-    void setFocus(QWaylandSurface *surface);
+    void setFocus(WaylandSurface *surface);
 
-    QWaylandCompositor *compositor = nullptr;
+    WaylandCompositor *compositor = nullptr;
 
-    QWaylandSurface *focus = nullptr;
+    WaylandSurface *focus = nullptr;
     Resource *focusResource = nullptr;
-    QWaylandDestroyListener focusDestroyListener;
+    WaylandDestroyListener focusDestroyListener;
 
     bool inputPanelVisible = false;
 
     QString currentPreeditString;
 
-    QScopedPointer<QWaylandTextInputV4ClientState> currentState;
-    QScopedPointer<QWaylandTextInputV4ClientState> pendingState;
+    QScopedPointer<WaylandTextInputV4ClientState> currentState;
+    QScopedPointer<WaylandTextInputV4ClientState> pendingState;
 
     uint32_t serial = 0;
 
-    QHash<Resource *, QWaylandSurface*> enabledSurfaces;
+    QHash<Resource *, WaylandSurface*> enabledSurfaces;
 
 protected:
     void zwp_text_input_v4_bind_resource(Resource *resource) override;
@@ -127,6 +129,8 @@ protected:
     void zwp_text_input_v4_commit(Resource *resource) override;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDTEXTINPUTV4_P_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDTEXTINPUTV4_P_H

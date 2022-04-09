@@ -27,30 +27,32 @@
 **
 ****************************************************************************/
 
-#include "qwaylandquickhardwarelayer_p.h"
+#include "aurorawaylandquickhardwarelayer_p.h"
 
-#include <QtWaylandCompositor/private/qwlhardwarelayerintegration_p.h>
-#include <QtWaylandCompositor/private/qwlhardwarelayerintegrationfactory_p.h>
+#include <LiriAuroraCompositor/private/aurorawlhardwarelayerintegration_p.h>
+#include <LiriAuroraCompositor/private/aurorawlhardwarelayerintegrationfactory_p.h>
 
 #include <QtCore/private/qobject_p.h>
 #include <QMatrix4x4>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandQuickHardwareLayerPrivate : public QObjectPrivate
+namespace Compositor {
+
+class WaylandQuickHardwareLayerPrivate : public QObjectPrivate
 {
-    Q_DECLARE_PUBLIC(QWaylandQuickHardwareLayer)
+    Q_DECLARE_PUBLIC(WaylandQuickHardwareLayer)
 public:
     QtWayland::HardwareLayerIntegration *layerIntegration();
-    QWaylandQuickItem *m_waylandItem = nullptr;
+    WaylandQuickItem *m_waylandItem = nullptr;
     int m_stackingLevel = 0;
     QMatrix4x4 m_matrixFromRenderThread;
     static QtWayland::HardwareLayerIntegration *s_hardwareLayerIntegration;
 };
 
-QtWayland::HardwareLayerIntegration *QWaylandQuickHardwareLayerPrivate::s_hardwareLayerIntegration = nullptr;
+QtWayland::HardwareLayerIntegration *WaylandQuickHardwareLayerPrivate::s_hardwareLayerIntegration = nullptr;
 
-QtWayland::HardwareLayerIntegration *QWaylandQuickHardwareLayerPrivate::layerIntegration()
+QtWayland::HardwareLayerIntegration *WaylandQuickHardwareLayerPrivate::layerIntegration()
 {
     if (!s_hardwareLayerIntegration) {
         QStringList keys = QtWayland::HardwareLayerIntegrationFactory::keys();
@@ -75,7 +77,7 @@ QtWayland::HardwareLayerIntegration *QWaylandQuickHardwareLayerPrivate::layerInt
 
 /*!
  * \qmltype WaylandHardwareLayer
- * \inqmlmodule QtWayland.Compositor
+ * \inqmlmodule Aurora.Compositor
  * \preliminary
  * \brief Makes a parent WaylandQuickItem use hardware layers for rendering.
  *
@@ -92,14 +94,14 @@ QtWayland::HardwareLayerIntegration *QWaylandQuickHardwareLayerPrivate::layerInt
  * QT_WAYLAND_HARDWARE_LAYER_INTEGRATION environment variable.
  */
 
-QWaylandQuickHardwareLayer::QWaylandQuickHardwareLayer(QObject *parent)
-    : QObject(*new QWaylandQuickHardwareLayerPrivate(), parent)
+WaylandQuickHardwareLayer::WaylandQuickHardwareLayer(QObject *parent)
+    : QObject(*new WaylandQuickHardwareLayerPrivate(), parent)
 {
 }
 
-QWaylandQuickHardwareLayer::~QWaylandQuickHardwareLayer()
+WaylandQuickHardwareLayer::~WaylandQuickHardwareLayer()
 {
-    Q_D(QWaylandQuickHardwareLayer);
+    Q_D(WaylandQuickHardwareLayer);
     if (d->layerIntegration())
         d->layerIntegration()->remove(this);
 }
@@ -117,15 +119,15 @@ QWaylandQuickHardwareLayer::~QWaylandQuickHardwareLayer()
  * Layers with a level below 0 are drawn beneath the compositor scene graph, if supported by the
  * hardware layer integration.
  */
-int QWaylandQuickHardwareLayer::stackingLevel() const
+int WaylandQuickHardwareLayer::stackingLevel() const
 {
-    Q_D(const QWaylandQuickHardwareLayer);
+    Q_D(const WaylandQuickHardwareLayer);
     return d->m_stackingLevel;
 }
 
-void QWaylandQuickHardwareLayer::setStackingLevel(int level)
+void WaylandQuickHardwareLayer::setStackingLevel(int level)
 {
-    Q_D(QWaylandQuickHardwareLayer);
+    Q_D(WaylandQuickHardwareLayer);
     if (level == d->m_stackingLevel)
         return;
 
@@ -133,26 +135,26 @@ void QWaylandQuickHardwareLayer::setStackingLevel(int level)
     emit stackingLevelChanged();
 }
 
-QWaylandQuickItem *QWaylandQuickHardwareLayer::waylandItem() const
+WaylandQuickItem *WaylandQuickHardwareLayer::waylandItem() const
 {
-    Q_D(const QWaylandQuickHardwareLayer);
+    Q_D(const WaylandQuickHardwareLayer);
     return d->m_waylandItem;
 }
 
-void QWaylandQuickHardwareLayer::classBegin()
+void WaylandQuickHardwareLayer::classBegin()
 {
-    Q_D(QWaylandQuickHardwareLayer);
+    Q_D(WaylandQuickHardwareLayer);
     for (QObject *p = parent(); p != nullptr; p = p->parent()) {
-        if (auto *waylandItem = qobject_cast<QWaylandQuickItem *>(p)) {
+        if (auto *waylandItem = qobject_cast<WaylandQuickItem *>(p)) {
             d->m_waylandItem = waylandItem;
             break;
         }
     }
 }
 
-void QWaylandQuickHardwareLayer::componentComplete()
+void WaylandQuickHardwareLayer::componentComplete()
 {
-    Q_D(QWaylandQuickHardwareLayer);
+    Q_D(WaylandQuickHardwareLayer);
     Q_ASSERT(d->m_waylandItem);
     if (auto integration = d->layerIntegration())
         integration->add(this);
@@ -160,16 +162,18 @@ void QWaylandQuickHardwareLayer::componentComplete()
         qWarning() << "No hardware layer integration. WaylandHarwareLayer has no effect.";
 }
 
-void QWaylandQuickHardwareLayer::setSceneGraphPainting(bool enable)
+void WaylandQuickHardwareLayer::setSceneGraphPainting(bool enable)
 {
     waylandItem()->setPaintEnabled(enable);
 }
 
-// This should be called if QWaylandQuickHardwareLayer used as a native instance, not a qml component.
-void QWaylandQuickHardwareLayer::initialize()
+// This should be called if WaylandQuickHardwareLayer used as a native instance, not a qml component.
+void WaylandQuickHardwareLayer::initialize()
 {
     classBegin();
     componentComplete();
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

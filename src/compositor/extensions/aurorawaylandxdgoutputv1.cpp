@@ -27,19 +27,21 @@
 **
 ****************************************************************************/
 
-#include <QWaylandCompositor>
+#include <LiriAuroraCompositor/WaylandCompositor>
 
-#include "qwaylandxdgoutputv1_p.h"
-#include "qwaylandoutput_p.h"
+#include "aurorawaylandxdgoutputv1_p.h"
+#include "aurorawaylandoutput_p.h"
 
 #include <wayland-server.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 /*!
  * \qmltype XdgOutputManagerV1
- * \instantiates QWaylandXdgOutputManagerV1
- * \inqmlmodule QtWayland.Compositor.XdgShell
+ * \instantiates WaylandXdgOutputManagerV1
+ * \inqmlmodule Aurora.Compositor.XdgShell
  * \since 5.14
  * \brief Provides an extension for describing outputs in a desktop oriented fashion.
  *
@@ -58,7 +60,7 @@ QT_BEGIN_NAMESPACE
  * and associated each XdgOutputV1 with its WaylandOutput:
  *
  * \qml
- * import QtWayland.Compositor
+ * import Aurora.Compositor
  *
  * WaylandCompositor {
  *     XdgOutputManagerV1 {
@@ -95,140 +97,140 @@ QT_BEGIN_NAMESPACE
  */
 
 /*!
- * \class QWaylandXdgOutputManagerV1
+ * \class WaylandXdgOutputManagerV1
  * \inmodule QtWaylandCompositor
  * \since 5.14
  * \brief Provides an extension for describing outputs in a desktop oriented fashion.
  *
- * The QWaylandXdgOutputManagerV1 extension provides a way for a compositor to describe outputs in a way
+ * The WaylandXdgOutputManagerV1 extension provides a way for a compositor to describe outputs in a way
  * that is more in line with the concept of an output on desktop oriented systems.
  *
  * Some information may not make sense in other applications such as IVI systems.
  *
- * QWaylandXdgOutputManagerV1 corresponds to the Wayland interface, \c zxdg_output_manager_v1.
+ * WaylandXdgOutputManagerV1 corresponds to the Wayland interface, \c zxdg_output_manager_v1.
  */
 
 /*!
- * Constructs a QWaylandXdgOutputManagerV1 object.
+ * Constructs a WaylandXdgOutputManagerV1 object.
  */
-QWaylandXdgOutputManagerV1::QWaylandXdgOutputManagerV1()
-    : QWaylandCompositorExtensionTemplate<QWaylandXdgOutputManagerV1>(*new QWaylandXdgOutputManagerV1Private())
+WaylandXdgOutputManagerV1::WaylandXdgOutputManagerV1()
+    : WaylandCompositorExtensionTemplate<WaylandXdgOutputManagerV1>(*new WaylandXdgOutputManagerV1Private())
 {
 }
 
 /*!
- * Constructs a QWaylandXdgOutputManagerV1 object for the provided \a compositor.
+ * Constructs a WaylandXdgOutputManagerV1 object for the provided \a compositor.
  */
-QWaylandXdgOutputManagerV1::QWaylandXdgOutputManagerV1(QWaylandCompositor *compositor)
-    : QWaylandCompositorExtensionTemplate<QWaylandXdgOutputManagerV1>(compositor, *new QWaylandXdgOutputManagerV1Private())
+WaylandXdgOutputManagerV1::WaylandXdgOutputManagerV1(WaylandCompositor *compositor)
+    : WaylandCompositorExtensionTemplate<WaylandXdgOutputManagerV1>(compositor, *new WaylandXdgOutputManagerV1Private())
 {
 }
 
-// QWaylandXdgOutputManagerV1Private
+// WaylandXdgOutputManagerV1Private
 
 /*!
  * Initializes the extension.
  */
-void QWaylandXdgOutputManagerV1::initialize()
+void WaylandXdgOutputManagerV1::initialize()
 {
-    Q_D(QWaylandXdgOutputManagerV1);
+    Q_D(WaylandXdgOutputManagerV1);
 
-    QWaylandCompositorExtensionTemplate::initialize();
-    QWaylandCompositor *compositor = static_cast<QWaylandCompositor *>(extensionContainer());
+    WaylandCompositorExtensionTemplate::initialize();
+    WaylandCompositor *compositor = static_cast<WaylandCompositor *>(extensionContainer());
     if (!compositor) {
-        qCWarning(qLcWaylandCompositor) << "Failed to find QWaylandCompositor when initializing QWaylandXdgOutputManagerV1";
+        qCWarning(qLcWaylandCompositor) << "Failed to find WaylandCompositor when initializing WaylandXdgOutputManagerV1";
         return;
     }
     d->init(compositor->display(), d->interfaceVersion());
 }
 
 /*!
- * Returns the Wayland interface for QWaylandXdgOutputManagerV1.
+ * Returns the Wayland interface for WaylandXdgOutputManagerV1.
  */
-const wl_interface *QWaylandXdgOutputManagerV1::interface()
+const wl_interface *WaylandXdgOutputManagerV1::interface()
 {
-    return QWaylandXdgOutputManagerV1Private::interface();
+    return WaylandXdgOutputManagerV1Private::interface();
 }
 
-// QWaylandXdgOutputManagerV1Private
+// WaylandXdgOutputManagerV1Private
 
-void QWaylandXdgOutputManagerV1Private::registerXdgOutput(QWaylandOutput *output, QWaylandXdgOutputV1 *xdgOutput)
+void WaylandXdgOutputManagerV1Private::registerXdgOutput(WaylandOutput *output, WaylandXdgOutputV1 *xdgOutput)
 {
     if (!xdgOutputs.contains(output)) {
         xdgOutputs[output] = xdgOutput;
-        QWaylandOutputPrivate::get(output)->xdgOutput = xdgOutput;
+        WaylandOutputPrivate::get(output)->xdgOutput = xdgOutput;
     }
 }
 
-void QWaylandXdgOutputManagerV1Private::unregisterXdgOutput(QWaylandOutput *output)
+void WaylandXdgOutputManagerV1Private::unregisterXdgOutput(WaylandOutput *output)
 {
     xdgOutputs.remove(output);
 }
 
-void QWaylandXdgOutputManagerV1Private::zxdg_output_manager_v1_get_xdg_output(Resource *resource,
+void WaylandXdgOutputManagerV1Private::zxdg_output_manager_v1_get_xdg_output(Resource *resource,
                                                                               uint32_t id,
                                                                               wl_resource *outputResource)
 {
-    Q_Q(QWaylandXdgOutputManagerV1);
+    Q_Q(WaylandXdgOutputManagerV1);
 
     // Verify if the associated output exist
-    auto *output = QWaylandOutput::fromResource(outputResource);
+    auto *output = WaylandOutput::fromResource(outputResource);
     if (!output) {
         qCWarning(qLcWaylandCompositor,
-                  "The client is requesting a QWaylandXdgOutputV1 for a "
-                  "QWaylandOutput that doesn't exist");
+                  "The client is requesting a WaylandXdgOutputV1 for a "
+                  "WaylandOutput that doesn't exist");
         wl_resource_post_error(resource->handle, WL_DISPLAY_ERROR_INVALID_OBJECT, "output not found");
         return;
     }
 
-    // Do we have a QWaylandXdgOutputV1 for this output?
+    // Do we have a WaylandXdgOutputV1 for this output?
     if (!xdgOutputs.contains(output)) {
         qCWarning(qLcWaylandCompositor,
-                  "The client is requesting a QWaylandXdgOutputV1 that the compositor "
+                  "The client is requesting a WaylandXdgOutputV1 that the compositor "
                   "didn't create before");
         wl_resource_post_error(resource->handle, WL_DISPLAY_ERROR_INVALID_OBJECT,
-                               "compositor didn't create a QWaylandXdgOutputV1 for this zxdg_output_v1 object");
+                               "compositor didn't create a WaylandXdgOutputV1 for this zxdg_output_v1 object");
         return;
     }
 
-    // Bind QWaylandXdgOutputV1 and initialize
+    // Bind WaylandXdgOutputV1 and initialize
     auto *xdgOutput = xdgOutputs[output];
-    auto *xdgOutputPrivate = QWaylandXdgOutputV1Private::get(xdgOutput);
+    auto *xdgOutputPrivate = WaylandXdgOutputV1Private::get(xdgOutput);
     Q_ASSERT(xdgOutputPrivate);
     xdgOutputPrivate->setManager(q);
     xdgOutputPrivate->setOutput(output);
-    xdgOutputPrivate->add(resource->client(), id, qMin(resource->version(), QWaylandXdgOutputV1Private::interfaceVersion()));
+    xdgOutputPrivate->add(resource->client(), id, qMin(resource->version(), WaylandXdgOutputV1Private::interfaceVersion()));
 }
 
-// QWaylandXdgOutputV1
+// WaylandXdgOutputV1
 
-QWaylandXdgOutputV1::QWaylandXdgOutputV1()
-    : QObject(*new QWaylandXdgOutputV1Private)
+WaylandXdgOutputV1::WaylandXdgOutputV1()
+    : QObject(*new WaylandXdgOutputV1Private)
 {
 }
 
-QWaylandXdgOutputV1::QWaylandXdgOutputV1(QWaylandOutput *output, QWaylandXdgOutputManagerV1 *manager)
-    : QObject(*new QWaylandXdgOutputV1Private)
+WaylandXdgOutputV1::WaylandXdgOutputV1(WaylandOutput *output, WaylandXdgOutputManagerV1 *manager)
+    : QObject(*new WaylandXdgOutputV1Private)
 {
-    Q_D(QWaylandXdgOutputV1);
+    Q_D(WaylandXdgOutputV1);
 
     // Set members before emitting changed signals so that handlers will
     // see both already set and not nullptr, avoiding potential crashes
     d->manager = manager;
     d->output = output;
 
-    QWaylandXdgOutputManagerV1Private::get(d->manager)->registerXdgOutput(output, this);
+    WaylandXdgOutputManagerV1Private::get(d->manager)->registerXdgOutput(output, this);
 
     emit managerChanged();
     emit outputChanged();
 }
 
-QWaylandXdgOutputV1::~QWaylandXdgOutputV1()
+WaylandXdgOutputV1::~WaylandXdgOutputV1()
 {
-    Q_D(QWaylandXdgOutputV1);
+    Q_D(WaylandXdgOutputV1);
 
     if (d->manager)
-        QWaylandXdgOutputManagerV1Private::get(d->manager)->unregisterXdgOutput(d->output);
+        WaylandXdgOutputManagerV1Private::get(d->manager)->unregisterXdgOutput(d->output);
 }
 
 /*!
@@ -238,14 +240,14 @@ QWaylandXdgOutputV1::~QWaylandXdgOutputV1()
  * This property holds the object that manages this XdgOutputV1.
  */
 /*!
- * \property QWaylandXdgOutputV1::manager
+ * \property WaylandXdgOutputV1::manager
  * \readonly
  *
- * This property holds the object that manages this QWaylandXdgOutputV1.
+ * This property holds the object that manages this WaylandXdgOutputV1.
  */
-QWaylandXdgOutputManagerV1 *QWaylandXdgOutputV1::manager() const
+WaylandXdgOutputManagerV1 *WaylandXdgOutputV1::manager() const
 {
-    Q_D(const QWaylandXdgOutputV1);
+    Q_D(const WaylandXdgOutputV1);
     return d->manager;
 }
 
@@ -256,14 +258,14 @@ QWaylandXdgOutputManagerV1 *QWaylandXdgOutputV1::manager() const
  * This property holds the WaylandOutput associated with this XdgOutputV1.
  */
 /*!
- * \property QWaylandXdgOutputV1::output
+ * \property WaylandXdgOutputV1::output
  * \readonly
  *
- * This property holds the QWaylandOutput associated with this QWaylandXdgOutputV1.
+ * This property holds the WaylandOutput associated with this WaylandXdgOutputV1.
  */
-QWaylandOutput *QWaylandXdgOutputV1::output() const
+WaylandOutput *WaylandXdgOutputV1::output() const
 {
-    Q_D(const QWaylandXdgOutputV1);
+    Q_D(const WaylandXdgOutputV1);
     return d->output;
 }
 
@@ -282,7 +284,7 @@ QWaylandOutput *QWaylandXdgOutputV1::output() const
  * Changing this property after initialization doesn't take effect.
  */
 /*!
- * \property QWaylandXdgOutputV1::name
+ * \property WaylandXdgOutputV1::name
  *
  * This property holds the name of this output.
  *
@@ -295,22 +297,22 @@ QWaylandOutput *QWaylandXdgOutputV1::output() const
  *
  * Changing this property after initialization doesn't take effect.
  */
-QString QWaylandXdgOutputV1::name() const
+QString WaylandXdgOutputV1::name() const
 {
-    Q_D(const QWaylandXdgOutputV1);
+    Q_D(const WaylandXdgOutputV1);
     return d->name;
 }
 
-void QWaylandXdgOutputV1::setName(const QString &name)
+void WaylandXdgOutputV1::setName(const QString &name)
 {
-    Q_D(QWaylandXdgOutputV1);
+    Q_D(WaylandXdgOutputV1);
 
     if (d->name == name)
         return;
 
     // Can't change after clients bound to xdg-output
     if (d->initialized) {
-        qCWarning(qLcWaylandCompositor, "QWaylandXdgOutputV1::name cannot be changed after initialization");
+        qCWarning(qLcWaylandCompositor, "WaylandXdgOutputV1::name cannot be changed after initialization");
         return;
     }
 
@@ -328,7 +330,7 @@ void QWaylandXdgOutputV1::setName(const QString &name)
  * Changing this property after initialization doesn't take effect.
  */
 /*!
- * \property QWaylandXdgOutputV1::description
+ * \property WaylandXdgOutputV1::description
  *
  *  This property holds the description of this output.
  *
@@ -336,22 +338,22 @@ void QWaylandXdgOutputV1::setName(const QString &name)
  *
  * Changing this property after initialization doesn't take effect.
  */
-QString QWaylandXdgOutputV1::description() const
+QString WaylandXdgOutputV1::description() const
 {
-    Q_D(const QWaylandXdgOutputV1);
+    Q_D(const WaylandXdgOutputV1);
     return d->description;
 }
 
-void QWaylandXdgOutputV1::setDescription(const QString &description)
+void WaylandXdgOutputV1::setDescription(const QString &description)
 {
-    Q_D(QWaylandXdgOutputV1);
+    Q_D(WaylandXdgOutputV1);
 
     if (d->description == description)
         return;
 
     // Can't change after clients bound to xdg-output
     if (d->initialized) {
-        qCWarning(qLcWaylandCompositor, "QWaylandXdgOutputV1::description cannot be changed after initialization");
+        qCWarning(qLcWaylandCompositor, "WaylandXdgOutputV1::description cannot be changed after initialization");
         return;
     }
 
@@ -367,21 +369,21 @@ void QWaylandXdgOutputV1::setDescription(const QString &description)
  * The default value is 0,0.
  */
 /*!
- * \property QWaylandXdgOutputV1::logicalPosition
+ * \property WaylandXdgOutputV1::logicalPosition
  *
  * This property holds the coordinates of the output within the global compositor space.
  *
  * The default value is 0,0.
  */
-QPoint QWaylandXdgOutputV1::logicalPosition() const
+QPoint WaylandXdgOutputV1::logicalPosition() const
 {
-    Q_D(const QWaylandXdgOutputV1);
+    Q_D(const WaylandXdgOutputV1);
     return d->logicalPos;
 }
 
-void QWaylandXdgOutputV1::setLogicalPosition(const QPoint &position)
+void WaylandXdgOutputV1::setLogicalPosition(const QPoint &position)
 {
-    Q_D(QWaylandXdgOutputV1);
+    Q_D(WaylandXdgOutputV1);
 
     if (d->logicalPos == position)
         return;
@@ -411,7 +413,7 @@ void QWaylandXdgOutputV1::setLogicalPosition(const QPoint &position)
  * \endlist
  */
 /*!
- * \property QWaylandXdgOutputV1::logicalSize
+ * \property WaylandXdgOutputV1::logicalSize
  *
  * This property holds the size of the output in the global compositor space.
  *
@@ -425,15 +427,15 @@ void QWaylandXdgOutputV1::setLogicalPosition(const QPoint &position)
  * \li A compositor using a fractional scale of 1.5, will report a logical size of 2560x1620.
  * \endlist
  */
-QSize QWaylandXdgOutputV1::logicalSize() const
+QSize WaylandXdgOutputV1::logicalSize() const
 {
-    Q_D(const QWaylandXdgOutputV1);
+    Q_D(const WaylandXdgOutputV1);
     return d->logicalSize;
 }
 
-void QWaylandXdgOutputV1::setLogicalSize(const QSize &size)
+void WaylandXdgOutputV1::setLogicalSize(const QSize &size)
 {
-    Q_D(QWaylandXdgOutputV1);
+    Q_D(WaylandXdgOutputV1);
 
     if (d->logicalSize == size)
         return;
@@ -458,24 +460,24 @@ void QWaylandXdgOutputV1::setLogicalSize(const QSize &size)
  * \sa XdgOutputV1::logicalSize
  */
 /*!
- * \property QWaylandXdgOutputV1::logicalGeometry
+ * \property WaylandXdgOutputV1::logicalGeometry
  * \readonly
  *
  * This property holds the position and size of the output in the global compositor space.
  * It's the combination of the logical position and logical size.
  *
- * \sa QWaylandXdgOutputV1::logicalPosition
- * \sa QWaylandXdgOutputV1::logicalSize
+ * \sa WaylandXdgOutputV1::logicalPosition
+ * \sa WaylandXdgOutputV1::logicalSize
  */
-QRect QWaylandXdgOutputV1::logicalGeometry() const
+QRect WaylandXdgOutputV1::logicalGeometry() const
 {
-    Q_D(const QWaylandXdgOutputV1);
+    Q_D(const WaylandXdgOutputV1);
     return QRect(d->logicalPos, d->logicalSize);
 }
 
-// QWaylandXdgOutputV1Private
+// WaylandXdgOutputV1Private
 
-void QWaylandXdgOutputV1Private::sendLogicalPosition(const QPoint &position)
+void WaylandXdgOutputV1Private::sendLogicalPosition(const QPoint &position)
 {
     const auto values = resourceMap().values();
     for (auto *resource : values)
@@ -483,7 +485,7 @@ void QWaylandXdgOutputV1Private::sendLogicalPosition(const QPoint &position)
     needToSendDone = true;
 }
 
-void QWaylandXdgOutputV1Private::sendLogicalSize(const QSize &size)
+void WaylandXdgOutputV1Private::sendLogicalSize(const QSize &size)
 {
     const auto values = resourceMap().values();
     for (auto *resource : values)
@@ -491,7 +493,7 @@ void QWaylandXdgOutputV1Private::sendLogicalSize(const QSize &size)
     needToSendDone = true;
 }
 
-void QWaylandXdgOutputV1Private::sendDone()
+void WaylandXdgOutputV1Private::sendDone()
 {
     if (needToSendDone) {
         const auto values = resourceMap().values();
@@ -503,13 +505,13 @@ void QWaylandXdgOutputV1Private::sendDone()
     }
 }
 
-void QWaylandXdgOutputV1Private::setManager(QWaylandXdgOutputManagerV1 *_manager)
+void WaylandXdgOutputV1Private::setManager(WaylandXdgOutputManagerV1 *_manager)
 {
-    Q_Q(QWaylandXdgOutputV1);
+    Q_Q(WaylandXdgOutputV1);
 
     if (!_manager) {
         qCWarning(qLcWaylandCompositor,
-                  "Cannot associate a null QWaylandXdgOutputManagerV1 to QWaylandXdgOutputV1 %p", this);
+                  "Cannot associate a null WaylandXdgOutputManagerV1 to WaylandXdgOutputV1 %p", this);
         return;
     }
 
@@ -518,7 +520,7 @@ void QWaylandXdgOutputV1Private::setManager(QWaylandXdgOutputManagerV1 *_manager
 
     if (manager) {
         qCWarning(qLcWaylandCompositor,
-                  "Cannot associate a different QWaylandXdgOutputManagerV1 to QWaylandXdgOutputV1 %p "
+                  "Cannot associate a different WaylandXdgOutputManagerV1 to WaylandXdgOutputV1 %p "
                   "after initialization", this);
         return;
     }
@@ -527,13 +529,13 @@ void QWaylandXdgOutputV1Private::setManager(QWaylandXdgOutputManagerV1 *_manager
     emit q->managerChanged();
 }
 
-void QWaylandXdgOutputV1Private::setOutput(QWaylandOutput *_output)
+void WaylandXdgOutputV1Private::setOutput(WaylandOutput *_output)
 {
-    Q_Q(QWaylandXdgOutputV1);
+    Q_Q(WaylandXdgOutputV1);
 
     if (!_output) {
         qCWarning(qLcWaylandCompositor,
-                  "Cannot associate a null QWaylandOutput to QWaylandXdgOutputV1 %p", this);
+                  "Cannot associate a null WaylandOutput to WaylandXdgOutputV1 %p", this);
         return;
     }
 
@@ -542,7 +544,7 @@ void QWaylandXdgOutputV1Private::setOutput(QWaylandOutput *_output)
 
     if (output) {
         qCWarning(qLcWaylandCompositor,
-                  "Cannot associate a different QWaylandOutput to QWaylandXdgOutputV1 %p "
+                  "Cannot associate a different WaylandOutput to WaylandXdgOutputV1 %p "
                   "after initialization", this);
         return;
     }
@@ -553,7 +555,7 @@ void QWaylandXdgOutputV1Private::setOutput(QWaylandOutput *_output)
     if (!manager) {
         // Try to find the manager from the output parents
         for (auto *p = output->parent(); p != nullptr; p = p->parent()) {
-            if (auto *m = qobject_cast<QWaylandXdgOutputManagerV1 *>(p)) {
+            if (auto *m = qobject_cast<WaylandXdgOutputManagerV1 *>(p)) {
                 manager = m;
                 emit q->managerChanged();
                 break;
@@ -565,10 +567,10 @@ void QWaylandXdgOutputV1Private::setOutput(QWaylandOutput *_output)
 
     // Register the output
     if (manager)
-        QWaylandXdgOutputManagerV1Private::get(manager)->registerXdgOutput(output, q);
+        WaylandXdgOutputManagerV1Private::get(manager)->registerXdgOutput(output, q);
 }
 
-void QWaylandXdgOutputV1Private::zxdg_output_v1_bind_resource(Resource *resource)
+void WaylandXdgOutputV1Private::zxdg_output_v1_bind_resource(Resource *resource)
 {
     send_logical_position(resource->handle, logicalPos.x(), logicalPos.y());
     send_logical_size(resource->handle, logicalSize.width(), logicalSize.height());
@@ -581,9 +583,11 @@ void QWaylandXdgOutputV1Private::zxdg_output_v1_bind_resource(Resource *resource
     initialized = true;
 }
 
-void QWaylandXdgOutputV1Private::zxdg_output_v1_destroy(Resource *resource)
+void WaylandXdgOutputV1Private::zxdg_output_v1_destroy(Resource *resource)
 {
     wl_resource_destroy(resource->handle);
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

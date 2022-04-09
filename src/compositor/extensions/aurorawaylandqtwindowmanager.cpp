@@ -31,35 +31,37 @@
 #include <QtCore/QObject>
 #include <QtCore/QUrl>
 
-#include <QtWaylandCompositor/QWaylandCompositor>
-#include <QtWaylandCompositor/QWaylandClient>
+#include <LiriAuroraCompositor/WaylandCompositor>
+#include <LiriAuroraCompositor/WaylandClient>
 
-#include "qwaylandqtwindowmanager.h"
-#include "qwaylandqtwindowmanager_p.h"
+#include "aurorawaylandqtwindowmanager.h"
+#include "aurorawaylandqtwindowmanager_p.h"
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-QWaylandQtWindowManagerPrivate::QWaylandQtWindowManagerPrivate()
+namespace Compositor {
+
+WaylandQtWindowManagerPrivate::WaylandQtWindowManagerPrivate()
 {
 }
 
-void QWaylandQtWindowManagerPrivate::windowmanager_bind_resource(Resource *resource)
+void WaylandQtWindowManagerPrivate::windowmanager_bind_resource(Resource *resource)
 {
     send_hints(resource->handle, static_cast<int32_t>(showIsFullScreen));
 }
 
-void QWaylandQtWindowManagerPrivate::windowmanager_destroy_resource(Resource *resource)
+void WaylandQtWindowManagerPrivate::windowmanager_destroy_resource(Resource *resource)
 {
     urls.remove(resource);
 }
 
-void QWaylandQtWindowManagerPrivate::windowmanager_open_url(Resource *resource, uint32_t remaining, const QString &newUrl)
+void WaylandQtWindowManagerPrivate::windowmanager_open_url(Resource *resource, uint32_t remaining, const QString &newUrl)
 {
-    Q_Q(QWaylandQtWindowManager);
+    Q_Q(WaylandQtWindowManager);
 
-    QWaylandCompositor *compositor = static_cast<QWaylandCompositor *>(q->extensionContainer());
+    WaylandCompositor *compositor = static_cast<WaylandCompositor *>(q->extensionContainer());
     if (!compositor) {
-        qWarning() << "Failed to find QWaylandCompositor from QWaylandQtWindowManager::windowmanager_open_url()";
+        qWarning() << "Failed to find WaylandCompositor from WaylandQtWindowManager::windowmanager_open_url()";
         return;
     }
 
@@ -71,71 +73,73 @@ void QWaylandQtWindowManagerPrivate::windowmanager_open_url(Resource *resource, 
         urls.insert(resource, url);
     else {
         urls.remove(resource);
-        q->openUrl(QWaylandClient::fromWlClient(compositor, resource->client()), QUrl(url));
+        q->openUrl(WaylandClient::fromWlClient(compositor, resource->client()), QUrl(url));
     }
 }
 
-QWaylandQtWindowManager::QWaylandQtWindowManager()
-    : QWaylandCompositorExtensionTemplate<QWaylandQtWindowManager>(*new QWaylandQtWindowManagerPrivate())
+WaylandQtWindowManager::WaylandQtWindowManager()
+    : WaylandCompositorExtensionTemplate<WaylandQtWindowManager>(*new WaylandQtWindowManagerPrivate())
 {
 }
 
-QWaylandQtWindowManager::QWaylandQtWindowManager(QWaylandCompositor *compositor)
-    : QWaylandCompositorExtensionTemplate<QWaylandQtWindowManager>(compositor, *new QWaylandQtWindowManagerPrivate())
+WaylandQtWindowManager::WaylandQtWindowManager(WaylandCompositor *compositor)
+    : WaylandCompositorExtensionTemplate<WaylandQtWindowManager>(compositor, *new WaylandQtWindowManagerPrivate())
 {
 }
 
-bool QWaylandQtWindowManager::showIsFullScreen() const
+bool WaylandQtWindowManager::showIsFullScreen() const
 {
-    Q_D(const QWaylandQtWindowManager);
+    Q_D(const WaylandQtWindowManager);
     return d->showIsFullScreen;
 }
 
-void QWaylandQtWindowManager::setShowIsFullScreen(bool value)
+void WaylandQtWindowManager::setShowIsFullScreen(bool value)
 {
-    Q_D(QWaylandQtWindowManager);
+    Q_D(WaylandQtWindowManager);
 
     if (d->showIsFullScreen == value)
         return;
 
     d->showIsFullScreen = value;
     const auto resMap = d->resourceMap();
-    for (QWaylandQtWindowManagerPrivate::Resource *resource : resMap) {
+    for (WaylandQtWindowManagerPrivate::Resource *resource : resMap) {
         d->send_hints(resource->handle, static_cast<int32_t>(d->showIsFullScreen));
     }
     Q_EMIT showIsFullScreenChanged();
 }
 
-void QWaylandQtWindowManager::sendQuitMessage(QWaylandClient *client)
+void WaylandQtWindowManager::sendQuitMessage(WaylandClient *client)
 {
-    Q_D(QWaylandQtWindowManager);
-    QWaylandQtWindowManagerPrivate::Resource *resource = d->resourceMap().value(client->client());
+    Q_D(WaylandQtWindowManager);
+    WaylandQtWindowManagerPrivate::Resource *resource = d->resourceMap().value(client->client());
 
     if (resource)
         d->send_quit(resource->handle);
 }
 
-void QWaylandQtWindowManager::initialize()
+void WaylandQtWindowManager::initialize()
 {
-    Q_D(QWaylandQtWindowManager);
+    Q_D(WaylandQtWindowManager);
 
-    QWaylandCompositorExtensionTemplate::initialize();
-    QWaylandCompositor *compositor = static_cast<QWaylandCompositor *>(extensionContainer());
+    WaylandCompositorExtensionTemplate::initialize();
+    WaylandCompositor *compositor = static_cast<WaylandCompositor *>(extensionContainer());
     if (!compositor) {
-        qWarning() << "Failed to find QWaylandCompositor when initializing QWaylandQtWindowManager";
+        qWarning() << "Failed to find WaylandCompositor when initializing WaylandQtWindowManager";
         return;
     }
     d->init(compositor->display(), 1);
 }
 
-const struct wl_interface *QWaylandQtWindowManager::interface()
+const struct wl_interface *WaylandQtWindowManager::interface()
 {
-    return QWaylandQtWindowManagerPrivate::interface();
+    return WaylandQtWindowManagerPrivate::interface();
 }
 
-QByteArray QWaylandQtWindowManager::interfaceName()
+QByteArray WaylandQtWindowManager::interfaceName()
 {
-    return QWaylandQtWindowManagerPrivate::interfaceName();
+    return WaylandQtWindowManagerPrivate::interfaceName();
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

@@ -27,70 +27,72 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDXDGOUTPUTV1_P_H
-#define QWAYLANDXDGOUTPUTV1_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDXDGOUTPUTV1_P_H
+#define AURORA_COMPOSITOR_WAYLANDXDGOUTPUTV1_P_H
 
 #include <QtCore/QHash>
 
-#include <QWaylandOutput>
-#include <QWaylandXdgOutputV1>
-#include <QtWaylandCompositor/private/qwaylandcompositorextension_p.h>
-#include <QtWaylandCompositor/private/qwayland-server-xdg-output-unstable-v1.h>
+#include <AuroraWaylandOutput>
+#include <AuroraWaylandXdgOutputV1>
+#include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
+#include <LiriAuroraCompositor/private/aurora-server-xdg-output-unstable-v1.h>
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandXdgOutputManagerV1Private
-        : public QWaylandCompositorExtensionPrivate
-        , public QtWaylandServer::zxdg_output_manager_v1
+namespace Compositor {
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgOutputManagerV1Private
+        : public WaylandCompositorExtensionPrivate
+        , public PrivateServer::zxdg_output_manager_v1
 {
-    Q_DECLARE_PUBLIC(QWaylandXdgOutputManagerV1)
+    Q_DECLARE_PUBLIC(WaylandXdgOutputManagerV1)
 public:
-    explicit QWaylandXdgOutputManagerV1Private() = default;
+    explicit WaylandXdgOutputManagerV1Private() = default;
 
-    void registerXdgOutput(QWaylandOutput *output, QWaylandXdgOutputV1 *xdgOutput);
-    void unregisterXdgOutput(QWaylandOutput *output);
+    void registerXdgOutput(WaylandOutput *output, WaylandXdgOutputV1 *xdgOutput);
+    void unregisterXdgOutput(WaylandOutput *output);
 
-    static QWaylandXdgOutputManagerV1Private *get(QWaylandXdgOutputManagerV1 *manager) { return manager ? manager->d_func() : nullptr; }
+    static WaylandXdgOutputManagerV1Private *get(WaylandXdgOutputManagerV1 *manager) { return manager ? manager->d_func() : nullptr; }
 
 protected:
     void zxdg_output_manager_v1_get_xdg_output(Resource *resource, uint32_t id,
                                                wl_resource *outputResource) override;
 
 private:
-    QHash<QWaylandOutput *, QWaylandXdgOutputV1 *> xdgOutputs;
+    QHash<WaylandOutput *, WaylandXdgOutputV1 *> xdgOutputs;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandXdgOutputV1Private
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgOutputV1Private
         : public QObjectPrivate
-        , public QtWaylandServer::zxdg_output_v1
+        , public PrivateServer::zxdg_output_v1
 {
-    Q_DECLARE_PUBLIC(QWaylandXdgOutputV1)
+    Q_DECLARE_PUBLIC(WaylandXdgOutputV1)
 public:
-    explicit QWaylandXdgOutputV1Private() = default;
+    explicit WaylandXdgOutputV1Private() = default;
 
     void sendLogicalPosition(const QPoint &position);
     void sendLogicalSize(const QSize &size);
     void sendDone();
 
-    void setManager(QWaylandXdgOutputManagerV1 *manager);
-    void setOutput(QWaylandOutput *output);
+    void setManager(WaylandXdgOutputManagerV1 *manager);
+    void setOutput(WaylandOutput *output);
 
-    static QWaylandXdgOutputV1Private *get(QWaylandXdgOutputV1 *xdgOutput) { return xdgOutput ? xdgOutput->d_func() : nullptr; }
+    static WaylandXdgOutputV1Private *get(WaylandXdgOutputV1 *xdgOutput) { return xdgOutput ? xdgOutput->d_func() : nullptr; }
 
     bool initialized = false;
-    QWaylandOutput *output = nullptr;
-    QWaylandXdgOutputManagerV1 *manager = nullptr;
+    WaylandOutput *output = nullptr;
+    WaylandXdgOutputManagerV1 *manager = nullptr;
     QPoint logicalPos;
     QSize logicalSize;
     QString name;
@@ -102,6 +104,8 @@ protected:
     void zxdg_output_v1_destroy(Resource *resource) override;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDXDGOUTPUTV1_P_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDXDGOUTPUTV1_P_H

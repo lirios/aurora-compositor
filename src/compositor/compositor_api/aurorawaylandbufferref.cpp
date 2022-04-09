@@ -30,18 +30,20 @@
 #include <QDebug>
 #include <QAtomicInt>
 
-#include "qwaylandbufferref.h"
-#include "wayland_wrapper/qwlclientbuffer_p.h"
+#include "aurorawaylandbufferref.h"
+#include "wayland_wrapper/aurorawlclientbuffer_p.h"
 
 #include <type_traits>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 #define CHECK1(l, r, op) \
     static_assert(std::is_same_v< \
         bool, \
-        decltype(std::declval<QWaylandBufferRef l >() op \
-                 std::declval<QWaylandBufferRef r >()) \
+        decltype(std::declval<WaylandBufferRef l >() op \
+                 std::declval<WaylandBufferRef r >()) \
     >)
 #define CHECK2(l, r) \
     CHECK1(l, r, ==); \
@@ -61,7 +63,7 @@ CHECK(, const);
 #undef CHECK2
 #undef CHECK1
 
-class QWaylandBufferRefPrivate
+class WaylandBufferRefPrivate
 {
 public:
     QtWayland::ClientBuffer *buffer = nullptr;
@@ -72,10 +74,10 @@ public:
 };
 
 /*!
- * \class QWaylandBufferRef
+ * \class WaylandBufferRef
  * \inmodule QtWaylandCompositor
  * \since 5.8
- * \brief The QWaylandBufferRef class holds the reference to a surface buffer.
+ * \brief The WaylandBufferRef class holds the reference to a surface buffer.
  *
  * This class can be used to reference a surface buffer. As long as a reference
  * to the buffer exists, it is owned by the compositor and the client cannot modify it.
@@ -84,8 +86,8 @@ public:
 /*!
  * Constructs a null buffer ref.
  */
-QWaylandBufferRef::QWaylandBufferRef()
-                 : d(new QWaylandBufferRefPrivate)
+WaylandBufferRef::WaylandBufferRef()
+                 : d(new WaylandBufferRefPrivate)
 {
     d->buffer = nullptr;
 }
@@ -93,8 +95,8 @@ QWaylandBufferRef::QWaylandBufferRef()
 /*!
  * Constructs a reference to \a buffer.
  */
-QWaylandBufferRef::QWaylandBufferRef(QtWayland::ClientBuffer *buffer)
-                 : d(new QWaylandBufferRefPrivate)
+WaylandBufferRef::WaylandBufferRef(QtWayland::ClientBuffer *buffer)
+                 : d(new WaylandBufferRefPrivate)
 {
     d->buffer = buffer;
     if (buffer)
@@ -104,8 +106,8 @@ QWaylandBufferRef::QWaylandBufferRef(QtWayland::ClientBuffer *buffer)
 /*!
  * Creates a new reference to the buffer referenced by \a ref.
  */
-QWaylandBufferRef::QWaylandBufferRef(const QWaylandBufferRef &ref)
-                 : d(new QWaylandBufferRefPrivate)
+WaylandBufferRef::WaylandBufferRef(const WaylandBufferRef &ref)
+                 : d(new WaylandBufferRefPrivate)
 {
     d->buffer = ref.d->buffer;
     if (d->buffer)
@@ -115,7 +117,7 @@ QWaylandBufferRef::QWaylandBufferRef(const QWaylandBufferRef &ref)
 /*!
  * Dereferences the buffer.
  */
-QWaylandBufferRef::~QWaylandBufferRef()
+WaylandBufferRef::~WaylandBufferRef()
 {
     if (d->buffer)
         d->buffer->deref();
@@ -126,7 +128,7 @@ QWaylandBufferRef::~QWaylandBufferRef()
  * Assigns \a ref to this buffer and adds a reference to it. The previously referenced buffer is
  * dereferenced.
  */
-QWaylandBufferRef &QWaylandBufferRef::operator=(const QWaylandBufferRef &ref)
+WaylandBufferRef &WaylandBufferRef::operator=(const WaylandBufferRef &ref)
 {
     if (ref.d->buffer)
         ref.d->buffer->ref();
@@ -140,54 +142,54 @@ QWaylandBufferRef &QWaylandBufferRef::operator=(const QWaylandBufferRef &ref)
 }
 
 /*!
-    \fn bool QWaylandBufferRef::operator==(const QWaylandBufferRef &lhs, const QWaylandBufferRef &rhs)
+    \fn bool WaylandBufferRef::operator==(const WaylandBufferRef &lhs, const WaylandBufferRef &rhs)
 
     Returns \c true if \a lhs references the same buffer as \a rhs.
     Otherwise returns \c{false}.
  */
-bool operator==(const QWaylandBufferRef &lhs, const QWaylandBufferRef &rhs) noexcept
+bool operator==(const WaylandBufferRef &lhs, const WaylandBufferRef &rhs) noexcept
 {
     return lhs.d->buffer == rhs.d->buffer;
 }
 
 /*!
-    \fn bool QWaylandBufferRef::operator!=(const QWaylandBufferRef &lhs, const QWaylandBufferRef &rhs)
+    \fn bool WaylandBufferRef::operator!=(const WaylandBufferRef &lhs, const WaylandBufferRef &rhs)
 
     Returns \c false if \a lhs references the same buffer as \a rhs.
     Otherwise returns \c {true}.
  */
 
 /*!
- * Returns true if this QWaylandBufferRef does not reference a buffer.
+ * Returns true if this WaylandBufferRef does not reference a buffer.
  * Otherwise returns false.
  *
  * \sa hasBuffer(), hasContent()
  */
-bool QWaylandBufferRef::isNull() const
+bool WaylandBufferRef::isNull() const
 {
     return !d->buffer;
 }
 
 /*!
- * Returns true if this QWaylandBufferRef references a buffer. Otherwise returns false.
+ * Returns true if this WaylandBufferRef references a buffer. Otherwise returns false.
  *
  * \sa isNull(), hasContent()
  */
-bool QWaylandBufferRef::hasBuffer() const
+bool WaylandBufferRef::hasBuffer() const
 {
     return d->buffer;
 }
 /*!
- * Returns true if this QWaylandBufferRef references a buffer that has content. Otherwise returns false.
+ * Returns true if this WaylandBufferRef references a buffer that has content. Otherwise returns false.
  *
  * \sa isNull(), hasBuffer()
  */
-bool QWaylandBufferRef::hasContent() const
+bool WaylandBufferRef::hasContent() const
 {
     return QtWayland::ClientBuffer::hasContent(d->buffer);
 }
 /*!
- * Returns true if this QWaylandBufferRef references a buffer that has protected content. Otherwise returns false.
+ * Returns true if this WaylandBufferRef references a buffer that has protected content. Otherwise returns false.
  *
  * \note This is an enabler which presumes support in the client buffer integration. None of the
  *       client buffer integrations included with Qt currently support protected content buffers.
@@ -195,16 +197,16 @@ bool QWaylandBufferRef::hasContent() const
  * \since 6.2
  * \sa hasContent()
  */
-bool QWaylandBufferRef::hasProtectedContent() const
+bool WaylandBufferRef::hasProtectedContent() const
 {
     return QtWayland::ClientBuffer::hasProtectedContent(d->buffer);
 }
 
 /*!
- * Returns true if this QWaylandBufferRef references a buffer that
+ * Returns true if this WaylandBufferRef references a buffer that
  * has been destroyed. Otherwise returns false.
  */
-bool QWaylandBufferRef::isDestroyed() const
+bool WaylandBufferRef::isDestroyed() const
 {
     return d->buffer && d->buffer->isDestroyed();
 }
@@ -212,7 +214,7 @@ bool QWaylandBufferRef::isDestroyed() const
 /*!
  * Returns the Wayland resource for the buffer.
  */
-struct ::wl_resource *QWaylandBufferRef::wl_buffer() const
+struct ::wl_resource *WaylandBufferRef::wl_buffer() const
 {
     return d->buffer ? d->buffer->waylandBufferHandle() : nullptr;
 }
@@ -220,7 +222,7 @@ struct ::wl_resource *QWaylandBufferRef::wl_buffer() const
 /*!
  * \internal
  */
-QtWayland::ClientBuffer *QWaylandBufferRef::buffer() const
+QtWayland::ClientBuffer *WaylandBufferRef::buffer() const
 {
     return d->buffer;
 }
@@ -229,7 +231,7 @@ QtWayland::ClientBuffer *QWaylandBufferRef::buffer() const
  * Returns the size of the buffer.
  * If the buffer referenced is null, an invalid QSize() is returned.
  */
-QSize QWaylandBufferRef::size() const
+QSize WaylandBufferRef::size() const
 {
     if (d->nullOrDestroyed())
         return QSize();
@@ -239,18 +241,18 @@ QSize QWaylandBufferRef::size() const
 
 /*!
  * Returns the origin of the buffer.
- * If the buffer referenced is null, QWaylandSurface::OriginBottomLeft
+ * If the buffer referenced is null, WaylandSurface::OriginBottomLeft
  * is returned.
  */
-QWaylandSurface::Origin QWaylandBufferRef::origin() const
+WaylandSurface::Origin WaylandBufferRef::origin() const
 {
     if (d->buffer)
         return d->buffer->origin();
 
-    return QWaylandSurface::OriginBottomLeft;
+    return WaylandSurface::OriginBottomLeft;
 }
 
-QWaylandBufferRef::BufferType QWaylandBufferRef::bufferType() const
+WaylandBufferRef::BufferType WaylandBufferRef::bufferType() const
 {
     if (d->nullOrDestroyed())
         return BufferType_Null;
@@ -261,7 +263,7 @@ QWaylandBufferRef::BufferType QWaylandBufferRef::bufferType() const
     return BufferType_Egl;
 }
 
-QWaylandBufferRef::BufferFormatEgl QWaylandBufferRef::bufferFormatEgl() const
+WaylandBufferRef::BufferFormatEgl WaylandBufferRef::bufferFormatEgl() const
 {
     if (d->nullOrDestroyed())
         return BufferFormatEgl_Null;
@@ -272,7 +274,7 @@ QWaylandBufferRef::BufferFormatEgl QWaylandBufferRef::bufferFormatEgl() const
 /*!
  * Returns true if the buffer is a shared memory buffer. Otherwise returns false.
  */
-bool QWaylandBufferRef::isSharedMemory() const
+bool WaylandBufferRef::isSharedMemory() const
 {
     if (d->nullOrDestroyed())
         return false;
@@ -283,7 +285,7 @@ bool QWaylandBufferRef::isSharedMemory() const
 /*!
  * Returns an image with the contents of the buffer.
  */
-QImage QWaylandBufferRef::image() const
+QImage WaylandBufferRef::image() const
 {
     if (d->nullOrDestroyed())
         return QImage();
@@ -301,7 +303,7 @@ QImage QWaylandBufferRef::image() const
  *
  * Returns \c nullptr if there is no valid buffer, or if no texture can be created.
  */
-QOpenGLTexture *QWaylandBufferRef::toOpenGLTexture(int plane) const
+QOpenGLTexture *WaylandBufferRef::toOpenGLTexture(int plane) const
 {
     if (d->nullOrDestroyed())
         return nullptr;
@@ -315,7 +317,7 @@ QOpenGLTexture *QWaylandBufferRef::toOpenGLTexture(int plane) const
  *
  * Returns 0 if there is no native handle for this buffer, or if the lock was unsuccessful.
  */
-quintptr QWaylandBufferRef::lockNativeBuffer()
+quintptr WaylandBufferRef::lockNativeBuffer()
 {
     return d->buffer->lockNativeBuffer();
 }
@@ -324,11 +326,13 @@ quintptr QWaylandBufferRef::lockNativeBuffer()
  * Marks the native buffer as no longer in use. \a handle must correspond to the value returned by
  * a previous call to lockNativeBuffer().
  */
-void QWaylandBufferRef::unlockNativeBuffer(quintptr handle)
+void WaylandBufferRef::unlockNativeBuffer(quintptr handle)
 {
     d->buffer->unlockNativeBuffer(handle);
 }
 
 #endif
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

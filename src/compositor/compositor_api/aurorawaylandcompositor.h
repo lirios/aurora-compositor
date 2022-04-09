@@ -27,13 +27,13 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDCOMPOSITOR_H
-#define QWAYLANDCOMPOSITOR_H
+#ifndef AURORA_COMPOSITOR_WAYLANDCOMPOSITOR_H
+#define AURORA_COMPOSITOR_WAYLANDCOMPOSITOR_H
 
-#include <QtWaylandCompositor/qtwaylandcompositorglobal.h>
-#include <QtWaylandCompositor/qtwaylandqmlinclude.h>
-#include <QtWaylandCompositor/qwaylandcompositorextension.h>
-#include <QtWaylandCompositor/QWaylandOutput>
+#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/qtwaylandqmlinclude.h>
+#include <LiriAuroraCompositor/aurorawaylandcompositorextension.h>
+#include <LiriAuroraCompositor/WaylandOutput>
 
 #include <QObject>
 #include <QImage>
@@ -42,41 +42,43 @@
 
 struct wl_display;
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 class QInputEvent;
 
 class QMimeData;
 class QUrl;
 class QOpenGLContext;
-class QWaylandCompositorPrivate;
-class QWaylandClient;
-class QWaylandSurface;
-class QWaylandSeat;
-class QWaylandView;
-class QWaylandPointer;
-class QWaylandKeyboard;
-class QWaylandTouch;
-class QWaylandSurfaceGrabber;
-class QWaylandBufferRef;
+class WaylandCompositorPrivate;
+class WaylandClient;
+class WaylandSurface;
+class WaylandSeat;
+class WaylandView;
+class WaylandPointer;
+class WaylandKeyboard;
+class WaylandTouch;
+class WaylandSurfaceGrabber;
+class WaylandBufferRef;
 
 Q_WAYLANDCOMPOSITOR_EXPORT Q_DECLARE_LOGGING_CATEGORY(qLcWaylandCompositor)
 Q_WAYLANDCOMPOSITOR_EXPORT Q_DECLARE_LOGGING_CATEGORY(qLcWaylandCompositorHardwareIntegration)
 Q_DECLARE_LOGGING_CATEGORY(qLcWaylandCompositorInputMethods)
 Q_DECLARE_LOGGING_CATEGORY(qLcWaylandCompositorTextInput)
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandCompositor : public QWaylandObject
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandCompositor : public WaylandObject
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandCompositor)
+    Q_DECLARE_PRIVATE(WaylandCompositor)
     Q_PROPERTY(QByteArray socketName READ socketName WRITE setSocketName NOTIFY socketNameChanged)
     Q_PROPERTY(bool created READ isCreated NOTIFY createdChanged)
     Q_PROPERTY(bool retainedSelection READ retainedSelectionEnabled WRITE setRetainedSelectionEnabled NOTIFY retainedSelectionChanged)
-    Q_PROPERTY(QWaylandOutput *defaultOutput READ defaultOutput WRITE setDefaultOutput NOTIFY defaultOutputChanged)
+    Q_PROPERTY(WaylandOutput *defaultOutput READ defaultOutput WRITE setDefaultOutput NOTIFY defaultOutputChanged)
     Q_PROPERTY(bool useHardwareIntegrationExtension READ useHardwareIntegrationExtension WRITE setUseHardwareIntegrationExtension NOTIFY useHardwareIntegrationExtensionChanged)
-    Q_PROPERTY(QWaylandSeat *defaultSeat READ defaultSeat NOTIFY defaultSeatChanged)
+    Q_PROPERTY(WaylandSeat *defaultSeat READ defaultSeat NOTIFY defaultSeatChanged)
     Q_PROPERTY(QVector<ShmFormat> additionalShmFormats READ additionalShmFormats WRITE setAdditionalShmFormats NOTIFY additionalShmFormatsChanged REVISION(6, 0))
-    Q_MOC_INCLUDE("qwaylandseat.h")
+    Q_MOC_INCLUDE("aurorawaylandseat.h")
     QML_NAMED_ELEMENT(WaylandCompositorBase)
     QML_UNCREATABLE("Cannot create instance of WaylandCompositorBase, use WaylandCompositor instead")
     QML_ADDED_IN_VERSION(1, 0)
@@ -100,8 +102,8 @@ public:
     };
     Q_ENUM(ShmFormat)
 
-    QWaylandCompositor(QObject *parent = nullptr);
-    ~QWaylandCompositor() override;
+    WaylandCompositor(QObject *parent = nullptr);
+    ~WaylandCompositor() override;
 
     virtual void create();
     bool isCreated() const;
@@ -114,18 +116,18 @@ public:
     ::wl_display *display() const;
     uint32_t nextSerial();
 
-    QList<QWaylandClient *>clients() const;
-    Q_INVOKABLE void destroyClientForSurface(QWaylandSurface *surface);
-    Q_INVOKABLE void destroyClient(QWaylandClient *client);
+    QList<WaylandClient *>clients() const;
+    Q_INVOKABLE void destroyClientForSurface(Aurora::Compositor::WaylandSurface *surface);
+    Q_INVOKABLE void destroyClient(Aurora::Compositor::WaylandClient *client);
 
-    QList<QWaylandSurface *> surfaces() const;
-    QList<QWaylandSurface *> surfacesForClient(QWaylandClient* client) const;
+    QList<WaylandSurface *> surfaces() const;
+    QList<WaylandSurface *> surfacesForClient(WaylandClient* client) const;
 
-    Q_INVOKABLE QWaylandOutput *outputFor(QWindow *window) const;
+    Q_INVOKABLE Aurora::Compositor::WaylandOutput *outputFor(QWindow *window) const;
 
-    QWaylandOutput *defaultOutput() const;
-    void setDefaultOutput(QWaylandOutput *output);
-    QList<QWaylandOutput *> outputs() const;
+    WaylandOutput *defaultOutput() const;
+    void setDefaultOutput(WaylandOutput *output);
+    QList<WaylandOutput *> outputs() const;
 
     uint currentTimeMsecs() const;
 
@@ -133,9 +135,9 @@ public:
     bool retainedSelectionEnabled() const;
     void overrideSelection(const QMimeData *data);
 
-    QWaylandSeat *defaultSeat() const;
+    WaylandSeat *defaultSeat() const;
 
-    QWaylandSeat *seatFor(QInputEvent *inputEvent);
+    WaylandSeat *seatFor(QInputEvent *inputEvent);
 
     bool useHardwareIntegrationExtension() const;
     void setUseHardwareIntegrationExtension(bool use);
@@ -143,7 +145,7 @@ public:
     QVector<ShmFormat> additionalShmFormats() const;
     void setAdditionalShmFormats(const QVector<ShmFormat> &additionalShmFormats);
 
-    virtual void grabSurface(QWaylandSurfaceGrabber *grabber, const QWaylandBufferRef &buffer);
+    virtual void grabSurface(WaylandSurfaceGrabber *grabber, const WaylandBufferRef &buffer);
 
 public Q_SLOTS:
     void processWaylandEvents();
@@ -156,31 +158,33 @@ Q_SIGNALS:
     void socketNameChanged(const QByteArray &socketName);
     void retainedSelectionChanged(bool retainedSelection);
 
-    void surfaceRequested(QWaylandClient *client, uint id, int version);
-    void surfaceCreated(QWaylandSurface *surface);
-    void surfaceAboutToBeDestroyed(QWaylandSurface *surface);
-    void subsurfaceChanged(QWaylandSurface *child, QWaylandSurface *parent);
+    void surfaceRequested(Aurora::Compositor::WaylandClient *client, uint id, int version);
+    void surfaceCreated(Aurora::Compositor::WaylandSurface *surface);
+    void surfaceAboutToBeDestroyed(Aurora::Compositor::WaylandSurface *surface);
+    void subsurfaceChanged(Aurora::Compositor::WaylandSurface *child, Aurora::Compositor::WaylandSurface *parent);
 
     void defaultOutputChanged();
-    void defaultSeatChanged(QWaylandSeat *newDevice, QWaylandSeat *oldDevice);
+    void defaultSeatChanged(Aurora::Compositor::WaylandSeat *newDevice, Aurora::Compositor::WaylandSeat *oldDevice);
 
     void useHardwareIntegrationExtensionChanged();
 
-    void outputAdded(QWaylandOutput *output);
-    void outputRemoved(QWaylandOutput *output);
+    void outputAdded(Aurora::Compositor::WaylandOutput *output);
+    void outputRemoved(Aurora::Compositor::WaylandOutput *output);
 
     void additionalShmFormatsChanged();
 
 protected:
     virtual void retainedSelectionReceived(QMimeData *mimeData);
-    virtual QWaylandSeat *createSeat();
-    virtual QWaylandPointer *createPointerDevice(QWaylandSeat *seat);
-    virtual QWaylandKeyboard *createKeyboardDevice(QWaylandSeat *seat);
-    virtual QWaylandTouch *createTouchDevice(QWaylandSeat *seat);
+    virtual WaylandSeat *createSeat();
+    virtual WaylandPointer *createPointerDevice(WaylandSeat *seat);
+    virtual WaylandKeyboard *createKeyboardDevice(WaylandSeat *seat);
+    virtual WaylandTouch *createTouchDevice(WaylandSeat *seat);
 
-    QWaylandCompositor(QWaylandCompositorPrivate &dptr, QObject *parent = nullptr);
+    WaylandCompositor(WaylandCompositorPrivate &dptr, QObject *parent = nullptr);
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDCOMPOSITOR_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDCOMPOSITOR_H

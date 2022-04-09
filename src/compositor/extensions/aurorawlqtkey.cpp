@@ -27,23 +27,25 @@
 **
 ****************************************************************************/
 
-#include "qwlqtkey_p.h"
-#include <QtWaylandCompositor/QWaylandSurface>
+#include "aurorawlqtkey_p.h"
+#include <LiriAuroraCompositor/WaylandSurface>
 #include <QKeyEvent>
 #include <QWindow>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 namespace QtWayland {
 
-QtKeyExtensionGlobal::QtKeyExtensionGlobal(QWaylandCompositor *compositor)
-    : QWaylandCompositorExtensionTemplate(compositor)
-    , QtWaylandServer::zqt_key_v1(compositor->display(), 1)
+QtKeyExtensionGlobal::QtKeyExtensionGlobal(WaylandCompositor *compositor)
+    : WaylandCompositorExtensionTemplate(compositor)
+    , PrivateServer::zqt_key_v1(compositor->display(), 1)
     , m_compositor(compositor)
 {
 }
 
-bool QtKeyExtensionGlobal::postQtKeyEvent(QKeyEvent *event, QWaylandSurface *surface)
+bool QtKeyExtensionGlobal::postQtKeyEvent(QKeyEvent *event, WaylandSurface *surface)
 {
     uint32_t time = m_compositor->currentTimeMsecs();
 
@@ -68,4 +70,6 @@ bool QtKeyExtensionGlobal::postQtKeyEvent(QKeyEvent *event, QWaylandSurface *sur
 
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

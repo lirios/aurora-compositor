@@ -27,20 +27,22 @@
 **
 ****************************************************************************/
 
-#include "qwaylandiviapplication.h"
-#include "qwaylandiviapplication_p.h"
+#include "aurorawaylandiviapplication.h"
+#include "aurorawaylandiviapplication_p.h"
 
-#include <QtWaylandCompositor/QWaylandCompositor>
-#include <QtWaylandCompositor/QWaylandSurface>
-#include <QtWaylandCompositor/QWaylandIviSurface>
-#include <QtWaylandCompositor/QWaylandResource>
+#include <LiriAuroraCompositor/WaylandCompositor>
+#include <LiriAuroraCompositor/WaylandSurface>
+#include <LiriAuroraCompositor/WaylandIviSurface>
+#include <LiriAuroraCompositor/WaylandResource>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 /*!
  * \qmltype IviApplication
- * \instantiates QWaylandIviApplication
- * \inqmlmodule QtWayland.Compositor.IviApplication
+ * \instantiates WaylandIviApplication
+ * \inqmlmodule Aurora.Compositor.IviApplication
  * \since 5.8
  * \brief Provides a shell extension for embedded-style user interfaces.
  *
@@ -55,7 +57,7 @@ QT_BEGIN_NAMESPACE
  * supported by the compositor:
  *
  * \qml
- * import QtWayland.Compositor.IviApplication
+ * import Aurora.Compositor.IviApplication
  *
  * WaylandCompositor {
  *     IviApplication {
@@ -70,45 +72,45 @@ QT_BEGIN_NAMESPACE
  */
 
 /*!
- * \class QWaylandIviApplication
+ * \class WaylandIviApplication
  * \inmodule QtWaylandCompositor
  * \since 5.8
- * \brief The QWaylandIviApplication class is an extension for embedded-style user interfaces.
+ * \brief The WaylandIviApplication class is an extension for embedded-style user interfaces.
  *
- * The QWaylandIviApplication extension provides a way to associate an QWaylandIviSurface
- * with a regular Wayland surface. Using the QWaylandIviSurface interface, the client can identify
+ * The WaylandIviApplication extension provides a way to associate an WaylandIviSurface
+ * with a regular Wayland surface. Using the WaylandIviSurface interface, the client can identify
  * itself by giving an ivi id, and the compositor can ask the client to resize.
  *
- * QWaylandIviApplication corresponds to the Wayland \c ivi_application interface.
+ * WaylandIviApplication corresponds to the Wayland \c ivi_application interface.
  */
 
 /*!
- * Constructs a QWaylandIviApplication object.
+ * Constructs a WaylandIviApplication object.
  */
-QWaylandIviApplication::QWaylandIviApplication()
-    : QWaylandCompositorExtensionTemplate<QWaylandIviApplication>(*new QWaylandIviApplicationPrivate())
+WaylandIviApplication::WaylandIviApplication()
+    : WaylandCompositorExtensionTemplate<WaylandIviApplication>(*new WaylandIviApplicationPrivate())
 {
 }
 
 /*!
- * Constructs a QWaylandIviApplication object for the provided \a compositor.
+ * Constructs a WaylandIviApplication object for the provided \a compositor.
  */
-QWaylandIviApplication::QWaylandIviApplication(QWaylandCompositor *compositor)
-    : QWaylandCompositorExtensionTemplate<QWaylandIviApplication>(compositor, *new QWaylandIviApplicationPrivate())
+WaylandIviApplication::WaylandIviApplication(WaylandCompositor *compositor)
+    : WaylandCompositorExtensionTemplate<WaylandIviApplication>(compositor, *new WaylandIviApplicationPrivate())
 {
 }
 
 /*!
  * Initializes the shell extension.
  */
-void QWaylandIviApplication::initialize()
+void WaylandIviApplication::initialize()
 {
-    Q_D(QWaylandIviApplication);
-    QWaylandCompositorExtensionTemplate::initialize();
+    Q_D(WaylandIviApplication);
+    WaylandCompositorExtensionTemplate::initialize();
 
-    QWaylandCompositor *compositor = static_cast<QWaylandCompositor *>(extensionContainer());
+    WaylandCompositor *compositor = static_cast<WaylandCompositor *>(extensionContainer());
     if (!compositor) {
-        qWarning() << "Failed to find QWaylandCompositor when initializing QWaylandIviApplication";
+        qWarning() << "Failed to find WaylandCompositor when initializing WaylandIviApplication";
         return;
     }
 
@@ -116,19 +118,19 @@ void QWaylandIviApplication::initialize()
 }
 
 /*!
- * Returns the Wayland interface for the QWaylandIviApplication.
+ * Returns the Wayland interface for the WaylandIviApplication.
  */
-const struct wl_interface *QWaylandIviApplication::interface()
+const struct wl_interface *WaylandIviApplication::interface()
 {
-    return QWaylandIviApplicationPrivate::interface();
+    return WaylandIviApplicationPrivate::interface();
 }
 
 /*!
  * \internal
  */
-QByteArray QWaylandIviApplication::interfaceName()
+QByteArray WaylandIviApplication::interfaceName()
 {
-    return QWaylandIviApplicationPrivate::interfaceName();
+    return WaylandIviApplicationPrivate::interfaceName();
 }
 
 /*!
@@ -142,7 +144,7 @@ QByteArray QWaylandIviApplication::interfaceName()
  */
 
 /*!
- * \fn void QWaylandIviApplication::iviSurfaceRequested(QWaylandSurface *surface, uint iviId, const QWaylandResource &resource)
+ * \fn void WaylandIviApplication::iviSurfaceRequested(WaylandSurface *surface, uint iviId, const WaylandResource &resource)
  *
  * This signal is emitted when the client has requested an \c ivi_surface to be associated
  * with \a surface, which is identified by \a iviId. The handler for this signal is
@@ -158,25 +160,25 @@ QByteArray QWaylandIviApplication::interfaceName()
  */
 
 /*!
- * \fn void QWaylandIviApplication::iviSurfaceCreated(QWaylandIviSurface *iviSurface)
+ * \fn void WaylandIviApplication::iviSurfaceCreated(WaylandIviSurface *iviSurface)
  *
  * This signal is emitted when an IviSurface, \a iviSurface, has been created.
  */
 
-QWaylandIviApplicationPrivate::QWaylandIviApplicationPrivate()
+WaylandIviApplicationPrivate::WaylandIviApplicationPrivate()
 {
 }
 
-void QWaylandIviApplicationPrivate::unregisterIviSurface(QWaylandIviSurface *iviSurface)
+void WaylandIviApplicationPrivate::unregisterIviSurface(WaylandIviSurface *iviSurface)
 {
     m_iviSurfaces.remove(iviSurface->iviId());
 }
 
-void QWaylandIviApplicationPrivate::ivi_application_surface_create(QtWaylandServer::ivi_application::Resource *resource,
+void WaylandIviApplicationPrivate::ivi_application_surface_create(PrivateServer::ivi_application::Resource *resource,
                                                                    uint32_t ivi_id, wl_resource *surfaceResource, uint32_t id)
 {
-    Q_Q(QWaylandIviApplication);
-    QWaylandSurface *surface = QWaylandSurface::fromResource(surfaceResource);
+    Q_Q(WaylandIviApplication);
+    WaylandSurface *surface = WaylandSurface::fromResource(surfaceResource);
 
     if (m_iviSurfaces.contains(ivi_id)) {
         wl_resource_post_error(resource->handle, IVI_APPLICATION_ERROR_IVI_ID,
@@ -185,22 +187,24 @@ void QWaylandIviApplicationPrivate::ivi_application_surface_create(QtWaylandServ
         return;
     }
 
-    if (!surface->setRole(QWaylandIviSurface::role(), resource->handle, IVI_APPLICATION_ERROR_ROLE))
+    if (!surface->setRole(WaylandIviSurface::role(), resource->handle, IVI_APPLICATION_ERROR_ROLE))
         return;
 
-    QWaylandResource iviSurfaceResource(wl_resource_create(resource->client(), &ivi_surface_interface,
+    WaylandResource iviSurfaceResource(wl_resource_create(resource->client(), &ivi_surface_interface,
                                                            wl_resource_get_version(resource->handle), id));
 
     emit q->iviSurfaceRequested(surface, ivi_id, iviSurfaceResource);
 
-    QWaylandIviSurface *iviSurface = QWaylandIviSurface::fromResource(iviSurfaceResource.resource());
+    WaylandIviSurface *iviSurface = WaylandIviSurface::fromResource(iviSurfaceResource.resource());
 
     if (!iviSurface)
-        iviSurface = new QWaylandIviSurface(q, surface, ivi_id, iviSurfaceResource);
+        iviSurface = new WaylandIviSurface(q, surface, ivi_id, iviSurfaceResource);
 
     m_iviSurfaces.insert(ivi_id, iviSurface);
 
     emit q->iviSurfaceCreated(iviSurface);
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

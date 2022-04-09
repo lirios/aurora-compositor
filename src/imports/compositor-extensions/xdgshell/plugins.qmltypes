@@ -8,18 +8,18 @@ import QtQuick.tooling 1.2
 
 Module {
     dependencies: ["QtQuick 2.0"]
-    Component { name: "QWaylandCompositorExtension"; prototype: "QWaylandObject" }
-    Component { name: "QWaylandObject"; prototype: "QObject" }
+    Component { name: "WaylandCompositorExtension"; prototype: "WaylandObject" }
+    Component { name: "WaylandObject"; prototype: "QObject" }
     Component {
-        name: "QWaylandQuickXdgOutputV1"
+        name: "WaylandQuickXdgOutputV1"
         defaultProperty: "data"
-        prototype: "QWaylandXdgOutputV1"
+        prototype: "WaylandXdgOutputV1"
         exports: ["QtWayland.Compositor.XdgShell/XdgOutputV1 1.14"]
         exportMetaObjectRevisions: [0]
     }
     Component {
-        name: "QWaylandShell"
-        prototype: "QWaylandCompositorExtension"
+        name: "WaylandShell"
+        prototype: "WaylandCompositorExtension"
         Enum {
             name: "FocusPolicy"
             values: {
@@ -30,44 +30,44 @@ Module {
         Property { name: "focusPolicy"; type: "FocusPolicy" }
     }
     Component {
-        name: "QWaylandShellSurface"
-        prototype: "QWaylandCompositorExtension"
+        name: "WaylandShellSurface"
+        prototype: "WaylandCompositorExtension"
         Property { name: "windowType"; type: "Qt::WindowType"; isReadonly: true }
     }
     Component {
-        name: "QWaylandXdgDecorationManagerV1"
-        prototype: "QWaylandCompositorExtension"
-        Property { name: "preferredMode"; type: "QWaylandXdgToplevel::DecorationMode" }
+        name: "WaylandXdgDecorationManagerV1"
+        prototype: "WaylandCompositorExtension"
+        Property { name: "preferredMode"; type: "WaylandXdgToplevel::DecorationMode" }
     }
     Component {
-        name: "QWaylandXdgDecorationManagerV1QuickExtension"
+        name: "WaylandXdgDecorationManagerV1QuickExtension"
         defaultProperty: "data"
-        prototype: "QWaylandXdgDecorationManagerV1"
+        prototype: "WaylandXdgDecorationManagerV1"
         exports: ["QtWayland.Compositor.XdgShell/XdgDecorationManagerV1 1.3"]
         exportMetaObjectRevisions: [0]
         Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
     }
-    Component { name: "QWaylandXdgOutputManagerV1"; prototype: "QWaylandCompositorExtension" }
+    Component { name: "WaylandXdgOutputManagerV1"; prototype: "WaylandCompositorExtension" }
     Component {
-        name: "QWaylandXdgOutputManagerV1QuickExtension"
+        name: "WaylandXdgOutputManagerV1QuickExtension"
         defaultProperty: "data"
-        prototype: "QWaylandXdgOutputManagerV1"
+        prototype: "WaylandXdgOutputManagerV1"
         exports: ["QtWayland.Compositor.XdgShell/XdgOutputManagerV1 1.14"]
         exportMetaObjectRevisions: [0]
         Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
     }
     Component {
-        name: "QWaylandXdgOutputV1"
+        name: "WaylandXdgOutputV1"
         defaultProperty: "data"
         prototype: "QObject"
         Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
         Property {
             name: "manager"
-            type: "QWaylandXdgOutputManagerV1"
+            type: "WaylandXdgOutputManagerV1"
             isReadonly: true
             isPointer: true
         }
-        Property { name: "output"; type: "QWaylandOutput"; isReadonly: true; isPointer: true }
+        Property { name: "output"; type: "WaylandOutput"; isReadonly: true; isPointer: true }
         Property { name: "name"; type: "string" }
         Property { name: "description"; type: "string" }
         Property { name: "logicalPosition"; type: "QPoint" }
@@ -75,15 +75,15 @@ Module {
         Property { name: "logicalGeometry"; type: "QRect"; isReadonly: true }
     }
     Component {
-        name: "QWaylandXdgPopup"
+        name: "WaylandXdgPopup"
         prototype: "QObject"
         exports: ["QtWayland.Compositor.XdgShell/XdgPopup 1.3"]
         isCreatable: false
         exportMetaObjectRevisions: [0]
-        Property { name: "xdgSurface"; type: "QWaylandXdgSurface"; isReadonly: true; isPointer: true }
+        Property { name: "xdgSurface"; type: "WaylandXdgSurface"; isReadonly: true; isPointer: true }
         Property {
             name: "parentXdgSurface"
-            type: "QWaylandXdgSurface"
+            type: "WaylandXdgSurface"
             isReadonly: true
             isPointer: true
         }
@@ -105,21 +105,21 @@ Module {
         Method { name: "sendPopupDone"; revision: 270 }
     }
     Component {
-        name: "QWaylandXdgShell"
-        prototype: "QWaylandShell"
+        name: "WaylandXdgShell"
+        prototype: "WaylandShell"
         Signal {
             name: "xdgSurfaceCreated"
-            Parameter { name: "xdgSurface"; type: "QWaylandXdgSurface"; isPointer: true }
+            Parameter { name: "xdgSurface"; type: "WaylandXdgSurface"; isPointer: true }
         }
         Signal {
             name: "toplevelCreated"
-            Parameter { name: "toplevel"; type: "QWaylandXdgToplevel"; isPointer: true }
-            Parameter { name: "xdgSurface"; type: "QWaylandXdgSurface"; isPointer: true }
+            Parameter { name: "toplevel"; type: "WaylandXdgToplevel"; isPointer: true }
+            Parameter { name: "xdgSurface"; type: "WaylandXdgSurface"; isPointer: true }
         }
         Signal {
             name: "popupCreated"
-            Parameter { name: "popup"; type: "QWaylandXdgPopup"; isPointer: true }
-            Parameter { name: "xdgSurface"; type: "QWaylandXdgSurface"; isPointer: true }
+            Parameter { name: "popup"; type: "WaylandXdgPopup"; isPointer: true }
+            Parameter { name: "xdgSurface"; type: "WaylandXdgSurface"; isPointer: true }
         }
         Signal {
             name: "pong"
@@ -128,40 +128,40 @@ Module {
         Method {
             name: "ping"
             type: "uint"
-            Parameter { name: "client"; type: "QWaylandClient"; isPointer: true }
+            Parameter { name: "client"; type: "WaylandClient"; isPointer: true }
         }
     }
     Component {
-        name: "QWaylandXdgShellQuickExtension"
+        name: "WaylandXdgShellQuickExtension"
         defaultProperty: "data"
-        prototype: "QWaylandXdgShell"
+        prototype: "WaylandXdgShell"
         exports: ["QtWayland.Compositor.XdgShell/XdgShell 1.3"]
         exportMetaObjectRevisions: [0]
         Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
     }
     Component {
-        name: "QWaylandXdgSurface"
+        name: "WaylandXdgSurface"
         defaultProperty: "data"
-        prototype: "QWaylandShellSurface"
+        prototype: "WaylandShellSurface"
         exports: ["QtWayland.Compositor.XdgShell/XdgSurface 1.3"]
         exportMetaObjectRevisions: [0]
         Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-        Property { name: "shell"; type: "QWaylandXdgShell"; isReadonly: true; isPointer: true }
-        Property { name: "surface"; type: "QWaylandSurface"; isReadonly: true; isPointer: true }
-        Property { name: "toplevel"; type: "QWaylandXdgToplevel"; isReadonly: true; isPointer: true }
-        Property { name: "popup"; type: "QWaylandXdgPopup"; isReadonly: true; isPointer: true }
+        Property { name: "shell"; type: "WaylandXdgShell"; isReadonly: true; isPointer: true }
+        Property { name: "surface"; type: "WaylandSurface"; isReadonly: true; isPointer: true }
+        Property { name: "toplevel"; type: "WaylandXdgToplevel"; isReadonly: true; isPointer: true }
+        Property { name: "popup"; type: "WaylandXdgPopup"; isReadonly: true; isPointer: true }
         Property { name: "windowGeometry"; type: "QRect"; isReadonly: true }
         Signal { name: "toplevelCreated" }
         Signal { name: "popupCreated" }
         Method {
             name: "initialize"
-            Parameter { name: "xdgShell"; type: "QWaylandXdgShell"; isPointer: true }
-            Parameter { name: "surface"; type: "QWaylandSurface"; isPointer: true }
-            Parameter { name: "resource"; type: "QWaylandResource" }
+            Parameter { name: "xdgShell"; type: "WaylandXdgShell"; isPointer: true }
+            Parameter { name: "surface"; type: "WaylandSurface"; isPointer: true }
+            Parameter { name: "resource"; type: "WaylandResource" }
         }
     }
     Component {
-        name: "QWaylandXdgToplevel"
+        name: "WaylandXdgToplevel"
         prototype: "QObject"
         exports: ["QtWayland.Compositor.XdgShell/XdgToplevel 1.3"]
         isCreatable: false
@@ -182,10 +182,10 @@ Module {
                 "ServerSideDecoration": 2
             }
         }
-        Property { name: "xdgSurface"; type: "QWaylandXdgSurface"; isReadonly: true; isPointer: true }
+        Property { name: "xdgSurface"; type: "WaylandXdgSurface"; isReadonly: true; isPointer: true }
         Property {
             name: "parentToplevel"
-            type: "QWaylandXdgToplevel"
+            type: "WaylandXdgToplevel"
             isReadonly: true
             isPointer: true
         }
@@ -201,23 +201,23 @@ Module {
         Property { name: "decorationMode"; type: "DecorationMode"; isReadonly: true }
         Signal {
             name: "startMove"
-            Parameter { name: "seat"; type: "QWaylandSeat"; isPointer: true }
+            Parameter { name: "seat"; type: "WaylandSeat"; isPointer: true }
         }
         Signal {
             name: "startResize"
-            Parameter { name: "seat"; type: "QWaylandSeat"; isPointer: true }
+            Parameter { name: "seat"; type: "WaylandSeat"; isPointer: true }
             Parameter { name: "edges"; type: "Qt::Edges" }
         }
         Signal {
             name: "showWindowMenu"
-            Parameter { name: "seat"; type: "QWaylandSeat"; isPointer: true }
+            Parameter { name: "seat"; type: "WaylandSeat"; isPointer: true }
             Parameter { name: "localSurfacePosition"; type: "QPoint" }
         }
         Signal { name: "setMaximized" }
         Signal { name: "unsetMaximized" }
         Signal {
             name: "setFullscreen"
-            Parameter { name: "output"; type: "QWaylandOutput"; isPointer: true }
+            Parameter { name: "output"; type: "WaylandOutput"; isPointer: true }
         }
         Signal { name: "unsetFullscreen" }
         Signal { name: "setMinimized" }

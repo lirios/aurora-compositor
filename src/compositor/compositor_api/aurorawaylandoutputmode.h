@@ -27,25 +27,27 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDOUTPUTMODE_H
-#define QWAYLANDOUTPUTMODE_H
+#ifndef AURORA_COMPOSITOR_WAYLANDOUTPUTMODE_H
+#define AURORA_COMPOSITOR_WAYLANDOUTPUTMODE_H
 
-#include <QtWaylandCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
 #include <QtCore/QSize>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandOutputMode
+namespace Compositor {
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandOutputMode
 {
 public:
-    explicit QWaylandOutputMode();
-    QWaylandOutputMode(const QSize &size, int refreshRate);
-    QWaylandOutputMode(const QWaylandOutputMode &other);
-    ~QWaylandOutputMode();
+    explicit WaylandOutputMode();
+    WaylandOutputMode(const QSize &size, int refreshRate);
+    WaylandOutputMode(const WaylandOutputMode &other);
+    ~WaylandOutputMode();
 
-    QWaylandOutputMode &operator=(const QWaylandOutputMode &other);
-    bool operator==(const QWaylandOutputMode &other) const;
-    bool operator!=(const QWaylandOutputMode &other) const;
+    WaylandOutputMode &operator=(const WaylandOutputMode &other);
+    bool operator==(const WaylandOutputMode &other) const;
+    bool operator!=(const WaylandOutputMode &other) const;
 
     bool isValid() const;
 
@@ -53,13 +55,16 @@ public:
     int refreshRate() const;
 
 private:
-    class QWaylandOutputModePrivate *const d;
-    friend class QWaylandOutputPrivate;
+    class WaylandOutputModePrivate *const d;
+    friend class WaylandOutputPrivate;
 
     void setSize(const QSize &size);
 };
-Q_DECLARE_TYPEINFO(QWaylandOutputMode, Q_MOVABLE_TYPE);
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDOUTPUTMODE_H
+} // namespace Aurora
+
+Q_DECLARE_TYPEINFO(Aurora::Compositor::WaylandOutputMode, Q_MOVABLE_TYPE);
+
+#endif // AURORA_COMPOSITOR_WAYLANDOUTPUTMODE_H

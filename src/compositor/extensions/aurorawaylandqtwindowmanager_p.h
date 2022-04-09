@@ -28,35 +28,37 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDQTWINDOWMANAGER_P_H
-#define QWAYLANDQTWINDOWMANAGER_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDQTWINDOWMANAGER_P_H
+#define AURORA_COMPOSITOR_WAYLANDQTWINDOWMANAGER_P_H
 
 #include <QtCore/QMap>
 
-#include <QtWaylandCompositor/QWaylandQtWindowManager>
-#include <QtWaylandCompositor/private/qwaylandcompositorextension_p.h>
-#include <QtWaylandCompositor/private/qwayland-server-qt-windowmanager.h>
+#include <LiriAuroraCompositor/WaylandQtWindowManager>
+#include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
+#include <LiriAuroraCompositor/private/aurora-server-qt-windowmanager.h>
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandQtWindowManagerPrivate
-        : public QWaylandCompositorExtensionPrivate
-        , public QtWaylandServer::qt_windowmanager
+namespace Compositor {
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandQtWindowManagerPrivate
+        : public WaylandCompositorExtensionPrivate
+        , public PrivateServer::qt_windowmanager
 {
-    Q_DECLARE_PUBLIC(QWaylandQtWindowManager)
+    Q_DECLARE_PUBLIC(WaylandQtWindowManager)
 public:
-    QWaylandQtWindowManagerPrivate();
+    WaylandQtWindowManagerPrivate();
 
 protected:
     void windowmanager_bind_resource(Resource *resource) override;
@@ -68,6 +70,8 @@ private:
     QMap<Resource*, QString> urls;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDQTWINDOWMANAGER_P_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDQTWINDOWMANAGER_P_H

@@ -37,19 +37,21 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDINPUTMETHODEVENTBUILDER_H
-#define QWAYLANDINPUTMETHODEVENTBUILDER_H
+#ifndef AURORA_COMPOSITOR_WAYLANDINPUTMETHODEVENTBUILDER_H
+#define AURORA_COMPOSITOR_WAYLANDINPUTMETHODEVENTBUILDER_H
 
 #include <QInputMethodEvent>
 #include <private/qglobal_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandInputMethodEventBuilder
+namespace Compositor {
+
+class WaylandInputMethodEventBuilder
 {
 public:
-    QWaylandInputMethodEventBuilder() = default;
-    ~QWaylandInputMethodEventBuilder();
+    WaylandInputMethodEventBuilder() = default;
+    ~WaylandInputMethodEventBuilder();
 
     void reset();
 
@@ -78,15 +80,17 @@ private:
     QList<QInputMethodEvent::Attribute> m_preeditStyles;
 };
 
-struct QWaylandInputMethodContentType {
+struct WaylandInputMethodContentType {
     uint32_t hint = 0;
     uint32_t purpose = 0;
 
-    static QWaylandInputMethodContentType convert(Qt::InputMethodHints hints);
-    static QWaylandInputMethodContentType convertV4(Qt::InputMethodHints hints);
+    static WaylandInputMethodContentType convert(Qt::InputMethodHints hints);
+    static WaylandInputMethodContentType convertV4(Qt::InputMethodHints hints);
 };
 
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDINPUTMETHODEVENTBUILDER_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDINPUTMETHODEVENTBUILDER_H

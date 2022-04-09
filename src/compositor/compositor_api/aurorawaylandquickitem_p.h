@@ -27,14 +27,14 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDQUICKITEM_P_H
-#define QWAYLANDQUICKITEM_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDQUICKITEM_P_H
+#define AURORA_COMPOSITOR_WAYLANDQUICKITEM_P_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -45,20 +45,22 @@
 #include <QtQuick/QSGMaterialShader>
 #include <QtQuick/QSGMaterial>
 
-#include <QtWaylandCompositor/QWaylandQuickItem>
-#include <QtWaylandCompositor/QWaylandOutput>
+#include <LiriAuroraCompositor/WaylandQuickItem>
+#include <LiriAuroraCompositor/WaylandOutput>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandSurfaceTextureProvider;
+namespace Compositor {
+
+class WaylandSurfaceTextureProvider;
 class QMutex;
 class QOpenGLTexture;
 
 #if QT_CONFIG(opengl)
-class QWaylandBufferMaterialShader : public QSGMaterialShader
+class WaylandBufferMaterialShader : public QSGMaterialShader
 {
 public:
-    QWaylandBufferMaterialShader(QWaylandBufferRef::BufferFormatEgl format);
+    WaylandBufferMaterialShader(WaylandBufferRef::BufferFormatEgl format);
 
     bool updateUniformData(RenderState &state,
                            QSGMaterial *newMaterial, QSGMaterial *oldMaterial) override;
@@ -67,14 +69,14 @@ public:
     void setupExternalOESShader(const QString &shaderFilename);
 };
 
-class QWaylandBufferMaterial : public QSGMaterial
+class WaylandBufferMaterial : public QSGMaterial
 {
 public:
-    QWaylandBufferMaterial(QWaylandBufferRef::BufferFormatEgl format);
-    ~QWaylandBufferMaterial() override;
+    WaylandBufferMaterial(WaylandBufferRef::BufferFormatEgl format);
+    ~WaylandBufferMaterial() override;
 
     void setTextureForPlane(int plane, QOpenGLTexture *texture, QSGTexture *scenegraphTexture);
-    void setBufferRef(QWaylandQuickItem *surfaceItem, const QWaylandBufferRef &ref);
+    void setBufferRef(WaylandQuickItem *surfaceItem, const WaylandBufferRef &ref);
 
     void bind();
     void updateScenegraphTextures(QRhi *rhi);
@@ -83,31 +85,31 @@ public:
     QSGMaterialShader *createShader(QSGRendererInterface::RenderMode renderMode) const override;
 
 private:
-    friend QWaylandBufferMaterialShader;
+    friend WaylandBufferMaterialShader;
 
     void setTextureParameters(GLenum target);
     void ensureTextures(int count);
 
-    const QWaylandBufferRef::BufferFormatEgl m_format;
+    const WaylandBufferRef::BufferFormatEgl m_format;
     QVarLengthArray<QOpenGLTexture*, 3> m_textures;
     QVarLengthArray<QSGTexture*, 3> m_scenegraphTextures;
-    QWaylandBufferRef m_bufferRef;
+    WaylandBufferRef m_bufferRef;
 };
 #endif // QT_CONFIG(opengl)
 
-class QWaylandQuickItemPrivate : public QQuickItemPrivate
+class WaylandQuickItemPrivate : public QQuickItemPrivate
 {
-    Q_DECLARE_PUBLIC(QWaylandQuickItem)
+    Q_DECLARE_PUBLIC(WaylandQuickItem)
 public:
-    QWaylandQuickItemPrivate() = default;
+    WaylandQuickItemPrivate() = default;
 
     void init()
     {
-        Q_Q(QWaylandQuickItem);
+        Q_Q(WaylandQuickItem);
         if (!mutex)
             mutex = new QMutex;
 
-        view.reset(new QWaylandView(q));
+        view.reset(new WaylandView(q));
         q->setFlag(QQuickItem::ItemHasContents);
 
         q->update();
@@ -115,23 +117,23 @@ public:
         q->setSmooth(true);
 
         setInputEventsEnabled(true);
-        QObject::connect(q, &QQuickItem::windowChanged, q, &QWaylandQuickItem::updateWindow);
-        QObject::connect(view.data(), &QWaylandView::surfaceChanged, q, &QWaylandQuickItem::surfaceChanged);
-        QObject::connect(view.data(), &QWaylandView::surfaceChanged, q, &QWaylandQuickItem::handleSurfaceChanged);
-        QObject::connect(view.data(), &QWaylandView::surfaceDestroyed, q, &QWaylandQuickItem::surfaceDestroyed);
-        QObject::connect(view.data(), &QWaylandView::outputChanged, q, &QWaylandQuickItem::outputChanged);
-        QObject::connect(view.data(), &QWaylandView::outputChanged, q, &QWaylandQuickItem::updateOutput);
-        QObject::connect(view.data(), &QWaylandView::bufferLockedChanged, q, &QWaylandQuickItem::bufferLockedChanged);
-        QObject::connect(view.data(), &QWaylandView::allowDiscardFrontBufferChanged, q, &QWaylandQuickItem::allowDiscardFrontBuffer);
+        QObject::connect(q, &QQuickItem::windowChanged, q, &WaylandQuickItem::updateWindow);
+        QObject::connect(view.data(), &WaylandView::surfaceChanged, q, &WaylandQuickItem::surfaceChanged);
+        QObject::connect(view.data(), &WaylandView::surfaceChanged, q, &WaylandQuickItem::handleSurfaceChanged);
+        QObject::connect(view.data(), &WaylandView::surfaceDestroyed, q, &WaylandQuickItem::surfaceDestroyed);
+        QObject::connect(view.data(), &WaylandView::outputChanged, q, &WaylandQuickItem::outputChanged);
+        QObject::connect(view.data(), &WaylandView::outputChanged, q, &WaylandQuickItem::updateOutput);
+        QObject::connect(view.data(), &WaylandView::bufferLockedChanged, q, &WaylandQuickItem::bufferLockedChanged);
+        QObject::connect(view.data(), &WaylandView::allowDiscardFrontBufferChanged, q, &WaylandQuickItem::allowDiscardFrontBuffer);
 
         q->updateWindow();
     }
 
-    static const QWaylandQuickItemPrivate* get(const QWaylandQuickItem *item) { return item->d_func(); }
+    static const WaylandQuickItemPrivate* get(const WaylandQuickItem *item) { return item->d_func(); }
 
     void setInputEventsEnabled(bool enable)
     {
-        Q_Q(QWaylandQuickItem);
+        Q_Q(WaylandQuickItem);
         q->setAcceptedMouseButtons(enable ? (Qt::LeftButton | Qt::MiddleButton | Qt::RightButton |
                                    Qt::ExtraButton1 | Qt::ExtraButton2 | Qt::ExtraButton3 | Qt::ExtraButton4 |
                                    Qt::ExtraButton5 | Qt::ExtraButton6 | Qt::ExtraButton7 | Qt::ExtraButton8 |
@@ -145,9 +147,9 @@ public:
     bool shouldSendInputEvents() const { return view->surface() && inputEventsEnabled; }
     qreal scaleFactor() const;
 
-    QWaylandQuickItem *findSibling(QWaylandSurface *surface) const;
-    void placeAboveSibling(QWaylandQuickItem *sibling);
-    void placeBelowSibling(QWaylandQuickItem *sibling);
+    WaylandQuickItem *findSibling(WaylandSurface *surface) const;
+    void placeAboveSibling(WaylandQuickItem *sibling);
+    void placeBelowSibling(WaylandQuickItem *sibling);
     void placeAboveParent();
     void placeBelowParent();
 
@@ -156,9 +158,9 @@ public:
 
     static QMutex *mutex;
 
-    QScopedPointer<QWaylandView> view;
-    QPointer<QWaylandSurface> oldSurface;
-    mutable QWaylandSurfaceTextureProvider *provider = nullptr;
+    QScopedPointer<WaylandView> view;
+    QPointer<WaylandSurface> oldSurface;
+    mutable WaylandSurfaceTextureProvider *provider = nullptr;
     bool paintEnabled = true;
     bool touchEventsEnabled = true;
     bool inputEventsEnabled = true;
@@ -173,12 +175,14 @@ public:
     QMatrix4x4 lastMatrix;
 
     QQuickWindow *connectedWindow = nullptr;
-    QWaylandOutput *connectedOutput = nullptr;
-    QWaylandSurface::Origin origin = QWaylandSurface::OriginTopLeft;
+    WaylandOutput *connectedOutput = nullptr;
+    WaylandSurface::Origin origin = WaylandSurface::OriginTopLeft;
     QPointer<QObject> subsurfaceHandler;
-    QList<QWaylandSeat *> touchingSeats;
+    QList<WaylandSeat *> touchingSeats;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif  /*QWAYLANDQUICKITEM_P_H*/

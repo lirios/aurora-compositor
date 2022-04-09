@@ -31,7 +31,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -41,11 +41,13 @@
 #ifndef WAYLANDEGLINTEGRATION_H
 #define WAYLANDEGLINTEGRATION_H
 
-#include <QtWaylandCompositor/private/qwlclientbufferintegration_p.h>
+#include <LiriAuroraCompositor/private/aurorawlclientbufferintegration_p.h>
 #include <QtCore/QScopedPointer>
-#include <QtWaylandCompositor/private/qwlclientbuffer_p.h>
+#include <LiriAuroraCompositor/private/aurorawlclientbuffer_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 class WaylandEglClientBufferIntegrationPrivate;
 
@@ -73,9 +75,9 @@ public:
     WaylandEglClientBuffer(WaylandEglClientBufferIntegration* integration, wl_resource *bufferResource);
     ~WaylandEglClientBuffer() override;
 
-    QWaylandBufferRef::BufferFormatEgl bufferFormatEgl() const override;
+    WaylandBufferRef::BufferFormatEgl bufferFormatEgl() const override;
     QSize size() const override;
-    QWaylandSurface::Origin origin() const override;
+    WaylandSurface::Origin origin() const override;
     quintptr lockNativeBuffer() override;
     void unlockNativeBuffer(quintptr native_buffer) const override;
     QOpenGLTexture *toOpenGlTexture(int plane) override;
@@ -90,6 +92,8 @@ private:
     WaylandEglClientBufferIntegration *m_integration = nullptr;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif // WAYLANDEGLINTEGRATION_H

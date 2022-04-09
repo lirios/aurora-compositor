@@ -31,33 +31,35 @@
 #include <QQuickWindow>
 #include <QDebug>
 
-#include "qwaylandquicksurface.h"
-#include "qwaylandquicksurface_p.h"
-#include "qwaylandquickcompositor.h"
-#include "qwaylandquickitem.h"
-#include <QtWaylandCompositor/qwaylandbufferref.h>
-#include <QtWaylandCompositor/QWaylandView>
-#include <QtWaylandCompositor/private/qwaylandsurface_p.h>
+#include "aurorawaylandquicksurface.h"
+#include "aurorawaylandquicksurface_p.h"
+#include "aurorawaylandquickcompositor.h"
+#include "aurorawaylandquickitem.h"
+#include <LiriAuroraCompositor/aurorawaylandbufferref.h>
+#include <LiriAuroraCompositor/WaylandView>
+#include <LiriAuroraCompositor/private/aurorawaylandsurface_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-QWaylandQuickSurface::QWaylandQuickSurface()
-    : QWaylandSurface(* new QWaylandQuickSurfacePrivate())
+namespace Compositor {
+
+WaylandQuickSurface::WaylandQuickSurface()
+    : WaylandSurface(* new WaylandQuickSurfacePrivate())
 {
 
 }
-QWaylandQuickSurface::QWaylandQuickSurface(QWaylandCompositor *compositor, QWaylandClient *client, quint32 id, int version)
-                    : QWaylandSurface(* new QWaylandQuickSurfacePrivate())
+WaylandQuickSurface::WaylandQuickSurface(WaylandCompositor *compositor, WaylandClient *client, quint32 id, int version)
+                    : WaylandSurface(* new WaylandQuickSurfacePrivate())
 {
     initialize(compositor, client, id, version);
 }
 
-QWaylandQuickSurface::QWaylandQuickSurface(QWaylandQuickSurfacePrivate &dptr)
-    : QWaylandSurface(dptr)
+WaylandQuickSurface::WaylandQuickSurface(WaylandQuickSurfacePrivate &dptr)
+    : WaylandSurface(dptr)
 {
 }
 
-QWaylandQuickSurface::~QWaylandQuickSurface()
+WaylandQuickSurface::~WaylandQuickSurface()
 {
 
 }
@@ -67,15 +69,15 @@ QWaylandQuickSurface::~QWaylandQuickSurface()
  *
  * This property specifies whether the surface should use texture alpha.
  */
-bool QWaylandQuickSurface::useTextureAlpha() const
+bool WaylandQuickSurface::useTextureAlpha() const
 {
-    Q_D(const QWaylandQuickSurface);
+    Q_D(const WaylandQuickSurface);
     return d->useTextureAlpha;
 }
 
-void QWaylandQuickSurface::setUseTextureAlpha(bool useTextureAlpha)
+void WaylandQuickSurface::setUseTextureAlpha(bool useTextureAlpha)
 {
-    Q_D(QWaylandQuickSurface);
+    Q_D(WaylandQuickSurface);
     if (d->useTextureAlpha != useTextureAlpha) {
         d->useTextureAlpha = useTextureAlpha;
         emit useTextureAlphaChanged();
@@ -83,4 +85,6 @@ void QWaylandQuickSurface::setUseTextureAlpha(bool useTextureAlpha)
     }
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

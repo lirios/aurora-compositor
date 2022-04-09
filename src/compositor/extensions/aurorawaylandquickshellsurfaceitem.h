@@ -27,37 +27,39 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDQUICKSHELLSURFACEITEM_H
-#define QWAYLANDQUICKSHELLSURFACEITEM_H
+#ifndef AURORA_COMPOSITOR_WAYLANDQUICKSHELLSURFACEITEM_H
+#define AURORA_COMPOSITOR_WAYLANDQUICKSHELLSURFACEITEM_H
 
-#include <QtWaylandCompositor/QWaylandCompositorExtension>
-#include <QtWaylandCompositor/QWaylandQuickItem>
+#include <LiriAuroraCompositor/WaylandCompositorExtension>
+#include <LiriAuroraCompositor/WaylandQuickItem>
 
 QT_REQUIRE_CONFIG(wayland_compositor_quick);
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandQuickShellSurfaceItemPrivate;
-class QWaylandShellSurface;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandQuickShellSurfaceItem : public QWaylandQuickItem
+class WaylandQuickShellSurfaceItemPrivate;
+class WaylandShellSurface;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandQuickShellSurfaceItem : public WaylandQuickItem
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandQuickShellSurfaceItem)
-    Q_PROPERTY(QWaylandShellSurface *shellSurface READ shellSurface WRITE setShellSurface NOTIFY shellSurfaceChanged)
+    Q_DECLARE_PRIVATE(WaylandQuickShellSurfaceItem)
+    Q_PROPERTY(WaylandShellSurface *shellSurface READ shellSurface WRITE setShellSurface NOTIFY shellSurfaceChanged)
     Q_PROPERTY(QQuickItem *moveItem READ moveItem WRITE setMoveItem NOTIFY moveItemChanged)
     Q_PROPERTY(bool autoCreatePopupItems READ autoCreatePopupItems WRITE setAutoCreatePopupItems NOTIFY autoCreatePopupItemsChanged)
     Q_PROPERTY(bool staysOnTop READ staysOnTop WRITE setStaysOnTop NOTIFY staysOnTopChanged)
     Q_PROPERTY(bool staysOnBottom READ staysOnBottom WRITE setStaysOnBottom NOTIFY staysOnBottomChanged)
-    Q_MOC_INCLUDE("qwaylandshellsurface.h")
+    Q_MOC_INCLUDE("aurorawaylandshellsurface.h")
     QML_NAMED_ELEMENT(ShellSurfaceItem)
     QML_ADDED_IN_VERSION(1, 0)
 public:
-    QWaylandQuickShellSurfaceItem(QQuickItem *parent = nullptr);
-    ~QWaylandQuickShellSurfaceItem() override;
+    WaylandQuickShellSurfaceItem(QQuickItem *parent = nullptr);
+    ~WaylandQuickShellSurfaceItem() override;
 
-    QWaylandShellSurface *shellSurface() const;
-    void setShellSurface(QWaylandShellSurface *shellSurface);
+    WaylandShellSurface *shellSurface() const;
+    void setShellSurface(WaylandShellSurface *shellSurface);
 
     QQuickItem *moveItem() const;
     void setMoveItem(QQuickItem *moveItem);
@@ -78,9 +80,11 @@ Q_SIGNALS:
     void staysOnBottomChanged();
 
 protected:
-    QWaylandQuickShellSurfaceItem(QWaylandQuickShellSurfaceItemPrivate &dd, QQuickItem *parent);
+    WaylandQuickShellSurfaceItem(WaylandQuickShellSurfaceItemPrivate &dd, QQuickItem *parent);
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDQUICKSHELLSURFACEITEM_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDQUICKSHELLSURFACEITEM_H

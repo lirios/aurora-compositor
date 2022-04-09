@@ -34,26 +34,28 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWaylandCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
 
 #include <QRegion>
 #include <private/qglobal_p.h>
 
 #include <wayland-util.h>
-#include <QtWaylandCompositor/private/qwayland-server-wayland.h>
+#include <LiriAuroraCompositor/private/aurora-server-wayland.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 namespace QtWayland {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT Region : public QtWaylandServer::wl_region
+class Q_WAYLANDCOMPOSITOR_EXPORT Region : public PrivateServer::wl_region
 {
 public:
     Region(struct wl_client *client, uint32_t id);
@@ -79,7 +81,9 @@ private:
 
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif // WL_REGION_H
 

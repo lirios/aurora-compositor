@@ -496,7 +496,10 @@ bool Scanner::process()
         printf("#endif\n");
 
         printf("\n");
-        printf("QT_BEGIN_NAMESPACE\n");
+        printf("namespace Aurora {\n");
+        printf("\n");
+        printf("namespace Compositor {\n");
+        printf("\n");
         printf("QT_WARNING_PUSH\n");
         printf("QT_WARNING_DISABLE_GCC(\"-Wmissing-field-initializers\")\n");
         printf("QT_WARNING_DISABLE_CLANG(\"-Wmissing-field-initializers\")\n");
@@ -513,7 +516,8 @@ bool Scanner::process()
             printf("#endif\n");
         }
         printf("\n");
-        printf("namespace QtWaylandServer {\n");
+        printf("namespace PrivateServer {\n");
+        printf("\n");
 
         bool needsNewLine = false;
         for (const WaylandInterface &interface : interfaces) {
@@ -644,25 +648,32 @@ bool Scanner::process()
             printf("    };\n");
         }
 
-        printf("}\n");
+        printf("} // namespace PrivateServer\n");
         printf("\n");
         printf("QT_WARNING_POP\n");
-        printf("QT_END_NAMESPACE\n");
+        printf("\n");
+        printf("} // namespace Compositor\n");
+        printf("\n");
+        printf("} // namespace Aurora\n");
         printf("\n");
         printf("#endif\n");
     }
 
     if (m_option == ServerCode) {
         if (m_headerPath.isEmpty())
-            printf("#include \"qwayland-server-%s.h\"\n", QByteArray(m_protocolName).replace('_', '-').constData());
+            printf("#include \"aurora-server-%s.h\"\n", QByteArray(m_protocolName).replace('_', '-').constData());
         else
-            printf("#include <%s/qwayland-server-%s.h>\n", m_headerPath.constData(), QByteArray(m_protocolName).replace('_', '-').constData());
+            printf("#include <%s/aurora-server-%s.h>\n", m_headerPath.constData(), QByteArray(m_protocolName).replace('_', '-').constData());
         printf("\n");
-        printf("QT_BEGIN_NAMESPACE\n");
+        printf("namespace Aurora {\n");
+        printf("\n");
+        printf("namespace Compositor {\n");
+        printf("\n");
         printf("QT_WARNING_PUSH\n");
         printf("QT_WARNING_DISABLE_GCC(\"-Wmissing-field-initializers\")\n");
         printf("\n");
-        printf("namespace QtWaylandServer {\n");
+        printf("namespace PrivateServer {\n");
+        printf("\n");
 
         bool needsNewLine = false;
         for (const WaylandInterface &interface : interfaces) {
@@ -829,7 +840,7 @@ bool Scanner::process()
             //and use function overloading instead. Jan do you have a lot of code dependent on this behavior?
             printf("    %s::Resource *%s::bind(struct ::wl_client *client, uint32_t id, int version)\n", interfaceName, interfaceName);
             printf("    {\n");
-            printf("        Q_ASSERT_X(!wl_client_get_object(client, id), \"QWaylandObject bind\", QStringLiteral(\"binding to object %%1 more than once\").arg(id).toLocal8Bit().constData());\n");
+            printf("        Q_ASSERT_X(!wl_client_get_object(client, id), \"WaylandObject bind\", QStringLiteral(\"binding to object %%1 more than once\").arg(id).toLocal8Bit().constData());\n");
             printf("        struct ::wl_resource *handle = wl_resource_create(client, &::%s_interface, version, id);\n", interfaceName);
             printf("        return bind(handle);\n");
             printf("    }\n");
@@ -971,10 +982,14 @@ bool Scanner::process()
                 printf("\n");
             }
         }
-        printf("}\n");
+        printf("} // namespace PrivateServer\n");
         printf("\n");
         printf("QT_WARNING_POP\n");
-        printf("QT_END_NAMESPACE\n");
+        printf("\n");
+        printf("} // namespace Compositor\n");
+        printf("\n");
+        printf("} // namespace Aurora\n");
+        printf("\n");
     }
 
     if (m_option == ClientHeader) {
@@ -991,7 +1006,10 @@ bool Scanner::process()
         printf("\n");
         printf("struct wl_registry;\n");
         printf("\n");
-        printf("QT_BEGIN_NAMESPACE\n");
+        printf("namespace Aurora {\n");
+        printf("\n");
+        printf("namespace Client {\n");
+        printf("\n");
         printf("QT_WARNING_PUSH\n");
         printf("QT_WARNING_DISABLE_GCC(\"-Wmissing-field-initializers\")\n");
 
@@ -1009,7 +1027,7 @@ bool Scanner::process()
             printf("#endif\n");
         }
         printf("\n");
-        printf("namespace QtWayland {\n");
+        printf("namespace PrivateClient {\n");
 
         bool needsNewLine = false;
         for (const WaylandInterface &interface : interfaces) {
@@ -1093,25 +1111,31 @@ bool Scanner::process()
             printf("        struct ::%s *m_%s;\n", interfaceName, interfaceName);
             printf("    };\n");
         }
-        printf("}\n");
+        printf("} // namespace PrivateClient\n");
         printf("\n");
         printf("QT_WARNING_POP\n");
-        printf("QT_END_NAMESPACE\n");
+        printf("\n");
+        printf("} // namespace Client\n");
+        printf("\n");
+        printf("} // namespace Aurora\n");
         printf("\n");
         printf("#endif\n");
     }
 
     if (m_option == ClientCode) {
         if (m_headerPath.isEmpty())
-            printf("#include \"qwayland-%s.h\"\n", QByteArray(m_protocolName).replace('_', '-').constData());
+            printf("#include \"aurora-client-%s.h\"\n", QByteArray(m_protocolName).replace('_', '-').constData());
         else
-            printf("#include <%s/qwayland-%s.h>\n", m_headerPath.constData(), QByteArray(m_protocolName).replace('_', '-').constData());
+            printf("#include <%s/aurora-client-%s.h>\n", m_headerPath.constData(), QByteArray(m_protocolName).replace('_', '-').constData());
         printf("\n");
-        printf("QT_BEGIN_NAMESPACE\n");
+        printf("namespace Aurora {\n");
+        printf("\n");
+        printf("namespace Client {\n");
+        printf("\n");
         printf("QT_WARNING_PUSH\n");
         printf("QT_WARNING_DISABLE_GCC(\"-Wmissing-field-initializers\")\n");
         printf("\n");
-        printf("namespace QtWayland {\n");
+        printf("namespace PrivateClient {\n");
         printf("\n");
 
         // wl_registry_bind is part of the protocol, so we can't use that... instead we use core
@@ -1312,10 +1336,14 @@ bool Scanner::process()
                 printf("    }\n");
             }
         }
-        printf("}\n");
+        printf("} // namespace PrivateClient\n");
         printf("\n");
         printf("QT_WARNING_POP\n");
-        printf("QT_END_NAMESPACE\n");
+        printf("\n");
+        printf("} // namespace Client\n");
+        printf("\n");
+        printf("} // namespace Aurora\n");
+        printf("\n");
     }
 
     return true;

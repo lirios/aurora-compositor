@@ -27,50 +27,53 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDIVISURFACE_H
-#define QWAYLANDIVISURFACE_H
+#ifndef AURORA_COMPOSITOR_WAYLANDIVISURFACE_H
+#define AURORA_COMPOSITOR_WAYLANDIVISURFACE_H
 
-#include <QtWaylandCompositor/QWaylandShellSurface>
-#include <QtWaylandCompositor/qwaylandquickchildren.h>
+#include <LiriAuroraCompositor/WaylandShellSurface>
+#include <LiriAuroraCompositor/aurorawaylandquickchildren.h>
 
 struct wl_resource;
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandIviSurfacePrivate;
-class QWaylandSurface;
-class QWaylandIviApplication;
-class QWaylandSurfaceRole;
-class QWaylandResource;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandIviSurface : public QWaylandShellSurfaceTemplate<QWaylandIviSurface>
+class WaylandIviSurfacePrivate;
+class WaylandSurface;
+class WaylandIviApplication;
+class WaylandSurfaceRole;
+class WaylandResource;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandIviSurface : public WaylandShellSurfaceTemplate<WaylandIviSurface>
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandIviSurface)
-    Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(QWaylandIviSurface)
-    Q_PROPERTY(QWaylandSurface *surface READ surface NOTIFY surfaceChanged)
+    Q_DECLARE_PRIVATE(WaylandIviSurface)
+    Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandIviSurface)
+    Q_PROPERTY(WaylandSurface *surface READ surface NOTIFY surfaceChanged)
     Q_PROPERTY(uint iviId READ iviId NOTIFY iviIdChanged)
-    Q_MOC_INCLUDE("qwaylandsurface.h")
+    Q_MOC_INCLUDE("aurorawaylandsurface.h")
 
 public:
-    QWaylandIviSurface();
-    QWaylandIviSurface(QWaylandIviApplication *application, QWaylandSurface *surface, uint iviId, const QWaylandResource &resource);
+    WaylandIviSurface();
+    WaylandIviSurface(WaylandIviApplication *application, WaylandSurface *surface, uint iviId, const WaylandResource &resource);
 
-    Q_INVOKABLE void initialize(QWaylandIviApplication *iviApplication, QWaylandSurface *surface,
-                                uint iviId, const QWaylandResource &resource);
+    Q_INVOKABLE void initialize(Aurora::Compositor::WaylandIviApplication *iviApplication,
+                                Aurora::Compositor::WaylandSurface *surface,
+                                uint iviId, const Aurora::Compositor::WaylandResource &resource);
 
-    QWaylandSurface *surface() const;
+    WaylandSurface *surface() const;
     uint iviId() const;
 
     static const struct wl_interface *interface();
     static QByteArray interfaceName();
-    static QWaylandSurfaceRole *role();
-    static QWaylandIviSurface *fromResource(::wl_resource *resource);
+    static WaylandSurfaceRole *role();
+    static WaylandIviSurface *fromResource(::wl_resource *resource);
 
     Q_INVOKABLE void sendConfigure(const QSize &size);
 
 #if QT_CONFIG(wayland_compositor_quick)
-    QWaylandQuickShellIntegration *createIntegration(QWaylandQuickShellSurfaceItem *item) override;
+    WaylandQuickShellIntegration *createIntegration(WaylandQuickShellSurfaceItem *item) override;
 #endif
 
 Q_SIGNALS:
@@ -81,6 +84,8 @@ private:
     void initialize() override;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDIVISURFACE_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDIVISURFACE_H

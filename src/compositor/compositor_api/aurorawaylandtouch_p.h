@@ -28,55 +28,59 @@
 **
 ****************************************************************************/
 
-#ifndef QTWAYLAND_QWLTOUCH_P_H
-#define QTWAYLAND_QWLTOUCH_P_H
+#ifndef AURORA_WAYLAND_TOUCH_P_H
+#define AURORA_WAYLAND_TOUCH_P_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWaylandCompositor/qtwaylandcompositorglobal.h>
-#include <QtWaylandCompositor/QWaylandDestroyListener>
-#include <QtWaylandCompositor/QWaylandTouch>
-#include <QtWaylandCompositor/QWaylandSeat>
-#include <QtWaylandCompositor/QWaylandView>
-#include <QtWaylandCompositor/QWaylandCompositor>
+#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/WaylandDestroyListener>
+#include <LiriAuroraCompositor/WaylandTouch>
+#include <LiriAuroraCompositor/WaylandSeat>
+#include <LiriAuroraCompositor/WaylandView>
+#include <LiriAuroraCompositor/WaylandCompositor>
 
 #include <QtCore/QPoint>
 #include <QtCore/qvarlengtharray.h>
 #include <QtCore/private/qobject_p.h>
 
-#include <QtWaylandCompositor/private/qwayland-server-wayland.h>
+#include <LiriAuroraCompositor/private/aurora-server-wayland.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandTouchPrivate : public QObjectPrivate, public QtWaylandServer::wl_touch
+namespace Compositor {
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandTouchPrivate : public QObjectPrivate, public PrivateServer::wl_touch
 {
-    Q_DECLARE_PUBLIC(QWaylandTouch)
+    Q_DECLARE_PUBLIC(WaylandTouch)
 public:
-    explicit QWaylandTouchPrivate(QWaylandTouch *touch, QWaylandSeat *seat);
+    explicit WaylandTouchPrivate(WaylandTouch *touch, WaylandSeat *seat);
 
-    QWaylandCompositor *compositor() const { return seat->compositor(); }
+    WaylandCompositor *compositor() const { return seat->compositor(); }
 
-    uint sendDown(QWaylandSurface *surface, uint32_t time, int touch_id, const QPointF &position);
-    void sendMotion(QWaylandClient *client, uint32_t time, int touch_id, const QPointF &position);
-    uint sendUp(QWaylandClient *client, uint32_t time, int touch_id);
+    uint sendDown(WaylandSurface *surface, uint32_t time, int touch_id, const QPointF &position);
+    void sendMotion(WaylandClient *client, uint32_t time, int touch_id, const QPointF &position);
+    uint sendUp(WaylandClient *client, uint32_t time, int touch_id);
 
 private:
     void touch_release(Resource *resource) override;
     int toSequentialWaylandId(int touchId);
 
-    QWaylandSeat *seat = nullptr;
+    WaylandSeat *seat = nullptr;
     QVarLengthArray<int, 10> ids;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QTWAYLAND_QWLTOUCH_P_H
+} // namespace Aurora
+
+#endif // AURORA_WAYLAND_TOUCH_P_H

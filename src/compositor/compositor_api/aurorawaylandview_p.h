@@ -27,54 +27,56 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDSURFACEVIEW_P_H
-#define QWAYLANDSURFACEVIEW_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDSURFACEVIEW_P_H
+#define AURORA_COMPOSITOR_WAYLANDSURFACEVIEW_P_H
 
-#include "qwaylandview.h"
+#include "aurorawaylandview.h"
 
 #include <QtCore/QPoint>
 #include <QtCore/QMutex>
 #include <QtCore/private/qobject_p.h>
 
-#include <QtWaylandCompositor/QWaylandBufferRef>
+#include <LiriAuroraCompositor/WaylandBufferRef>
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandSurface;
-class QWaylandOutput;
+namespace Compositor {
 
-class QWaylandViewPrivate : public QObjectPrivate
+class WaylandSurface;
+class WaylandOutput;
+
+class WaylandViewPrivate : public QObjectPrivate
 {
-    Q_DECLARE_PUBLIC(QWaylandView)
+    Q_DECLARE_PUBLIC(WaylandView)
 public:
-    static QWaylandViewPrivate *get(QWaylandView *view) { return view->d_func(); }
+    static WaylandViewPrivate *get(WaylandView *view) { return view->d_func(); }
 
-    QWaylandViewPrivate()
+    WaylandViewPrivate()
     { }
 
-    void markSurfaceAsDestroyed(QWaylandSurface *surface);
-    void setSurface(QWaylandSurface *newSurface);
+    void markSurfaceAsDestroyed(WaylandSurface *surface);
+    void setSurface(WaylandSurface *newSurface);
     void clearFrontBuffer();
 
     QObject *renderObject = nullptr;
-    QWaylandSurface *surface = nullptr;
-    QWaylandOutput *output = nullptr;
+    WaylandSurface *surface = nullptr;
+    WaylandOutput *output = nullptr;
     QPointF requestedPos;
     QMutex bufferMutex;
-    QWaylandBufferRef currentBuffer;
+    WaylandBufferRef currentBuffer;
     QRegion currentDamage;
-    QWaylandBufferRef nextBuffer;
+    WaylandBufferRef nextBuffer;
     QRegion nextDamage;
     bool nextBufferCommitted = false;
     bool bufferLocked = false;
@@ -84,6 +86,8 @@ public:
     bool independentFrameCallback = false; //If frame callbacks are independent of the main quick scene graph
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif  /*QWAYLANDSURFACEVIEW_P_H*/

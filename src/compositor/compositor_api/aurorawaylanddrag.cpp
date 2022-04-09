@@ -27,49 +27,51 @@
 **
 ****************************************************************************/
 
-#include "qwaylanddrag.h"
+#include "aurorawaylanddrag.h"
 
 #include <private/qobject_p.h>
 
-#include "qwaylandview.h"
-#include <QtWaylandCompositor/private/qwaylandseat_p.h>
-#include <QtWaylandCompositor/private/qtwaylandcompositorglobal_p.h>
+#include "aurorawaylandview.h"
+#include <LiriAuroraCompositor/private/aurorawaylandseat_p.h>
+#include <LiriAuroraCompositor/private/qtwaylandcompositorglobal_p.h>
 
 #if QT_CONFIG(wayland_datadevice)
-#include "qwldatadevice_p.h"
+#include "aurorawldatadevice_p.h"
 #endif
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandDragPrivate : public QObjectPrivate
+namespace Compositor {
+
+class WaylandDragPrivate : public QObjectPrivate
 {
 public:
-    QWaylandDragPrivate(QWaylandSeat *seat)
+    WaylandDragPrivate(WaylandSeat *seat)
         : seat(seat)
     {
     }
 
     QtWayland::DataDevice *dataDevice()
     {
-        return QWaylandSeatPrivate::get(seat)->dataDevice();
+        return WaylandSeatPrivate::get(seat)->dataDevice();
     }
 
     const QtWayland::DataDevice *dataDevice() const
     {
-        return QWaylandSeatPrivate::get(seat)->dataDevice();
+        return WaylandSeatPrivate::get(seat)->dataDevice();
     }
 
-    QWaylandSeat *seat = nullptr;
+    WaylandSeat *seat = nullptr;
 };
 
-QWaylandDrag::QWaylandDrag(QWaylandSeat *seat)
-    : QObject(* new QWaylandDragPrivate(seat))
+WaylandDrag::WaylandDrag(WaylandSeat *seat)
+    : QObject(* new WaylandDragPrivate(seat))
 {
 }
 
-QWaylandSurface *QWaylandDrag::icon() const
+WaylandSurface *WaylandDrag::icon() const
 {
-    Q_D(const QWaylandDrag);
+    Q_D(const WaylandDrag);
 
     const QtWayland::DataDevice *dataDevice = d->dataDevice();
     if (!dataDevice)
@@ -78,23 +80,23 @@ QWaylandSurface *QWaylandDrag::icon() const
     return dataDevice->dragIcon();
 }
 
-QWaylandSurface *QWaylandDrag::origin() const
+WaylandSurface *WaylandDrag::origin() const
 {
-    Q_D(const QWaylandDrag);
+    Q_D(const WaylandDrag);
     const QtWayland::DataDevice *dataDevice = d->dataDevice();
     return dataDevice ? dataDevice->dragOrigin() : nullptr;
 }
 
-QWaylandSeat *QWaylandDrag::seat() const
+WaylandSeat *WaylandDrag::seat() const
 {
-    Q_D(const QWaylandDrag);
+    Q_D(const WaylandDrag);
     return d->seat;
 }
 
 
-bool QWaylandDrag::visible() const
+bool WaylandDrag::visible() const
 {
-    Q_D(const QWaylandDrag);
+    Q_D(const WaylandDrag);
 
     const QtWayland::DataDevice *dataDevice = d->dataDevice();
     if (!dataDevice)
@@ -103,32 +105,34 @@ bool QWaylandDrag::visible() const
     return dataDevice->dragIcon() != nullptr;
 }
 
-void QWaylandDrag::dragMove(QWaylandSurface *target, const QPointF &pos)
+void WaylandDrag::dragMove(WaylandSurface *target, const QPointF &pos)
 {
-    Q_D(QWaylandDrag);
+    Q_D(WaylandDrag);
     QtWayland::DataDevice *dataDevice = d->dataDevice();
     if (!dataDevice)
         return;
     dataDevice->dragMove(target, pos);
 }
-void QWaylandDrag::drop()
+void WaylandDrag::drop()
 {
-    Q_D(QWaylandDrag);
+    Q_D(WaylandDrag);
     QtWayland::DataDevice *dataDevice = d->dataDevice();
     if (!dataDevice)
         return;
     dataDevice->drop();
 }
 
-void QWaylandDrag::cancelDrag()
+void WaylandDrag::cancelDrag()
 {
-    Q_D(QWaylandDrag);
+    Q_D(WaylandDrag);
     QtWayland::DataDevice *dataDevice = d->dataDevice();
     if (!dataDevice)
         return;
     dataDevice->cancelDrag();
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#include "moc_qwaylanddrag.cpp"
+} // namespace Aurora
+
+#include "moc_aurorawaylanddrag.cpp"

@@ -28,28 +28,28 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDSURFACE_P_H
-#define QWAYLANDSURFACE_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDSURFACE_P_H
+#define AURORA_COMPOSITOR_WAYLANDSURFACE_P_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWaylandCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
 #include <private/qobject_p.h>
 
-#include <private/qwlclientbuffer_p.h>
-#include <QtWaylandCompositor/qwaylandsurface.h>
-#include <QtWaylandCompositor/qwaylandbufferref.h>
+#include <private/aurorawlclientbuffer_p.h>
+#include <LiriAuroraCompositor/aurorawaylandsurface.h>
+#include <LiriAuroraCompositor/aurorawaylandbufferref.h>
 
-#include <QtWaylandCompositor/private/qwlregion_p.h>
+#include <LiriAuroraCompositor/private/aurorawlregion_p.h>
 
 #include <QtCore/QList>
 #include <QtCore/QRect>
@@ -62,50 +62,52 @@
 
 #include <wayland-util.h>
 
-#include <QtWaylandCompositor/private/qwayland-server-wayland.h>
-#include <QtWaylandCompositor/private/qwaylandviewporter_p.h>
-#include <QtWaylandCompositor/private/qwaylandidleinhibitv1_p.h>
+#include <LiriAuroraCompositor/private/aurora-server-wayland.h>
+#include <LiriAuroraCompositor/private/aurorawaylandviewporter_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandidleinhibitv1_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandCompositor;
-class QWaylandSurface;
-class QWaylandView;
-class QWaylandInputMethodControl;
+namespace Compositor {
+
+class WaylandCompositor;
+class WaylandSurface;
+class WaylandView;
+class WaylandInputMethodControl;
 
 namespace QtWayland {
 class FrameCallback;
 }
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandSurfacePrivate : public QObjectPrivate, public QtWaylandServer::wl_surface
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandSurfacePrivate : public QObjectPrivate, public PrivateServer::wl_surface
 {
 public:
-    static QWaylandSurfacePrivate *get(QWaylandSurface *surface);
+    static WaylandSurfacePrivate *get(WaylandSurface *surface);
 
-    QWaylandSurfacePrivate();
-    ~QWaylandSurfacePrivate() override;
+    WaylandSurfacePrivate();
+    ~WaylandSurfacePrivate() override;
 
     void ref();
     void deref();
 
-    void refView(QWaylandView *view);
-    void derefView(QWaylandView *view);
+    void refView(WaylandView *view);
+    void derefView(WaylandView *view);
 
-    using QtWaylandServer::wl_surface::resource;
+    using PrivateServer::wl_surface::resource;
 
     void removeFrameCallback(QtWayland::FrameCallback *callback);
 
     void notifyViewsAboutDestruction();
 
 #ifndef QT_NO_DEBUG
-    static void addUninitializedSurface(QWaylandSurfacePrivate *surface);
-    static void removeUninitializedSurface(QWaylandSurfacePrivate *surface);
+    static void addUninitializedSurface(WaylandSurfacePrivate *surface);
+    static void removeUninitializedSurface(WaylandSurfacePrivate *surface);
     static bool hasUninitializedSurface();
 #endif
 
-    void initSubsurface(QWaylandSurface *parent, struct ::wl_client *client, int id, int version);
+    void initSubsurface(WaylandSurface *parent, struct ::wl_client *client, int id, int version);
     bool isSubsurface() const { return subsurface; }
-    QWaylandSurfacePrivate *parentSurface() const { return subsurface ? subsurface->parentSurface : nullptr; }
+    WaylandSurfacePrivate *parentSurface() const { return subsurface ? subsurface->parentSurface : nullptr; }
 
 protected:
     void surface_destroy_resource(Resource *resource) override;
@@ -129,17 +131,17 @@ protected:
     QtWayland::ClientBuffer *getBuffer(struct ::wl_resource *buffer);
 
 public: //member variables
-    QWaylandCompositor *compositor = nullptr;
+    WaylandCompositor *compositor = nullptr;
     int refCount = 1;
-    QWaylandClient *client = nullptr;
-    QList<QWaylandView *> views;
+    WaylandClient *client = nullptr;
+    QList<WaylandView *> views;
     QRegion damage;
-    QWaylandBufferRef bufferRef;
-    QWaylandSurfaceRole *role = nullptr;
-    QWaylandViewporterPrivate::Viewport *viewport = nullptr;
+    WaylandBufferRef bufferRef;
+    WaylandSurfaceRole *role = nullptr;
+    WaylandViewporterPrivate::Viewport *viewport = nullptr;
 
     struct {
-        QWaylandBufferRef buffer;
+        WaylandBufferRef buffer;
         QRegion damage;
         bool damageInBufferCoordinates = false;
         QPoint offset;
@@ -157,9 +159,9 @@ public: //member variables
     QList<QtWayland::FrameCallback *> pendingFrameCallbacks;
     QList<QtWayland::FrameCallback *> frameCallbacks;
 
-    QList<QPointer<QWaylandSurface>> subsurfaceChildren;
+    QList<QPointer<WaylandSurface>> subsurfaceChildren;
 
-    QList<QWaylandIdleInhibitManagerV1Private::Inhibitor *> idleInhibitors;
+    QList<WaylandIdleInhibitManagerV1Private::Inhibitor *> idleInhibitors;
 
     QRegion inputRegion;
     QRegion opaqueRegion;
@@ -176,14 +178,14 @@ public: //member variables
     Qt::ScreenOrientation contentOrientation = Qt::PrimaryOrientation;
     QWindow::Visibility visibility;
 #if QT_CONFIG(im)
-    QWaylandInputMethodControl *inputMethodControl = nullptr;
+    WaylandInputMethodControl *inputMethodControl = nullptr;
 #endif
 
-    class Subsurface : public QtWaylandServer::wl_subsurface
+    class Subsurface : public PrivateServer::wl_subsurface
     {
     public:
-        Subsurface(QWaylandSurfacePrivate *s) : surface(s) {}
-        QWaylandSurfacePrivate *surfaceFromResource();
+        Subsurface(WaylandSurfacePrivate *s) : surface(s) {}
+        WaylandSurfacePrivate *surfaceFromResource();
 
     protected:
         void subsurface_set_position(wl_subsurface::Resource *resource, int32_t x, int32_t y) override;
@@ -193,21 +195,23 @@ public: //member variables
         void subsurface_set_desync(wl_subsurface::Resource *resource) override;
 
     private:
-        friend class QWaylandSurfacePrivate;
-        QWaylandSurfacePrivate *surface = nullptr;
-        QWaylandSurfacePrivate *parentSurface = nullptr;
+        friend class WaylandSurfacePrivate;
+        WaylandSurfacePrivate *surface = nullptr;
+        WaylandSurfacePrivate *parentSurface = nullptr;
         QPoint position;
     };
 
     Subsurface *subsurface = nullptr;
 
 #ifndef QT_NO_DEBUG
-    static QList<QWaylandSurfacePrivate *> uninitializedSurfaces;
+    static QList<WaylandSurfacePrivate *> uninitializedSurfaces;
 #endif
-    Q_DECLARE_PUBLIC(QWaylandSurface)
-    Q_DISABLE_COPY(QWaylandSurfacePrivate)
+    Q_DECLARE_PUBLIC(WaylandSurface)
+    Q_DISABLE_COPY(WaylandSurfacePrivate)
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif

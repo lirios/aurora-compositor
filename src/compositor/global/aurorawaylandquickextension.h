@@ -27,16 +27,18 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDQUICKEXTENSION_H
-#define QWAYLANDQUICKEXTENSION_H
+#ifndef AURORA_COMPOSITOR_WAYLANDQUICKEXTENSION_H
+#define AURORA_COMPOSITOR_WAYLANDQUICKEXTENSION_H
 
-#include <QtWaylandCompositor/QWaylandCompositorExtension>
+#include <LiriAuroraCompositor/WaylandCompositorExtension>
 #include <QtQml/QQmlParserStatus>
 #include <QtQml/QQmlListProperty>
 
 QT_REQUIRE_CONFIG(wayland_compositor_quick);
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 #define Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(className) \
     class Q_WAYLANDCOMPOSITOR_EXPORT className##QuickExtension : public className, public QQmlParserStatus \
@@ -62,7 +64,7 @@ QT_BEGIN_NAMESPACE
     { \
 /* qmake ignore Q_OBJECT */ \
         Q_OBJECT \
-        Q_PROPERTY(QQmlListProperty<QWaylandCompositorExtension> extensions READ extensions) \
+        Q_PROPERTY(QQmlListProperty<WaylandCompositorExtension> extensions READ extensions) \
         Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false) \
         Q_CLASSINFO("DefaultProperty", "data") \
     public: \
@@ -70,28 +72,28 @@ QT_BEGIN_NAMESPACE
         { \
             return QQmlListProperty<QObject>(this, &m_objects); \
         } \
-        QQmlListProperty<QWaylandCompositorExtension> extensions() \
+        QQmlListProperty<WaylandCompositorExtension> extensions() \
         { \
-            return QQmlListProperty<QWaylandCompositorExtension>(this, this, \
+            return QQmlListProperty<WaylandCompositorExtension>(this, this, \
                                                        &className##QuickExtensionContainer::append_extension, \
                                                        &className##QuickExtensionContainer::countFunction, \
                                                        &className##QuickExtensionContainer::atFunction, \
                                                        &className##QuickExtensionContainer::clearFunction); \
         } \
-        static int countFunction(QQmlListProperty<QWaylandCompositorExtension> *list) \
+        static int countFunction(QQmlListProperty<WaylandCompositorExtension> *list) \
         { \
             return static_cast<className##QuickExtensionContainer *>(list->data)->extension_vector.size(); \
         } \
-        static QWaylandCompositorExtension *atFunction(QQmlListProperty<QWaylandCompositorExtension> *list, int index) \
+        static WaylandCompositorExtension *atFunction(QQmlListProperty<WaylandCompositorExtension> *list, int index) \
         { \
             return static_cast<className##QuickExtensionContainer *>(list->data)->extension_vector.at(index); \
         } \
-        static void append_extension(QQmlListProperty<QWaylandCompositorExtension> *list, QWaylandCompositorExtension *extension) \
+        static void append_extension(QQmlListProperty<WaylandCompositorExtension> *list, WaylandCompositorExtension *extension) \
         { \
             className##QuickExtensionContainer *quickExtObj = static_cast<className##QuickExtensionContainer *>(list->data); \
             extension->setExtensionContainer(quickExtObj); \
         } \
-        static void clearFunction(QQmlListProperty<QWaylandCompositorExtension> *list) \
+        static void clearFunction(QQmlListProperty<WaylandCompositorExtension> *list) \
         { \
             static_cast<className##QuickExtensionContainer *>(list->data)->extension_vector.clear(); \
         } \
@@ -120,6 +122,8 @@ QT_BEGIN_NAMESPACE
         QList<QObject *> m_objects; \
     };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif  /*QWAYLANDQUICKEXTENSION_H*/

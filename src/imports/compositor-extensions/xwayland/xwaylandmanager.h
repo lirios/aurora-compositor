@@ -26,7 +26,7 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QMap>
-#include <QtWaylandCompositor/QWaylandCompositor>
+#include <LiriAuroraCompositor/WaylandCompositor>
 
 #include <xcb/xcb.h>
 
@@ -62,8 +62,8 @@ public:
     XWaylandServer *server() const;
     void setServer(XWaylandServer *server);
 
-    QWaylandCompositor *compositor() const;
-    void setCompositor(QWaylandCompositor *compositor);
+    WaylandCompositor *compositor() const;
+    void setCompositor(WaylandCompositor *compositor);
 
     void start(int fd);
 
@@ -74,7 +74,7 @@ public:
     void setFocusWindow(xcb_window_t window);
 
     XWaylandShellSurface *shellSurfaceFromId(xcb_window_t id);
-    XWaylandShellSurface *shellSurfaceFromSurface(QWaylandSurface *surface);
+    XWaylandShellSurface *shellSurfaceFromSurface(WaylandSurface *surface);
 
 Q_SIGNALS:
     void created();
@@ -95,7 +95,7 @@ private:
 
     Xcb::Window *m_wmWindow;
 
-    QWaylandCompositor *m_compositor;
+    WaylandCompositor *m_compositor;
 
     QMap<xcb_window_t, XWaylandShellSurface *> m_windowsMap;
     QList<XWaylandShellSurface *> m_unpairedWindows;

@@ -27,32 +27,34 @@
 **
 ****************************************************************************/
 
-#include <QtWaylandCompositor/QWaylandCompositor>
-#include <QtWaylandCompositor/private/qwaylandsurface_p.h>
+#include <LiriAuroraCompositor/WaylandCompositor>
+#include <LiriAuroraCompositor/private/aurorawaylandsurface_p.h>
 
-#include "qwaylandidleinhibitv1_p.h"
+#include "aurorawaylandidleinhibitv1_p.h"
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 /*!
-    \class QWaylandIdleInhibitManagerV1
+    \class WaylandIdleInhibitManagerV1
     \inmodule QtWaylandCompositor
     \since 5.14
     \brief Provides an extension that allows to inhibit the idle behavior of the compositor.
-    \sa QWaylandSurface::inhibitsIdle
+    \sa WaylandSurface::inhibitsIdle
 
-    The QWaylandIdleInhibitV1 extension provides a way for a client to inhibit the idle behavior of
+    The WaylandIdleInhibitV1 extension provides a way for a client to inhibit the idle behavior of
     the compositor when a specific surface is visually relevant to the user.
 
-    QWaylandIdleInhibitManagerV1 corresponds to the Wayland interface, \c zwp_idle_inhibit_manager_v1.
+    WaylandIdleInhibitManagerV1 corresponds to the Wayland interface, \c zwp_idle_inhibit_manager_v1.
 
-    Inhibited surfaces have the QWaylandSurface::inhibitsIdle property set to \c true.
+    Inhibited surfaces have the WaylandSurface::inhibitsIdle property set to \c true.
 */
 
 /*!
     \qmltype IdleInhibitManagerV1
-    \instantiates QWaylandIdleInhibitManagerV1
-    \inqmlmodule QtWayland.Compositor
+    \instantiates WaylandIdleInhibitManagerV1
+    \inqmlmodule Aurora.Compositor
     \since 5.14
     \brief Provides an extension that allows to inhibit the idle behavior of the compositor.
     \sa WaylandSurface::inhibitsIdle
@@ -66,7 +68,7 @@ QT_BEGIN_NAMESPACE
     IdleInhibitManagerV1 component and add it to the list of extensions supported by the compositor:
 
     \qml
-    import QtWayland.Compositor
+    import Aurora.Compositor
 
     WaylandCompositor {
         IdleInhibitManagerV1 {
@@ -79,54 +81,54 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    Constructs a QWaylandIdleInhibitManagerV1 object.
+    Constructs a WaylandIdleInhibitManagerV1 object.
 */
-QWaylandIdleInhibitManagerV1::QWaylandIdleInhibitManagerV1()
-    : QWaylandCompositorExtensionTemplate<QWaylandIdleInhibitManagerV1>(*new QWaylandIdleInhibitManagerV1Private())
+WaylandIdleInhibitManagerV1::WaylandIdleInhibitManagerV1()
+    : WaylandCompositorExtensionTemplate<WaylandIdleInhibitManagerV1>(*new WaylandIdleInhibitManagerV1Private())
 {
 }
 
 /*!
-    Constructs a QWaylandIdleInhibitManagerV1 object for the provided \a compositor.
+    Constructs a WaylandIdleInhibitManagerV1 object for the provided \a compositor.
 */
-QWaylandIdleInhibitManagerV1::QWaylandIdleInhibitManagerV1(QWaylandCompositor *compositor)
-    : QWaylandCompositorExtensionTemplate<QWaylandIdleInhibitManagerV1>(compositor, *new QWaylandIdleInhibitManagerV1Private())
+WaylandIdleInhibitManagerV1::WaylandIdleInhibitManagerV1(WaylandCompositor *compositor)
+    : WaylandCompositorExtensionTemplate<WaylandIdleInhibitManagerV1>(compositor, *new WaylandIdleInhibitManagerV1Private())
 {
 }
 
 /*!
-    Destructs a QWaylandIdleInhibitManagerV1 object.
+    Destructs a WaylandIdleInhibitManagerV1 object.
 */
-QWaylandIdleInhibitManagerV1::~QWaylandIdleInhibitManagerV1() = default;
+WaylandIdleInhibitManagerV1::~WaylandIdleInhibitManagerV1() = default;
 
 /*!
     Initializes the extension.
 */
-void QWaylandIdleInhibitManagerV1::initialize()
+void WaylandIdleInhibitManagerV1::initialize()
 {
-    Q_D(QWaylandIdleInhibitManagerV1);
+    Q_D(WaylandIdleInhibitManagerV1);
 
-    QWaylandCompositorExtensionTemplate::initialize();
-    QWaylandCompositor *compositor = static_cast<QWaylandCompositor *>(extensionContainer());
+    WaylandCompositorExtensionTemplate::initialize();
+    WaylandCompositor *compositor = static_cast<WaylandCompositor *>(extensionContainer());
     if (!compositor) {
-        qCWarning(qLcWaylandCompositor) << "Failed to find QWaylandCompositor when initializing QWaylandIdleInhibitManagerV1";
+        qCWarning(qLcWaylandCompositor) << "Failed to find WaylandCompositor when initializing WaylandIdleInhibitManagerV1";
         return;
     }
     d->init(compositor->display(), d->interfaceVersion());
 }
 
 /*!
-    Returns the Wayland interface for the QWaylandIdleInhibitManagerV1.
+    Returns the Wayland interface for the WaylandIdleInhibitManagerV1.
 */
-const wl_interface *QWaylandIdleInhibitManagerV1::interface()
+const wl_interface *WaylandIdleInhibitManagerV1::interface()
 {
-    return QWaylandIdleInhibitManagerV1Private::interface();
+    return WaylandIdleInhibitManagerV1Private::interface();
 }
 
 
-void QWaylandIdleInhibitManagerV1Private::zwp_idle_inhibit_manager_v1_create_inhibitor(Resource *resource, uint id, wl_resource *surfaceResource)
+void WaylandIdleInhibitManagerV1Private::zwp_idle_inhibit_manager_v1_create_inhibitor(Resource *resource, uint id, wl_resource *surfaceResource)
 {
-    auto *surface = QWaylandSurface::fromResource(surfaceResource);
+    auto *surface = WaylandSurface::fromResource(surfaceResource);
     if (!surface) {
         qCWarning(qLcWaylandCompositor) << "Couldn't find surface requested for creating an inhibitor";
         wl_resource_post_error(resource->handle, WL_DISPLAY_ERROR_INVALID_OBJECT,
@@ -134,7 +136,7 @@ void QWaylandIdleInhibitManagerV1Private::zwp_idle_inhibit_manager_v1_create_inh
         return;
     }
 
-    auto *surfacePrivate = QWaylandSurfacePrivate::get(surface);
+    auto *surfacePrivate = WaylandSurfacePrivate::get(surface);
     if (!surfacePrivate) {
         wl_resource_post_no_memory(resource->handle);
         return;
@@ -152,25 +154,25 @@ void QWaylandIdleInhibitManagerV1Private::zwp_idle_inhibit_manager_v1_create_inh
 }
 
 
-QWaylandIdleInhibitManagerV1Private::Inhibitor::Inhibitor(QWaylandSurface *surface,
+WaylandIdleInhibitManagerV1Private::Inhibitor::Inhibitor(WaylandSurface *surface,
                                                           wl_client *client,
                                                           quint32 id, quint32 version)
-    : QtWaylandServer::zwp_idle_inhibitor_v1(client, id, qMin<quint32>(version, interfaceVersion()))
+    : PrivateServer::zwp_idle_inhibitor_v1(client, id, qMin<quint32>(version, interfaceVersion()))
     , m_surface(surface)
 {
     Q_ASSERT(surface);
 }
 
-void QWaylandIdleInhibitManagerV1Private::Inhibitor::zwp_idle_inhibitor_v1_destroy_resource(Resource *resource)
+void WaylandIdleInhibitManagerV1Private::Inhibitor::zwp_idle_inhibitor_v1_destroy_resource(Resource *resource)
 {
     Q_UNUSED(resource);
     delete this;
 }
 
-void QWaylandIdleInhibitManagerV1Private::Inhibitor::zwp_idle_inhibitor_v1_destroy(Resource *resource)
+void WaylandIdleInhibitManagerV1Private::Inhibitor::zwp_idle_inhibitor_v1_destroy(Resource *resource)
 {
     if (m_surface) {
-        auto *surfacePrivate = QWaylandSurfacePrivate::get(m_surface.data());
+        auto *surfacePrivate = WaylandSurfacePrivate::get(m_surface.data());
         Q_ASSERT(surfacePrivate->idleInhibitors.contains(this));
         surfacePrivate->idleInhibitors.removeOne(this);
 
@@ -181,4 +183,6 @@ void QWaylandIdleInhibitManagerV1Private::Inhibitor::zwp_idle_inhibitor_v1_destr
     wl_resource_destroy(resource->handle);
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

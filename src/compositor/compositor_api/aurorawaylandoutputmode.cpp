@@ -27,46 +27,50 @@
 **
 ****************************************************************************/
 
-#include "qwaylandoutputmode.h"
-#include "qwaylandoutputmode_p.h"
+#include "aurorawaylandoutputmode.h"
+#include "aurorawaylandoutputmode_p.h"
 
 /*!
-   \class QWaylandOutputMode
+   \class WaylandOutputMode
    \inmodule QtWaylandCompositor
    \since 5.8
-   \brief The QWaylandOutputMode class holds the resolution and refresh rate of an output.
+   \brief The WaylandOutputMode class holds the resolution and refresh rate of an output.
 
-   QWaylandOutputMode holds the resolution and refresh rate of an output.
+   WaylandOutputMode holds the resolution and refresh rate of an output.
    Resolution is expressed in pixels and refresh rate is measured in mHz.
 
-   \sa QWaylandOutput
+   \sa WaylandOutput
 */
 
-QWaylandOutputMode::QWaylandOutputMode()
-    : d(new QWaylandOutputModePrivate)
+namespace Aurora {
+
+namespace Compositor {
+
+WaylandOutputMode::WaylandOutputMode()
+    : d(new WaylandOutputModePrivate)
 {
 }
 
-QWaylandOutputMode::QWaylandOutputMode(const QSize &size, int refreshRate)
-    : d(new QWaylandOutputModePrivate)
+WaylandOutputMode::WaylandOutputMode(const QSize &size, int refreshRate)
+    : d(new WaylandOutputModePrivate)
 {
     d->size = size;
     d->refreshRate = refreshRate;
 }
 
-QWaylandOutputMode::QWaylandOutputMode(const QWaylandOutputMode &other)
-    : d(new QWaylandOutputModePrivate)
+WaylandOutputMode::WaylandOutputMode(const WaylandOutputMode &other)
+    : d(new WaylandOutputModePrivate)
 {
     d->size = other.size();
     d->refreshRate = other.refreshRate();
 }
 
-QWaylandOutputMode::~QWaylandOutputMode()
+WaylandOutputMode::~WaylandOutputMode()
 {
     delete d;
 }
 
-QWaylandOutputMode &QWaylandOutputMode::operator=(const QWaylandOutputMode &other)
+WaylandOutputMode &WaylandOutputMode::operator=(const WaylandOutputMode &other)
 {
     d->size = other.size();
     d->refreshRate = other.refreshRate();
@@ -77,7 +81,7 @@ QWaylandOutputMode &QWaylandOutputMode::operator=(const QWaylandOutputMode &othe
     Returns \c true if this mode is equal to \a other,
     otherwise returns \c false.
 */
-bool QWaylandOutputMode::operator==(const QWaylandOutputMode &other) const
+bool WaylandOutputMode::operator==(const WaylandOutputMode &other) const
 {
     return size() == other.size() && refreshRate() == other.refreshRate();
 }
@@ -86,7 +90,7 @@ bool QWaylandOutputMode::operator==(const QWaylandOutputMode &other) const
     Returns \c true if this mode is not equal to \a other,
     otherwise returns \c false.
 */
-bool QWaylandOutputMode::operator!=(const QWaylandOutputMode &other) const
+bool WaylandOutputMode::operator!=(const WaylandOutputMode &other) const
 {
     return size() != other.size() || refreshRate() != other.refreshRate();
 }
@@ -94,7 +98,7 @@ bool QWaylandOutputMode::operator!=(const QWaylandOutputMode &other) const
 /*!
     Returns whether this mode contains a valid resolution and refresh rate.
 */
-bool QWaylandOutputMode::isValid() const
+bool WaylandOutputMode::isValid() const
 {
     return !d->size.isEmpty() && d->refreshRate > 0;
 }
@@ -102,7 +106,7 @@ bool QWaylandOutputMode::isValid() const
 /*!
     Returns the resolution in pixels.
 */
-QSize QWaylandOutputMode::size() const
+QSize WaylandOutputMode::size() const
 {
     return d->size;
 }
@@ -110,7 +114,7 @@ QSize QWaylandOutputMode::size() const
 /*!
     Returns the refresh rate in mHz.
 */
-int QWaylandOutputMode::refreshRate() const
+int WaylandOutputMode::refreshRate() const
 {
     return d->refreshRate;
 }
@@ -118,7 +122,11 @@ int QWaylandOutputMode::refreshRate() const
 /*!
  * \internal
  */
-void QWaylandOutputMode::setSize(const QSize &size)
+void WaylandOutputMode::setSize(const QSize &size)
 {
     d->size = size;
 }
+
+} // namespace Compositor
+
+} // namespace Aurora

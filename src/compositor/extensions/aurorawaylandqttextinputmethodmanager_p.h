@@ -27,36 +27,40 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDQTTEXTINPUTMETHODMANAGER_P_H
-#define QWAYLANDQTTEXTINPUTMETHODMANAGER_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDQTTEXTINPUTMETHODMANAGER_P_H
+#define AURORA_COMPOSITOR_WAYLANDQTTEXTINPUTMETHODMANAGER_P_H
 
-#include <QtWaylandCompositor/private/qwaylandcompositorextension_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
 
-#include <QtWaylandCompositor/private/qwayland-server-qt-text-input-method-unstable-v1.h>
+#include <LiriAuroraCompositor/private/aurora-server-qt-text-input-method-unstable-v1.h>
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandQtTextInputMethodManagerPrivate : public QWaylandCompositorExtensionPrivate, public QtWaylandServer::qt_text_input_method_manager_v1
+namespace Compositor {
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandQtTextInputMethodManagerPrivate : public WaylandCompositorExtensionPrivate, public PrivateServer::qt_text_input_method_manager_v1
 {
-    Q_DECLARE_PUBLIC(QWaylandQtTextInputMethodManager)
+    Q_DECLARE_PUBLIC(WaylandQtTextInputMethodManager)
 public:
-    QWaylandQtTextInputMethodManagerPrivate();
+    WaylandQtTextInputMethodManagerPrivate();
 
 protected:
     void text_input_method_manager_v1_get_text_input_method(Resource *resource, uint32_t id, struct ::wl_resource *seat) override;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDQTTEXTINPUTMETHODMANAGER_P_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDQTTEXTINPUTMETHODMANAGER_P_H

@@ -37,16 +37,18 @@
 **
 ****************************************************************************/
 
-#include "qwaylandmimehelper_p.h"
+#include "aurorawaylandmimehelper_p.h"
 #include <QImage>
 #include <QColor>
 #include <QUrl>
 #include <QBuffer>
 #include <QImageWriter>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-QByteArray QWaylandMimeHelper::getByteArray(QMimeData *mimeData, const QString &mimeType)
+namespace Compositor {
+
+QByteArray WaylandMimeHelper::getByteArray(QMimeData *mimeData, const QString &mimeType)
 {
     QByteArray content;
     if (mimeType == QLatin1String("text/plain")) {
@@ -82,4 +84,6 @@ QByteArray QWaylandMimeHelper::getByteArray(QMimeData *mimeData, const QString &
     return content;
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

@@ -29,7 +29,7 @@
 
 #include "brcmeglintegration.h"
 #include "brcmbuffer.h"
-#include <QtWaylandCompositor/qwaylandsurface.h>
+#include <LiriAuroraCompositor/aurorawaylandsurface.h>
 #include <qpa/qplatformnativeinterface.h>
 #include <QtGui/QGuiApplication>
 #include <QtGui/QOpenGLContext>
@@ -45,7 +45,9 @@
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 class BrcmEglIntegrationPrivate
 {
@@ -176,9 +178,9 @@ BrcmEglClientBuffer::BrcmEglClientBuffer(BrcmEglIntegration *integration, wl_res
 {
 }
 
-QWaylandBufferRef::BufferFormatEgl BrcmEglClientBuffer::bufferFormatEgl() const
+WaylandBufferRef::BufferFormatEgl BrcmEglClientBuffer::bufferFormatEgl() const
 {
-    return QWaylandBufferRef::BufferFormatEgl_RGBA;
+    return WaylandBufferRef::BufferFormatEgl_RGBA;
 }
 
 QSize BrcmEglClientBuffer::size() const
@@ -187,11 +189,13 @@ QSize BrcmEglClientBuffer::size() const
     return brcmBuffer->size();
 }
 
-QWaylandSurface::Origin BrcmEglClientBuffer::origin() const
+WaylandSurface::Origin BrcmEglClientBuffer::origin() const
 {
     BrcmBuffer *brcmBuffer = BrcmBuffer::fromResource(m_buffer);
-    return brcmBuffer->isYInverted() ? QWaylandSurface::OriginTopLeft : QWaylandSurface::OriginBottomLeft;
+    return brcmBuffer->isYInverted() ? WaylandSurface::OriginTopLeft : WaylandSurface::OriginBottomLeft;
 }
 
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

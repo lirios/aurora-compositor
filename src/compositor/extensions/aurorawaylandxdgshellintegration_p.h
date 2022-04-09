@@ -27,42 +27,44 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDXDGSHELLINTEGRATION_H
-#define QWAYLANDXDGSHELLINTEGRATION_H
+#ifndef AURORA_COMPOSITOR_WAYLANDXDGSHELLINTEGRATION_H
+#define AURORA_COMPOSITOR_WAYLANDXDGSHELLINTEGRATION_H
 
-#include <QtWaylandCompositor/private/qwaylandquickshellsurfaceitem_p.h>
-#include <QtWaylandCompositor/QWaylandQuickShellSurfaceItem>
-#include <QtWaylandCompositor/QWaylandXdgToplevel>
+#include <LiriAuroraCompositor/private/aurorawaylandquickshellsurfaceitem_p.h>
+#include <LiriAuroraCompositor/WaylandQuickShellSurfaceItem>
+#include <LiriAuroraCompositor/WaylandXdgToplevel>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-class QWaylandXdgSurface;
+class WaylandXdgSurface;
 
 namespace QtWayland {
 
-class XdgToplevelIntegration : public QWaylandQuickShellIntegration
+class XdgToplevelIntegration : public WaylandQuickShellIntegration
 {
     Q_OBJECT
 public:
-    XdgToplevelIntegration(QWaylandQuickShellSurfaceItem *item);
+    XdgToplevelIntegration(WaylandQuickShellSurfaceItem *item);
 
 protected:
     bool eventFilter(QObject *object, QEvent *event) override;
 
 private Q_SLOTS:
-    void handleStartMove(QWaylandSeat *seat);
-    void handleStartResize(QWaylandSeat *seat, Qt::Edges edges);
+    void handleStartMove(WaylandSeat *seat);
+    void handleStartResize(WaylandSeat *seat, Qt::Edges edges);
     void handleSetMaximized();
     void handleUnsetMaximized();
     void handleMaximizedChanged();
@@ -76,9 +78,9 @@ private Q_SLOTS:
     void handleFullscreenSizeChanged();
 
 private:
-    QWaylandQuickShellSurfaceItem *m_item = nullptr;
-    QWaylandXdgSurface *m_xdgSurface = nullptr;
-    QWaylandXdgToplevel *m_toplevel = nullptr;
+    WaylandQuickShellSurfaceItem *m_item = nullptr;
+    WaylandXdgSurface *m_xdgSurface = nullptr;
+    WaylandXdgToplevel *m_toplevel = nullptr;
 
     enum class GrabberState {
         Default,
@@ -88,13 +90,13 @@ private:
     GrabberState grabberState;
 
     struct {
-        QWaylandSeat *seat = nullptr;
+        WaylandSeat *seat = nullptr;
         QPointF initialOffset;
         bool initialized;
     } moveState;
 
     struct {
-        QWaylandSeat *seat = nullptr;
+        WaylandSeat *seat = nullptr;
         Qt::Edges resizeEdges;
         QSizeF initialWindowSize;
         QPointF initialMousePos;
@@ -109,7 +111,7 @@ private:
     } windowedGeometry;
 
     struct {
-        QWaylandOutput *output = nullptr;
+        WaylandOutput *output = nullptr;
         QMetaObject::Connection sizeChangedConnection; // Depending on whether maximized or fullscreen,
                                                        // will be hooked to geometry-changed or available-
                                                        // geometry-changed.
@@ -119,23 +121,25 @@ private:
     bool filterMouseReleaseEvent(QMouseEvent *event);
 };
 
-class XdgPopupIntegration : public QWaylandQuickShellIntegration
+class XdgPopupIntegration : public WaylandQuickShellIntegration
 {
     Q_OBJECT
 public:
-    XdgPopupIntegration(QWaylandQuickShellSurfaceItem *item);
+    XdgPopupIntegration(WaylandQuickShellSurfaceItem *item);
 
 private Q_SLOTS:
     void handleGeometryChanged();
 
 private:
-    QWaylandQuickShellSurfaceItem *m_item = nullptr;
-    QWaylandXdgSurface *m_xdgSurface = nullptr;
-    QWaylandXdgPopup *m_popup = nullptr;
+    WaylandQuickShellSurfaceItem *m_item = nullptr;
+    WaylandXdgSurface *m_xdgSurface = nullptr;
+    WaylandXdgPopup *m_popup = nullptr;
 };
 
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDXDGSHELLINTEGRATION_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDXDGSHELLINTEGRATION_H

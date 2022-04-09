@@ -27,34 +27,36 @@
 **
 ****************************************************************************/
 
-#include "qwaylandwlshellintegration_p.h"
+#include "aurorawaylandwlshellintegration_p.h"
 
-#include <QtWaylandCompositor/QWaylandCompositor>
-#include <QtWaylandCompositor/QWaylandWlShellSurface>
-#include <QtWaylandCompositor/QWaylandQuickShellSurfaceItem>
-#include <QtWaylandCompositor/QWaylandSeat>
+#include <LiriAuroraCompositor/WaylandCompositor>
+#include <LiriAuroraCompositor/WaylandWlShellSurface>
+#include <LiriAuroraCompositor/WaylandQuickShellSurfaceItem>
+#include <LiriAuroraCompositor/WaylandSeat>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 namespace QtWayland {
 
-WlShellIntegration::WlShellIntegration(QWaylandQuickShellSurfaceItem *item)
-    : QWaylandQuickShellIntegration(item)
+WlShellIntegration::WlShellIntegration(WaylandQuickShellSurfaceItem *item)
+    : WaylandQuickShellIntegration(item)
     , m_item(item)
-    , m_shellSurface(qobject_cast<QWaylandWlShellSurface *>(item->shellSurface()))
+    , m_shellSurface(qobject_cast<WaylandWlShellSurface *>(item->shellSurface()))
 {
     m_item->setSurface(m_shellSurface->surface());
-    connect(m_shellSurface.data(), &QWaylandWlShellSurface::startMove, this, &WlShellIntegration::handleStartMove);
-    connect(m_shellSurface.data(), &QWaylandWlShellSurface::startResize, this, &WlShellIntegration::handleStartResize);
-    connect(m_shellSurface->surface(), &QWaylandSurface::redraw, this, &WlShellIntegration::handleRedraw);
-    connect(m_shellSurface->surface(), &QWaylandSurface::offsetForNextFrame, this, &WlShellIntegration::adjustOffsetForNextFrame);
-    connect(m_shellSurface->surface(), &QWaylandSurface::hasContentChanged, this, &WlShellIntegration::handleSurfaceHasContentChanged);
-    connect(m_shellSurface.data(), &QWaylandWlShellSurface::setDefaultToplevel, this, &WlShellIntegration::handleSetDefaultTopLevel);
-    connect(m_shellSurface.data(), &QWaylandWlShellSurface::setTransient, this, &WlShellIntegration::handleSetTransient);
-    connect(m_shellSurface.data(), &QWaylandWlShellSurface::setMaximized, this, &WlShellIntegration::handleSetMaximized);
-    connect(m_shellSurface.data(), &QWaylandWlShellSurface::setFullScreen, this, &WlShellIntegration::handleSetFullScreen);
-    connect(m_shellSurface.data(), &QWaylandWlShellSurface::setPopup, this, &WlShellIntegration::handleSetPopup);
-    connect(m_shellSurface.data(), &QWaylandWlShellSurface::destroyed, this, &WlShellIntegration::handleShellSurfaceDestroyed);
+    connect(m_shellSurface.data(), &WaylandWlShellSurface::startMove, this, &WlShellIntegration::handleStartMove);
+    connect(m_shellSurface.data(), &WaylandWlShellSurface::startResize, this, &WlShellIntegration::handleStartResize);
+    connect(m_shellSurface->surface(), &WaylandSurface::redraw, this, &WlShellIntegration::handleRedraw);
+    connect(m_shellSurface->surface(), &WaylandSurface::offsetForNextFrame, this, &WlShellIntegration::adjustOffsetForNextFrame);
+    connect(m_shellSurface->surface(), &WaylandSurface::hasContentChanged, this, &WlShellIntegration::handleSurfaceHasContentChanged);
+    connect(m_shellSurface.data(), &WaylandWlShellSurface::setDefaultToplevel, this, &WlShellIntegration::handleSetDefaultTopLevel);
+    connect(m_shellSurface.data(), &WaylandWlShellSurface::setTransient, this, &WlShellIntegration::handleSetTransient);
+    connect(m_shellSurface.data(), &WaylandWlShellSurface::setMaximized, this, &WlShellIntegration::handleSetMaximized);
+    connect(m_shellSurface.data(), &WaylandWlShellSurface::setFullScreen, this, &WlShellIntegration::handleSetFullScreen);
+    connect(m_shellSurface.data(), &WaylandWlShellSurface::setPopup, this, &WlShellIntegration::handleSetPopup);
+    connect(m_shellSurface.data(), &WaylandWlShellSurface::destroyed, this, &WlShellIntegration::handleShellSurfaceDestroyed);
 }
 
 WlShellIntegration::~WlShellIntegration()
@@ -62,14 +64,14 @@ WlShellIntegration::~WlShellIntegration()
     m_item->setSurface(nullptr);
 }
 
-void WlShellIntegration::handleStartMove(QWaylandSeat *seat)
+void WlShellIntegration::handleStartMove(WaylandSeat *seat)
 {
     grabberState = GrabberState::Move;
     moveState.seat = seat;
     moveState.initialized = false;
 }
 
-void WlShellIntegration::handleStartResize(QWaylandSeat *seat, QWaylandWlShellSurface::ResizeEdge edges)
+void WlShellIntegration::handleStartResize(WaylandSeat *seat, WaylandWlShellSurface::ResizeEdge edges)
 {
     grabberState = GrabberState::Resize;
     resizeState.seat = seat;
@@ -81,7 +83,7 @@ void WlShellIntegration::handleStartResize(QWaylandSeat *seat, QWaylandWlShellSu
 void WlShellIntegration::handleSetDefaultTopLevel()
 {
     // Take focus if the policy allows
-    if (m_shellSurface->shell()->focusPolicy() == QWaylandShell::AutomaticFocus)
+    if (m_shellSurface->shell()->focusPolicy() == WaylandShell::AutomaticFocus)
         m_item->takeFocus();
 
     // In order to restore the window state, the client calls setDefaultToplevel()
@@ -96,17 +98,17 @@ void WlShellIntegration::handleSetDefaultTopLevel()
     disconnect(nonwindowedState.sizeChangedConnection);
 }
 
-void WlShellIntegration::handleSetTransient(QWaylandSurface *parentSurface, const QPoint &relativeToParent, bool inactive)
+void WlShellIntegration::handleSetTransient(WaylandSurface *parentSurface, const QPoint &relativeToParent, bool inactive)
 {
     Q_UNUSED(parentSurface);
     Q_UNUSED(relativeToParent);
 
     // Take focus if the policy allows and it's not inactive
-    if (m_shellSurface->shell()->focusPolicy() == QWaylandShell::AutomaticFocus && !inactive)
+    if (m_shellSurface->shell()->focusPolicy() == WaylandShell::AutomaticFocus && !inactive)
         m_item->takeFocus();
 }
 
-void WlShellIntegration::handleSetMaximized(QWaylandOutput *output)
+void WlShellIntegration::handleSetMaximized(WaylandOutput *output)
 {
     if (!m_item->view()->isPrimary())
         return;
@@ -114,7 +116,7 @@ void WlShellIntegration::handleSetMaximized(QWaylandOutput *output)
     if (currentState == State::Maximized)
         return;
 
-    QWaylandOutput *designatedOutput = output ? output : m_item->view()->output();
+    WaylandOutput *designatedOutput = output ? output : m_item->view()->output();
     if (!designatedOutput)
         return;
 
@@ -127,7 +129,7 @@ void WlShellIntegration::handleSetMaximized(QWaylandOutput *output)
     // Any prior output-resize handlers are irrelevant at this point
     disconnect(nonwindowedState.sizeChangedConnection);
     nonwindowedState.output = designatedOutput;
-    nonwindowedState.sizeChangedConnection = connect(designatedOutput, &QWaylandOutput::availableGeometryChanged, this, &WlShellIntegration::handleMaximizedSizeChanged);
+    nonwindowedState.sizeChangedConnection = connect(designatedOutput, &WaylandOutput::availableGeometryChanged, this, &WlShellIntegration::handleMaximizedSizeChanged);
     handleMaximizedSizeChanged();
 }
 
@@ -137,13 +139,13 @@ void WlShellIntegration::handleMaximizedSizeChanged()
         return;
 
     if (nextState == State::Maximized) {
-        QWaylandOutput *designatedOutput = nonwindowedState.output;
+        WaylandOutput *designatedOutput = nonwindowedState.output;
         auto scaleFactor = designatedOutput->scaleFactor();
-        m_shellSurface->sendConfigure(designatedOutput->availableGeometry().size() / scaleFactor, QWaylandWlShellSurface::NoneEdge);
+        m_shellSurface->sendConfigure(designatedOutput->availableGeometry().size() / scaleFactor, WaylandWlShellSurface::NoneEdge);
     }
 }
 
-void WlShellIntegration::handleSetFullScreen(QWaylandWlShellSurface::FullScreenMethod method, uint framerate, QWaylandOutput *output)
+void WlShellIntegration::handleSetFullScreen(WaylandWlShellSurface::FullScreenMethod method, uint framerate, WaylandOutput *output)
 {
     Q_UNUSED(method);
     Q_UNUSED(framerate);
@@ -154,7 +156,7 @@ void WlShellIntegration::handleSetFullScreen(QWaylandWlShellSurface::FullScreenM
     if (currentState == State::FullScreen)
         return;
 
-    QWaylandOutput *designatedOutput = output ? output : m_item->view()->output();
+    WaylandOutput *designatedOutput = output ? output : m_item->view()->output();
     if (!designatedOutput)
         return;
 
@@ -167,7 +169,7 @@ void WlShellIntegration::handleSetFullScreen(QWaylandWlShellSurface::FullScreenM
     // Any prior output-resize handlers are irrelevant at this point
     disconnect(nonwindowedState.sizeChangedConnection);
     nonwindowedState.output = designatedOutput;
-    nonwindowedState.sizeChangedConnection = connect(designatedOutput, &QWaylandOutput::geometryChanged, this, &WlShellIntegration::handleFullScreenSizeChanged);
+    nonwindowedState.sizeChangedConnection = connect(designatedOutput, &WaylandOutput::geometryChanged, this, &WlShellIntegration::handleFullScreenSizeChanged);
     handleFullScreenSizeChanged();
 }
 
@@ -177,21 +179,21 @@ void WlShellIntegration::handleFullScreenSizeChanged()
         return;
 
     if (nextState == State::FullScreen) {
-        QWaylandOutput *designatedOutput = nonwindowedState.output;
-        m_shellSurface->sendConfigure(designatedOutput->geometry().size(), QWaylandWlShellSurface::NoneEdge);
+        WaylandOutput *designatedOutput = nonwindowedState.output;
+        m_shellSurface->sendConfigure(designatedOutput->geometry().size(), WaylandWlShellSurface::NoneEdge);
     }
 }
 
-void WlShellIntegration::handleSetPopup(QWaylandSeat *seat, QWaylandSurface *parent, const QPoint &relativeToParent)
+void WlShellIntegration::handleSetPopup(WaylandSeat *seat, WaylandSurface *parent, const QPoint &relativeToParent)
 {
     Q_UNUSED(seat);
 
     // Find the parent item on the same output
-    QWaylandQuickShellSurfaceItem *parentItem = nullptr;
+    WaylandQuickShellSurfaceItem *parentItem = nullptr;
     const auto views = parent->views();
-    for (QWaylandView *view : views) {
+    for (WaylandView *view : views) {
         if (view->output() == m_item->view()->output()) {
-            QWaylandQuickShellSurfaceItem *item = qobject_cast<QWaylandQuickShellSurfaceItem*>(view->renderObject());
+            WaylandQuickShellSurfaceItem *item = qobject_cast<WaylandQuickShellSurfaceItem*>(view->renderObject());
             if (item) {
                 parentItem = item;
                 break;
@@ -213,11 +215,11 @@ void WlShellIntegration::handleSetPopup(QWaylandSeat *seat, QWaylandSurface *par
 
     isPopup = true;
     auto shell = m_shellSurface->shell();
-    QWaylandQuickShellEventFilter::startFilter(m_shellSurface->surface()->client(), [shell]() {
+    WaylandQuickShellEventFilter::startFilter(m_shellSurface->surface()->client(), [shell]() {
         shell->closeAllPopups();
     });
 
-    QObject::connect(m_shellSurface->surface(), &QWaylandSurface::hasContentChanged,
+    QObject::connect(m_shellSurface->surface(), &WaylandSurface::hasContentChanged,
                      this, &WlShellIntegration::handleSurfaceHasContentChanged);
 }
 
@@ -225,14 +227,14 @@ void WlShellIntegration::handlePopupClosed()
 {
     handlePopupRemoved();
     if (m_shellSurface)
-        QObject::disconnect(m_shellSurface->surface(), &QWaylandSurface::hasContentChanged,
+        QObject::disconnect(m_shellSurface->surface(), &WaylandSurface::hasContentChanged,
                             this, &WlShellIntegration::handleSurfaceHasContentChanged);
 }
 
 void WlShellIntegration::handlePopupRemoved()
 {
     if (!m_shellSurface || m_shellSurface->shell()->mappedPopups().isEmpty())
-        QWaylandQuickShellEventFilter::cancelFilter();
+        WaylandQuickShellEventFilter::cancelFilter();
     isPopup = false;
 }
 
@@ -288,7 +290,7 @@ bool WlShellIntegration::eventFilter(QObject *object, QEvent *event)
         QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
         return filterMouseReleaseEvent(mouseEvent);
     }
-    return QWaylandQuickShellIntegration::eventFilter(object, event);
+    return WaylandQuickShellIntegration::eventFilter(object, event);
 }
 
 bool WlShellIntegration::filterMouseMoveEvent(QMouseEvent *event)
@@ -332,4 +334,6 @@ bool WlShellIntegration::filterMouseReleaseEvent(QMouseEvent *event)
 
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

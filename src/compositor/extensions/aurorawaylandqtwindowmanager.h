@@ -28,31 +28,33 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDQTWINDOWMANAGER_H
-#define QWAYLANDQTWINDOWMANAGER_H
+#ifndef AURORA_COMPOSITOR_WAYLANDQTWINDOWMANAGER_H
+#define AURORA_COMPOSITOR_WAYLANDQTWINDOWMANAGER_H
 
-#include <QtWaylandCompositor/QWaylandCompositorExtension>
-#include <QtWaylandCompositor/QWaylandClient>
+#include <LiriAuroraCompositor/WaylandCompositorExtension>
+#include <LiriAuroraCompositor/WaylandClient>
 
 #include <QtCore/QUrl>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandQtWindowManagerPrivate;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandQtWindowManager : public QWaylandCompositorExtensionTemplate<QWaylandQtWindowManager>
+class WaylandQtWindowManagerPrivate;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandQtWindowManager : public WaylandCompositorExtensionTemplate<WaylandQtWindowManager>
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandQtWindowManager)
+    Q_DECLARE_PRIVATE(WaylandQtWindowManager)
     Q_PROPERTY(bool showIsFullScreen READ showIsFullScreen WRITE setShowIsFullScreen NOTIFY showIsFullScreenChanged)
 public:
-    QWaylandQtWindowManager();
-    explicit QWaylandQtWindowManager(QWaylandCompositor *compositor);
+    WaylandQtWindowManager();
+    explicit WaylandQtWindowManager(WaylandCompositor *compositor);
 
     bool showIsFullScreen() const;
     void setShowIsFullScreen(bool value);
 
-    void sendQuitMessage(QWaylandClient *client);
+    void sendQuitMessage(WaylandClient *client);
 
     void initialize() override;
 
@@ -61,9 +63,11 @@ public:
 
 Q_SIGNALS:
     void showIsFullScreenChanged();
-    void openUrl(QWaylandClient *client, const QUrl &url);
+    void openUrl(Aurora::Compositor::WaylandClient *client, const QUrl &url);
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDQTWINDOWMANAGER_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDQTWINDOWMANAGER_H

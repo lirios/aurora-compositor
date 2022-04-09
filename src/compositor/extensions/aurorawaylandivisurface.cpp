@@ -27,26 +27,28 @@
 **
 ****************************************************************************/
 
-#include "qwaylandivisurface.h"
-#include "qwaylandivisurface_p.h"
-#include "qwaylandiviapplication_p.h"
+#include "aurorawaylandivisurface.h"
+#include "aurorawaylandivisurface_p.h"
+#include "aurorawaylandiviapplication_p.h"
 #if QT_CONFIG(wayland_compositor_quick)
-#include "qwaylandivisurfaceintegration_p.h"
+#include "aurorawaylandivisurfaceintegration_p.h"
 #endif
 
-#include <QtWaylandCompositor/QWaylandResource>
+#include <LiriAuroraCompositor/WaylandResource>
 #include <QDebug>
 
-#include <QtWaylandCompositor/private/qwaylandutils_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandutils_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-QWaylandSurfaceRole QWaylandIviSurfacePrivate::s_role("ivi_surface");
+namespace Compositor {
+
+WaylandSurfaceRole WaylandIviSurfacePrivate::s_role("ivi_surface");
 
 /*!
  * \qmltype IviSurface
- * \instantiates QWaylandIviSurface
- * \inqmlmodule QtWayland.Compositor.IviApplication
+ * \instantiates WaylandIviSurface
+ * \inqmlmodule Aurora.Compositor.IviApplication
  * \since 5.8
  * \brief Provides a simple way to identify and resize a surface.
  *
@@ -57,31 +59,31 @@ QWaylandSurfaceRole QWaylandIviSurfacePrivate::s_role("ivi_surface");
  */
 
 /*!
- * \class QWaylandIviSurface
+ * \class WaylandIviSurface
  * \inmodule QtWaylandCompositor
  * \since 5.8
- * \brief The QWaylandIviSurface class provides a simple way to identify and resize a surface.
+ * \brief The WaylandIviSurface class provides a simple way to identify and resize a surface.
  *
- * This class is part of the QWaylandIviApplication extension and provides a way to
- * extend the functionality of an existing QWaylandSurface with a way to resize and identify it.
+ * This class is part of the WaylandIviApplication extension and provides a way to
+ * extend the functionality of an existing WaylandSurface with a way to resize and identify it.
  *
  * It corresponds to the Wayland \c ivi_surface interface.
  */
 
 /*!
- * Constructs a QWaylandIviSurface.
+ * Constructs a WaylandIviSurface.
  */
-QWaylandIviSurface::QWaylandIviSurface()
-    : QWaylandShellSurfaceTemplate<QWaylandIviSurface>(*new QWaylandIviSurfacePrivate())
+WaylandIviSurface::WaylandIviSurface()
+    : WaylandShellSurfaceTemplate<WaylandIviSurface>(*new WaylandIviSurfacePrivate())
 {
 }
 
 /*!
- * Constructs a QWaylandIviSurface for \a surface and initializes it with the
+ * Constructs a WaylandIviSurface for \a surface and initializes it with the
  * given \a application, \a surface, \a iviId, and \a resource.
  */
-QWaylandIviSurface::QWaylandIviSurface(QWaylandIviApplication *application, QWaylandSurface *surface, uint iviId, const QWaylandResource &resource)
-    : QWaylandShellSurfaceTemplate<QWaylandIviSurface>(*new QWaylandIviSurfacePrivate())
+WaylandIviSurface::WaylandIviSurface(WaylandIviApplication *application, WaylandSurface *surface, uint iviId, const WaylandResource &resource)
+    : WaylandShellSurfaceTemplate<WaylandIviSurface>(*new WaylandIviSurfacePrivate())
 {
     initialize(application, surface, iviId, resource);
 }
@@ -94,12 +96,12 @@ QWaylandIviSurface::QWaylandIviSurface(QWaylandIviApplication *application, QWay
  */
 
 /*!
- * Initializes the QWaylandIviSurface, associating it with the given \a iviApplication, \a surface,
+ * Initializes the WaylandIviSurface, associating it with the given \a iviApplication, \a surface,
  * \a iviId, and \a resource.
  */
-void QWaylandIviSurface::initialize(QWaylandIviApplication *iviApplication, QWaylandSurface *surface, uint iviId, const QWaylandResource &resource)
+void WaylandIviSurface::initialize(WaylandIviApplication *iviApplication, WaylandSurface *surface, uint iviId, const WaylandResource &resource)
 {
-    Q_D(QWaylandIviSurface);
+    Q_D(WaylandIviSurface);
 
     d->m_iviApplication = iviApplication;
     d->m_surface = surface;
@@ -111,7 +113,7 @@ void QWaylandIviSurface::initialize(QWaylandIviApplication *iviApplication, QWay
     emit surfaceChanged();
     emit iviIdChanged();
 
-    QWaylandCompositorExtension::initialize();
+    WaylandCompositorExtension::initialize();
 }
 
 /*!
@@ -121,13 +123,13 @@ void QWaylandIviSurface::initialize(QWaylandIviApplication *iviApplication, QWay
  */
 
 /*!
- * \property QWaylandIviSurface::surface
+ * \property WaylandIviSurface::surface
  *
- * This property holds the surface associated with this QWaylandIviSurface.
+ * This property holds the surface associated with this WaylandIviSurface.
  */
-QWaylandSurface *QWaylandIviSurface::surface() const
+WaylandSurface *WaylandIviSurface::surface() const
 {
-    Q_D(const QWaylandIviSurface);
+    Q_D(const WaylandIviSurface);
     return d->m_surface;
 }
 
@@ -139,43 +141,43 @@ QWaylandSurface *QWaylandIviSurface::surface() const
  */
 
 /*!
- * \property QWaylandIviSurface::iviId
+ * \property WaylandIviSurface::iviId
  *
- * This property holds the ivi id of this QWaylandIviSurface.
+ * This property holds the ivi id of this WaylandIviSurface.
  */
-uint QWaylandIviSurface::iviId() const
+uint WaylandIviSurface::iviId() const
 {
-    Q_D(const QWaylandIviSurface);
+    Q_D(const WaylandIviSurface);
     return d->m_iviId;
 }
 
 /*!
- * Returns the Wayland interface for the QWaylandIviSurface.
+ * Returns the Wayland interface for the WaylandIviSurface.
  */
-const struct wl_interface *QWaylandIviSurface::interface()
+const struct wl_interface *WaylandIviSurface::interface()
 {
-    return QWaylandIviSurfacePrivate::interface();
+    return WaylandIviSurfacePrivate::interface();
 }
 
-QByteArray QWaylandIviSurface::interfaceName()
+QByteArray WaylandIviSurface::interfaceName()
 {
-    return QWaylandIviSurfacePrivate::interfaceName();
-}
-
-/*!
- * Returns the surface role for the QWaylandIviSurface.
- */
-QWaylandSurfaceRole *QWaylandIviSurface::role()
-{
-    return &QWaylandIviSurfacePrivate::s_role;
+    return WaylandIviSurfacePrivate::interfaceName();
 }
 
 /*!
- * Returns the QWaylandIviSurface corresponding to the \a resource.
+ * Returns the surface role for the WaylandIviSurface.
  */
-QWaylandIviSurface *QWaylandIviSurface::fromResource(wl_resource *resource)
+WaylandSurfaceRole *WaylandIviSurface::role()
 {
-    if (auto p = QtWayland::fromResource<QWaylandIviSurfacePrivate *>(resource))
+    return &WaylandIviSurfacePrivate::s_role;
+}
+
+/*!
+ * Returns the WaylandIviSurface corresponding to the \a resource.
+ */
+WaylandIviSurface *WaylandIviSurface::fromResource(wl_resource *resource)
+{
+    if (auto p = QtWayland::fromResource<WaylandIviSurfacePrivate *>(resource))
         return p->q_func();
     return nullptr;
 }
@@ -189,18 +191,18 @@ QWaylandIviSurface *QWaylandIviSurface::fromResource(wl_resource *resource)
 /*!
  * Sends a configure event to the client, telling it to resize the surface to the given \a size.
  */
-void QWaylandIviSurface::sendConfigure(const QSize &size)
+void WaylandIviSurface::sendConfigure(const QSize &size)
 {
     if (!size.isValid()) {
         qWarning() << "Can't configure ivi_surface with an invalid size" << size;
         return;
     }
-    Q_D(QWaylandIviSurface);
+    Q_D(WaylandIviSurface);
     d->send_configure(size.width(), size.height());
 }
 
 #if QT_CONFIG(wayland_compositor_quick)
-QWaylandQuickShellIntegration *QWaylandIviSurface::createIntegration(QWaylandQuickShellSurfaceItem *item)
+WaylandQuickShellIntegration *WaylandIviSurface::createIntegration(WaylandQuickShellSurfaceItem *item)
 {
     return new QtWayland::IviSurfaceIntegration(item);
 }
@@ -209,26 +211,28 @@ QWaylandQuickShellIntegration *QWaylandIviSurface::createIntegration(QWaylandQui
 /*!
  * \internal
  */
-void QWaylandIviSurface::initialize()
+void WaylandIviSurface::initialize()
 {
-    QWaylandShellSurfaceTemplate::initialize();
+    WaylandShellSurfaceTemplate::initialize();
 }
 
-QWaylandIviSurfacePrivate::QWaylandIviSurfacePrivate()
+WaylandIviSurfacePrivate::WaylandIviSurfacePrivate()
 {
 }
 
-void QWaylandIviSurfacePrivate::ivi_surface_destroy_resource(QtWaylandServer::ivi_surface::Resource *resource)
+void WaylandIviSurfacePrivate::ivi_surface_destroy_resource(PrivateServer::ivi_surface::Resource *resource)
 {
     Q_UNUSED(resource);
-    Q_Q(QWaylandIviSurface);
-    QWaylandIviApplicationPrivate::get(m_iviApplication)->unregisterIviSurface(q);
+    Q_Q(WaylandIviSurface);
+    WaylandIviApplicationPrivate::get(m_iviApplication)->unregisterIviSurface(q);
     delete q;
 }
 
-void QWaylandIviSurfacePrivate::ivi_surface_destroy(QtWaylandServer::ivi_surface::Resource *resource)
+void WaylandIviSurfacePrivate::ivi_surface_destroy(PrivateServer::ivi_surface::Resource *resource)
 {
     wl_resource_destroy(resource->handle);
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

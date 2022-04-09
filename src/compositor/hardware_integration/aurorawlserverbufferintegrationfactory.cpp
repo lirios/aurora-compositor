@@ -27,14 +27,16 @@
 **
 ****************************************************************************/
 
-#include "qwlserverbufferintegrationfactory_p.h"
-#include "qwlserverbufferintegrationplugin_p.h"
-#include "qwlserverbufferintegration_p.h"
+#include "aurorawlserverbufferintegrationfactory_p.h"
+#include "aurorawlserverbufferintegrationplugin_p.h"
+#include "aurorawlserverbufferintegration_p.h"
 #include <QtCore/private/qfactoryloader_p.h>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDir>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 namespace QtWayland {
 
@@ -53,4 +55,6 @@ ServerBufferIntegration *ServerBufferIntegrationFactory::create(const QString &n
 
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

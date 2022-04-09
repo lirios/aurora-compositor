@@ -27,22 +27,24 @@
 **
 ****************************************************************************/
 
-#include "qwlclientbuffer_p.h"
+#include "aurorawlclientbuffer_p.h"
 
 #if QT_CONFIG(opengl)
-#include "hardware_integration/qwlclientbufferintegration_p.h"
+#include "hardware_integration/aurorawlclientbufferintegration_p.h"
 #include <qpa/qplatformopenglcontext.h>
 #include <QOpenGLTexture>
 #endif
 
 #include <QtCore/QDebug>
 
-#include <QtWaylandCompositor/private/wayland-wayland-server-protocol.h>
-#include "qwaylandsharedmemoryformathelper_p.h"
+#include <LiriAuroraCompositor/private/wayland-wayland-server-protocol.h>
+#include "aurorawaylandsharedmemoryformathelper_p.h"
 
-#include <QtWaylandCompositor/private/qwaylandcompositor_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandcompositor_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 namespace QtWayland {
 
@@ -97,9 +99,9 @@ void ClientBuffer::setCommitted(QRegion &damage)
      m_textureDirty = true;
 }
 
-QWaylandBufferRef::BufferFormatEgl ClientBuffer::bufferFormatEgl() const
+WaylandBufferRef::BufferFormatEgl ClientBuffer::bufferFormatEgl() const
 {
-    return QWaylandBufferRef::BufferFormatEgl_Null;
+    return WaylandBufferRef::BufferFormatEgl_Null;
 }
 
 SharedMemoryBuffer::SharedMemoryBuffer(wl_resource *bufferResource)
@@ -118,9 +120,9 @@ QSize SharedMemoryBuffer::size() const
     return QSize();
 }
 
-QWaylandSurface::Origin SharedMemoryBuffer::origin() const
+WaylandSurface::Origin SharedMemoryBuffer::origin() const
 {
-    return QWaylandSurface::OriginTopLeft;
+    return WaylandSurface::OriginTopLeft;
 }
 
 static void shmBufferCleanup(void *data)
@@ -138,7 +140,7 @@ QImage SharedMemoryBuffer::image() const
 
         // TODO: try to avoid QImage::convertToFormat()
         wl_shm_format shmFormat = wl_shm_format(wl_shm_buffer_get_format(shmBuffer));
-        QImage::Format format = QWaylandSharedMemoryFormatHelper::fromWaylandShmFormat(shmFormat);
+        QImage::Format format = WaylandSharedMemoryFormatHelper::fromWaylandShmFormat(shmFormat);
 
         auto *pool = wl_shm_buffer_ref_pool(shmBuffer);
         uchar *data = static_cast<uchar *>(wl_shm_buffer_get_data(shmBuffer));
@@ -187,4 +189,6 @@ QOpenGLTexture *SharedMemoryBuffer::toOpenGlTexture(int plane)
 
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

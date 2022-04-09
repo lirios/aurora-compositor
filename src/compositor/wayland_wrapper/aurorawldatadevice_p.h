@@ -34,20 +34,22 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWaylandCompositor/private/qwayland-server-wayland.h>
-#include <QtWaylandCompositor/private/qtwaylandcompositorglobal_p.h>
-#include <QtWaylandCompositor/QWaylandSeat>
+#include <LiriAuroraCompositor/private/aurora-server-wayland.h>
+#include <LiriAuroraCompositor/private/qtwaylandcompositorglobal_p.h>
+#include <LiriAuroraCompositor/WaylandSeat>
 
 QT_REQUIRE_CONFIG(wayland_datadevice);
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 namespace QtWayland {
 
@@ -56,21 +58,21 @@ class DataSource;
 class Seat;
 class Surface;
 
-class DataDevice : public QtWaylandServer::wl_data_device
+class DataDevice : public PrivateServer::wl_data_device
 {
 public:
-    DataDevice(QWaylandSeat *seat);
+    DataDevice(WaylandSeat *seat);
 
-    void setFocus(QWaylandClient *client);
+    void setFocus(WaylandClient *client);
     void sourceDestroyed(DataSource *source);
 
 #if QT_CONFIG(draganddrop)
-    void setDragFocus(QWaylandSurface *focus, const QPointF &localPosition);
+    void setDragFocus(WaylandSurface *focus, const QPointF &localPosition);
 
-    QWaylandSurface *dragIcon() const;
-    QWaylandSurface *dragOrigin() const;
+    WaylandSurface *dragIcon() const;
+    WaylandSurface *dragOrigin() const;
 
-    void dragMove(QWaylandSurface *target, const QPointF &pos);
+    void dragMove(WaylandSurface *target, const QPointF &pos);
     void drop();
     void cancelDrag();
 #endif
@@ -83,11 +85,11 @@ protected:
 
 private:
 #if QT_CONFIG(draganddrop)
-    void setDragIcon(QWaylandSurface *icon);
+    void setDragIcon(WaylandSurface *icon);
 #endif
 
-    QWaylandCompositor *m_compositor = nullptr;
-    QWaylandSeat *m_seat = nullptr;
+    WaylandCompositor *m_compositor = nullptr;
+    WaylandSeat *m_seat = nullptr;
 
     DataSource *m_selectionSource = nullptr;
 
@@ -95,16 +97,18 @@ private:
     struct ::wl_client *m_dragClient = nullptr;
     DataSource *m_dragDataSource = nullptr;
 
-    QWaylandSurface *m_dragFocus = nullptr;
+    WaylandSurface *m_dragFocus = nullptr;
     Resource *m_dragFocusResource = nullptr;
 
-    QWaylandSurface *m_dragIcon = nullptr;
-    QWaylandSurface *m_dragOrigin = nullptr;
+    WaylandSurface *m_dragIcon = nullptr;
+    WaylandSurface *m_dragOrigin = nullptr;
 #endif
 };
 
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif // WLDATADEVICE_H

@@ -26,16 +26,20 @@
 **
 ****************************************************************************/
 
-#include "qwaylandkeyboard.h"
+#include <LiriAuroraCompositor/WaylandKeyboard>
 
-class TestKeyboardGrabber : public QWaylandKeyboard
+namespace Aurora {
+
+namespace Compositor {
+
+class TestKeyboardGrabber : public WaylandKeyboard
 {
     Q_OBJECT
 public:
-    TestKeyboardGrabber(QWaylandSeat *seat);
+    TestKeyboardGrabber(WaylandSeat *seat);
 
-    void setFocus(QWaylandSurface *surface) override;
-    void sendKeyModifiers(QWaylandClient *client, uint32_t serial) override;
+    void setFocus(WaylandSurface *surface) override;
+    void sendKeyModifiers(WaylandClient *client, uint32_t serial) override;
     void sendKeyPressEvent(uint code) override;
     void sendKeyReleaseEvent(uint code) override;
 
@@ -46,4 +50,6 @@ signals:
     void modifiersCalled();
 };
 
+} // namespace Compositor
 
+} // namespace Aurora

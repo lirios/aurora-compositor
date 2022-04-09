@@ -27,12 +27,12 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDCOMPOSITORGLOBAL_H
-#define QWAYLANDCOMPOSITORGLOBAL_H
+#ifndef AURORA_COMPOSITOR_WAYLANDCOMPOSITORGLOBAL_H
+#define AURORA_COMPOSITOR_WAYLANDCOMPOSITORGLOBAL_H
 
 #include <QtGui/qtguiglobal.h>
-#include <QtWaylandCompositor/qtwaylandcompositor-config.h>
-#include <QtWaylandCompositor/qtwaylandcompositorexports.h>
+#include <AuroraCompositor/qtwaylandcompositor-config.h>
+#include <AuroraCompositor/qtwaylandcompositorexports.h>
 
-#endif // QWAYLANDCOMPOSITORGLOBAL_H
+#endif // AURORA_COMPOSITOR_WAYLANDCOMPOSITORGLOBAL_H
 

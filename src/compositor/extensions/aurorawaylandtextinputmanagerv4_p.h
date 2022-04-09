@@ -37,36 +37,40 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDTEXTINPUTMANAGERV4_P_H
-#define QWAYLANDTEXTINPUTMANAGERV4_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDTEXTINPUTMANAGERV4_P_H
+#define AURORA_COMPOSITOR_WAYLANDTEXTINPUTMANAGERV4_P_H
 
-#include <QtWaylandCompositor/private/qwaylandcompositorextension_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
 
-#include <QtWaylandCompositor/private/qwayland-server-text-input-unstable-v4-wip.h>
+#include <LiriAuroraCompositor/private/aurora-server-text-input-unstable-v4-wip.h>
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandTextInputManagerV4Private : public QWaylandCompositorExtensionPrivate, public QtWaylandServer::zwp_text_input_manager_v4
+namespace Compositor {
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandTextInputManagerV4Private : public WaylandCompositorExtensionPrivate, public PrivateServer::zwp_text_input_manager_v4
 {
-    Q_DECLARE_PUBLIC(QWaylandTextInputManagerV4)
+    Q_DECLARE_PUBLIC(WaylandTextInputManagerV4)
 public:
-    QWaylandTextInputManagerV4Private();
+    WaylandTextInputManagerV4Private();
 
 protected:
     void zwp_text_input_manager_v4_get_text_input(Resource *resource, uint32_t id, struct ::wl_resource *seatResource) override;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDTEXTINPUTMANAGERV4_P_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDTEXTINPUTMANAGERV4_P_H

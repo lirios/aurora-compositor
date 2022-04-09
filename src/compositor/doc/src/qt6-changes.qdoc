@@ -47,8 +47,8 @@
     moved into separate imports in Qt 6.
 
     \list
-      \li \l WlShell types are now available in \c QtWayland.Compositor.WlShell
-      \li \l XdgShell types are now available in \c QtWayland.Compositor.XdgShell
-      \li \l IviApplication types are now available in \c QtWayland.Compositor.IviApplication
+      \li \l WlShell types are now available in \c Aurora.Compositor.WlShell
+      \li \l XdgShell types are now available in \c Aurora.Compositor.XdgShell
+      \li \l IviApplication types are now available in \c Aurora.Compositor.IviApplication
     \endlist
 */

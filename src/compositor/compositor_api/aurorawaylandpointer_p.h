@@ -28,48 +28,50 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDPOINTER_P_H
-#define QWAYLANDPOINTER_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDPOINTER_P_H
+#define AURORA_COMPOSITOR_WAYLANDPOINTER_P_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWaylandCompositor/qtwaylandcompositorglobal.h>
-#include <QtWaylandCompositor/QWaylandDestroyListener>
-#include <QtWaylandCompositor/QWaylandPointer>
+#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/WaylandDestroyListener>
+#include <LiriAuroraCompositor/WaylandPointer>
 
 #include <QtCore/QList>
 #include <QtCore/QPoint>
 #include <QtCore/QObject>
 #include <QtCore/private/qobject_p.h>
 
-#include <QtWaylandCompositor/private/qwayland-server-wayland.h>
-#include <QtWaylandCompositor/QWaylandView>
-#include <QtWaylandCompositor/QWaylandSurface>
-#include <QtWaylandCompositor/QWaylandSeat>
+#include <LiriAuroraCompositor/private/aurora-server-wayland.h>
+#include <LiriAuroraCompositor/WaylandView>
+#include <LiriAuroraCompositor/WaylandSurface>
+#include <LiriAuroraCompositor/WaylandSeat>
 
 #include <stdint.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandView;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandPointerPrivate : public QObjectPrivate
-                                                 , public QtWaylandServer::wl_pointer
+class WaylandView;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandPointerPrivate : public QObjectPrivate
+                                                 , public PrivateServer::wl_pointer
 {
-    Q_DECLARE_PUBLIC(QWaylandPointer)
+    Q_DECLARE_PUBLIC(WaylandPointer)
 public:
-    QWaylandPointerPrivate(QWaylandPointer *pointer, QWaylandSeat *seat);
+    WaylandPointerPrivate(WaylandPointer *pointer, WaylandSeat *seat);
 
-    QWaylandCompositor *compositor() const { return seat->compositor(); }
+    WaylandCompositor *compositor() const { return seat->compositor(); }
 
 protected:
     void pointer_set_cursor(Resource *resource, uint32_t serial, wl_resource *surface, int32_t hotspot_x, int32_t hotspot_y) override;
@@ -78,13 +80,13 @@ protected:
 private:
     uint sendButton(Qt::MouseButton button, uint32_t state);
     void sendMotion();
-    void sendEnter(QWaylandSurface *surface);
+    void sendEnter(WaylandSurface *surface);
     void sendLeave();
-    void ensureEntered(QWaylandSurface *surface);
+    void ensureEntered(WaylandSurface *surface);
 
-    QWaylandSeat *seat = nullptr;
-    QWaylandOutput *output = nullptr;
-    QPointer<QWaylandSurface> enteredSurface;
+    WaylandSeat *seat = nullptr;
+    WaylandOutput *output = nullptr;
+    QPointer<WaylandSurface> enteredSurface;
 
     QPointF localPosition;
     QPointF spacePosition;
@@ -93,11 +95,13 @@ private:
 
     int buttonCount = 0;
 
-    QWaylandDestroyListener enteredSurfaceDestroyListener;
+    WaylandDestroyListener enteredSurfaceDestroyListener;
 
-    static QWaylandSurfaceRole s_role;
+    static WaylandSurfaceRole s_role;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDPOINTER_P_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDPOINTER_P_H

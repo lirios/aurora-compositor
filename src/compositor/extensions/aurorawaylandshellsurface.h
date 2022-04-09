@@ -27,18 +27,20 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDSHELLSURFACE_H
-#define QWAYLANDSHELLSURFACE_H
+#ifndef AURORA_COMPOSITOR_WAYLANDSHELLSURFACE_H
+#define AURORA_COMPOSITOR_WAYLANDSHELLSURFACE_H
 
-#include <QtWaylandCompositor/qtwaylandqmlinclude.h>
-#include <QtWaylandCompositor/qwaylandcompositorextension.h>
+#include <LiriAuroraCompositor/qtwaylandqmlinclude.h>
+#include <LiriAuroraCompositor/aurorawaylandcompositorextension.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandQuickShellIntegration;
-class QWaylandQuickShellSurfaceItem;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandShellSurface : public QWaylandCompositorExtension
+class WaylandQuickShellIntegration;
+class WaylandQuickShellSurfaceItem;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandShellSurface : public WaylandCompositorExtension
 {
     Q_OBJECT
     Q_PROPERTY(Qt::WindowType windowType READ windowType NOTIFY windowTypeChanged)
@@ -47,25 +49,25 @@ class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandShellSurface : public QWaylandComposito
     QML_ADDED_IN_VERSION(1, 0)
 public:
 #if QT_CONFIG(wayland_compositor_quick)
-    virtual QWaylandQuickShellIntegration *createIntegration(QWaylandQuickShellSurfaceItem *item) = 0;
+    virtual WaylandQuickShellIntegration *createIntegration(WaylandQuickShellSurfaceItem *item) = 0;
 #endif
-    QWaylandShellSurface(QWaylandObject *waylandObject) : QWaylandCompositorExtension(waylandObject) {}
+    WaylandShellSurface(WaylandObject *waylandObject) : WaylandCompositorExtension(waylandObject) {}
     virtual Qt::WindowType windowType() const { return Qt::WindowType::Window; }
 
 protected:
-    QWaylandShellSurface(QWaylandCompositorExtensionPrivate &dd) : QWaylandCompositorExtension(dd){}
-    QWaylandShellSurface(QWaylandObject *container, QWaylandCompositorExtensionPrivate &dd) : QWaylandCompositorExtension(container, dd) {}
+    WaylandShellSurface(WaylandCompositorExtensionPrivate &dd) : WaylandCompositorExtension(dd){}
+    WaylandShellSurface(WaylandObject *container, WaylandCompositorExtensionPrivate &dd) : WaylandCompositorExtension(container, dd) {}
 
 Q_SIGNALS:
     void windowTypeChanged();
 };
 
 template <typename T>
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandShellSurfaceTemplate : public QWaylandShellSurface
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandShellSurfaceTemplate : public WaylandShellSurface
 {
 public:
-    QWaylandShellSurfaceTemplate(QWaylandObject *container = nullptr)
-        : QWaylandShellSurface(container)
+    WaylandShellSurfaceTemplate(WaylandObject *container = nullptr)
+        : WaylandShellSurface(container)
     { }
 
     const struct wl_interface *extensionInterface() const override
@@ -73,22 +75,24 @@ public:
         return T::interface();
     }
 
-    static T *findIn(QWaylandObject *container)
+    static T *findIn(WaylandObject *container)
     {
         if (!container) return nullptr;
         return qobject_cast<T *>(container->extension(T::interfaceName()));
     }
 
 protected:
-    QWaylandShellSurfaceTemplate(QWaylandCompositorExtensionPrivate &dd)
-        : QWaylandShellSurface(dd)
+    WaylandShellSurfaceTemplate(WaylandCompositorExtensionPrivate &dd)
+        : WaylandShellSurface(dd)
     { }
 
-    QWaylandShellSurfaceTemplate(QWaylandObject *container, QWaylandCompositorExtensionPrivate &dd)
-        : QWaylandShellSurface(container,dd)
+    WaylandShellSurfaceTemplate(WaylandObject *container, WaylandCompositorExtensionPrivate &dd)
+        : WaylandShellSurface(container,dd)
     { }
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDSHELLSURFACE_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDSHELLSURFACE_H

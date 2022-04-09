@@ -27,34 +27,38 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDSHELL_P_H
-#define QWAYLANDSHELL_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDSHELL_P_H
+#define AURORA_COMPOSITOR_WAYLANDSHELL_P_H
 
-#include <QtWaylandCompositor/private/qwaylandcompositorextension_p.h>
-#include <QtWaylandCompositor/QWaylandShell>
+#include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
+#include <LiriAuroraCompositor/WaylandShell>
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandShellPrivate : public QWaylandCompositorExtensionPrivate
+namespace Compositor {
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandShellPrivate : public WaylandCompositorExtensionPrivate
 {
-    Q_DECLARE_PUBLIC(QWaylandShell)
+    Q_DECLARE_PUBLIC(WaylandShell)
 public:
-    QWaylandShellPrivate();
+    WaylandShellPrivate();
 
-    QWaylandShell::FocusPolicy focusPolicy = QWaylandShell::AutomaticFocus;
+    WaylandShell::FocusPolicy focusPolicy = WaylandShell::AutomaticFocus;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDSHELL_P_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDSHELL_P_H

@@ -33,10 +33,12 @@
 
 #include <EGL/eglext_brcm.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 BrcmBuffer::BrcmBuffer(struct ::wl_client *client, uint32_t id, const QSize &size, EGLint *data, size_t count)
-    : QtWaylandServer::wl_buffer(client, id, 1)
+    : PrivateServer::wl_buffer(client, id, 1)
     , m_handle(count)
     , m_size(size)
 {
@@ -61,4 +63,6 @@ void BrcmBuffer::buffer_destroy(Resource *resource)
     wl_resource_destroy(resource->handle);
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

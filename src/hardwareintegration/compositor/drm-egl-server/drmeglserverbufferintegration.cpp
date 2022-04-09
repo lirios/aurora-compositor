@@ -32,7 +32,9 @@
 #include <QtOpenGL/QOpenGLTexture>
 #include <QtGui/QOpenGLContext>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 DrmEglServerBuffer::DrmEglServerBuffer(DrmEglServerBufferIntegration *integration, const QImage &qimage, QtWayland::ServerBuffer::Format format)
     : QtWayland::ServerBuffer(qimage.size(),format)
@@ -43,18 +45,18 @@ DrmEglServerBuffer::DrmEglServerBuffer(DrmEglServerBufferIntegration *integratio
     EGLint egl_format;
     switch (m_format) {
         case RGBA32:
-            m_drm_format = QtWaylandServer::qt_drm_egl_server_buffer::format_RGBA32;
+            m_drm_format = PrivateServer::qt_drm_egl_server_buffer::format_RGBA32;
             egl_format = EGL_DRM_BUFFER_FORMAT_ARGB32_MESA;
             break;
 #ifdef EGL_DRM_BUFFER_FORMAT_A8_MESA
         case A8:
-            m_drm_format = QtWaylandServer::qt_drm_egl_server_buffer::format_A8;
+            m_drm_format = PrivateServer::qt_drm_egl_server_buffer::format_A8;
             egl_format = EGL_DRM_BUFFER_FORMAT_A8_MESA;
             break;
 #endif
         default:
             qWarning("DrmEglServerBuffer: unsupported format");
-            m_drm_format = QtWaylandServer::qt_drm_egl_server_buffer::format_RGBA32;
+            m_drm_format = PrivateServer::qt_drm_egl_server_buffer::format_RGBA32;
             egl_format = EGL_DRM_BUFFER_FORMAT_ARGB32_MESA;
             break;
     }
@@ -124,7 +126,7 @@ DrmEglServerBufferIntegration::~DrmEglServerBufferIntegration()
 {
 }
 
-bool DrmEglServerBufferIntegration::initializeHardware(QWaylandCompositor *compositor)
+bool DrmEglServerBufferIntegration::initializeHardware(WaylandCompositor *compositor)
 {
     Q_ASSERT(QGuiApplication::platformNativeInterface());
 
@@ -164,7 +166,7 @@ bool DrmEglServerBufferIntegration::initializeHardware(QWaylandCompositor *compo
         return false;
     }
 
-    QtWaylandServer::qt_drm_egl_server_buffer::init(compositor->display(), 1);
+    PrivateServer::qt_drm_egl_server_buffer::init(compositor->display(), 1);
     return true;
 }
 
@@ -189,4 +191,6 @@ QtWayland::ServerBuffer *DrmEglServerBufferIntegration::createServerBufferFromIm
     return new DrmEglServerBuffer(this, qimage, format);
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

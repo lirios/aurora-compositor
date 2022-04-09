@@ -30,16 +30,16 @@
 #ifndef LIBHYBRISEGLSERVERBUFFERINTEGRATION_H
 #define LIBHYBRISEGLSERVERBUFFERINTEGRATION_H
 
-#include <QtWaylandCompositor/private/qwlserverbufferintegration_p.h>
+#include <LiriAuroraCompositor/private/aurorawlserverbufferintegration_p.h>
 
-#include "qwayland-server-libhybris-egl-server-buffer.h"
+#include "aurora-server-libhybris-egl-server-buffer.h"
 
 #include <QtGui/QWindow>
 #include <QtGui/qpa/qplatformnativeinterface.h>
 #include <QtGui/QGuiApplication>
 
-#include <QtWaylandCompositor/qwaylandcompositor.h>
-#include <QtWaylandCompositor/private/qwayland-server-server-buffer-extension.h>
+#include <LiriAuroraCompositor/aurorawaylandcompositor.h>
+#include <LiriAuroraCompositor/private/aurora-server-server-buffer-extension.h>
 
 #include <QtCore/QDebug>
 #include <EGL/egl.h>
@@ -61,11 +61,13 @@ typedef EGLBoolean (EGLAPIENTRYP PFNEGLHYBRISSERIALIZENATIVEBUFFERPROC)(EGLClien
 typedef void (GL_APIENTRYP PFNGLEGLIMAGETARGETTEXTURE2DOESPROC) (GLenum target, GLeglImageOES image);
 #endif
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 class LibHybrisEglServerBufferIntegration;
 
-class LibHybrisEglServerBuffer : public QtWayland::ServerBuffer, public QtWaylandServer::qt_libhybris_buffer
+class LibHybrisEglServerBuffer : public QtWayland::ServerBuffer, public PrivateServer::qt_libhybris_buffer
 {
 public:
     LibHybrisEglServerBuffer(LibHybrisEglServerBufferIntegration *integration, const QImage &qimage, QtWayland::ServerBuffer::Format format);
@@ -82,20 +84,20 @@ private:
     int32_t m_name;
     int32_t m_stride;
     QOpenGLTexture *m_texture = nullptr;
-    QtWaylandServer::qt_libhybris_egl_server_buffer::format m_hybris_format;
+    PrivateServer::qt_libhybris_egl_server_buffer::format m_hybris_format;
     QList<int32_t> m_ints;
     QList<int32_t> m_fds;
 };
 
 class LibHybrisEglServerBufferIntegration :
     public QtWayland::ServerBufferIntegration,
-    public QtWaylandServer::qt_libhybris_egl_server_buffer
+    public PrivateServer::qt_libhybris_egl_server_buffer
 {
 public:
     LibHybrisEglServerBufferIntegration();
     ~LibHybrisEglServerBufferIntegration();
 
-    bool initializeHardware(QWaylandCompositor *);
+    bool initializeHardware(WaylandCompositor *);
 
     bool supportsFormat(QtWayland::ServerBuffer::Format format) const override;
     QtWayland::ServerBuffer *createServerBufferFromImage(const QImage &qimage, QtWayland::ServerBuffer::Format format) override;
@@ -173,6 +175,8 @@ void LibHybrisEglServerBufferIntegration::eglHybrisSerializeNativeBuffer(EGLClie
         qWarning("LibHybrisEglServerBufferIntegration: Trying to use unresolved function eglHybrisSerializeNativeBuffer");
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif

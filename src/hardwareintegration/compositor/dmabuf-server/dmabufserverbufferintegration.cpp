@@ -35,7 +35,9 @@
 #include <drm_fourcc.h>
 #include <unistd.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 DmaBufServerBuffer::DmaBufServerBuffer(DmaBufServerBufferIntegration *integration, const QImage &qimage, QtWayland::ServerBuffer::Format format)
     : QtWayland::ServerBuffer(qimage.size(),format)
@@ -137,7 +139,7 @@ DmaBufServerBufferIntegration::~DmaBufServerBufferIntegration()
 {
 }
 
-bool DmaBufServerBufferIntegration::initializeHardware(QWaylandCompositor *compositor)
+bool DmaBufServerBufferIntegration::initializeHardware(WaylandCompositor *compositor)
 {
     Q_ASSERT(QGuiApplication::platformNativeInterface());
 
@@ -178,7 +180,7 @@ bool DmaBufServerBufferIntegration::initializeHardware(QWaylandCompositor *compo
         return false;
     }
 
-    QtWaylandServer::qt_dmabuf_server_buffer::init(compositor->display(), 1);
+    PrivateServer::qt_dmabuf_server_buffer::init(compositor->display(), 1);
     return true;
 }
 
@@ -206,4 +208,6 @@ void DmaBufServerBuffer::server_buffer_release(Resource *resource)
     wl_resource_destroy(resource->handle);
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

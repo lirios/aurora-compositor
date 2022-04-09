@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "qwaylandinputmethodeventbuilder_p.h"
+#include "aurorawaylandinputmethodeventbuilder_p.h"
 
 #include <QBrush>
 #include <QGuiApplication>
@@ -46,20 +46,22 @@
 #include <QTextCharFormat>
 
 #ifdef QT_BUILD_WAYLANDCOMPOSITOR_LIB
-#include <QtWaylandCompositor/private/qwayland-server-text-input-unstable-v2.h>
-#include <QtWaylandCompositor/private/qwayland-server-text-input-unstable-v4-wip.h>
+#include <LiriAuroraCompositor/private/aurora-server-text-input-unstable-v2.h>
+#include <LiriAuroraCompositor/private/aurora-server-text-input-unstable-v4-wip.h>
 #else
-#include <QtWaylandClient/private/qwayland-text-input-unstable-v2.h>
-#include <QtWaylandClient/private/qwayland-text-input-unstable-v4-wip.h>
+#include <QtWaylandClient/private/aurora-client-text-input-unstable-v2.h>
+#include <QtWaylandClient/private/aurora-client-text-input-unstable-v4-wip.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-QWaylandInputMethodEventBuilder::~QWaylandInputMethodEventBuilder()
+namespace Compositor {
+
+WaylandInputMethodEventBuilder::~WaylandInputMethodEventBuilder()
 {
 }
 
-void QWaylandInputMethodEventBuilder::reset()
+void WaylandInputMethodEventBuilder::reset()
 {
     m_anchor = 0;
     m_cursor = 0;
@@ -69,19 +71,19 @@ void QWaylandInputMethodEventBuilder::reset()
     m_preeditStyles.clear();
 }
 
-void QWaylandInputMethodEventBuilder::setCursorPosition(int32_t index, int32_t anchor)
+void WaylandInputMethodEventBuilder::setCursorPosition(int32_t index, int32_t anchor)
 {
     m_cursor = index;
     m_anchor = anchor;
 }
 
-void QWaylandInputMethodEventBuilder::setDeleteSurroundingText(uint32_t beforeLength, uint32_t afterLength)
+void WaylandInputMethodEventBuilder::setDeleteSurroundingText(uint32_t beforeLength, uint32_t afterLength)
 {
     m_deleteBefore = beforeLength;
     m_deleteAfter = afterLength;
 }
 
-void QWaylandInputMethodEventBuilder::addPreeditStyling(uint32_t index, uint32_t length, uint32_t style)
+void WaylandInputMethodEventBuilder::addPreeditStyling(uint32_t index, uint32_t length, uint32_t style)
 {
     QTextCharFormat format;
 
@@ -123,12 +125,12 @@ void QWaylandInputMethodEventBuilder::addPreeditStyling(uint32_t index, uint32_t
     }
 }
 
-void QWaylandInputMethodEventBuilder::setPreeditCursor(int32_t index)
+void WaylandInputMethodEventBuilder::setPreeditCursor(int32_t index)
 {
     m_preeditCursor = index;
 }
 
-QInputMethodEvent *QWaylandInputMethodEventBuilder::buildCommit(const QString &text)
+QInputMethodEvent *WaylandInputMethodEventBuilder::buildCommit(const QString &text)
 {
     QList<QInputMethodEvent::Attribute> attributes;
 
@@ -158,7 +160,7 @@ QInputMethodEvent *QWaylandInputMethodEventBuilder::buildCommit(const QString &t
     return event;
 }
 
-QInputMethodEvent *QWaylandInputMethodEventBuilder::buildPreedit(const QString &text)
+QInputMethodEvent *WaylandInputMethodEventBuilder::buildPreedit(const QString &text)
 {
     QList<QInputMethodEvent::Attribute> attributes;
 
@@ -182,7 +184,7 @@ QInputMethodEvent *QWaylandInputMethodEventBuilder::buildPreedit(const QString &
     return event;
 }
 
-QPair<int, int> QWaylandInputMethodEventBuilder::replacementForDeleteSurrounding()
+QPair<int, int> WaylandInputMethodEventBuilder::replacementForDeleteSurrounding()
 {
     if (m_deleteBefore == 0 && m_deleteAfter == 0)
         return QPair<int, int>(0, 0);
@@ -200,7 +202,7 @@ QPair<int, int> QWaylandInputMethodEventBuilder::replacementForDeleteSurrounding
     return QPair<int, int>(-deleteBefore, deleteBefore + deleteAfter);
 }
 
-QWaylandInputMethodContentType QWaylandInputMethodContentType::convert(Qt::InputMethodHints hints)
+WaylandInputMethodContentType WaylandInputMethodContentType::convert(Qt::InputMethodHints hints)
 {
     uint32_t hint = ZWP_TEXT_INPUT_V2_CONTENT_HINT_NONE;
     uint32_t purpose = ZWP_TEXT_INPUT_V2_CONTENT_PURPOSE_NORMAL;
@@ -251,10 +253,10 @@ QWaylandInputMethodContentType QWaylandInputMethodContentType::convert(Qt::Input
     if (hints & Qt::ImhLatinOnly)
         hint |= ZWP_TEXT_INPUT_V2_CONTENT_HINT_LATIN;
 
-    return QWaylandInputMethodContentType{hint, purpose};
+    return WaylandInputMethodContentType{hint, purpose};
 }
 
-QWaylandInputMethodContentType QWaylandInputMethodContentType::convertV4(Qt::InputMethodHints hints)
+WaylandInputMethodContentType WaylandInputMethodContentType::convertV4(Qt::InputMethodHints hints)
 {
     uint32_t hint = ZWP_TEXT_INPUT_V4_CONTENT_HINT_NONE;
     uint32_t purpose = ZWP_TEXT_INPUT_V4_CONTENT_PURPOSE_NORMAL;
@@ -304,10 +306,10 @@ QWaylandInputMethodContentType QWaylandInputMethodContentType::convertV4(Qt::Inp
     if (hints & Qt::ImhLatinOnly)
         hint |= ZWP_TEXT_INPUT_V4_CONTENT_HINT_LATIN;
 
-    return QWaylandInputMethodContentType{hint, purpose};
+    return WaylandInputMethodContentType{hint, purpose};
 }
 
-int QWaylandInputMethodEventBuilder::indexFromWayland(const QString &text, int length, int base)
+int WaylandInputMethodEventBuilder::indexFromWayland(const QString &text, int length, int base)
 {
     if (length == 0)
         return base;
@@ -321,7 +323,7 @@ int QWaylandInputMethodEventBuilder::indexFromWayland(const QString &text, int l
     }
 }
 
-int QWaylandInputMethodEventBuilder::trimmedIndexFromWayland(const QString &text, int length, int base)
+int WaylandInputMethodEventBuilder::trimmedIndexFromWayland(const QString &text, int length, int base)
 {
     if (length == 0)
         return base;
@@ -359,10 +361,12 @@ int QWaylandInputMethodEventBuilder::trimmedIndexFromWayland(const QString &text
     return -1;
 }
 
-int QWaylandInputMethodEventBuilder::indexToWayland(const QString &text, int length, int base)
+int WaylandInputMethodEventBuilder::indexToWayland(const QString &text, int length, int base)
 {
     return QStringView{text}.mid(base, length).toUtf8().size();
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 

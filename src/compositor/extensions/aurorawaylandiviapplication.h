@@ -27,27 +27,29 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDIVIAPPLICATION_H
-#define QWAYLANDIVIAPPLICATION_H
+#ifndef AURORA_COMPOSITOR_WAYLANDIVIAPPLICATION_H
+#define AURORA_COMPOSITOR_WAYLANDIVIAPPLICATION_H
 
-#include <QtWaylandCompositor/QWaylandCompositorExtension>
-#include <QtWaylandCompositor/QWaylandSurface>
-#include <QtWaylandCompositor/QWaylandResource>
-#include <QtWaylandCompositor/QWaylandIviSurface>
+#include <LiriAuroraCompositor/WaylandCompositorExtension>
+#include <LiriAuroraCompositor/WaylandSurface>
+#include <LiriAuroraCompositor/WaylandResource>
+#include <LiriAuroraCompositor/WaylandIviSurface>
 #include <QtCore/QSize>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandIviApplicationPrivate;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandIviApplication : public QWaylandCompositorExtensionTemplate<QWaylandIviApplication>
+class WaylandIviApplicationPrivate;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandIviApplication : public WaylandCompositorExtensionTemplate<WaylandIviApplication>
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandIviApplication)
+    Q_DECLARE_PRIVATE(WaylandIviApplication)
 
 public:
-    QWaylandIviApplication();
-    QWaylandIviApplication(QWaylandCompositor *compositor);
+    WaylandIviApplication();
+    WaylandIviApplication(WaylandCompositor *compositor);
 
     void initialize() override;
 
@@ -55,10 +57,12 @@ public:
     static QByteArray interfaceName();
 
 Q_SIGNALS:
-    void iviSurfaceRequested(QWaylandSurface *surface, uint iviId, const QWaylandResource &resource);
-    void iviSurfaceCreated(QWaylandIviSurface *iviSurface);
+    void iviSurfaceRequested(WaylandSurface *surface, uint iviId, const WaylandResource &resource);
+    void iviSurfaceCreated(WaylandIviSurface *iviSurface);
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDIVIAPPLICATION_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDIVIAPPLICATION_H

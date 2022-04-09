@@ -28,27 +28,27 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDCOMPOSITOR_P_H
-#define QWAYLANDCOMPOSITOR_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDCOMPOSITOR_P_H
+#define AURORA_COMPOSITOR_WAYLANDCOMPOSITOR_P_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWaylandCompositor/private/qtwaylandcompositorglobal_p.h>
-#include <QtWaylandCompositor/QWaylandCompositor>
+#include <LiriAuroraCompositor/private/qtwaylandcompositorglobal_p.h>
+#include <LiriAuroraCompositor/WaylandCompositor>
 #include <QtCore/private/qobject_p.h>
 #include <QtCore/QSet>
 #include <QtCore/QElapsedTimer>
 
-#include <QtWaylandCompositor/private/qwayland-server-wayland.h>
+#include <LiriAuroraCompositor/private/aurora-server-wayland.h>
 
 #include <vector>
 
@@ -56,7 +56,11 @@
 #include <QtGui/private/qxkbcommon_p.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+class QWindowSystemEventHandler;
+
+namespace Aurora {
+
+namespace Compositor {
 
 namespace QtWayland {
     class HardwareIntegration;
@@ -66,16 +70,15 @@ namespace QtWayland {
     class BufferManager;
 }
 
-class QWindowSystemEventHandler;
-class QWaylandSurface;
+class WaylandSurface;
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandCompositorPrivate : public QObjectPrivate, public QtWaylandServer::wl_compositor, public QtWaylandServer::wl_subcompositor
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandCompositorPrivate : public QObjectPrivate, public PrivateServer::wl_compositor, public PrivateServer::wl_subcompositor
 {
 public:
-    static QWaylandCompositorPrivate *get(QWaylandCompositor *compositor) { return compositor->d_func(); }
+    static WaylandCompositorPrivate *get(WaylandCompositor *compositor) { return compositor->d_func(); }
 
-    QWaylandCompositorPrivate(QWaylandCompositor *compositor);
-    ~QWaylandCompositorPrivate() override;
+    WaylandCompositorPrivate(WaylandCompositor *compositor);
+    ~WaylandCompositorPrivate() override;
 
 #if QT_CONFIG(xkbcommon)
     struct xkb_context *xkbContext() const { return mXkbContext.get(); }
@@ -84,10 +87,10 @@ public:
     void preInit();
     void init();
 
-    void destroySurface(QWaylandSurface *surface);
-    void unregisterSurface(QWaylandSurface *surface);
+    void destroySurface(WaylandSurface *surface);
+    void unregisterSurface(WaylandSurface *surface);
 
-    QWaylandOutput *defaultOutput() const { return outputs.size() ? outputs.first() : nullptr; }
+    WaylandOutput *defaultOutput() const { return outputs.size() ? outputs.first() : nullptr; }
 
     inline const QList<QtWayland::ClientBufferIntegration *> clientBufferIntegrations() const;
     inline QtWayland::ServerBufferIntegration *serverBufferIntegration() const;
@@ -98,24 +101,24 @@ public:
     QtWayland::BufferManager *bufferManager() const { return buffer_manager; }
     void feedRetainedSelectionData(QMimeData *data);
 
-    QWaylandPointer *callCreatePointerDevice(QWaylandSeat *seat)
+    WaylandPointer *callCreatePointerDevice(WaylandSeat *seat)
     { return q_func()->createPointerDevice(seat); }
-    QWaylandKeyboard *callCreateKeyboardDevice(QWaylandSeat *seat)
+    WaylandKeyboard *callCreateKeyboardDevice(WaylandSeat *seat)
     { return q_func()->createKeyboardDevice(seat); }
-    QWaylandTouch *callCreateTouchDevice(QWaylandSeat *seat)
+    WaylandTouch *callCreateTouchDevice(WaylandSeat *seat)
     { return q_func()->createTouchDevice(seat); }
 
-    inline void addClient(QWaylandClient *client);
-    inline void removeClient(QWaylandClient *client);
+    inline void addClient(WaylandClient *client);
+    inline void removeClient(WaylandClient *client);
 
     void addPolishObject(QObject *object);
 
-    inline void addOutput(QWaylandOutput *output);
-    inline void removeOutput(QWaylandOutput *output);
+    inline void addOutput(WaylandOutput *output);
+    inline void removeOutput(WaylandOutput *output);
 
     void connectToExternalSockets();
 
-    virtual QWaylandSeat *seatFor(QInputEvent *inputEvent);
+    virtual WaylandSeat *seatFor(QInputEvent *inputEvent);
 
 protected:
     void compositor_create_surface(wl_compositor::Resource *resource, uint32_t id) override;
@@ -123,7 +126,7 @@ protected:
 
     void subcompositor_get_subsurface(wl_subcompositor::Resource *resource, uint32_t id, struct ::wl_resource *surface, struct ::wl_resource *parent) override;
 
-    virtual QWaylandSurface *createDefaultSurface();
+    virtual WaylandSurface *createDefaultSurface();
 protected:
     void initializeHardwareIntegration();
     void initializeExtensions();
@@ -136,12 +139,12 @@ protected:
     QList<int> externally_added_socket_fds;
     struct wl_display *display = nullptr;
     bool ownsDisplay = false;
-    QVector<QWaylandCompositor::ShmFormat> shmFormats;
+    QVector<WaylandCompositor::ShmFormat> shmFormats;
 
-    QList<QWaylandSeat *> seats;
-    QList<QWaylandOutput *> outputs;
+    QList<WaylandSeat *> seats;
+    QList<WaylandOutput *> outputs;
 
-    QList<QWaylandSurface *> all_surfaces;
+    QList<WaylandSurface *> all_surfaces;
 
 #if QT_CONFIG(wayland_datadevice)
     QtWayland::DataDeviceManager *data_device_manager = nullptr;
@@ -152,7 +155,7 @@ protected:
 
     wl_event_loop *loop = nullptr;
 
-    QList<QWaylandClient *> clients;
+    QList<WaylandClient *> clients;
 
 #if QT_CONFIG(opengl)
     bool use_hw_integration_extension = true;
@@ -172,16 +175,16 @@ protected:
     QXkbCommon::ScopedXKBContext mXkbContext;
 #endif
 
-    Q_DECLARE_PUBLIC(QWaylandCompositor)
-    Q_DISABLE_COPY(QWaylandCompositorPrivate)
+    Q_DECLARE_PUBLIC(WaylandCompositor)
+    Q_DISABLE_COPY(WaylandCompositorPrivate)
 };
 
-const QList<QtWayland::ClientBufferIntegration *> QWaylandCompositorPrivate::clientBufferIntegrations() const
+const QList<QtWayland::ClientBufferIntegration *> WaylandCompositorPrivate::clientBufferIntegrations() const
 {
     return client_buffer_integrations;
 }
 
-QtWayland::ServerBufferIntegration * QWaylandCompositorPrivate::serverBufferIntegration() const
+QtWayland::ServerBufferIntegration * WaylandCompositorPrivate::serverBufferIntegration() const
 {
 #if QT_CONFIG(opengl)
     return server_buffer_integration.data();
@@ -190,37 +193,39 @@ QtWayland::ServerBufferIntegration * QWaylandCompositorPrivate::serverBufferInte
 #endif
 }
 
-void QWaylandCompositorPrivate::addClient(QWaylandClient *client)
+void WaylandCompositorPrivate::addClient(WaylandClient *client)
 {
     Q_ASSERT(!clients.contains(client));
     clients.append(client);
 }
 
-void QWaylandCompositorPrivate::removeClient(QWaylandClient *client)
+void WaylandCompositorPrivate::removeClient(WaylandClient *client)
 {
     Q_ASSERT(clients.contains(client));
     clients.removeOne(client);
 }
 
-void QWaylandCompositorPrivate::addOutput(QWaylandOutput *output)
+void WaylandCompositorPrivate::addOutput(WaylandOutput *output)
 {
     Q_ASSERT(output);
-    Q_Q(QWaylandCompositor);
+    Q_Q(WaylandCompositor);
     if (outputs.contains(output))
         return;
     outputs.append(output);
     emit q->outputAdded(output);
 }
 
-void QWaylandCompositorPrivate::removeOutput(QWaylandOutput *output)
+void WaylandCompositorPrivate::removeOutput(WaylandOutput *output)
 {
     Q_ASSERT(output);
     Q_ASSERT(outputs.count(output) == 1);
-    Q_Q(QWaylandCompositor);
+    Q_Q(WaylandCompositor);
     if (outputs.removeOne(output))
         emit q->outputRemoved(output);
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif //QWAYLANDCOMPOSITOR_P_H

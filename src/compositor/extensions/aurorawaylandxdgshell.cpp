@@ -27,58 +27,60 @@
 **
 ****************************************************************************/
 
-#include "qwaylandxdgshell.h"
-#include "qwaylandxdgshell_p.h"
+#include "aurorawaylandxdgshell.h"
+#include "aurorawaylandxdgshell_p.h"
 
 #if QT_CONFIG(wayland_compositor_quick)
-#include "qwaylandxdgshellintegration_p.h"
+#include "aurorawaylandxdgshellintegration_p.h"
 #endif
-#include <QtWaylandCompositor/private/qwaylandutils_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandutils_p.h>
 
-#include <QtWaylandCompositor/QWaylandCompositor>
-#include <QtWaylandCompositor/QWaylandSeat>
-#include <QtWaylandCompositor/QWaylandSurface>
-#include <QtWaylandCompositor/QWaylandSurfaceRole>
-#include <QtWaylandCompositor/QWaylandResource>
+#include <LiriAuroraCompositor/WaylandCompositor>
+#include <LiriAuroraCompositor/WaylandSeat>
+#include <LiriAuroraCompositor/WaylandSurface>
+#include <LiriAuroraCompositor/WaylandSurfaceRole>
+#include <LiriAuroraCompositor/WaylandResource>
 
 #include <QtCore/QObject>
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-QWaylandXdgShellPrivate::QWaylandXdgShellPrivate()
+namespace Compositor {
+
+WaylandXdgShellPrivate::WaylandXdgShellPrivate()
 {
 }
 
-void QWaylandXdgShellPrivate::ping(QtWaylandServer::xdg_wm_base::Resource *resource, uint32_t serial)
+void WaylandXdgShellPrivate::ping(PrivateServer::xdg_wm_base::Resource *resource, uint32_t serial)
 {
     m_pings.insert(serial);
     send_ping(resource->handle, serial);
 }
 
-void QWaylandXdgShellPrivate::registerXdgSurface(QWaylandXdgSurface *xdgSurface)
+void WaylandXdgShellPrivate::registerXdgSurface(WaylandXdgSurface *xdgSurface)
 {
     m_xdgSurfaces.insert(xdgSurface->surface()->client()->client(), xdgSurface);
 }
 
-void QWaylandXdgShellPrivate::unregisterXdgSurface(QWaylandXdgSurface *xdgSurface)
+void WaylandXdgShellPrivate::unregisterXdgSurface(WaylandXdgSurface *xdgSurface)
 {
-    auto xdgSurfacePrivate = QWaylandXdgSurfacePrivate::get(xdgSurface);
+    auto xdgSurfacePrivate = WaylandXdgSurfacePrivate::get(xdgSurface);
     if (!m_xdgSurfaces.remove(xdgSurfacePrivate->resource()->client(), xdgSurface))
         qWarning("%s Unexpected state. Can't find registered xdg surface\n", Q_FUNC_INFO);
 }
 
-QWaylandXdgSurface *QWaylandXdgShellPrivate::xdgSurfaceFromSurface(QWaylandSurface *surface)
+WaylandXdgSurface *WaylandXdgShellPrivate::xdgSurfaceFromSurface(WaylandSurface *surface)
 {
-    for (QWaylandXdgSurface *xdgSurface : qAsConst(m_xdgSurfaces)) {
+    for (WaylandXdgSurface *xdgSurface : qAsConst(m_xdgSurfaces)) {
         if (surface == xdgSurface->surface())
             return xdgSurface;
     }
     return nullptr;
 }
 
-void QWaylandXdgShellPrivate::xdg_wm_base_destroy(Resource *resource)
+void WaylandXdgShellPrivate::xdg_wm_base_destroy(Resource *resource)
 {
     if (!m_xdgSurfaces.values(resource->client()).empty())
         wl_resource_post_error(resource->handle, XDG_WM_BASE_ERROR_DEFUNCT_SURFACES,
@@ -87,18 +89,18 @@ void QWaylandXdgShellPrivate::xdg_wm_base_destroy(Resource *resource)
     wl_resource_destroy(resource->handle);
 }
 
-void QWaylandXdgShellPrivate::xdg_wm_base_create_positioner(QtWaylandServer::xdg_wm_base::Resource *resource, uint32_t id)
+void WaylandXdgShellPrivate::xdg_wm_base_create_positioner(PrivateServer::xdg_wm_base::Resource *resource, uint32_t id)
 {
-    QWaylandResource positionerResource(wl_resource_create(resource->client(), &xdg_positioner_interface,
+    WaylandResource positionerResource(wl_resource_create(resource->client(), &xdg_positioner_interface,
                                                            wl_resource_get_version(resource->handle), id));
 
-    new QWaylandXdgPositioner(positionerResource);
+    new WaylandXdgPositioner(positionerResource);
 }
 
-void QWaylandXdgShellPrivate::xdg_wm_base_get_xdg_surface(Resource *resource, uint32_t id, wl_resource *surfaceResource)
+void WaylandXdgShellPrivate::xdg_wm_base_get_xdg_surface(Resource *resource, uint32_t id, wl_resource *surfaceResource)
 {
-    Q_Q(QWaylandXdgShell);
-    QWaylandSurface *surface = QWaylandSurface::fromResource(surfaceResource);
+    Q_Q(WaylandXdgShell);
+    WaylandSurface *surface = WaylandSurface::fromResource(surfaceResource);
 
     if (surface->role() != nullptr) {
         wl_resource_post_error(resource->handle, XDG_WM_BASE_ERROR_ROLE,
@@ -113,19 +115,19 @@ void QWaylandXdgShellPrivate::xdg_wm_base_get_xdg_surface(Resource *resource, ui
         qWarning() << "get_xdg_surface requested on a xdg_surface with content";
     }
 
-    QWaylandResource xdgSurfaceResource(wl_resource_create(resource->client(), &xdg_surface_interface,
+    WaylandResource xdgSurfaceResource(wl_resource_create(resource->client(), &xdg_surface_interface,
                                                            wl_resource_get_version(resource->handle), id));
 
-    QWaylandXdgSurface *xdgSurface = new QWaylandXdgSurface(q, surface, xdgSurfaceResource);
+    WaylandXdgSurface *xdgSurface = new WaylandXdgSurface(q, surface, xdgSurfaceResource);
 
     registerXdgSurface(xdgSurface);
     emit q->xdgSurfaceCreated(xdgSurface);
 }
 
-void QWaylandXdgShellPrivate::xdg_wm_base_pong(Resource *resource, uint32_t serial)
+void WaylandXdgShellPrivate::xdg_wm_base_pong(Resource *resource, uint32_t serial)
 {
     Q_UNUSED(resource);
-    Q_Q(QWaylandXdgShell);
+    Q_Q(WaylandXdgShell);
     if (m_pings.remove(serial))
         emit q->pong(serial);
     else
@@ -134,8 +136,8 @@ void QWaylandXdgShellPrivate::xdg_wm_base_pong(Resource *resource, uint32_t seri
 
 /*!
  * \qmltype XdgShell
- * \instantiates QWaylandXdgShell
- * \inqmlmodule QtWayland.Compositor.XdgShell
+ * \instantiates WaylandXdgShell
+ * \inqmlmodule Aurora.Compositor.XdgShell
  * \since 5.12
  * \brief Provides an extension for desktop-style user interfaces.
  *
@@ -150,7 +152,7 @@ void QWaylandXdgShellPrivate::xdg_wm_base_pong(Resource *resource, uint32_t seri
  * supported by the compositor:
  *
  * \qml
- * import QtWayland.Compositor.XdgShell
+ * import Aurora.Compositor.XdgShell
  *
  * WaylandCompositor {
  *     XdgShell {
@@ -161,65 +163,65 @@ void QWaylandXdgShellPrivate::xdg_wm_base_pong(Resource *resource, uint32_t seri
  */
 
 /*!
- * \class QWaylandXdgShell
+ * \class WaylandXdgShell
  * \inmodule QtWaylandCompositor
  * \since 5.12
- * \brief The QWaylandXdgShell class is an extension for desktop-style user interfaces.
+ * \brief The WaylandXdgShell class is an extension for desktop-style user interfaces.
  *
- * The QWaylandXdgShell extension provides a way to associate a QWaylandXdgToplevel or
- * QWaylandXdgPopup with a regular Wayland surface. Using the QWaylandXdgToplevel interface,
+ * The WaylandXdgShell extension provides a way to associate a WaylandXdgToplevel or
+ * WaylandXdgPopup with a regular Wayland surface. Using the WaylandXdgToplevel interface,
  * the client can request that the surface is resized, moved, and so on.
  *
- * QWaylandXdgShell corresponds to the Wayland interface, \c xdg_shell.
+ * WaylandXdgShell corresponds to the Wayland interface, \c xdg_shell.
  */
 
 /*!
- * Constructs a QWaylandXdgShell object.
+ * Constructs a WaylandXdgShell object.
  */
-QWaylandXdgShell::QWaylandXdgShell()
-    : QWaylandShellTemplate<QWaylandXdgShell>(*new QWaylandXdgShellPrivate())
+WaylandXdgShell::WaylandXdgShell()
+    : WaylandShellTemplate<WaylandXdgShell>(*new WaylandXdgShellPrivate())
 {
 }
 
 /*!
- * Constructs a QWaylandXdgShell object for the provided \a compositor.
+ * Constructs a WaylandXdgShell object for the provided \a compositor.
  */
-QWaylandXdgShell::QWaylandXdgShell(QWaylandCompositor *compositor)
-    : QWaylandShellTemplate<QWaylandXdgShell>(compositor, *new QWaylandXdgShellPrivate())
+WaylandXdgShell::WaylandXdgShell(WaylandCompositor *compositor)
+    : WaylandShellTemplate<WaylandXdgShell>(compositor, *new WaylandXdgShellPrivate())
 {
 }
 
 /*!
  * Initializes the shell extension.
  */
-void QWaylandXdgShell::initialize()
+void WaylandXdgShell::initialize()
 {
-    Q_D(QWaylandXdgShell);
-    QWaylandShellTemplate::initialize();
-    QWaylandCompositor *compositor = static_cast<QWaylandCompositor *>(extensionContainer());
+    Q_D(WaylandXdgShell);
+    WaylandShellTemplate::initialize();
+    WaylandCompositor *compositor = static_cast<WaylandCompositor *>(extensionContainer());
     if (!compositor) {
-        qWarning() << "Failed to find QWaylandCompositor when initializing QWaylandXdgShell";
+        qWarning() << "Failed to find WaylandCompositor when initializing WaylandXdgShell";
         return;
     }
     d->init(compositor->display(), 1);
 
     handleSeatChanged(compositor->defaultSeat(), nullptr);
 
-    connect(compositor, &QWaylandCompositor::defaultSeatChanged,
-            this, &QWaylandXdgShell::handleSeatChanged);
+    connect(compositor, &WaylandCompositor::defaultSeatChanged,
+            this, &WaylandXdgShell::handleSeatChanged);
 }
 
 /*!
- * Returns the Wayland interface for the QWaylandXdgShell.
+ * Returns the Wayland interface for the WaylandXdgShell.
  */
-const struct wl_interface *QWaylandXdgShell::interface()
+const struct wl_interface *WaylandXdgShell::interface()
 {
-    return QWaylandXdgShellPrivate::interface();
+    return WaylandXdgShellPrivate::interface();
 }
 
-QByteArray QWaylandXdgShell::interfaceName()
+QByteArray WaylandXdgShell::interfaceName()
 {
-    return QWaylandXdgShellPrivate::interfaceName();
+    return WaylandXdgShellPrivate::interfaceName();
 }
 
 /*!
@@ -233,86 +235,86 @@ QByteArray QWaylandXdgShell::interfaceName()
  * Sends a ping event to \a client. If the client replies to the event the
  * \l pong signal will be emitted.
  */
-uint QWaylandXdgShell::ping(QWaylandClient *client)
+uint WaylandXdgShell::ping(WaylandClient *client)
 {
-    Q_D(QWaylandXdgShell);
+    Q_D(WaylandXdgShell);
 
-    QWaylandCompositor *compositor = static_cast<QWaylandCompositor *>(extensionContainer());
+    WaylandCompositor *compositor = static_cast<WaylandCompositor *>(extensionContainer());
     Q_ASSERT(compositor);
 
     uint32_t serial = compositor->nextSerial();
 
-    QWaylandXdgShellPrivate::Resource *clientResource = d->resourceMap().value(client->client(), nullptr);
+    WaylandXdgShellPrivate::Resource *clientResource = d->resourceMap().value(client->client(), nullptr);
     Q_ASSERT(clientResource);
 
     d->ping(clientResource, serial);
     return serial;
 }
 
-void QWaylandXdgShell::handleSeatChanged(QWaylandSeat *newSeat, QWaylandSeat *oldSeat)
+void WaylandXdgShell::handleSeatChanged(WaylandSeat *newSeat, WaylandSeat *oldSeat)
 {
     if (oldSeat != nullptr) {
-        disconnect(oldSeat, &QWaylandSeat::keyboardFocusChanged,
-                   this, &QWaylandXdgShell::handleFocusChanged);
+        disconnect(oldSeat, &WaylandSeat::keyboardFocusChanged,
+                   this, &WaylandXdgShell::handleFocusChanged);
     }
 
     if (newSeat != nullptr) {
-        connect(newSeat, &QWaylandSeat::keyboardFocusChanged,
-                this, &QWaylandXdgShell::handleFocusChanged);
+        connect(newSeat, &WaylandSeat::keyboardFocusChanged,
+                this, &WaylandXdgShell::handleFocusChanged);
     }
 }
 
-void QWaylandXdgShell::handleFocusChanged(QWaylandSurface *newSurface, QWaylandSurface *oldSurface)
+void WaylandXdgShell::handleFocusChanged(WaylandSurface *newSurface, WaylandSurface *oldSurface)
 {
-    Q_D(QWaylandXdgShell);
+    Q_D(WaylandXdgShell);
 
-    QWaylandXdgSurface *newXdgSurface = d->xdgSurfaceFromSurface(newSurface);
-    QWaylandXdgSurface *oldXdgSurface = d->xdgSurfaceFromSurface(oldSurface);
+    WaylandXdgSurface *newXdgSurface = d->xdgSurfaceFromSurface(newSurface);
+    WaylandXdgSurface *oldXdgSurface = d->xdgSurfaceFromSurface(oldSurface);
 
     if (newXdgSurface)
-        QWaylandXdgSurfacePrivate::get(newXdgSurface)->handleFocusReceived();
+        WaylandXdgSurfacePrivate::get(newXdgSurface)->handleFocusReceived();
 
     if (oldXdgSurface)
-        QWaylandXdgSurfacePrivate::get(oldXdgSurface)->handleFocusLost();
+        WaylandXdgSurfacePrivate::get(oldXdgSurface)->handleFocusLost();
 }
 
-QWaylandXdgSurfacePrivate::QWaylandXdgSurfacePrivate()
+WaylandXdgSurfacePrivate::WaylandXdgSurfacePrivate()
 {
 }
 
-void QWaylandXdgSurfacePrivate::setWindowType(Qt::WindowType windowType)
+void WaylandXdgSurfacePrivate::setWindowType(Qt::WindowType windowType)
 {
     if (m_windowType == windowType)
         return;
 
     m_windowType = windowType;
 
-    Q_Q(QWaylandXdgSurface);
+    Q_Q(WaylandXdgSurface);
     emit q->windowTypeChanged();
 }
 
-void QWaylandXdgSurfacePrivate::handleFocusLost()
+void WaylandXdgSurfacePrivate::handleFocusLost()
 {
     if (m_toplevel)
-        QWaylandXdgToplevelPrivate::get(m_toplevel)->handleFocusLost();
+        WaylandXdgToplevelPrivate::get(m_toplevel)->handleFocusLost();
 }
 
-void QWaylandXdgSurfacePrivate::handleFocusReceived()
+void WaylandXdgSurfacePrivate::handleFocusReceived()
 {
     if (m_toplevel)
-        QWaylandXdgToplevelPrivate::get(m_toplevel)->handleFocusReceived();
+        WaylandXdgToplevelPrivate::get(m_toplevel)->handleFocusReceived();
 }
 
-QRect QWaylandXdgSurfacePrivate::calculateFallbackWindowGeometry() const
+QRect WaylandXdgSurfacePrivate::calculateFallbackWindowGeometry() const
 {
     // TODO: The unset window geometry should include subsurfaces as well, so this solution
     // won't work too well on those kinds of clients.
     return QRect(QPoint(), m_surface->destinationSize());
 }
 
-void QWaylandXdgSurfacePrivate::updateFallbackWindowGeometry()
+void WaylandXdgSurfacePrivate::updateFallbackWindowGeometry()
 {
-    Q_Q(QWaylandXdgSurface);
+    Q_Q(WaylandXdgSurface);
     if (!m_unsetWindowGeometry)
         return;
 
@@ -324,22 +326,22 @@ void QWaylandXdgSurfacePrivate::updateFallbackWindowGeometry()
     emit q->windowGeometryChanged();
 }
 
-void QWaylandXdgSurfacePrivate::xdg_surface_destroy_resource(QtWaylandServer::xdg_surface::Resource *resource)
+void WaylandXdgSurfacePrivate::xdg_surface_destroy_resource(PrivateServer::xdg_surface::Resource *resource)
 {
     Q_UNUSED(resource);
-    Q_Q(QWaylandXdgSurface);
-    QWaylandXdgShellPrivate::get(m_xdgShell)->unregisterXdgSurface(q);
+    Q_Q(WaylandXdgSurface);
+    WaylandXdgShellPrivate::get(m_xdgShell)->unregisterXdgSurface(q);
     delete q;
 }
 
-void QWaylandXdgSurfacePrivate::xdg_surface_destroy(QtWaylandServer::xdg_surface::Resource *resource)
+void WaylandXdgSurfacePrivate::xdg_surface_destroy(PrivateServer::xdg_surface::Resource *resource)
 {
     wl_resource_destroy(resource->handle);
 }
 
-void QWaylandXdgSurfacePrivate::xdg_surface_get_toplevel(QtWaylandServer::xdg_surface::Resource *resource, uint32_t id)
+void WaylandXdgSurfacePrivate::xdg_surface_get_toplevel(PrivateServer::xdg_surface::Resource *resource, uint32_t id)
 {
-    Q_Q(QWaylandXdgSurface);
+    Q_Q(WaylandXdgSurface);
 
     if (m_toplevel || m_popup) {
         wl_resource_post_error(resource->handle, XDG_SURFACE_ERROR_ALREADY_CONSTRUCTED,
@@ -347,20 +349,20 @@ void QWaylandXdgSurfacePrivate::xdg_surface_get_toplevel(QtWaylandServer::xdg_su
         return;
     }
 
-    if (!m_surface->setRole(QWaylandXdgToplevel::role(), resource->handle, XDG_WM_BASE_ERROR_ROLE))
+    if (!m_surface->setRole(WaylandXdgToplevel::role(), resource->handle, XDG_WM_BASE_ERROR_ROLE))
         return;
 
-    QWaylandResource topLevelResource(wl_resource_create(resource->client(), &xdg_toplevel_interface,
+    WaylandResource topLevelResource(wl_resource_create(resource->client(), &xdg_toplevel_interface,
                                                          wl_resource_get_version(resource->handle), id));
 
-    m_toplevel = new QWaylandXdgToplevel(q, topLevelResource);
+    m_toplevel = new WaylandXdgToplevel(q, topLevelResource);
     emit q->toplevelCreated();
     emit m_xdgShell->toplevelCreated(m_toplevel, q);
 }
 
-void QWaylandXdgSurfacePrivate::xdg_surface_get_popup(QtWaylandServer::xdg_surface::Resource *resource, uint32_t id, wl_resource *parentResource, wl_resource *positionerResource)
+void WaylandXdgSurfacePrivate::xdg_surface_get_popup(PrivateServer::xdg_surface::Resource *resource, uint32_t id, wl_resource *parentResource, wl_resource *positionerResource)
 {
-    Q_Q(QWaylandXdgSurface);
+    Q_Q(WaylandXdgSurface);
 
     if (m_toplevel || m_popup) {
         wl_resource_post_error(resource->handle, XDG_SURFACE_ERROR_ALREADY_CONSTRUCTED,
@@ -368,14 +370,14 @@ void QWaylandXdgSurfacePrivate::xdg_surface_get_popup(QtWaylandServer::xdg_surfa
         return;
     }
 
-    QWaylandXdgSurface *parent = QWaylandXdgSurface::fromResource(parentResource);
+    WaylandXdgSurface *parent = WaylandXdgSurface::fromResource(parentResource);
     if (!parent) {
         wl_resource_post_error(resource->handle, XDG_WM_BASE_ERROR_INVALID_POPUP_PARENT,
                                "xdg_surface.get_popup with invalid popup parent");
         return;
     }
 
-    QWaylandXdgPositioner *positioner = QWaylandXdgPositioner::fromResource(positionerResource);
+    WaylandXdgPositioner *positioner = WaylandXdgPositioner::fromResource(positionerResource);
     if (!positioner) {
         wl_resource_post_error(resource->handle, XDG_WM_BASE_ERROR_INVALID_POSITIONER,
                                "xdg_surface.get_popup without positioner");
@@ -383,7 +385,7 @@ void QWaylandXdgSurfacePrivate::xdg_surface_get_popup(QtWaylandServer::xdg_surfa
     }
 
     if (!positioner->m_data.isComplete()) {
-        QWaylandXdgPositionerData p = positioner->m_data;
+        WaylandXdgPositionerData p = positioner->m_data;
         wl_resource_post_error(resource->handle, XDG_WM_BASE_ERROR_INVALID_POSITIONER,
                                "xdg_surface.get_popup with invalid positioner (size: %dx%d, anchorRect: %dx%d)",
                                p.size.width(), p.size.height(), p.anchorRect.width(), p.anchorRect.height());
@@ -401,32 +403,32 @@ void QWaylandXdgSurfacePrivate::xdg_surface_get_popup(QtWaylandServer::xdg_surfa
                                         << "rect extends beyond its parent's window geometry";
     }
 
-    if (!m_surface->setRole(QWaylandXdgPopup::role(), resource->handle, XDG_WM_BASE_ERROR_ROLE))
+    if (!m_surface->setRole(WaylandXdgPopup::role(), resource->handle, XDG_WM_BASE_ERROR_ROLE))
         return;
 
-    QWaylandResource popupResource(wl_resource_create(resource->client(), &xdg_popup_interface,
+    WaylandResource popupResource(wl_resource_create(resource->client(), &xdg_popup_interface,
                                                       wl_resource_get_version(resource->handle), id));
 
-    m_popup = new QWaylandXdgPopup(q, parent, positioner, popupResource);
+    m_popup = new WaylandXdgPopup(q, parent, positioner, popupResource);
     emit q->popupCreated();
     emit m_xdgShell->popupCreated(m_popup, q);
 }
 
-void QWaylandXdgSurfacePrivate::xdg_surface_ack_configure(QtWaylandServer::xdg_surface::Resource *resource, uint32_t serial)
+void WaylandXdgSurfacePrivate::xdg_surface_ack_configure(PrivateServer::xdg_surface::Resource *resource, uint32_t serial)
 {
     if (m_toplevel) {
-        QWaylandXdgToplevelPrivate::get(m_toplevel)->handleAckConfigure(serial);
+        WaylandXdgToplevelPrivate::get(m_toplevel)->handleAckConfigure(serial);
     } else if (m_popup) {
-        QWaylandXdgPopupPrivate::get(m_popup)->handleAckConfigure(serial);
+        WaylandXdgPopupPrivate::get(m_popup)->handleAckConfigure(serial);
     } else {
         wl_resource_post_error(resource->handle, XDG_SURFACE_ERROR_NOT_CONSTRUCTED,
                                "ack_configure requested on an unconstructed xdg_surface");
     }
 }
 
-void QWaylandXdgSurfacePrivate::xdg_surface_set_window_geometry(QtWaylandServer::xdg_surface::Resource *resource, int32_t x, int32_t y, int32_t width, int32_t height)
+void WaylandXdgSurfacePrivate::xdg_surface_set_window_geometry(PrivateServer::xdg_surface::Resource *resource, int32_t x, int32_t y, int32_t width, int32_t height)
 {
-    Q_Q(QWaylandXdgSurface);
+    Q_Q(WaylandXdgSurface);
 
     if (!q->surface()->role()) {
         wl_resource_post_error(resource->handle, XDG_SURFACE_ERROR_NOT_CONSTRUCTED,
@@ -455,8 +457,8 @@ void QWaylandXdgSurfacePrivate::xdg_surface_set_window_geometry(QtWaylandServer:
 
 /*!
  * \qmltype XdgSurface
- * \instantiates QWaylandXdgSurface
- * \inqmlmodule QtWayland.Compositor.XdgShell
+ * \instantiates WaylandXdgSurface
+ * \inqmlmodule Aurora.Compositor.XdgShell
  * \since 5.12
  * \brief XdgSurface provides desktop-style compositor-specific features to an xdg surface.
  *
@@ -469,13 +471,13 @@ void QWaylandXdgSurfacePrivate::xdg_surface_set_window_geometry(QtWaylandServer:
  */
 
 /*!
- * \class QWaylandXdgSurface
+ * \class WaylandXdgSurface
  * \inmodule QtWaylandCompositor
  * \since 5.12
- * \brief The QWaylandXdgSurface class provides desktop-style compositor-specific features to an xdg surface.
+ * \brief The WaylandXdgSurface class provides desktop-style compositor-specific features to an xdg surface.
  *
- * This class is part of the QWaylandXdgShell extension and provides a way to
- * extend the functionality of an existing QWaylandSurface with features
+ * This class is part of the WaylandXdgShell extension and provides a way to
+ * extend the functionality of an existing WaylandSurface with features
  * specific to desktop-style compositors, such as resizing and moving the
  * surface.
  *
@@ -483,19 +485,19 @@ void QWaylandXdgSurfacePrivate::xdg_surface_set_window_geometry(QtWaylandServer:
  */
 
 /*!
- * Constructs a QWaylandXdgSurface.
+ * Constructs a WaylandXdgSurface.
  */
-QWaylandXdgSurface::QWaylandXdgSurface()
-    : QWaylandShellSurfaceTemplate<QWaylandXdgSurface>(*new QWaylandXdgSurfacePrivate)
+WaylandXdgSurface::WaylandXdgSurface()
+    : WaylandShellSurfaceTemplate<WaylandXdgSurface>(*new WaylandXdgSurfacePrivate)
 {
 }
 
 /*!
- * Constructs a QWaylandXdgSurface for \a surface and initializes it with the
+ * Constructs a WaylandXdgSurface for \a surface and initializes it with the
  * given \a xdgShell, \a surface, and resource \a res.
  */
-QWaylandXdgSurface::QWaylandXdgSurface(QWaylandXdgShell *xdgShell, QWaylandSurface *surface, const QWaylandResource &res)
-    : QWaylandShellSurfaceTemplate<QWaylandXdgSurface>(*new QWaylandXdgSurfacePrivate)
+WaylandXdgSurface::WaylandXdgSurface(WaylandXdgShell *xdgShell, WaylandSurface *surface, const WaylandResource &res)
+    : WaylandShellSurfaceTemplate<WaylandXdgSurface>(*new WaylandXdgSurfacePrivate)
 {
     initialize(xdgShell, surface, res);
 }
@@ -508,22 +510,22 @@ QWaylandXdgSurface::QWaylandXdgSurface(QWaylandXdgShell *xdgShell, QWaylandSurfa
  */
 
 /*!
- * Initializes the QWaylandXdgSurface, associating it with the given \a xdgShell, \a surface
+ * Initializes the WaylandXdgSurface, associating it with the given \a xdgShell, \a surface
  * and \a resource.
  */
-void QWaylandXdgSurface::initialize(QWaylandXdgShell *xdgShell, QWaylandSurface *surface, const QWaylandResource &resource)
+void WaylandXdgSurface::initialize(WaylandXdgShell *xdgShell, WaylandSurface *surface, const WaylandResource &resource)
 {
-    Q_D(QWaylandXdgSurface);
+    Q_D(WaylandXdgSurface);
     d->m_xdgShell = xdgShell;
     d->m_surface = surface;
     d->init(resource.resource());
     setExtensionContainer(surface);
     d->m_windowGeometry = d->calculateFallbackWindowGeometry();
-    connect(surface, &QWaylandSurface::destinationSizeChanged, this, &QWaylandXdgSurface::handleSurfaceSizeChanged);
-    connect(surface, &QWaylandSurface::bufferScaleChanged, this, &QWaylandXdgSurface::handleBufferScaleChanged);
+    connect(surface, &WaylandSurface::destinationSizeChanged, this, &WaylandXdgSurface::handleSurfaceSizeChanged);
+    connect(surface, &WaylandSurface::bufferScaleChanged, this, &WaylandXdgSurface::handleBufferScaleChanged);
     emit shellChanged();
     emit surfaceChanged();
-    QWaylandCompositorExtension::initialize();
+    WaylandCompositorExtension::initialize();
 }
 
 /*!
@@ -531,16 +533,16 @@ void QWaylandXdgSurface::initialize(QWaylandXdgShell *xdgShell, QWaylandSurface 
  *
  * This property holds the window type of the XdgSurface.
  */
-Qt::WindowType QWaylandXdgSurface::windowType() const
+Qt::WindowType WaylandXdgSurface::windowType() const
 {
-    Q_D(const QWaylandXdgSurface);
+    Q_D(const WaylandXdgSurface);
     return d->m_windowType;
 }
 
 /*!
  * \qmlproperty rect QtWaylandCompositor::XdgSurface::windowGeometry
  *
- * This property holds the window geometry of the QWaylandXdgSurface. The window
+ * This property holds the window geometry of the WaylandXdgSurface. The window
  * geometry describes the window's visible bounds from the user's perspective.
  * The geometry includes title bars and borders if drawn by the client, but
  * excludes drop shadows. It is meant to be used for aligning and tiling
@@ -548,37 +550,37 @@ Qt::WindowType QWaylandXdgSurface::windowType() const
  */
 
 /*!
- * \property QWaylandXdgSurface::windowGeometry
+ * \property WaylandXdgSurface::windowGeometry
  *
- * This property holds the window geometry of the QWaylandXdgSurface. The window
+ * This property holds the window geometry of the WaylandXdgSurface. The window
  * geometry describes the window's visible bounds from the user's perspective.
  * The geometry includes title bars and borders if drawn by the client, but
  * excludes drop shadows. It is meant to be used for aligning and tiling
  * windows.
  */
-QRect QWaylandXdgSurface::windowGeometry() const
+QRect WaylandXdgSurface::windowGeometry() const
 {
-    Q_D(const QWaylandXdgSurface);
+    Q_D(const WaylandXdgSurface);
     return d->m_windowGeometry;
 }
 
 /*!
  * \internal
  */
-void QWaylandXdgSurface::initialize()
+void WaylandXdgSurface::initialize()
 {
-    QWaylandCompositorExtension::initialize();
+    WaylandCompositorExtension::initialize();
 }
 
-void QWaylandXdgSurface::handleSurfaceSizeChanged()
+void WaylandXdgSurface::handleSurfaceSizeChanged()
 {
-    Q_D(QWaylandXdgSurface);
+    Q_D(WaylandXdgSurface);
     d->updateFallbackWindowGeometry();
 }
 
-void QWaylandXdgSurface::handleBufferScaleChanged()
+void WaylandXdgSurface::handleBufferScaleChanged()
 {
-    Q_D(QWaylandXdgSurface);
+    Q_D(WaylandXdgSurface);
     d->updateFallbackWindowGeometry();
 }
 
@@ -589,13 +591,13 @@ void QWaylandXdgSurface::handleBufferScaleChanged()
  */
 
 /*!
- * \property QWaylandXdgSurface::shell
+ * \property WaylandXdgSurface::shell
  *
- * This property holds the shell associated with this QWaylandXdgSurface.
+ * This property holds the shell associated with this WaylandXdgSurface.
  */
-QWaylandXdgShell *QWaylandXdgSurface::shell() const
+WaylandXdgShell *WaylandXdgSurface::shell() const
 {
-    Q_D(const QWaylandXdgSurface);
+    Q_D(const WaylandXdgSurface);
     return d->m_xdgShell;
 }
 
@@ -606,13 +608,13 @@ QWaylandXdgShell *QWaylandXdgSurface::shell() const
  */
 
 /*!
- * \property QWaylandXdgSurface::surface
+ * \property WaylandXdgSurface::surface
  *
- * This property holds the surface associated with this QWaylandXdgSurface.
+ * This property holds the surface associated with this WaylandXdgSurface.
  */
-QWaylandSurface *QWaylandXdgSurface::surface() const
+WaylandSurface *WaylandXdgSurface::surface() const
 {
-    Q_D(const QWaylandXdgSurface);
+    Q_D(const WaylandXdgSurface);
     return d->m_surface;
 }
 
@@ -626,16 +628,16 @@ QWaylandSurface *QWaylandXdgSurface::surface() const
  */
 
 /*!
- * \property QWaylandXdgSurface::toplevel
+ * \property WaylandXdgSurface::toplevel
  *
  * This property holds the properties and methods that are specific to the
- * toplevel QWaylandXdgSurface.
+ * toplevel WaylandXdgSurface.
  *
- * \sa QWaylandXdgSurface::popup, QWaylandXdgShell::toplevelCreated
+ * \sa WaylandXdgSurface::popup, WaylandXdgShell::toplevelCreated
  */
-QWaylandXdgToplevel *QWaylandXdgSurface::toplevel() const
+WaylandXdgToplevel *WaylandXdgSurface::toplevel() const
 {
-    Q_D(const QWaylandXdgSurface);
+    Q_D(const WaylandXdgSurface);
     return d->m_toplevel;
 }
 
@@ -649,49 +651,49 @@ QWaylandXdgToplevel *QWaylandXdgSurface::toplevel() const
  */
 
 /*!
- * \property QWaylandXdgSurface::popup
+ * \property WaylandXdgSurface::popup
  *
  * This property holds the properties and methods that are specific to the
- * popup QWaylandXdgSurface.
+ * popup WaylandXdgSurface.
  *
- * \sa QWaylandXdgSurface::toplevel, QWaylandXdgShell::popupCreated
+ * \sa WaylandXdgSurface::toplevel, WaylandXdgShell::popupCreated
  */
-QWaylandXdgPopup *QWaylandXdgSurface::popup() const
+WaylandXdgPopup *WaylandXdgSurface::popup() const
 {
-    Q_D(const QWaylandXdgSurface);
+    Q_D(const WaylandXdgSurface);
     return d->m_popup;
 }
 
 /*!
- * Returns the Wayland interface for the QWaylandXdgSurface.
+ * Returns the Wayland interface for the WaylandXdgSurface.
  */
-const wl_interface *QWaylandXdgSurface::interface()
+const wl_interface *WaylandXdgSurface::interface()
 {
-    return QWaylandXdgSurfacePrivate::interface();
+    return WaylandXdgSurfacePrivate::interface();
 }
 
 /*!
  * \internal
  */
-QByteArray QWaylandXdgSurface::interfaceName()
+QByteArray WaylandXdgSurface::interfaceName()
 {
-    return QWaylandXdgSurfacePrivate::interfaceName();
+    return WaylandXdgSurfacePrivate::interfaceName();
 }
 
 /*!
- * Returns the QWaylandXdgSurface corresponding to the \a resource.
+ * Returns the WaylandXdgSurface corresponding to the \a resource.
  */
-QWaylandXdgSurface *QWaylandXdgSurface::fromResource(wl_resource *resource)
+WaylandXdgSurface *WaylandXdgSurface::fromResource(wl_resource *resource)
 {
-    if (auto p = QtWayland::fromResource<QWaylandXdgSurfacePrivate *>(resource))
+    if (auto p = QtWayland::fromResource<WaylandXdgSurfacePrivate *>(resource))
         return p->q_func();
     return nullptr;
 }
 
 #if QT_CONFIG(wayland_compositor_quick)
-QWaylandQuickShellIntegration *QWaylandXdgSurface::createIntegration(QWaylandQuickShellSurfaceItem *item)
+WaylandQuickShellIntegration *WaylandXdgSurface::createIntegration(WaylandQuickShellSurfaceItem *item)
 {
-    Q_D(const QWaylandXdgSurface);
+    Q_D(const WaylandXdgSurface);
 
     if (d->m_toplevel)
         return new QtWayland::XdgToplevelIntegration(item);
@@ -705,8 +707,8 @@ QWaylandQuickShellIntegration *QWaylandXdgSurface::createIntegration(QWaylandQui
 
 /*!
  * \qmltype XdgToplevel
- * \instantiates QWaylandXdgToplevel
- * \inqmlmodule QtWayland.Compositor.XdgShell
+ * \instantiates WaylandXdgToplevel
+ * \inqmlmodule Aurora.Compositor.XdgShell
  * \since 5.12
  * \brief XdgToplevel represents the toplevel window specific parts of an xdg surface.
  *
@@ -718,31 +720,31 @@ QWaylandQuickShellIntegration *QWaylandXdgSurface::createIntegration(QWaylandQui
  */
 
 /*!
- * \class QWaylandXdgToplevel
+ * \class WaylandXdgToplevel
  * \inmodule QtWaylandCompositor
  * \since 5.12
- * \brief The QWaylandXdgToplevel class represents the toplevel window specific parts of an xdg surface.
+ * \brief The WaylandXdgToplevel class represents the toplevel window specific parts of an xdg surface.
  *
- * This class is part of the QWaylandXdgShell extension and provides a way to
- * extend the functionality of an QWaylandXdgSurface with features
+ * This class is part of the WaylandXdgShell extension and provides a way to
+ * extend the functionality of an WaylandXdgSurface with features
  * specific to desktop-style windows.
  *
  * It corresponds to the Wayland interface \c xdg_toplevel.
  */
 
 /*!
- * Constructs a QWaylandXdgToplevel for the given \a xdgSurface and \a resource.
+ * Constructs a WaylandXdgToplevel for the given \a xdgSurface and \a resource.
  */
-QWaylandXdgToplevel::QWaylandXdgToplevel(QWaylandXdgSurface *xdgSurface, QWaylandResource &resource)
-    : QObject(*new QWaylandXdgToplevelPrivate(xdgSurface, resource))
+WaylandXdgToplevel::WaylandXdgToplevel(WaylandXdgSurface *xdgSurface, WaylandResource &resource)
+    : QObject(*new WaylandXdgToplevelPrivate(xdgSurface, resource))
 {
-    QList<QWaylandXdgToplevel::State> states;
+    QList<WaylandXdgToplevel::State> states;
     sendConfigure({0, 0}, states);
 }
 
-QWaylandXdgToplevel::~QWaylandXdgToplevel()
+WaylandXdgToplevel::~WaylandXdgToplevel()
 {
-    Q_D(QWaylandXdgToplevel);
+    Q_D(WaylandXdgToplevel);
     // Usually, the decoration is destroyed by the client (according to the protocol),
     // but if the client misbehaves, or is shut down, we need to clean up here.
     if (Q_UNLIKELY(d->m_decoration))
@@ -757,13 +759,13 @@ QWaylandXdgToplevel::~QWaylandXdgToplevel()
  */
 
 /*!
- * \property QWaylandXdgToplevel::xdgSurface
+ * \property WaylandXdgToplevel::xdgSurface
  *
- * This property holds the QWaylandXdgSurface for this QWaylandXdgToplevel.
+ * This property holds the WaylandXdgSurface for this WaylandXdgToplevel.
  */
-QWaylandXdgSurface *QWaylandXdgToplevel::xdgSurface() const
+WaylandXdgSurface *WaylandXdgToplevel::xdgSurface() const
 {
-    Q_D(const QWaylandXdgToplevel);
+    Q_D(const WaylandXdgToplevel);
     return d->m_xdgSurface;
 }
 
@@ -774,14 +776,14 @@ QWaylandXdgSurface *QWaylandXdgToplevel::xdgSurface() const
  */
 
 /*!
- * \property QWaylandXdgToplevel::parentToplevel
+ * \property WaylandXdgToplevel::parentToplevel
  *
  * This property holds the XdgToplevel parent of this XdgToplevel.
  *
  */
-QWaylandXdgToplevel *QWaylandXdgToplevel::parentToplevel() const
+WaylandXdgToplevel *WaylandXdgToplevel::parentToplevel() const
 {
-    Q_D(const QWaylandXdgToplevel);
+    Q_D(const WaylandXdgToplevel);
     return d->m_parentToplevel;
 }
 
@@ -792,13 +794,13 @@ QWaylandXdgToplevel *QWaylandXdgToplevel::parentToplevel() const
  */
 
 /*!
- * \property QWaylandXdgToplevel::title
+ * \property WaylandXdgToplevel::title
  *
- * This property holds the title of the QWaylandXdgToplevel.
+ * This property holds the title of the WaylandXdgToplevel.
  */
-QString QWaylandXdgToplevel::title() const
+QString WaylandXdgToplevel::title() const
 {
-    Q_D(const QWaylandXdgToplevel);
+    Q_D(const WaylandXdgToplevel);
     return d->m_title;
 }
 
@@ -809,13 +811,13 @@ QString QWaylandXdgToplevel::title() const
  */
 
 /*!
- * \property QWaylandXdgToplevel::appId
+ * \property WaylandXdgToplevel::appId
  *
- * This property holds the app id of the QWaylandXdgToplevel.
+ * This property holds the app id of the WaylandXdgToplevel.
  */
-QString QWaylandXdgToplevel::appId() const
+QString WaylandXdgToplevel::appId() const
 {
-    Q_D(const QWaylandXdgToplevel);
+    Q_D(const WaylandXdgToplevel);
     return d->m_appId;
 }
 
@@ -828,15 +830,15 @@ QString QWaylandXdgToplevel::appId() const
  */
 
 /*!
- * \property QWaylandXdgToplevel::maxSize
+ * \property WaylandXdgToplevel::maxSize
  *
- * This property holds the maximum size of the QWaylandXdgToplevel.
+ * This property holds the maximum size of the WaylandXdgToplevel.
  *
  * The compositor is free to ignore this value and request a larger size.
  */
-QSize QWaylandXdgToplevel::maxSize() const
+QSize WaylandXdgToplevel::maxSize() const
 {
-    Q_D(const QWaylandXdgToplevel);
+    Q_D(const WaylandXdgToplevel);
     return d->m_maxSize;
 }
 
@@ -849,26 +851,26 @@ QSize QWaylandXdgToplevel::maxSize() const
  */
 
 /*!
- * \property QWaylandXdgToplevel::minSize
+ * \property WaylandXdgToplevel::minSize
  *
- * This property holds the minimum size of the QWaylandXdgToplevel.
+ * This property holds the minimum size of the WaylandXdgToplevel.
  *
  * The compositor is free to ignore this value and request a smaller size.
  */
-QSize QWaylandXdgToplevel::minSize() const
+QSize WaylandXdgToplevel::minSize() const
 {
-    Q_D(const QWaylandXdgToplevel);
+    Q_D(const WaylandXdgToplevel);
     return d->m_minSize;
 }
 
 /*!
- * \property QWaylandXdgToplevel::states
+ * \property WaylandXdgToplevel::states
  *
- * This property holds the last states the client acknowledged for this QWaylandToplevel.
+ * This property holds the last states the client acknowledged for this WaylandToplevel.
  */
-QList<QWaylandXdgToplevel::State> QWaylandXdgToplevel::states() const
+QList<WaylandXdgToplevel::State> WaylandXdgToplevel::states() const
 {
-    Q_D(const QWaylandXdgToplevel);
+    Q_D(const WaylandXdgToplevel);
     return d->m_lastAckedConfigure.states;
 }
 
@@ -879,14 +881,14 @@ QList<QWaylandXdgToplevel::State> QWaylandXdgToplevel::states() const
  */
 
 /*!
- * \property QWaylandXdgToplevel::maximized
+ * \property WaylandXdgToplevel::maximized
  *
  * This property holds whether the client has acknowledged that it should be maximized.
  */
-bool QWaylandXdgToplevel::maximized() const
+bool WaylandXdgToplevel::maximized() const
 {
-    Q_D(const QWaylandXdgToplevel);
-    return d->m_lastAckedConfigure.states.contains(QWaylandXdgToplevel::State::MaximizedState);
+    Q_D(const WaylandXdgToplevel);
+    return d->m_lastAckedConfigure.states.contains(WaylandXdgToplevel::State::MaximizedState);
 }
 
 /*!
@@ -896,14 +898,14 @@ bool QWaylandXdgToplevel::maximized() const
  */
 
 /*!
- * \property QWaylandXdgToplevel::fullscreen
+ * \property WaylandXdgToplevel::fullscreen
  *
  * This property holds whether the client has acknowledged that it should be fullscreen.
  */
-bool QWaylandXdgToplevel::fullscreen() const
+bool WaylandXdgToplevel::fullscreen() const
 {
-    Q_D(const QWaylandXdgToplevel);
-    return d->m_lastAckedConfigure.states.contains(QWaylandXdgToplevel::State::FullscreenState);
+    Q_D(const WaylandXdgToplevel);
+    return d->m_lastAckedConfigure.states.contains(WaylandXdgToplevel::State::FullscreenState);
 }
 
 /*!
@@ -913,14 +915,14 @@ bool QWaylandXdgToplevel::fullscreen() const
  */
 
 /*!
- * \property QWaylandXdgToplevel::resizing
+ * \property WaylandXdgToplevel::resizing
  *
  * This property holds whether the client has acknowledged that it is being resized.
  */
-bool QWaylandXdgToplevel::resizing() const
+bool WaylandXdgToplevel::resizing() const
 {
-    Q_D(const QWaylandXdgToplevel);
-    return d->m_lastAckedConfigure.states.contains(QWaylandXdgToplevel::State::ResizingState);
+    Q_D(const WaylandXdgToplevel);
+    return d->m_lastAckedConfigure.states.contains(WaylandXdgToplevel::State::ResizingState);
 }
 
 /*!
@@ -930,18 +932,18 @@ bool QWaylandXdgToplevel::resizing() const
  */
 
 /*!
- * \property QWaylandXdgToplevel::activated
+ * \property WaylandXdgToplevel::activated
  *
  * This property holds whether toplevel is drawing itself as having input focus.
  */
-bool QWaylandXdgToplevel::activated() const
+bool WaylandXdgToplevel::activated() const
 {
-    Q_D(const QWaylandXdgToplevel);
-    return d->m_lastAckedConfigure.states.contains(QWaylandXdgToplevel::State::ActivatedState);
+    Q_D(const WaylandXdgToplevel);
+    return d->m_lastAckedConfigure.states.contains(WaylandXdgToplevel::State::ActivatedState);
 }
 
 /*!
- * \enum QWaylandXdgToplevel::DecorationMode
+ * \enum WaylandXdgToplevel::DecorationMode
  *
  * This enum type is used to specify the window decoration mode for toplevel windows.
  *
@@ -962,15 +964,15 @@ bool QWaylandXdgToplevel::activated() const
  */
 
 /*!
- * \property QWaylandXdgToplevel::decorationMode
+ * \property WaylandXdgToplevel::decorationMode
  *
  * This property holds the current window decoration mode for this toplevel.
  *
- * \sa QWaylandXdgDecorationManagerV1
+ * \sa WaylandXdgDecorationManagerV1
  */
-QWaylandXdgToplevel::DecorationMode QWaylandXdgToplevel::decorationMode() const
+WaylandXdgToplevel::DecorationMode WaylandXdgToplevel::decorationMode() const
 {
-    Q_D(const QWaylandXdgToplevel);
+    Q_D(const WaylandXdgToplevel);
     return d->m_decoration ? d->m_decoration->configuredMode() : DecorationMode::ClientSideDecoration;
 }
 
@@ -985,7 +987,7 @@ QWaylandXdgToplevel::DecorationMode QWaylandXdgToplevel::decorationMode() const
  * Convenience for computing the new size given the current \a size, a \a delta, and
  * the \a edges active in the drag.
  */
-QSize QWaylandXdgToplevel::sizeForResize(const QSizeF &size, const QPointF &delta, Qt::Edges edges) const
+QSize WaylandXdgToplevel::sizeForResize(const QSizeF &size, const QPointF &delta, Qt::Edges edges) const
 {
     qreal width = size.width();
     qreal height = size.height();
@@ -1012,21 +1014,21 @@ QSize QWaylandXdgToplevel::sizeForResize(const QSizeF &size, const QPointF &delt
 /*!
  * Sends a configure event to the client. Parameter \a size contains the pixel size
  * of the surface. A size of zero means the client is free to decide the size.
- * Known \a states are enumerated in QWaylandXdgToplevel::State.
+ * Known \a states are enumerated in WaylandXdgToplevel::State.
  */
-uint QWaylandXdgToplevel::sendConfigure(const QSize &size, const QList<QWaylandXdgToplevel::State> &states)
+uint WaylandXdgToplevel::sendConfigure(const QSize &size, const QList<WaylandXdgToplevel::State> &states)
 {
     if (!size.isValid()) {
         qWarning() << "Can't configure xdg_toplevel with an invalid size" << size;
         return 0;
     }
-    Q_D(QWaylandXdgToplevel);
+    Q_D(WaylandXdgToplevel);
     auto statesBytes = QByteArray::fromRawData(reinterpret_cast<const char *>(states.data()),
                                                states.size() * static_cast<int>(sizeof(State)));
     uint32_t serial = d->m_xdgSurface->surface()->compositor()->nextSerial();
-    d->m_pendingConfigures.append(QWaylandXdgToplevelPrivate::ConfigureEvent{states, size, serial});
+    d->m_pendingConfigures.append(WaylandXdgToplevelPrivate::ConfigureEvent{states, size, serial});
     d->send_configure(size.width(), size.height(), statesBytes);
-    QWaylandXdgSurfacePrivate::get(d->m_xdgSurface)->send_configure(serial);
+    WaylandXdgSurfacePrivate::get(d->m_xdgSurface)->send_configure(serial);
     return serial;
 }
 
@@ -1037,7 +1039,7 @@ uint QWaylandXdgToplevel::sendConfigure(const QSize &size, const QList<QWaylandX
  * A size of zero means the client is free to decide the size.
  * Known \a states are enumerated in XdgToplevel::State.
  */
-uint QWaylandXdgToplevel::sendConfigure(const QSize &size, const QList<int> &states)
+uint WaylandXdgToplevel::sendConfigure(const QSize &size, const QList<int> &states)
 {
     QList<State> s;
     for (auto state : states)
@@ -1054,9 +1056,9 @@ uint QWaylandXdgToplevel::sendConfigure(const QSize &size, const QList<int> &sta
 /*!
  * Sends a close event to the client. The client may choose to ignore the event.
  */
-void QWaylandXdgToplevel::sendClose()
+void WaylandXdgToplevel::sendClose()
 {
-    Q_D(QWaylandXdgToplevel);
+    Q_D(WaylandXdgToplevel);
     d->send_close();
 }
 
@@ -1075,15 +1077,15 @@ void QWaylandXdgToplevel::sendClose()
  *
  * \a size is the new size of the window.
  */
-uint QWaylandXdgToplevel::sendMaximized(const QSize &size)
+uint WaylandXdgToplevel::sendMaximized(const QSize &size)
 {
-    Q_D(QWaylandXdgToplevel);
-    QWaylandXdgToplevelPrivate::ConfigureEvent conf = d->lastSentConfigure();
+    Q_D(WaylandXdgToplevel);
+    WaylandXdgToplevelPrivate::ConfigureEvent conf = d->lastSentConfigure();
 
-    if (!conf.states.contains(QWaylandXdgToplevel::State::MaximizedState))
-        conf.states.append(QWaylandXdgToplevel::State::MaximizedState);
-    conf.states.removeOne(QWaylandXdgToplevel::State::FullscreenState);
-    conf.states.removeOne(QWaylandXdgToplevel::State::ResizingState);
+    if (!conf.states.contains(WaylandXdgToplevel::State::MaximizedState))
+        conf.states.append(WaylandXdgToplevel::State::MaximizedState);
+    conf.states.removeOne(WaylandXdgToplevel::State::FullscreenState);
+    conf.states.removeOne(WaylandXdgToplevel::State::ResizingState);
 
     return sendConfigure(size, conf.states);
 }
@@ -1105,14 +1107,14 @@ uint QWaylandXdgToplevel::sendMaximized(const QSize &size)
  *
  * \a size is the new size of the window. If \a size is zero, the client decides the size.
  */
-uint QWaylandXdgToplevel::sendUnmaximized(const QSize &size)
+uint WaylandXdgToplevel::sendUnmaximized(const QSize &size)
 {
-    Q_D(QWaylandXdgToplevel);
-    QWaylandXdgToplevelPrivate::ConfigureEvent conf = d->lastSentConfigure();
+    Q_D(WaylandXdgToplevel);
+    WaylandXdgToplevelPrivate::ConfigureEvent conf = d->lastSentConfigure();
 
-    conf.states.removeOne(QWaylandXdgToplevel::State::MaximizedState);
-    conf.states.removeOne(QWaylandXdgToplevel::State::FullscreenState);
-    conf.states.removeOne(QWaylandXdgToplevel::State::ResizingState);
+    conf.states.removeOne(WaylandXdgToplevel::State::MaximizedState);
+    conf.states.removeOne(WaylandXdgToplevel::State::FullscreenState);
+    conf.states.removeOne(WaylandXdgToplevel::State::ResizingState);
 
     return sendConfigure(size, conf.states);
 
@@ -1137,15 +1139,15 @@ uint QWaylandXdgToplevel::sendUnmaximized(const QSize &size)
  *
  * \a size is the new size of the window.
  */
-uint QWaylandXdgToplevel::sendFullscreen(const QSize &size)
+uint WaylandXdgToplevel::sendFullscreen(const QSize &size)
 {
-    Q_D(QWaylandXdgToplevel);
-    QWaylandXdgToplevelPrivate::ConfigureEvent conf = d->lastSentConfigure();
+    Q_D(WaylandXdgToplevel);
+    WaylandXdgToplevelPrivate::ConfigureEvent conf = d->lastSentConfigure();
 
-    if (!conf.states.contains(QWaylandXdgToplevel::State::FullscreenState))
-        conf.states.append(QWaylandXdgToplevel::State::FullscreenState);
-    conf.states.removeOne(QWaylandXdgToplevel::State::MaximizedState);
-    conf.states.removeOne(QWaylandXdgToplevel::State::ResizingState);
+    if (!conf.states.contains(WaylandXdgToplevel::State::FullscreenState))
+        conf.states.append(WaylandXdgToplevel::State::FullscreenState);
+    conf.states.removeOne(WaylandXdgToplevel::State::MaximizedState);
+    conf.states.removeOne(WaylandXdgToplevel::State::ResizingState);
 
     return sendConfigure(size, conf.states);
 }
@@ -1165,33 +1167,33 @@ uint QWaylandXdgToplevel::sendFullscreen(const QSize &size)
  *
  * \a maxSize is the new size of the window.
  */
-uint QWaylandXdgToplevel::sendResizing(const QSize &maxSize)
+uint WaylandXdgToplevel::sendResizing(const QSize &maxSize)
 {
-    Q_D(QWaylandXdgToplevel);
-    QWaylandXdgToplevelPrivate::ConfigureEvent conf = d->lastSentConfigure();
+    Q_D(WaylandXdgToplevel);
+    WaylandXdgToplevelPrivate::ConfigureEvent conf = d->lastSentConfigure();
 
-    if (!conf.states.contains(QWaylandXdgToplevel::State::ResizingState))
-        conf.states.append(QWaylandXdgToplevel::State::ResizingState);
-    conf.states.removeOne(QWaylandXdgToplevel::State::MaximizedState);
-    conf.states.removeOne(QWaylandXdgToplevel::State::FullscreenState);
+    if (!conf.states.contains(WaylandXdgToplevel::State::ResizingState))
+        conf.states.append(WaylandXdgToplevel::State::ResizingState);
+    conf.states.removeOne(WaylandXdgToplevel::State::MaximizedState);
+    conf.states.removeOne(WaylandXdgToplevel::State::FullscreenState);
 
     return sendConfigure(maxSize, conf.states);
 }
 
 /*!
- * Returns the surface role for the QWaylandToplevel.
+ * Returns the surface role for the WaylandToplevel.
  */
-QWaylandSurfaceRole *QWaylandXdgToplevel::role()
+WaylandSurfaceRole *WaylandXdgToplevel::role()
 {
-    return &QWaylandXdgToplevelPrivate::s_role;
+    return &WaylandXdgToplevelPrivate::s_role;
 }
 
 /*!
- * Returns the QWaylandXdgToplevel corresponding to the \a resource.
+ * Returns the WaylandXdgToplevel corresponding to the \a resource.
  */
-QWaylandXdgToplevel *QWaylandXdgToplevel::fromResource(wl_resource *resource)
+WaylandXdgToplevel *WaylandXdgToplevel::fromResource(wl_resource *resource)
 {
-    if (auto p = QtWayland::fromResource<QWaylandXdgToplevelPrivate *>(resource))
+    if (auto p = QtWayland::fromResource<WaylandXdgToplevelPrivate *>(resource))
         return p->q_func();
     return nullptr;
 }
@@ -1207,7 +1209,7 @@ QWaylandXdgToplevel *QWaylandXdgToplevel::fromResource(wl_resource *resource)
  */
 
 /*!
- * \fn void QWaylandXdgShell::xdgSurfaceCreated(QWaylandXdgSurface *xdgSurface)
+ * \fn void WaylandXdgShell::xdgSurfaceCreated(WaylandXdgSurface *xdgSurface)
  *
  * This signal is emitted when the client has created a \c xdg_surface.
  * Note that \a xdgSurface is not mapped, i.e. according to the \c xdg-shell
@@ -1227,11 +1229,11 @@ QWaylandXdgToplevel *QWaylandXdgToplevel::fromResource(wl_resource *resource)
  */
 
 /*!
- * \fn void QWaylandXdgShell::toplevelCreated(QWaylandXdgToplevel *toplevel, QWaylandXdgSurface *xdgSurface)
+ * \fn void WaylandXdgShell::toplevelCreated(WaylandXdgToplevel *toplevel, WaylandXdgSurface *xdgSurface)
  *
  * This signal is emitted when the client has created a \c xdg_toplevel.
- * A common use case is to let the handler of this signal instantiate a QWaylandShellSurfaceItem or
- * QWaylandQuickItem for displaying \a toplevel in a QtQuick scene.
+ * A common use case is to let the handler of this signal instantiate a WaylandShellSurfaceItem or
+ * WaylandQuickItem for displaying \a toplevel in a QtQuick scene.
  *
  * \a xdgSurface is the XdgSurface \a toplevel is the role object for.
  */
@@ -1247,11 +1249,11 @@ QWaylandXdgToplevel *QWaylandXdgToplevel::fromResource(wl_resource *resource)
  */
 
 /*!
- * \fn void QWaylandXdgShell::popupCreated(QWaylandXdgPopup *popup, QWaylandXdgSurface *xdgSurface)
+ * \fn void WaylandXdgShell::popupCreated(WaylandXdgPopup *popup, WaylandXdgSurface *xdgSurface)
  *
  * This signal is emitted when the client has created a \c xdg_popup.
- * A common use case is to let the handler of this signal instantiate a QWaylandShellSurfaceItem or
- * QWaylandQuickItem for displaying \a popup in a QtQuick scene.
+ * A common use case is to let the handler of this signal instantiate a WaylandShellSurfaceItem or
+ * WaylandQuickItem for displaying \a popup in a QtQuick scene.
  *
  * \a xdgSurface is the XdgSurface \a popup is the role object for.
  */
@@ -1265,14 +1267,14 @@ QWaylandXdgToplevel *QWaylandXdgToplevel::fromResource(wl_resource *resource)
  */
 
 /*!
- * \fn void QWaylandXdgShell::pong(uint serial)
+ * \fn void WaylandXdgShell::pong(uint serial)
  *
  * This signal is emitted when the client has responded to a ping event with serial, \a serial.
  *
- * \sa QWaylandXdgShell::ping()
+ * \sa WaylandXdgShell::ping()
  */
 
-QList<int> QWaylandXdgToplevel::statesAsInts() const
+QList<int> WaylandXdgToplevel::statesAsInts() const
 {
    QList<int> list;
    const auto s = states();
@@ -1283,17 +1285,17 @@ QList<int> QWaylandXdgToplevel::statesAsInts() const
    return list;
 }
 
-QWaylandSurfaceRole QWaylandXdgToplevelPrivate::s_role("xdg_toplevel");
+WaylandSurfaceRole WaylandXdgToplevelPrivate::s_role("xdg_toplevel");
 
-QWaylandXdgToplevelPrivate::QWaylandXdgToplevelPrivate(QWaylandXdgSurface *xdgSurface, const QWaylandResource &resource)
+WaylandXdgToplevelPrivate::WaylandXdgToplevelPrivate(WaylandXdgSurface *xdgSurface, const WaylandResource &resource)
     : m_xdgSurface(xdgSurface)
 {
     init(resource.resource());
 }
 
-void QWaylandXdgToplevelPrivate::handleAckConfigure(uint serial)
+void WaylandXdgToplevelPrivate::handleAckConfigure(uint serial)
 {
-    Q_Q(QWaylandXdgToplevel);
+    Q_Q(WaylandXdgToplevel);
     ConfigureEvent config;
     Q_FOREVER {
         if (m_pendingConfigures.empty()) {
@@ -1337,37 +1339,37 @@ void QWaylandXdgToplevelPrivate::handleAckConfigure(uint serial)
         emit q->statesChanged();
 }
 
-void QWaylandXdgToplevelPrivate::handleFocusLost()
+void WaylandXdgToplevelPrivate::handleFocusLost()
 {
-    Q_Q(QWaylandXdgToplevel);
-    QWaylandXdgToplevelPrivate::ConfigureEvent current = lastSentConfigure();
-    current.states.removeOne(QWaylandXdgToplevel::State::ActivatedState);
+    Q_Q(WaylandXdgToplevel);
+    WaylandXdgToplevelPrivate::ConfigureEvent current = lastSentConfigure();
+    current.states.removeOne(WaylandXdgToplevel::State::ActivatedState);
     q->sendConfigure(current.size, current.states);
 }
 
-void QWaylandXdgToplevelPrivate::handleFocusReceived()
+void WaylandXdgToplevelPrivate::handleFocusReceived()
 {
-    Q_Q(QWaylandXdgToplevel);
-    QWaylandXdgToplevelPrivate::ConfigureEvent current = lastSentConfigure();
-    if (!current.states.contains(QWaylandXdgToplevel::State::ActivatedState)) {
-        current.states.push_back(QWaylandXdgToplevel::State::ActivatedState);
+    Q_Q(WaylandXdgToplevel);
+    WaylandXdgToplevelPrivate::ConfigureEvent current = lastSentConfigure();
+    if (!current.states.contains(WaylandXdgToplevel::State::ActivatedState)) {
+        current.states.push_back(WaylandXdgToplevel::State::ActivatedState);
         q->sendConfigure(current.size, current.states);
     }
 }
 
-Qt::Edges QWaylandXdgToplevelPrivate::convertToEdges(resize_edge edge)
+Qt::Edges WaylandXdgToplevelPrivate::convertToEdges(resize_edge edge)
 {
     return Qt::Edges(((edge & 0b1100) >> 1) | ((edge & 0b0010) << 2) | (edge & 0b0001));
 }
 
-void QWaylandXdgToplevelPrivate::xdg_toplevel_destroy_resource(QtWaylandServer::xdg_toplevel::Resource *resource)
+void WaylandXdgToplevelPrivate::xdg_toplevel_destroy_resource(PrivateServer::xdg_toplevel::Resource *resource)
 {
     Q_UNUSED(resource);
-    Q_Q(QWaylandXdgToplevel);
+    Q_Q(WaylandXdgToplevel);
     delete q;
 }
 
-void QWaylandXdgToplevelPrivate::xdg_toplevel_destroy(QtWaylandServer::xdg_toplevel::Resource *resource)
+void WaylandXdgToplevelPrivate::xdg_toplevel_destroy(PrivateServer::xdg_toplevel::Resource *resource)
 {
     if (Q_UNLIKELY(m_decoration))
         qWarning() << "Client error: xdg_toplevel destroyed before its decoration object";
@@ -1376,12 +1378,12 @@ void QWaylandXdgToplevelPrivate::xdg_toplevel_destroy(QtWaylandServer::xdg_tople
     //TODO: Should the xdg surface be desroyed as well? Or is it allowed to recreate a new toplevel for it?
 }
 
-void QWaylandXdgToplevelPrivate::xdg_toplevel_set_parent(QtWaylandServer::xdg_toplevel::Resource *resource, wl_resource *parent)
+void WaylandXdgToplevelPrivate::xdg_toplevel_set_parent(PrivateServer::xdg_toplevel::Resource *resource, wl_resource *parent)
 {
     Q_UNUSED(resource);
-    QWaylandXdgToplevel *parentToplevel = QWaylandXdgToplevel::fromResource(parent);
+    WaylandXdgToplevel *parentToplevel = WaylandXdgToplevel::fromResource(parent);
 
-    Q_Q(QWaylandXdgToplevel);
+    Q_Q(WaylandXdgToplevel);
 
     if (m_parentToplevel != parentToplevel) {
         m_parentToplevel = parentToplevel;
@@ -1390,62 +1392,62 @@ void QWaylandXdgToplevelPrivate::xdg_toplevel_set_parent(QtWaylandServer::xdg_to
 
     if (m_parentToplevel && m_xdgSurface->windowType() != Qt::WindowType::SubWindow) {
         // There's a parent now, which means the surface is transient
-        QWaylandXdgSurfacePrivate::get(m_xdgSurface)->setWindowType(Qt::WindowType::SubWindow);
+        WaylandXdgSurfacePrivate::get(m_xdgSurface)->setWindowType(Qt::WindowType::SubWindow);
     } else if (!m_parentToplevel && m_xdgSurface->windowType() != Qt::WindowType::Window) {
         // When the surface has no parent it is toplevel
-        QWaylandXdgSurfacePrivate::get(m_xdgSurface)->setWindowType(Qt::WindowType::Window);
+        WaylandXdgSurfacePrivate::get(m_xdgSurface)->setWindowType(Qt::WindowType::Window);
     }
 }
 
-void QWaylandXdgToplevelPrivate::xdg_toplevel_set_title(QtWaylandServer::xdg_toplevel::Resource *resource, const QString &title)
+void WaylandXdgToplevelPrivate::xdg_toplevel_set_title(PrivateServer::xdg_toplevel::Resource *resource, const QString &title)
 {
     Q_UNUSED(resource);
     if (title == m_title)
         return;
-    Q_Q(QWaylandXdgToplevel);
+    Q_Q(WaylandXdgToplevel);
     m_title = title;
     emit q->titleChanged();
 }
 
-void QWaylandXdgToplevelPrivate::xdg_toplevel_set_app_id(QtWaylandServer::xdg_toplevel::Resource *resource, const QString &app_id)
+void WaylandXdgToplevelPrivate::xdg_toplevel_set_app_id(PrivateServer::xdg_toplevel::Resource *resource, const QString &app_id)
 {
     Q_UNUSED(resource);
     if (app_id == m_appId)
         return;
-    Q_Q(QWaylandXdgToplevel);
+    Q_Q(WaylandXdgToplevel);
     m_appId = app_id;
     emit q->appIdChanged();
 }
 
-void QWaylandXdgToplevelPrivate::xdg_toplevel_show_window_menu(QtWaylandServer::xdg_toplevel::Resource *resource, wl_resource *seatResource, uint32_t serial, int32_t x, int32_t y)
+void WaylandXdgToplevelPrivate::xdg_toplevel_show_window_menu(PrivateServer::xdg_toplevel::Resource *resource, wl_resource *seatResource, uint32_t serial, int32_t x, int32_t y)
 {
     Q_UNUSED(resource);
     Q_UNUSED(serial);
     QPoint position(x, y);
-    auto seat = QWaylandSeat::fromSeatResource(seatResource);
-    Q_Q(QWaylandXdgToplevel);
+    auto seat = WaylandSeat::fromSeatResource(seatResource);
+    Q_Q(WaylandXdgToplevel);
     emit q->showWindowMenu(seat, position);
 }
 
-void QWaylandXdgToplevelPrivate::xdg_toplevel_move(Resource *resource, wl_resource *seatResource, uint32_t serial)
+void WaylandXdgToplevelPrivate::xdg_toplevel_move(Resource *resource, wl_resource *seatResource, uint32_t serial)
 {
     Q_UNUSED(resource);
     Q_UNUSED(serial);
-    Q_Q(QWaylandXdgToplevel);
-    QWaylandSeat *seat = QWaylandSeat::fromSeatResource(seatResource);
+    Q_Q(WaylandXdgToplevel);
+    WaylandSeat *seat = WaylandSeat::fromSeatResource(seatResource);
     emit q->startMove(seat);
 }
 
-void QWaylandXdgToplevelPrivate::xdg_toplevel_resize(QtWaylandServer::xdg_toplevel::Resource *resource, wl_resource *seatResource, uint32_t serial, uint32_t edges)
+void WaylandXdgToplevelPrivate::xdg_toplevel_resize(PrivateServer::xdg_toplevel::Resource *resource, wl_resource *seatResource, uint32_t serial, uint32_t edges)
 {
     Q_UNUSED(resource);
     Q_UNUSED(serial);
-    Q_Q(QWaylandXdgToplevel);
-    QWaylandSeat *seat = QWaylandSeat::fromSeatResource(seatResource);
+    Q_Q(WaylandXdgToplevel);
+    WaylandSeat *seat = WaylandSeat::fromSeatResource(seatResource);
     emit q->startResize(seat, convertToEdges(resize_edge(edges)));
 }
 
-void QWaylandXdgToplevelPrivate::xdg_toplevel_set_max_size(QtWaylandServer::xdg_toplevel::Resource *resource, int32_t width, int32_t height)
+void WaylandXdgToplevelPrivate::xdg_toplevel_set_max_size(PrivateServer::xdg_toplevel::Resource *resource, int32_t width, int32_t height)
 {
     Q_UNUSED(resource);
 
@@ -1471,11 +1473,11 @@ void QWaylandXdgToplevelPrivate::xdg_toplevel_set_max_size(QtWaylandServer::xdg_
 
     m_maxSize = maxSize;
 
-    Q_Q(QWaylandXdgToplevel);
+    Q_Q(WaylandXdgToplevel);
     emit q->maxSizeChanged();
 }
 
-void QWaylandXdgToplevelPrivate::xdg_toplevel_set_min_size(QtWaylandServer::xdg_toplevel::Resource *resource, int32_t width, int32_t height)
+void WaylandXdgToplevelPrivate::xdg_toplevel_set_min_size(PrivateServer::xdg_toplevel::Resource *resource, int32_t width, int32_t height)
 {
     Q_UNUSED(resource);
 
@@ -1501,50 +1503,50 @@ void QWaylandXdgToplevelPrivate::xdg_toplevel_set_min_size(QtWaylandServer::xdg_
 
     m_minSize = minSize;
 
-    Q_Q(QWaylandXdgToplevel);
+    Q_Q(WaylandXdgToplevel);
     emit q->minSizeChanged();
 }
 
-void QWaylandXdgToplevelPrivate::xdg_toplevel_set_maximized(QtWaylandServer::xdg_toplevel::Resource *resource)
+void WaylandXdgToplevelPrivate::xdg_toplevel_set_maximized(PrivateServer::xdg_toplevel::Resource *resource)
 {
     Q_UNUSED(resource);
-    Q_Q(QWaylandXdgToplevel);
+    Q_Q(WaylandXdgToplevel);
     emit q->setMaximized();
 }
 
-void QWaylandXdgToplevelPrivate::xdg_toplevel_unset_maximized(QtWaylandServer::xdg_toplevel::Resource *resource)
+void WaylandXdgToplevelPrivate::xdg_toplevel_unset_maximized(PrivateServer::xdg_toplevel::Resource *resource)
 {
     Q_UNUSED(resource);
-    Q_Q(QWaylandXdgToplevel);
+    Q_Q(WaylandXdgToplevel);
     emit q->unsetMaximized();
 }
 
-void QWaylandXdgToplevelPrivate::xdg_toplevel_set_fullscreen(QtWaylandServer::xdg_toplevel::Resource *resource, wl_resource *output_res)
+void WaylandXdgToplevelPrivate::xdg_toplevel_set_fullscreen(PrivateServer::xdg_toplevel::Resource *resource, wl_resource *output_res)
 {
     Q_UNUSED(resource);
-    Q_Q(QWaylandXdgToplevel);
-    QWaylandOutput *output = output_res ? QWaylandOutput::fromResource(output_res) : nullptr;
+    Q_Q(WaylandXdgToplevel);
+    WaylandOutput *output = output_res ? WaylandOutput::fromResource(output_res) : nullptr;
     emit q->setFullscreen(output);
 }
 
-void QWaylandXdgToplevelPrivate::xdg_toplevel_unset_fullscreen(QtWaylandServer::xdg_toplevel::Resource *resource)
+void WaylandXdgToplevelPrivate::xdg_toplevel_unset_fullscreen(PrivateServer::xdg_toplevel::Resource *resource)
 {
     Q_UNUSED(resource);
-    Q_Q(QWaylandXdgToplevel);
+    Q_Q(WaylandXdgToplevel);
     emit q->unsetFullscreen();
 }
 
-void QWaylandXdgToplevelPrivate::xdg_toplevel_set_minimized(QtWaylandServer::xdg_toplevel::Resource *resource)
+void WaylandXdgToplevelPrivate::xdg_toplevel_set_minimized(PrivateServer::xdg_toplevel::Resource *resource)
 {
     Q_UNUSED(resource);
-    Q_Q(QWaylandXdgToplevel);
+    Q_Q(WaylandXdgToplevel);
     emit q->setMinimized();
 }
 
 /*!
  * \qmltype XdgPopup
- * \instantiates QWaylandXdgPopup
- * \inqmlmodule QtWayland.Compositor.XdgShell
+ * \instantiates WaylandXdgPopup
+ * \inqmlmodule Aurora.Compositor.XdgShell
  * \since 5.12
  * \brief XdgPopup represents the popup specific parts of and xdg surface.
  *
@@ -1556,24 +1558,24 @@ void QWaylandXdgToplevelPrivate::xdg_toplevel_set_minimized(QtWaylandServer::xdg
  */
 
 /*!
- * \class QWaylandXdgPopup
+ * \class WaylandXdgPopup
  * \inmodule QtWaylandCompositor
  * \since 5.12
- * \brief The QWaylandXdgPopup class represents the popup specific parts of an xdg surface.
+ * \brief The WaylandXdgPopup class represents the popup specific parts of an xdg surface.
  *
- * This class is part of the QWaylandXdgShell extension and provides a way to
- * extend the functionality of a QWaylandXdgSurface with features
+ * This class is part of the WaylandXdgShell extension and provides a way to
+ * extend the functionality of a WaylandXdgSurface with features
  * specific to desktop-style menus for an xdg surface.
  *
  * It corresponds to the Wayland interface \c xdg_popup.
  */
 
 /*!
- * Constructs a QWaylandXdgPopup.
+ * Constructs a WaylandXdgPopup.
  */
-QWaylandXdgPopup::QWaylandXdgPopup(QWaylandXdgSurface *xdgSurface, QWaylandXdgSurface *parentXdgSurface,
-                                   QWaylandXdgPositioner *positioner, QWaylandResource &resource)
-    : QObject(*new QWaylandXdgPopupPrivate(xdgSurface, parentXdgSurface, positioner, resource))
+WaylandXdgPopup::WaylandXdgPopup(WaylandXdgSurface *xdgSurface, WaylandXdgSurface *parentXdgSurface,
+                                   WaylandXdgPositioner *positioner, WaylandResource &resource)
+    : QObject(*new WaylandXdgPopupPrivate(xdgSurface, parentXdgSurface, positioner, resource))
 {
 }
 
@@ -1584,13 +1586,13 @@ QWaylandXdgPopup::QWaylandXdgPopup(QWaylandXdgSurface *xdgSurface, QWaylandXdgSu
  */
 
 /*!
- * \property QWaylandXdgPopup::xdgSurface
+ * \property WaylandXdgPopup::xdgSurface
  *
- * This property holds the QWaylandXdgSurface associated with this QWaylandXdgPopup.
+ * This property holds the WaylandXdgSurface associated with this WaylandXdgPopup.
  */
-QWaylandXdgSurface *QWaylandXdgPopup::xdgSurface() const
+WaylandXdgSurface *WaylandXdgPopup::xdgSurface() const
 {
-    Q_D(const QWaylandXdgPopup);
+    Q_D(const WaylandXdgPopup);
     return d->m_xdgSurface;
 }
 
@@ -1601,14 +1603,14 @@ QWaylandXdgSurface *QWaylandXdgPopup::xdgSurface() const
  */
 
 /*!
- * \property QWaylandXdgPopup::parentXdgSurface
+ * \property WaylandXdgPopup::parentXdgSurface
  *
- * This property holds the QWaylandXdgSurface associated with the parent of this
- * QWaylandXdgPopup.
+ * This property holds the WaylandXdgSurface associated with the parent of this
+ * WaylandXdgPopup.
  */
-QWaylandXdgSurface *QWaylandXdgPopup::parentXdgSurface() const
+WaylandXdgSurface *WaylandXdgPopup::parentXdgSurface() const
 {
-    Q_D(const QWaylandXdgPopup);
+    Q_D(const WaylandXdgPopup);
     return d->m_parentXdgSurface;
 }
 
@@ -1620,14 +1622,14 @@ QWaylandXdgSurface *QWaylandXdgPopup::parentXdgSurface() const
  */
 
 /*!
- * \property QWaylandXdgPopup::configuredGeometry
+ * \property WaylandXdgPopup::configuredGeometry
  *
  * The window geometry the popup received in the configure event. Relative to the
  * upper left corner of the parent surface.
  */
-QRect QWaylandXdgPopup::configuredGeometry() const
+QRect WaylandXdgPopup::configuredGeometry() const
 {
-    Q_D(const QWaylandXdgPopup);
+    Q_D(const WaylandXdgPopup);
     return d->m_geometry;
 }
 
@@ -1639,14 +1641,14 @@ QRect QWaylandXdgPopup::configuredGeometry() const
  */
 
 /*!
- * \property QWaylandXdgPopup::anchorRect
+ * \property WaylandXdgPopup::anchorRect
  *
  * Returns the anchor rectangle relative to the parent window geometry that the child
  * surface should be placed relative to.
  */
-QRect QWaylandXdgPopup::anchorRect() const
+QRect WaylandXdgPopup::anchorRect() const
 {
-    Q_D(const QWaylandXdgPopup);
+    Q_D(const WaylandXdgPopup);
     return d->m_positionerData.anchorRect;
 }
 
@@ -1665,15 +1667,15 @@ QRect QWaylandXdgPopup::anchorRect() const
  */
 
 /*!
- * \property QWaylandXdgPopup::anchorEdges
+ * \property WaylandXdgPopup::anchorEdges
  *
  * Returns the set of edges on the anchor rect that the child surface should be placed
  * relative to. If no edges are specified in a direction, the anchor point should be
  * centered between the edges.
  */
-Qt::Edges QWaylandXdgPopup::anchorEdges() const
+Qt::Edges WaylandXdgPopup::anchorEdges() const
 {
-    Q_D(const QWaylandXdgPopup);
+    Q_D(const WaylandXdgPopup);
     return d->m_positionerData.anchorEdges;
 }
 
@@ -1691,14 +1693,14 @@ Qt::Edges QWaylandXdgPopup::anchorEdges() const
  */
 
 /*!
- * \property QWaylandXdgPopup::gravityEdges
+ * \property WaylandXdgPopup::gravityEdges
  *
  * Specifies in what direction the surface should be positioned, relative to the anchor
  * point.
  */
-Qt::Edges QWaylandXdgPopup::gravityEdges() const
+Qt::Edges WaylandXdgPopup::gravityEdges() const
 {
-    Q_D(const QWaylandXdgPopup);
+    Q_D(const WaylandXdgPopup);
     return d->m_positionerData.gravityEdges;
 }
 
@@ -1713,13 +1715,13 @@ Qt::Edges QWaylandXdgPopup::gravityEdges() const
  */
 
 /*!
- * \property QWaylandXdgPopup::slideConstraints
+ * \property WaylandXdgPopup::slideConstraints
  *
  * This property holds the orientations in which the child should slide to fit within the screen.
  */
-Qt::Orientations QWaylandXdgPopup::slideConstraints() const
+Qt::Orientations WaylandXdgPopup::slideConstraints() const
 {
-    Q_D(const QWaylandXdgPopup);
+    Q_D(const WaylandXdgPopup);
     const uint flags = d->m_positionerData.constraintAdjustments;
 
     Qt::Orientations constraints = {};
@@ -1743,13 +1745,13 @@ Qt::Orientations QWaylandXdgPopup::slideConstraints() const
  */
 
 /*!
- * \property QWaylandXdgPopup::flipConstraints
+ * \property WaylandXdgPopup::flipConstraints
  *
  * This property holds the orientations in which the child should flip to fit within the screen.
  */
-Qt::Orientations QWaylandXdgPopup::flipConstraints() const
+Qt::Orientations WaylandXdgPopup::flipConstraints() const
 {
-    Q_D(const QWaylandXdgPopup);
+    Q_D(const WaylandXdgPopup);
     const uint flags = d->m_positionerData.constraintAdjustments;
 
     Qt::Orientations constraints = {};
@@ -1773,13 +1775,13 @@ Qt::Orientations QWaylandXdgPopup::flipConstraints() const
  */
 
 /*!
- * \property QWaylandXdgPopup::resizeConstraints
+ * \property WaylandXdgPopup::resizeConstraints
  *
  * This property holds the orientations in which the child should resize to fit within the screen.
  */
-Qt::Orientations QWaylandXdgPopup::resizeConstraints() const
+Qt::Orientations WaylandXdgPopup::resizeConstraints() const
 {
-    Q_D(const QWaylandXdgPopup);
+    Q_D(const WaylandXdgPopup);
     const uint flags = d->m_positionerData.constraintAdjustments;
 
     Qt::Orientations constraints = {};
@@ -1800,14 +1802,14 @@ Qt::Orientations QWaylandXdgPopup::resizeConstraints() const
  */
 
 /*!
- * \property QWaylandXdgPopup::offset
+ * \property WaylandXdgPopup::offset
  *
  * Returns the surface position relative to the position of the anchor on the anchor
  * rectangle and the anchor on the surface.
  */
-QPoint QWaylandXdgPopup::offset() const
+QPoint WaylandXdgPopup::offset() const
 {
-    Q_D(const QWaylandXdgPopup);
+    Q_D(const WaylandXdgPopup);
     return d->m_positionerData.offset;
 }
 
@@ -1818,13 +1820,13 @@ QPoint QWaylandXdgPopup::offset() const
  */
 
 /*!
- * \property QWaylandXdgPopup::positionerSize
+ * \property WaylandXdgPopup::positionerSize
  *
  * Returns the size requested for the window geometry by the positioner object.
  */
-QSize QWaylandXdgPopup::positionerSize() const
+QSize WaylandXdgPopup::positionerSize() const
 {
-    Q_D(const QWaylandXdgPopup);
+    Q_D(const WaylandXdgPopup);
     return d->m_positionerData.size;
 }
 
@@ -1836,14 +1838,14 @@ QSize QWaylandXdgPopup::positionerSize() const
  */
 
 /*!
- * \property QWaylandXdgPopup::unconstrainedPosition
+ * \property WaylandXdgPopup::unconstrainedPosition
  *
  * The position of the surface relative to the parent window geometry if the surface
  * is not constrained. I.e. when not moved to fit inside the screen or similar.
  */
-QPoint QWaylandXdgPopup::unconstrainedPosition() const
+QPoint WaylandXdgPopup::unconstrainedPosition() const
 {
-    Q_D(const QWaylandXdgPopup);
+    Q_D(const WaylandXdgPopup);
     return d->m_positionerData.unconstrainedPosition();
 }
 
@@ -1860,12 +1862,12 @@ QPoint QWaylandXdgPopup::unconstrainedPosition() const
  * Sends a configure event to the client. \a geometry contains the window geometry
  * relative to the upper left corner of the window geometry of the parent surface.
  *
- * This implicitly sends a configure event to the corresponding QWaylandXdgSurface
+ * This implicitly sends a configure event to the corresponding WaylandXdgSurface
  * as well.
  */
-uint QWaylandXdgPopup::sendConfigure(const QRect &geometry)
+uint WaylandXdgPopup::sendConfigure(const QRect &geometry)
 {
-    Q_D(QWaylandXdgPopup);
+    Q_D(WaylandXdgPopup);
     return d->sendConfigure(geometry);
 }
 
@@ -1883,22 +1885,22 @@ uint QWaylandXdgPopup::sendConfigure(const QRect &geometry)
  * Dismiss the popup. According to the \c xdg-shell protocol this should make the
  * client destroy the popup.
  */
-void QWaylandXdgPopup::sendPopupDone()
+void WaylandXdgPopup::sendPopupDone()
 {
-    Q_D(QWaylandXdgPopup);
+    Q_D(WaylandXdgPopup);
     d->send_popup_done();
 }
 
 /*!
- * Returns the surface role for the QWaylandPopup.
+ * Returns the surface role for the WaylandPopup.
  */
-QWaylandSurfaceRole *QWaylandXdgPopup::role()
+WaylandSurfaceRole *WaylandXdgPopup::role()
 {
-    return &QWaylandXdgPopupPrivate::s_role;
+    return &WaylandXdgPopupPrivate::s_role;
 }
 
-QWaylandXdgPopupPrivate::QWaylandXdgPopupPrivate(QWaylandXdgSurface *xdgSurface, QWaylandXdgSurface *parentXdgSurface,
-                                                 QWaylandXdgPositioner *positioner, const QWaylandResource &resource)
+WaylandXdgPopupPrivate::WaylandXdgPopupPrivate(WaylandXdgSurface *xdgSurface, WaylandXdgSurface *parentXdgSurface,
+                                                 WaylandXdgPositioner *positioner, const WaylandResource &resource)
     : m_xdgSurface(xdgSurface)
     , m_parentXdgSurface(parentXdgSurface)
     , m_positionerData(positioner->m_data)
@@ -1906,15 +1908,15 @@ QWaylandXdgPopupPrivate::QWaylandXdgPopupPrivate(QWaylandXdgSurface *xdgSurface,
     Q_ASSERT(m_positionerData.isComplete());
     init(resource.resource());
 
-    QWaylandXdgSurfacePrivate::get(m_xdgSurface)->setWindowType(Qt::WindowType::Popup);
+    WaylandXdgSurfacePrivate::get(m_xdgSurface)->setWindowType(Qt::WindowType::Popup);
 
     //TODO: Need an API for sending a different initial configure
     sendConfigure(QRect(m_positionerData.unconstrainedPosition(), m_positionerData.size));
 }
 
-void QWaylandXdgPopupPrivate::handleAckConfigure(uint serial)
+void WaylandXdgPopupPrivate::handleAckConfigure(uint serial)
 {
-    Q_Q(QWaylandXdgPopup);
+    Q_Q(WaylandXdgPopup);
     ConfigureEvent config;
     Q_FOREVER {
         if (m_pendingConfigures.empty()) {
@@ -1936,22 +1938,22 @@ void QWaylandXdgPopupPrivate::handleAckConfigure(uint serial)
     emit q->configuredGeometryChanged();
 }
 
-uint QWaylandXdgPopupPrivate::sendConfigure(const QRect &geometry)
+uint WaylandXdgPopupPrivate::sendConfigure(const QRect &geometry)
 {
     uint32_t serial = m_xdgSurface->surface()->compositor()->nextSerial();
-    m_pendingConfigures.append(QWaylandXdgPopupPrivate::ConfigureEvent{geometry, serial});
+    m_pendingConfigures.append(WaylandXdgPopupPrivate::ConfigureEvent{geometry, serial});
     send_configure(geometry.x(), geometry.y(), geometry.width(), geometry.height());
-    QWaylandXdgSurfacePrivate::get(m_xdgSurface)->send_configure(serial);
+    WaylandXdgSurfacePrivate::get(m_xdgSurface)->send_configure(serial);
     return serial;
 }
 
-void QWaylandXdgPopupPrivate::xdg_popup_destroy(QtWaylandServer::xdg_popup::Resource *resource)
+void WaylandXdgPopupPrivate::xdg_popup_destroy(PrivateServer::xdg_popup::Resource *resource)
 {
     Q_UNUSED(resource);
     qWarning() << Q_FUNC_INFO << "Not implemented"; //TODO
 }
 
-void QWaylandXdgPopupPrivate::xdg_popup_grab(QtWaylandServer::xdg_popup::Resource *resource, wl_resource *seat, uint32_t serial)
+void WaylandXdgPopupPrivate::xdg_popup_grab(PrivateServer::xdg_popup::Resource *resource, wl_resource *seat, uint32_t serial)
 {
     Q_UNUSED(resource);
     Q_UNUSED(serial);
@@ -1961,18 +1963,18 @@ void QWaylandXdgPopupPrivate::xdg_popup_grab(QtWaylandServer::xdg_popup::Resourc
     //eventually send configure with activated.
 }
 
-QWaylandSurfaceRole QWaylandXdgPopupPrivate::s_role("xdg_popup");
+WaylandSurfaceRole WaylandXdgPopupPrivate::s_role("xdg_popup");
 
-QWaylandXdgPositionerData::QWaylandXdgPositionerData()
+WaylandXdgPositionerData::WaylandXdgPositionerData()
     : offset(0, 0)
 {}
 
-bool QWaylandXdgPositionerData::isComplete() const
+bool WaylandXdgPositionerData::isComplete() const
 {
     return size.width() > 0 && size.height() > 0 && anchorRect.size().width() > 0 && anchorRect.size().height() > 0;
 }
 
-QPoint QWaylandXdgPositionerData::anchorPoint() const
+QPoint WaylandXdgPositionerData::anchorPoint() const
 {
     int yPosition = 0;
     if (anchorEdges & Qt::TopEdge)
@@ -1993,7 +1995,7 @@ QPoint QWaylandXdgPositionerData::anchorPoint() const
     return QPoint(xPosition, yPosition);
 }
 
-QPoint QWaylandXdgPositionerData::unconstrainedPosition() const
+QPoint WaylandXdgPositionerData::unconstrainedPosition() const
 {
     int gravityOffsetY = 0;
     if (gravityEdges & Qt::TopEdge)
@@ -2011,23 +2013,23 @@ QPoint QWaylandXdgPositionerData::unconstrainedPosition() const
     return anchorPoint() + gravityOffset + offset;
 }
 
-QWaylandXdgPositioner::QWaylandXdgPositioner(const QWaylandResource &resource)
+WaylandXdgPositioner::WaylandXdgPositioner(const WaylandResource &resource)
 {
     init(resource.resource());
 }
 
-void QWaylandXdgPositioner::xdg_positioner_destroy_resource(QtWaylandServer::xdg_positioner::Resource *resource)
+void WaylandXdgPositioner::xdg_positioner_destroy_resource(PrivateServer::xdg_positioner::Resource *resource)
 {
     Q_UNUSED(resource);
     delete this;
 }
 
-void QWaylandXdgPositioner::xdg_positioner_destroy(QtWaylandServer::xdg_positioner::Resource *resource)
+void WaylandXdgPositioner::xdg_positioner_destroy(PrivateServer::xdg_positioner::Resource *resource)
 {
     wl_resource_destroy(resource->handle);
 }
 
-void QWaylandXdgPositioner::xdg_positioner_set_size(QtWaylandServer::xdg_positioner::Resource *resource, int32_t width, int32_t height)
+void WaylandXdgPositioner::xdg_positioner_set_size(PrivateServer::xdg_positioner::Resource *resource, int32_t width, int32_t height)
 {
     if (width <= 0 || height <= 0) {
         wl_resource_post_error(resource->handle, XDG_POSITIONER_ERROR_INVALID_INPUT,
@@ -2039,7 +2041,7 @@ void QWaylandXdgPositioner::xdg_positioner_set_size(QtWaylandServer::xdg_positio
     m_data.size = size;
 }
 
-void QWaylandXdgPositioner::xdg_positioner_set_anchor_rect(QtWaylandServer::xdg_positioner::Resource *resource, int32_t x, int32_t y, int32_t width, int32_t height)
+void WaylandXdgPositioner::xdg_positioner_set_anchor_rect(PrivateServer::xdg_positioner::Resource *resource, int32_t x, int32_t y, int32_t width, int32_t height)
 {
     if (width <= 0 || height <= 0) {
         wl_resource_post_error(resource->handle, XDG_POSITIONER_ERROR_INVALID_INPUT,
@@ -2051,7 +2053,7 @@ void QWaylandXdgPositioner::xdg_positioner_set_anchor_rect(QtWaylandServer::xdg_
     m_data.anchorRect = anchorRect;
 }
 
-void QWaylandXdgPositioner::xdg_positioner_set_anchor(QtWaylandServer::xdg_positioner::Resource *resource, uint32_t anchor)
+void WaylandXdgPositioner::xdg_positioner_set_anchor(PrivateServer::xdg_positioner::Resource *resource, uint32_t anchor)
 {
     Qt::Edges anchorEdges = convertToEdges(xdg_positioner::anchor(anchor));
 
@@ -2065,7 +2067,7 @@ void QWaylandXdgPositioner::xdg_positioner_set_anchor(QtWaylandServer::xdg_posit
     m_data.anchorEdges = anchorEdges;
 }
 
-void QWaylandXdgPositioner::xdg_positioner_set_gravity(QtWaylandServer::xdg_positioner::Resource *resource, uint32_t gravity)
+void WaylandXdgPositioner::xdg_positioner_set_gravity(PrivateServer::xdg_positioner::Resource *resource, uint32_t gravity)
 {
     Qt::Edges gravityEdges = convertToEdges(xdg_positioner::gravity(gravity));
 
@@ -2079,24 +2081,24 @@ void QWaylandXdgPositioner::xdg_positioner_set_gravity(QtWaylandServer::xdg_posi
     m_data.gravityEdges = gravityEdges;
 }
 
-void QWaylandXdgPositioner::xdg_positioner_set_constraint_adjustment(QtWaylandServer::xdg_positioner::Resource *resource, uint32_t constraint_adjustment)
+void WaylandXdgPositioner::xdg_positioner_set_constraint_adjustment(PrivateServer::xdg_positioner::Resource *resource, uint32_t constraint_adjustment)
 {
     Q_UNUSED(resource);
     m_data.constraintAdjustments = constraint_adjustment;
 }
 
-void QWaylandXdgPositioner::xdg_positioner_set_offset(QtWaylandServer::xdg_positioner::Resource *resource, int32_t x, int32_t y)
+void WaylandXdgPositioner::xdg_positioner_set_offset(PrivateServer::xdg_positioner::Resource *resource, int32_t x, int32_t y)
 {
     Q_UNUSED(resource);
     m_data.offset = QPoint(x, y);
 }
 
-QWaylandXdgPositioner *QWaylandXdgPositioner::fromResource(wl_resource *resource)
+WaylandXdgPositioner *WaylandXdgPositioner::fromResource(wl_resource *resource)
 {
-    return QtWayland::fromResource<QWaylandXdgPositioner *>(resource);
+    return QtWayland::fromResource<WaylandXdgPositioner *>(resource);
 }
 
-Qt::Edges QWaylandXdgPositioner::convertToEdges(anchor anchor)
+Qt::Edges WaylandXdgPositioner::convertToEdges(anchor anchor)
 {
     switch (anchor) {
     case anchor_none:
@@ -2123,10 +2125,12 @@ Qt::Edges QWaylandXdgPositioner::convertToEdges(anchor anchor)
     }
 }
 
-Qt::Edges QWaylandXdgPositioner::convertToEdges(QWaylandXdgPositioner::gravity gravity)
+Qt::Edges WaylandXdgPositioner::convertToEdges(WaylandXdgPositioner::gravity gravity)
 {
     return convertToEdges(anchor(gravity));
 }
 
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

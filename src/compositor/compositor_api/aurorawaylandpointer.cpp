@@ -27,24 +27,26 @@
 **
 ****************************************************************************/
 
-#include "qwaylandpointer.h"
-#include "qwaylandpointer_p.h"
-#include <QtWaylandCompositor/QWaylandClient>
-#include <QtWaylandCompositor/QWaylandCompositor>
+#include "aurorawaylandpointer.h"
+#include "aurorawaylandpointer_p.h"
+#include <LiriAuroraCompositor/WaylandClient>
+#include <LiriAuroraCompositor/WaylandCompositor>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-QWaylandSurfaceRole QWaylandPointerPrivate::s_role("wl_pointer");
+namespace Compositor {
 
-QWaylandPointerPrivate::QWaylandPointerPrivate(QWaylandPointer *pointer, QWaylandSeat *seat)
+WaylandSurfaceRole WaylandPointerPrivate::s_role("wl_pointer");
+
+WaylandPointerPrivate::WaylandPointerPrivate(WaylandPointer *pointer, WaylandSeat *seat)
     : seat(seat)
 {
     Q_UNUSED(pointer);
 }
 
-uint QWaylandPointerPrivate::sendButton(Qt::MouseButton button, uint32_t state)
+uint WaylandPointerPrivate::sendButton(Qt::MouseButton button, uint32_t state)
 {
-    Q_Q(QWaylandPointer);
+    Q_Q(WaylandPointer);
     if (!q->mouseFocus() || !q->mouseFocus()->surface())
         return 0;
 
@@ -56,7 +58,7 @@ uint QWaylandPointerPrivate::sendButton(Qt::MouseButton button, uint32_t state)
     return serial;
 }
 
-void QWaylandPointerPrivate::sendMotion()
+void WaylandPointerPrivate::sendMotion()
 {
     Q_ASSERT(enteredSurface);
     uint32_t time = compositor()->currentTimeMsecs();
@@ -66,12 +68,12 @@ void QWaylandPointerPrivate::sendMotion()
         wl_pointer_send_motion(resource->handle, time, x, y);
 }
 
-void QWaylandPointerPrivate::sendEnter(QWaylandSurface *surface)
+void WaylandPointerPrivate::sendEnter(WaylandSurface *surface)
 {
     Q_ASSERT(surface && !enteredSurface);
     enterSerial = compositor()->nextSerial();
 
-    QWaylandKeyboard *keyboard = seat->keyboard();
+    WaylandKeyboard *keyboard = seat->keyboard();
     if (keyboard)
         keyboard->sendKeyModifiers(surface->client(), enterSerial);
 
@@ -84,7 +86,7 @@ void QWaylandPointerPrivate::sendEnter(QWaylandSurface *surface)
     enteredSurfaceDestroyListener.listenForDestruction(surface->resource());
 }
 
-void QWaylandPointerPrivate::sendLeave()
+void WaylandPointerPrivate::sendLeave()
 {
     Q_ASSERT(enteredSurface);
     uint32_t serial = compositor()->nextSerial();
@@ -95,7 +97,7 @@ void QWaylandPointerPrivate::sendLeave()
     enteredSurface = nullptr;
 }
 
-void QWaylandPointerPrivate::ensureEntered(QWaylandSurface *surface)
+void WaylandPointerPrivate::ensureEntered(WaylandSurface *surface)
 {
     if (enteredSurface == surface)
         return;
@@ -107,21 +109,21 @@ void QWaylandPointerPrivate::ensureEntered(QWaylandSurface *surface)
         sendEnter(surface);
 }
 
-void QWaylandPointerPrivate::pointer_release(wl_pointer::Resource *resource)
+void WaylandPointerPrivate::pointer_release(wl_pointer::Resource *resource)
 {
     wl_resource_destroy(resource->handle);
 }
 
-void QWaylandPointerPrivate::pointer_set_cursor(wl_pointer::Resource *resource, uint32_t serial, wl_resource *surface, int32_t hotspot_x, int32_t hotspot_y)
+void WaylandPointerPrivate::pointer_set_cursor(wl_pointer::Resource *resource, uint32_t serial, wl_resource *surface, int32_t hotspot_x, int32_t hotspot_y)
 {
     Q_UNUSED(serial);
 
     if (!surface) {
-        seat->cursorSurfaceRequested(nullptr, 0, 0, QWaylandClient::fromWlClient(compositor(), resource->client()));
+        seat->cursorSurfaceRequested(nullptr, 0, 0, WaylandClient::fromWlClient(compositor(), resource->client()));
         return;
     }
 
-    QWaylandSurface *s = QWaylandSurface::fromResource(surface);
+    WaylandSurface *s = WaylandSurface::fromResource(surface);
     // XXX FIXME
     // The role concept was formalized in wayland 1.7, so that release adds one error
     // code for each interface that implements a role, and we are supposed to pass here
@@ -130,65 +132,65 @@ void QWaylandPointerPrivate::pointer_set_cursor(wl_pointer::Resource *resource, 
     // However we're still using wayland 1.4, which doesn't have interface specific role
     // errors, so the best we can do is to use wl_display's object_id error.
     wl_resource *displayRes = wl_client_get_object(resource->client(), 1);
-    if (s->setRole(&QWaylandPointerPrivate::s_role, displayRes, WL_DISPLAY_ERROR_INVALID_OBJECT)) {
+    if (s->setRole(&WaylandPointerPrivate::s_role, displayRes, WL_DISPLAY_ERROR_INVALID_OBJECT)) {
         s->markAsCursorSurface(true);
-        seat->cursorSurfaceRequested(s, hotspot_x, hotspot_y, QWaylandClient::fromWlClient(compositor(), resource->client()));
+        seat->cursorSurfaceRequested(s, hotspot_x, hotspot_y, WaylandClient::fromWlClient(compositor(), resource->client()));
     }
 }
 
 /*!
- * \class QWaylandPointer
+ * \class WaylandPointer
  * \inmodule QtWaylandCompositor
  * \since 5.8
- * \brief The QWaylandPointer class represents a pointer device.
+ * \brief The WaylandPointer class represents a pointer device.
  *
- * This class provides access to the pointer device in a QWaylandSeat. It corresponds to
+ * This class provides access to the pointer device in a WaylandSeat. It corresponds to
  * the Wayland interface wl_pointer.
  */
 
 /*!
- * Constructs a QWaylandPointer for the given \a seat and with the given \a parent.
+ * Constructs a WaylandPointer for the given \a seat and with the given \a parent.
  */
-QWaylandPointer::QWaylandPointer(QWaylandSeat *seat, QObject *parent)
-    : QWaylandObject(* new QWaylandPointerPrivate(this, seat), parent)
+WaylandPointer::WaylandPointer(WaylandSeat *seat, QObject *parent)
+    : WaylandObject(* new WaylandPointerPrivate(this, seat), parent)
 {
-    connect(&d_func()->enteredSurfaceDestroyListener, &QWaylandDestroyListener::fired, this, &QWaylandPointer::enteredSurfaceDestroyed);
-    connect(seat, &QWaylandSeat::mouseFocusChanged, this, &QWaylandPointer::pointerFocusChanged);
+    connect(&d_func()->enteredSurfaceDestroyListener, &WaylandDestroyListener::fired, this, &WaylandPointer::enteredSurfaceDestroyed);
+    connect(seat, &WaylandSeat::mouseFocusChanged, this, &WaylandPointer::pointerFocusChanged);
 }
 
 /*!
- * Returns the input device for this QWaylandPointer.
+ * Returns the input device for this WaylandPointer.
  */
-QWaylandSeat *QWaylandPointer::seat() const
+WaylandSeat *WaylandPointer::seat() const
 {
-    Q_D(const QWaylandPointer);
+    Q_D(const WaylandPointer);
     return d->seat;
 }
 
 /*!
- * Returns the compositor for this QWaylandPointer.
+ * Returns the compositor for this WaylandPointer.
  */
-QWaylandCompositor *QWaylandPointer::compositor() const
+WaylandCompositor *WaylandPointer::compositor() const
 {
-    Q_D(const QWaylandPointer);
+    Q_D(const WaylandPointer);
     return d->compositor();
 }
 
 /*!
- * Returns the output for this QWaylandPointer.
+ * Returns the output for this WaylandPointer.
  */
-QWaylandOutput *QWaylandPointer::output() const
+WaylandOutput *WaylandPointer::output() const
 {
-    Q_D(const QWaylandPointer);
+    Q_D(const WaylandPointer);
     return d->output;
 }
 
 /*!
- * Sets the output for this QWaylandPointer to \a output.
+ * Sets the output for this WaylandPointer to \a output.
  */
-void QWaylandPointer::setOutput(QWaylandOutput *output)
+void WaylandPointer::setOutput(WaylandOutput *output)
 {
-    Q_D(QWaylandPointer);
+    Q_D(WaylandPointer);
     if (d->output == output) return;
     d->output = output;
     outputChanged();
@@ -199,9 +201,9 @@ void QWaylandPointer::setOutput(QWaylandOutput *output)
  *
  * Returns the serial number of the press event.
  */
-uint QWaylandPointer::sendMousePressEvent(Qt::MouseButton button)
+uint WaylandPointer::sendMousePressEvent(Qt::MouseButton button)
 {
-    Q_D(QWaylandPointer);
+    Q_D(WaylandPointer);
     d->buttonCount++;
 
     if (d->buttonCount == 1)
@@ -215,9 +217,9 @@ uint QWaylandPointer::sendMousePressEvent(Qt::MouseButton button)
  *
  * Returns the serial number of the release event.
  */
-uint QWaylandPointer::sendMouseReleaseEvent(Qt::MouseButton button)
+uint WaylandPointer::sendMouseReleaseEvent(Qt::MouseButton button)
 {
-    Q_D(QWaylandPointer);
+    Q_D(WaylandPointer);
     d->buttonCount--;
 
     if (d->buttonCount == 0)
@@ -230,9 +232,9 @@ uint QWaylandPointer::sendMouseReleaseEvent(Qt::MouseButton button)
  * Sets the current mouse focus to \a view and sends a mouse move event to it with the
  * local position \a localPos in surface coordinates and output space position \a outputSpacePos.
  */
-void QWaylandPointer::sendMouseMoveEvent(QWaylandView *view, const QPointF &localPos, const QPointF &outputSpacePos)
+void WaylandPointer::sendMouseMoveEvent(WaylandView *view, const QPointF &localPos, const QPointF &outputSpacePos)
 {
-    Q_D(QWaylandPointer);
+    Q_D(WaylandPointer);
     if (view && (!view->surface() || view->surface()->isCursorSurface()))
         view = nullptr;
     d->seat->setMouseFocus(view);
@@ -259,9 +261,9 @@ void QWaylandPointer::sendMouseMoveEvent(QWaylandView *view, const QPointF &loca
 /*!
  * Sends a mouse wheel event with the given \a orientation and \a delta to the view that currently holds mouse focus.
  */
-void QWaylandPointer::sendMouseWheelEvent(Qt::Orientation orientation, int delta)
+void WaylandPointer::sendMouseWheelEvent(Qt::Orientation orientation, int delta)
 {
-    Q_D(QWaylandPointer);
+    Q_D(WaylandPointer);
     if (!d->enteredSurface)
         return;
 
@@ -276,46 +278,46 @@ void QWaylandPointer::sendMouseWheelEvent(Qt::Orientation orientation, int delta
 /*!
  * Returns the view that currently holds mouse focus.
  */
-QWaylandView *QWaylandPointer::mouseFocus() const
+WaylandView *WaylandPointer::mouseFocus() const
 {
-    Q_D(const QWaylandPointer);
+    Q_D(const WaylandPointer);
     return d->seat->mouseFocus();
 }
 
 /*!
- * Returns the current local position of the QWaylandPointer in surface coordinates.
+ * Returns the current local position of the WaylandPointer in surface coordinates.
  */
-QPointF QWaylandPointer::currentLocalPosition() const
+QPointF WaylandPointer::currentLocalPosition() const
 {
-    Q_D(const QWaylandPointer);
+    Q_D(const WaylandPointer);
     return d->localPosition;
 }
 
 /*!
- * Returns the current output space position of the QWaylandPointer.
+ * Returns the current output space position of the WaylandPointer.
  */
-QPointF QWaylandPointer::currentSpacePosition() const
+QPointF WaylandPointer::currentSpacePosition() const
 {
-    Q_D(const QWaylandPointer);
+    Q_D(const WaylandPointer);
     return d->spacePosition;
 }
 
 /*!
  * Returns true if any button is currently pressed. Otherwise returns false.
  */
-bool QWaylandPointer::isButtonPressed() const
+bool WaylandPointer::isButtonPressed() const
 {
-    Q_D(const QWaylandPointer);
+    Q_D(const WaylandPointer);
     return d->buttonCount > 0;
 }
 
 /*!
  * \internal
  */
-void QWaylandPointer::addClient(QWaylandClient *client, uint32_t id, uint32_t version)
+void WaylandPointer::addClient(WaylandClient *client, uint32_t id, uint32_t version)
 {
-    Q_D(QWaylandPointer);
-    wl_resource *resource = d->add(client->client(), id, qMin<uint32_t>(QtWaylandServer::wl_pointer::interfaceVersion(), version))->handle;
+    Q_D(WaylandPointer);
+    wl_resource *resource = d->add(client->client(), id, qMin<uint32_t>(PrivateServer::wl_pointer::interfaceVersion(), version))->handle;
     if (d->enteredSurface && client == d->enteredSurface->client()) {
         d->send_enter(resource, d->enterSerial, d->enteredSurface->resource(),
                       wl_fixed_from_double(d->localPosition.x()),
@@ -324,15 +326,15 @@ void QWaylandPointer::addClient(QWaylandClient *client, uint32_t id, uint32_t ve
 }
 
 /*!
- * Returns a Wayland resource for this QWaylandPointer.
+ * Returns a Wayland resource for this WaylandPointer.
  *
  * This API doesn't actually make sense, since there may be many pointer resources per client
  * It's here for compatibility reasons.
  */
-struct wl_resource *QWaylandPointer::focusResource() const
+struct wl_resource *WaylandPointer::focusResource() const
 {
-    Q_D(const QWaylandPointer);
-    QWaylandView *focus = d->seat->mouseFocus();
+    Q_D(const WaylandPointer);
+    WaylandView *focus = d->seat->mouseFocus();
     if (!focus)
         return nullptr;
 
@@ -343,11 +345,11 @@ struct wl_resource *QWaylandPointer::focusResource() const
 /*!
  * \internal
  */
-uint QWaylandPointer::sendButton(struct wl_resource *resource, uint32_t time, Qt::MouseButton button, uint32_t state)
+uint WaylandPointer::sendButton(struct wl_resource *resource, uint32_t time, Qt::MouseButton button, uint32_t state)
 {
     // This method is here for compatibility reasons only, since it usually doesn't make sense to
     // send button events to just one of the pointer resources for a client.
-    Q_D(QWaylandPointer);
+    Q_D(WaylandPointer);
     uint32_t serial = d->compositor()->nextSerial();
     d->send_button(resource, serial, time, toWaylandButton(button), state);
     return serial;
@@ -356,7 +358,7 @@ uint QWaylandPointer::sendButton(struct wl_resource *resource, uint32_t time, Qt
 /*!
  * \internal
  */
-uint32_t QWaylandPointer::toWaylandButton(Qt::MouseButton button)
+uint32_t WaylandPointer::toWaylandButton(Qt::MouseButton button)
 {
 #ifndef BTN_LEFT
     uint32_t BTN_LEFT = 0x110;
@@ -388,9 +390,9 @@ uint32_t QWaylandPointer::toWaylandButton(Qt::MouseButton button)
 /*!
  * \internal
  */
-void QWaylandPointer::enteredSurfaceDestroyed(void *data)
+void WaylandPointer::enteredSurfaceDestroyed(void *data)
 {
-    Q_D(QWaylandPointer);
+    Q_D(WaylandPointer);
     Q_UNUSED(data);
     d->enteredSurfaceDestroyListener.reset();
     d->enteredSurface = nullptr;
@@ -406,13 +408,15 @@ void QWaylandPointer::enteredSurfaceDestroyed(void *data)
 /*!
  * \internal
  */
-void QWaylandPointer::pointerFocusChanged(QWaylandView *newFocus, QWaylandView *oldFocus)
+void WaylandPointer::pointerFocusChanged(WaylandView *newFocus, WaylandView *oldFocus)
 {
-    Q_D(QWaylandPointer);
+    Q_D(WaylandPointer);
     Q_UNUSED(oldFocus);
     bool wasSameSurface = newFocus && newFocus->surface() == d->enteredSurface;
     if (d->enteredSurface && !wasSameSurface)
         d->sendLeave();
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

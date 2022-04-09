@@ -27,24 +27,26 @@
 **
 ****************************************************************************/
 
-#include "qwaylandivisurfaceintegration_p.h"
+#include "aurorawaylandivisurfaceintegration_p.h"
 
-#include <QtWaylandCompositor/QWaylandCompositor>
-#include <QtWaylandCompositor/QWaylandIviSurface>
-#include <QtWaylandCompositor/QWaylandQuickShellSurfaceItem>
-#include <QtWaylandCompositor/QWaylandSeat>
+#include <LiriAuroraCompositor/WaylandCompositor>
+#include <LiriAuroraCompositor/WaylandIviSurface>
+#include <LiriAuroraCompositor/WaylandQuickShellSurfaceItem>
+#include <LiriAuroraCompositor/WaylandSeat>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 namespace QtWayland {
 
-IviSurfaceIntegration::IviSurfaceIntegration(QWaylandQuickShellSurfaceItem *item)
-    : QWaylandQuickShellIntegration(item)
+IviSurfaceIntegration::IviSurfaceIntegration(WaylandQuickShellSurfaceItem *item)
+    : WaylandQuickShellIntegration(item)
     , m_item(item)
-    , m_shellSurface(qobject_cast<QWaylandIviSurface *>(item->shellSurface()))
+    , m_shellSurface(qobject_cast<WaylandIviSurface *>(item->shellSurface()))
 {
     m_item->setSurface(m_shellSurface->surface());
-    connect(m_shellSurface, &QWaylandIviSurface::destroyed, this, &IviSurfaceIntegration::handleIviSurfaceDestroyed);
+    connect(m_shellSurface, &WaylandIviSurface::destroyed, this, &IviSurfaceIntegration::handleIviSurfaceDestroyed);
 }
 
 IviSurfaceIntegration::~IviSurfaceIntegration()
@@ -59,4 +61,6 @@ void IviSurfaceIntegration::handleIviSurfaceDestroyed()
 
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

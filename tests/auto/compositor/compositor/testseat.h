@@ -26,20 +26,25 @@
 **
 ****************************************************************************/
 
-#include <QWaylandSeat>
+#ifndef TESTSEAT_H
+#define TESTSEAT_H
+
+#include <LiriAuroraCompositor/WaylandSeat>
 #include <QList>
 
-QT_BEGIN_NAMESPACE
 class QInputEvent;
 class QMouseEvent;
-QT_END_NAMESPACE
 
-class TestSeat : public QWaylandSeat
+namespace Aurora {
+
+namespace Compositor {
+
+class TestSeat : public WaylandSeat
 {
     Q_OBJECT
 public:
 
-    TestSeat(QWaylandCompositor *compositor, QWaylandSeat::CapabilityFlags caps);
+    TestSeat(WaylandCompositor *compositor, WaylandSeat::CapabilityFlags caps);
     ~TestSeat() override;
 
     bool isOwner(QInputEvent *inputEvent) const override;
@@ -52,3 +57,9 @@ private:
     mutable int m_queryCount;
     QList<QMouseEvent *> m_events;
 };
+
+} // namespace Compositor
+
+} // namespace Aurora
+
+#endif // TESTSEAT_H

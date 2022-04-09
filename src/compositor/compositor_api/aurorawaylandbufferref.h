@@ -27,21 +27,23 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDBUFFERREF_H
-#define QWAYLANDBUFFERREF_H
+#ifndef AURORA_COMPOSITOR_WAYLANDBUFFERREF_H
+#define AURORA_COMPOSITOR_WAYLANDBUFFERREF_H
 
-#include <QtWaylandCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
 #include <QImage>
 
 #if QT_CONFIG(opengl)
 #include <QtGui/qopengl.h>
 #endif
 
-#include <QtWaylandCompositor/QWaylandSurface>
+#include <LiriAuroraCompositor/WaylandSurface>
 
 struct wl_resource;
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 class QOpenGLTexture;
 
@@ -50,28 +52,28 @@ namespace QtWayland
     class ClientBuffer;
 }
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandBufferRef
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandBufferRef
 {
 public:
-    QWaylandBufferRef();
-    QWaylandBufferRef(const QWaylandBufferRef &ref);
-    ~QWaylandBufferRef();
+    WaylandBufferRef();
+    WaylandBufferRef(const WaylandBufferRef &ref);
+    ~WaylandBufferRef();
 
-    QWaylandBufferRef &operator=(const QWaylandBufferRef &ref);
+    WaylandBufferRef &operator=(const WaylandBufferRef &ref);
     bool isNull() const;
     bool hasBuffer() const;
     bool hasContent() const;
     bool hasProtectedContent() const;
     bool isDestroyed() const;
 #if QT_WAYLANDCOMPOSITOR_REMOVED_SINCE(6, 3)
-    bool operator==(const QWaylandBufferRef &ref);
-    bool operator!=(const QWaylandBufferRef &ref);
+    bool operator==(const WaylandBufferRef &ref);
+    bool operator!=(const WaylandBufferRef &ref);
 #endif
 
     struct wl_resource *wl_buffer() const;
 
     QSize size() const;
-    QWaylandSurface::Origin origin() const;
+    WaylandSurface::Origin origin() const;
 
     enum BufferType {
         BufferType_Null,
@@ -103,19 +105,21 @@ public:
     void unlockNativeBuffer(quintptr handle);
 
 private:
-    explicit QWaylandBufferRef(QtWayland::ClientBuffer *buffer);
+    explicit WaylandBufferRef(QtWayland::ClientBuffer *buffer);
     QtWayland::ClientBuffer *buffer() const;
-    class QWaylandBufferRefPrivate *const d;
-    friend class QWaylandBufferRefPrivate;
-    friend class QWaylandSurfacePrivate;
+    class WaylandBufferRefPrivate *const d;
+    friend class WaylandBufferRefPrivate;
+    friend class WaylandSurfacePrivate;
 
     friend Q_WAYLANDCOMPOSITOR_EXPORT
-    bool operator==(const QWaylandBufferRef &lhs, const QWaylandBufferRef &rhs) noexcept;
+    bool operator==(const WaylandBufferRef &lhs, const WaylandBufferRef &rhs) noexcept;
     friend inline
-    bool operator!=(const QWaylandBufferRef &lhs, const QWaylandBufferRef &rhs) noexcept
+    bool operator!=(const WaylandBufferRef &lhs, const WaylandBufferRef &rhs) noexcept
     { return !(lhs == rhs); }
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif

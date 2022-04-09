@@ -27,9 +27,9 @@
 #include <QtCore/QRect>
 #include <QtCore/QPointer>
 
-#include <QtWaylandCompositor/QWaylandOutput>
-#include <QtWaylandCompositor/QWaylandSeat>
-#include <QtWaylandCompositor/QWaylandSurface>
+#include <LiriAuroraCompositor/WaylandOutput>
+#include <LiriAuroraCompositor/WaylandSeat>
+#include <LiriAuroraCompositor/WaylandSurface>
 
 #include <xcb/xcb.h>
 
@@ -46,7 +46,7 @@ class XWaylandShellSurface : public QObject
     Q_OBJECT
     Q_PROPERTY(Qt::WindowType windowType READ windowType NOTIFY windowTypeChanged)
     Q_PROPERTY(WmWindowType wmWindowType READ wmWindowType NOTIFY wmWindowTypeChanged)
-    Q_PROPERTY(QWaylandSurface *surface READ surface NOTIFY surfaceChanged)
+    Q_PROPERTY(WaylandSurface *surface READ surface NOTIFY surfaceChanged)
     Q_PROPERTY(XWaylandShellSurface *parentSurface READ parentSurface NOTIFY parentSurfaceChanged)
     Q_PROPERTY(bool activated READ isActivated NOTIFY activatedChanged)
     Q_PROPERTY(QString appId READ appId NOTIFY appIdChanged)
@@ -103,8 +103,8 @@ public:
     quint32 surfaceId() const;
     void setSurfaceId(quint32 id);
 
-    QWaylandSurface *surface() const;
-    void setSurface(QWaylandSurface *surface);
+    WaylandSurface *surface() const;
+    void setSurface(WaylandSurface *surface);
 
     XWaylandShellSurface *parentSurface() const;
 
@@ -162,7 +162,7 @@ public:
     Q_INVOKABLE void sendY(qreal y);
     Q_INVOKABLE void sendResize(const QSizeF &size);
 
-    Q_INVOKABLE void maximize(QWaylandOutput *output);
+    Q_INVOKABLE void maximize(WaylandOutput *output);
     Q_INVOKABLE void unmaximize();
 
     Q_INVOKABLE void close();
@@ -206,7 +206,7 @@ private:
     Qt::WindowType m_windowType;
     WmWindowType m_wmWindowType;
     quint32 m_surfaceId;
-    QWaylandSurface *m_surface;
+    WaylandSurface *m_surface;
     WmState m_wmState;
     int m_workspace;
     WmSizeHints m_sizeHints;
@@ -230,8 +230,8 @@ private:
     friend class XWaylandManager;
 
 private Q_SLOTS:
-    void handleSeatChanged(QWaylandSeat *newSeat, QWaylandSeat *oldSeat);
-    void handleFocusChanged(QWaylandSurface *newSurface, QWaylandSurface *oldSurface);
+    void handleSeatChanged(WaylandSeat *newSeat, WaylandSeat *oldSeat);
+    void handleFocusChanged(WaylandSurface *newSurface, WaylandSurface *oldSurface);
     void handleFocusReceived();
     void handleFocusLost();
     void handleSurfaceDestroyed();

@@ -30,41 +30,45 @@
 #ifndef QQUICKWAYLANDSURFACE_H
 #define QQUICKWAYLANDSURFACE_H
 
-#include <QtWaylandCompositor/qwaylandsurface.h>
-#include <QtWaylandCompositor/qwaylandquickchildren.h>
+#include <LiriAuroraCompositor/aurorawaylandsurface.h>
+#include <LiriAuroraCompositor/aurorawaylandquickchildren.h>
 
 struct wl_client;
 
 QT_REQUIRE_CONFIG(wayland_compositor_quick);
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandQuickSurfacePrivate;
-class QWaylandQuickCompositor;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandQuickSurface : public QWaylandSurface
+class WaylandQuickSurfacePrivate;
+class WaylandQuickCompositor;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandQuickSurface : public WaylandSurface
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandQuickSurface)
-    Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(QWaylandQuickSurface)
+    Q_DECLARE_PRIVATE(WaylandQuickSurface)
+    Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandQuickSurface)
     Q_PROPERTY(bool useTextureAlpha READ useTextureAlpha WRITE setUseTextureAlpha NOTIFY useTextureAlphaChanged)
     QML_NAMED_ELEMENT(WaylandSurface)
     QML_ADDED_IN_VERSION(1, 0)
 public:
-    QWaylandQuickSurface();
-    QWaylandQuickSurface(QWaylandCompositor *compositor, QWaylandClient *client, quint32 id, int version);
-    ~QWaylandQuickSurface() override;
+    WaylandQuickSurface();
+    WaylandQuickSurface(WaylandCompositor *compositor, WaylandClient *client, quint32 id, int version);
+    ~WaylandQuickSurface() override;
 
     bool useTextureAlpha() const;
     void setUseTextureAlpha(bool useTextureAlpha);
 
 protected:
-    QWaylandQuickSurface(QWaylandQuickSurfacePrivate &dptr);
+    WaylandQuickSurface(WaylandQuickSurfacePrivate &dptr);
 
 Q_SIGNALS:
     void useTextureAlphaChanged();
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif

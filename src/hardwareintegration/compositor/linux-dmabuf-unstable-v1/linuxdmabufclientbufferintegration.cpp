@@ -30,8 +30,8 @@
 #include "linuxdmabufclientbufferintegration.h"
 #include "linuxdmabuf.h"
 
-#include <QtWaylandCompositor/QWaylandCompositor>
-#include <QtWaylandCompositor/private/qwayland-server-wayland.h>
+#include <LiriAuroraCompositor/WaylandCompositor>
+#include <LiriAuroraCompositor/private/aurora-server-wayland.h>
 #include <qpa/qplatformnativeinterface.h>
 #include <QtOpenGL/QOpenGLTexture>
 #include <QtCore/QVarLengthArray>
@@ -43,9 +43,11 @@
 #include <unistd.h>
 #include <drm_fourcc.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-static QWaylandBufferRef::BufferFormatEgl formatFromDrmFormat(EGLint format) {
+namespace Compositor {
+
+static WaylandBufferRef::BufferFormatEgl formatFromDrmFormat(EGLint format) {
     switch (format) {
     case DRM_FORMAT_RGB332:
     case DRM_FORMAT_BGR233:
@@ -69,7 +71,7 @@ static QWaylandBufferRef::BufferFormatEgl formatFromDrmFormat(EGLint format) {
     case DRM_FORMAT_XBGR2101010:
     case DRM_FORMAT_RGBX1010102:
     case DRM_FORMAT_BGRX1010102:
-        return QWaylandBufferRef::BufferFormatEgl_RGB;
+        return WaylandBufferRef::BufferFormatEgl_RGB;
     case DRM_FORMAT_ARGB4444:
     case DRM_FORMAT_ABGR4444:
     case DRM_FORMAT_RGBA4444:
@@ -86,20 +88,20 @@ static QWaylandBufferRef::BufferFormatEgl formatFromDrmFormat(EGLint format) {
     case DRM_FORMAT_ABGR2101010:
     case DRM_FORMAT_RGBA1010102:
     case DRM_FORMAT_BGRA1010102:
-        return QWaylandBufferRef::BufferFormatEgl_RGBA;
+        return WaylandBufferRef::BufferFormatEgl_RGBA;
     case DRM_FORMAT_YUYV:
-        return QWaylandBufferRef::BufferFormatEgl_Y_XUXV;
+        return WaylandBufferRef::BufferFormatEgl_Y_XUXV;
     default:
         qCDebug(qLcWaylandCompositorHardwareIntegration) << "Buffer format" << Qt::hex << format << "not supported";
-        return QWaylandBufferRef::BufferFormatEgl_Null;
+        return WaylandBufferRef::BufferFormatEgl_Null;
     }
 }
 
-static QOpenGLTexture::TextureFormat openGLFormatFromBufferFormat(QWaylandBufferRef::BufferFormatEgl format) {
+static QOpenGLTexture::TextureFormat openGLFormatFromBufferFormat(WaylandBufferRef::BufferFormatEgl format) {
     switch (format) {
-    case QWaylandBufferRef::BufferFormatEgl_RGB:
+    case WaylandBufferRef::BufferFormatEgl_RGB:
         return QOpenGLTexture::RGBFormat;
-    case QWaylandBufferRef::BufferFormatEgl_RGBA:
+    case WaylandBufferRef::BufferFormatEgl_RGBA:
         return QOpenGLTexture::RGBAFormat;
     default:
         return QOpenGLTexture::NoFormat;
@@ -468,7 +470,7 @@ LinuxDmabufClientBuffer::~LinuxDmabufClientBuffer()
     d = nullptr;
 }
 
-QWaylandBufferRef::BufferFormatEgl LinuxDmabufClientBuffer::bufferFormatEgl() const
+WaylandBufferRef::BufferFormatEgl LinuxDmabufClientBuffer::bufferFormatEgl() const
 {
     return formatFromDrmFormat(d->drmFormat());
 }
@@ -478,9 +480,11 @@ QSize LinuxDmabufClientBuffer::size() const
     return d->size();
 }
 
-QWaylandSurface::Origin LinuxDmabufClientBuffer::origin() const
+WaylandSurface::Origin LinuxDmabufClientBuffer::origin() const
 {
-    return (d->flags() & QtWaylandServer::zwp_linux_buffer_params_v1::flags_y_invert) ? QWaylandSurface::OriginBottomLeft : QWaylandSurface::OriginTopLeft;
+    return (d->flags() & PrivateServer::zwp_linux_buffer_params_v1::flags_y_invert) ? WaylandSurface::OriginBottomLeft : WaylandSurface::OriginTopLeft;
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

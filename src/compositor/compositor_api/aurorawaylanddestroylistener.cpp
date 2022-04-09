@@ -27,41 +27,45 @@
 **
 ****************************************************************************/
 
-#include "qwaylanddestroylistener.h"
-#include "qwaylanddestroylistener_p.h"
+#include "aurorawaylanddestroylistener.h"
+#include "aurorawaylanddestroylistener_p.h"
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-QWaylandDestroyListenerPrivate::QWaylandDestroyListenerPrivate()
+namespace Compositor {
+
+WaylandDestroyListenerPrivate::WaylandDestroyListenerPrivate()
 {
     listener.parent = this;
     listener.listener.notify = handler;
     wl_list_init(&listener.listener.link);
 }
 
-QWaylandDestroyListener::QWaylandDestroyListener(QObject *parent)
-    : QObject(* new QWaylandDestroyListenerPrivate(), parent)
+WaylandDestroyListener::WaylandDestroyListener(QObject *parent)
+    : QObject(* new WaylandDestroyListenerPrivate(), parent)
 {
 }
-void QWaylandDestroyListener::listenForDestruction(::wl_resource *resource)
+void WaylandDestroyListener::listenForDestruction(::wl_resource *resource)
 {
-    Q_D(QWaylandDestroyListener);
+    Q_D(WaylandDestroyListener);
     wl_resource_add_destroy_listener(resource, &d->listener.listener);
 }
 
-void QWaylandDestroyListener::reset()
+void WaylandDestroyListener::reset()
 {
-    Q_D(QWaylandDestroyListener);
+    Q_D(WaylandDestroyListener);
     wl_list_remove(&d->listener.listener.link);
     wl_list_init(&d->listener.listener.link);
 }
 
-void QWaylandDestroyListenerPrivate::handler(wl_listener *listener, void *data)
+void WaylandDestroyListenerPrivate::handler(wl_listener *listener, void *data)
 {
-    QWaylandDestroyListenerPrivate *that = reinterpret_cast<Listener *>(listener)->parent;
+    WaylandDestroyListenerPrivate *that = reinterpret_cast<Listener *>(listener)->parent;
     emit that->q_func()->fired(data);
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#include "moc_qwaylanddestroylistener.cpp"
+} // namespace Aurora
+
+#include "moc_aurorawaylanddestroylistener.cpp"

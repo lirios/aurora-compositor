@@ -27,10 +27,12 @@
 **
 ****************************************************************************/
 
-#include <QtWaylandCompositor/private/qwlserverbufferintegrationplugin_p.h>
+#include <LiriAuroraCompositor/private/aurorawlserverbufferintegrationplugin_p.h>
 #include "shmserverbufferintegration.h"
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 class ShmServerBufferIntegrationPlugin : public QtWayland::ServerBufferIntegrationPlugin
 {
@@ -47,6 +49,8 @@ QtWayland::ServerBufferIntegration *ShmServerBufferIntegrationPlugin::create(con
     return new ShmServerBufferIntegration();
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #include "main.moc"

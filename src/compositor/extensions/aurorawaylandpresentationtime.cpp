@@ -27,20 +27,22 @@
 **
 ****************************************************************************/
 
-#include "qwaylandpresentationtime_p.h"
-#include "qwaylandpresentationtime_p_p.h"
+#include "aurorawaylandpresentationtime_p.h"
+#include "aurorawaylandpresentationtime_p_p.h"
 
 #include <time.h>
 #include <QQuickWindow>
-#include <QtWaylandCompositor/QWaylandView>
-#include <QtWaylandCompositor/QWaylandQuickItem>
+#include <LiriAuroraCompositor/WaylandView>
+#include <LiriAuroraCompositor/WaylandQuickItem>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 /*!
  * \qmltype PresentationTime
- * \instantiates QWaylandPresentationTime
- * \inqmlmodule QtWayland.Compositor.PresentationTime
+ * \instantiates WaylandPresentationTime
+ * \inqmlmodule Aurora.Compositor.PresentationTime
  * \since 6.3
  * \brief Provides tracking the timing when a frame is presented on screen.
  *
@@ -59,7 +61,7 @@ QT_BEGIN_NAMESPACE
  * Usually, the timing can be obtained from drm page flip event.
  *
  * \qml
- * import QtWayland.Compositor.PresentationTime
+ * import Aurora.Compositor.PresentationTime
  *
  * WaylandCompositor {
  *     PresentationTime {
@@ -70,67 +72,67 @@ QT_BEGIN_NAMESPACE
  */
 
 /*!
- * \class QWaylandPresentationTime
+ * \class WaylandPresentationTime
  * \inmodule QtWaylandCompositor
  * \since 6.3
- * \brief The QWaylandPresentationTime class is an extension to get timing for on-screen presentation.
+ * \brief The WaylandPresentationTime class is an extension to get timing for on-screen presentation.
  *
- * The QWaylandPresentationTime extension provides a way to track rendering timing
+ * The WaylandPresentationTime extension provides a way to track rendering timing
  * for a surface. Client can request feedbacks associated with a surface,
  * then compositor send events for the feedback with the time when the surface
  * is presented on-screen.
  *
- * QWaylandPresentationTime corresponds to the Wayland \c wp_presentation interface.
+ * WaylandPresentationTime corresponds to the Wayland \c wp_presentation interface.
  */
 
 
 /*!
- * Constructs a QWaylandPresentationTime object for \a compositor.
+ * Constructs a WaylandPresentationTime object for \a compositor.
  */
-QWaylandPresentationTime::QWaylandPresentationTime(QWaylandCompositor *compositor)
-    : QWaylandCompositorExtensionTemplate(compositor, *new QWaylandPresentationTimePrivate)
+WaylandPresentationTime::WaylandPresentationTime(WaylandCompositor *compositor)
+    : WaylandCompositorExtensionTemplate(compositor, *new WaylandPresentationTimePrivate)
 {
 
 }
 
 /*!
- * Constructs an empty QWaylandPresentationTime object.
+ * Constructs an empty WaylandPresentationTime object.
  */
-QWaylandPresentationTime::QWaylandPresentationTime()
-    : QWaylandCompositorExtensionTemplate(*new QWaylandPresentationTimePrivate)
+WaylandPresentationTime::WaylandPresentationTime()
+    : WaylandCompositorExtensionTemplate(*new WaylandPresentationTimePrivate)
 {
 }
 
 /*!
  * Initializes the extension.
  */
-void QWaylandPresentationTime::initialize()
+void WaylandPresentationTime::initialize()
 {
-    Q_D(QWaylandPresentationTime);
+    Q_D(WaylandPresentationTime);
 
     if (isInitialized()) {
-        qWarning() << "QWaylandPresentationTime is already initialized";
+        qWarning() << "WaylandPresentationTime is already initialized";
         return;
     }
 
-    QWaylandCompositor *compositor = this->compositor();
+    WaylandCompositor *compositor = this->compositor();
     if (compositor == nullptr) {
-        qWarning() << "Failed to find QWaylandCompositor when initializing QWaylandPresentationTime";
+        qWarning() << "Failed to find WaylandCompositor when initializing WaylandPresentationTime";
         return;
     }
 
-    QWaylandCompositorExtensionTemplate::initialize();
+    WaylandCompositorExtensionTemplate::initialize();
 
     d->init(compositor->display(), /* version */ 1);
 }
 
-QWaylandCompositor *QWaylandPresentationTime::compositor() const
+WaylandCompositor *WaylandPresentationTime::compositor() const
 {
-    return qobject_cast<QWaylandCompositor *>(extensionContainer());
+    return qobject_cast<WaylandCompositor *>(extensionContainer());
 }
 
 /*!
- * \qmlmethod void QWaylandCompositor::PresentationTime::sendFeedback(Window window, int sequence, int sec, int nsec)
+ * \qmlmethod void WaylandCompositor::PresentationTime::sendFeedback(Window window, int sequence, int sec, int nsec)
  *
  * Interface to notify that a frame is presented on screen using \a window.
  * If your platform supports DRM events, \c page_flip_handler is the proper timing to send it.
@@ -144,7 +146,7 @@ QWaylandCompositor *QWaylandPresentationTime::compositor() const
  * The \a sequence is the refresh counter. \a tv_sec and \a tv_nsec hold the
  * seconds and nanoseconds parts of the presentation timestamp, respectively.
  */
-void QWaylandPresentationTime::sendFeedback(QQuickWindow *window, quint64 sequence, quint64 tv_sec, quint32 tv_nsec)
+void WaylandPresentationTime::sendFeedback(QQuickWindow *window, quint64 sequence, quint64 tv_sec, quint32 tv_nsec)
 {
     if (!window)
         return;
@@ -155,29 +157,29 @@ void QWaylandPresentationTime::sendFeedback(QQuickWindow *window, quint64 sequen
 }
 
 /*!
- * Returns the Wayland interface for the QWaylandPresentationTime.
+ * Returns the Wayland interface for the WaylandPresentationTime.
  */
-const struct wl_interface *QWaylandPresentationTime::interface()
+const struct wl_interface *WaylandPresentationTime::interface()
 {
-    return QWaylandPresentationTimePrivate::interface();
+    return WaylandPresentationTimePrivate::interface();
 }
 
 /*!
  * \internal
  */
-QByteArray QWaylandPresentationTime::interfaceName()
+QByteArray WaylandPresentationTime::interfaceName()
 {
-    return QWaylandPresentationTimePrivate::interfaceName();
+    return WaylandPresentationTimePrivate::interfaceName();
 }
 
-PresentationFeedback::PresentationFeedback(QWaylandPresentationTime *pTime, QWaylandSurface *surface, struct ::wl_client *client, uint32_t id, int version)
+PresentationFeedback::PresentationFeedback(WaylandPresentationTime *pTime, WaylandSurface *surface, struct ::wl_client *client, uint32_t id, int version)
     : wp_presentation_feedback(client, id, version)
     , m_presentationTime(pTime)
 {
     setSurface(surface);
 }
 
-void PresentationFeedback::setSurface(QWaylandSurface *qwls)
+void PresentationFeedback::setSurface(WaylandSurface *qwls)
 {
     if (!qwls) {
         discard();
@@ -186,13 +188,13 @@ void PresentationFeedback::setSurface(QWaylandSurface *qwls)
 
     m_surface = qwls;
 
-    connect(qwls, &QWaylandSurface::damaged, this, &PresentationFeedback::onSurfaceCommit);
-    connect(qwls, &QWaylandSurface::destroyed, this, &PresentationFeedback::discard);
+    connect(qwls, &WaylandSurface::damaged, this, &PresentationFeedback::onSurfaceCommit);
+    connect(qwls, &WaylandSurface::destroyed, this, &PresentationFeedback::discard);
 
-    QWaylandView *view = qwls ? qwls->primaryView() : nullptr;
+    WaylandView *view = qwls ? qwls->primaryView() : nullptr;
     //The surface has not committed yet.
     if (!view) {
-        connect(qwls, &QWaylandSurface::hasContentChanged, this, &PresentationFeedback::onSurfaceMapped);
+        connect(qwls, &WaylandSurface::hasContentChanged, this, &PresentationFeedback::onSurfaceMapped);
         return;
     }
 
@@ -211,7 +213,7 @@ void PresentationFeedback::onSurfaceCommit()
 
 void PresentationFeedback::onSurfaceMapped()
 {
-    QWaylandView *view = m_surface->primaryView();
+    WaylandView *view = m_surface->primaryView();
     if (!view) {
         qWarning() << "The mapped surface has no view";
         discard();
@@ -221,11 +223,11 @@ void PresentationFeedback::onSurfaceMapped()
     maybeConnectToWindow(view);
 }
 
-void PresentationFeedback::maybeConnectToWindow(QWaylandView *view)
+void PresentationFeedback::maybeConnectToWindow(WaylandView *view)
 {
-    QWaylandQuickItem *item = view ? qobject_cast<QWaylandQuickItem *>(view->renderObject()) : nullptr;
+    WaylandQuickItem *item = view ? qobject_cast<WaylandQuickItem *>(view->renderObject()) : nullptr;
     if (!item) {
-        qWarning() << "QWaylandPresentationTime only works with QtQuick compositors" << view;
+        qWarning() << "WaylandPresentationTime only works with QtQuick compositors" << view;
         discard();
         return;
     }
@@ -241,11 +243,11 @@ void PresentationFeedback::maybeConnectToWindow(QWaylandView *view)
 
 void PresentationFeedback::onWindowChanged()
 {
-    QWaylandQuickItem *item = qobject_cast<QWaylandQuickItem *>(sender());
+    WaylandQuickItem *item = qobject_cast<WaylandQuickItem *>(sender());
     QQuickWindow *window = item ? item->window() : nullptr;
 
     if (!window) {
-        qWarning() << "QWaylandPresentationTime only works with QtQuick compositors" << item;
+        qWarning() << "WaylandPresentationTime only works with QtQuick compositors" << item;
         discard();
         /* Actually, the commit is not discarded yet. If the related item has new window,
            the commit can be presented on screen. So we can choose not to discard the feedback
@@ -278,7 +280,7 @@ void PresentationFeedback::onSync()
     QQuickWindow *window = qobject_cast<QQuickWindow *>(sender());
 
     if (m_committed) {
-        disconnect(m_surface, &QWaylandSurface::damaged, this, &PresentationFeedback::onSurfaceCommit);
+        disconnect(m_surface, &WaylandSurface::damaged, this, &PresentationFeedback::onSurfaceCommit);
         disconnect(window, &QQuickWindow::beforeSynchronizing, this, &PresentationFeedback::onSync);
         m_sync = true;
     }
@@ -290,7 +292,7 @@ void PresentationFeedback::onSwapped()
 
     if (m_sync) {
         disconnect(window, &QQuickWindow::afterFrameEnd, this, &PresentationFeedback::onSwapped);
-        connect(m_presentationTime, &QWaylandPresentationTime::presented, this, &PresentationFeedback::sendPresented);
+        connect(m_presentationTime, &WaylandPresentationTime::presented, this, &PresentationFeedback::sendPresented);
     }
 }
 
@@ -302,15 +304,15 @@ void PresentationFeedback::discard()
 
 void PresentationFeedback::sendSyncOutput()
 {
-    QWaylandCompositor *compositor = presentationTime()->compositor();
+    WaylandCompositor *compositor = presentationTime()->compositor();
     if (!compositor) {
         qWarning() << "No compositor container to send sync_output";
         return;
     }
 
-    QWaylandView *view = surface()->primaryView();
-    QWaylandOutput *output = view ? view->output() : nullptr;
-    struct ::wl_resource *r = output ? output->resourceForClient(QWaylandClient::fromWlClient(compositor, resource()->client())) : nullptr;
+    WaylandView *view = surface()->primaryView();
+    WaylandOutput *output = view ? view->output() : nullptr;
+    struct ::wl_resource *r = output ? output->resourceForClient(WaylandClient::fromWlClient(compositor, resource()->client())) : nullptr;
 
     if (r)
         send_sync_output(r);
@@ -321,9 +323,9 @@ void PresentationFeedback::sendPresented(quint64 sequence, quint64 tv_sec, quint
     sendSyncOutput();
 
     send_presented(tv_sec >> 32, tv_sec, tv_nsec, refresh_nsec, sequence >> 32, sequence,
-            QtWaylandServer::wp_presentation_feedback::kind_vsync
-            | QtWaylandServer::wp_presentation_feedback::kind_hw_clock
-            | QtWaylandServer::wp_presentation_feedback::kind_hw_completion);
+            PrivateServer::wp_presentation_feedback::kind_vsync
+            | PrivateServer::wp_presentation_feedback::kind_hw_clock
+            | PrivateServer::wp_presentation_feedback::kind_hw_completion);
 
     destroy();
 }
@@ -339,24 +341,26 @@ void PresentationFeedback::wp_presentation_feedback_destroy_resource(Resource *r
     delete this;
 }
 
-QWaylandPresentationTimePrivate::QWaylandPresentationTimePrivate()
+WaylandPresentationTimePrivate::WaylandPresentationTimePrivate()
 {
 }
 
-void QWaylandPresentationTimePrivate::wp_presentation_bind_resource(Resource *resource)
+void WaylandPresentationTimePrivate::wp_presentation_bind_resource(Resource *resource)
 {
     send_clock_id(resource->handle, CLOCK_MONOTONIC);
 }
 
-void QWaylandPresentationTimePrivate::wp_presentation_feedback(Resource *resource, struct ::wl_resource *surface, uint32_t callback)
+void WaylandPresentationTimePrivate::wp_presentation_feedback(Resource *resource, struct ::wl_resource *surface, uint32_t callback)
 {
-    Q_Q(QWaylandPresentationTime);
+    Q_Q(WaylandPresentationTime);
 
-    QWaylandSurface *qwls = QWaylandSurface::fromResource(surface);
+    WaylandSurface *qwls = WaylandSurface::fromResource(surface);
     if (!qwls)
         return;
 
     new PresentationFeedback(q, qwls, resource->client(), callback, /* version */ 1);
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

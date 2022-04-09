@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDSHAREDMEMORYFORMATHELPER_H
-#define QWAYLANDSHAREDMEMORYFORMATHELPER_H
+#ifndef AURORA_COMPOSITOR_WAYLANDSHAREDMEMORYFORMATHELPER_H
+#define AURORA_COMPOSITOR_WAYLANDSHAREDMEMORYFORMATHELPER_H
 
 #include <QtGui/QImage>
 #include <QtCore/private/qglobal_p.h>
@@ -46,9 +46,11 @@
 //the correct protocol header for the wayland server or wayland client has to be
 //included before this file is included
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandSharedMemoryFormatHelper
+namespace Compositor {
+
+class WaylandSharedMemoryFormatHelper
 {
 public:
     static inline wl_shm_format fromQImageFormat(QImage::Format format);
@@ -119,7 +121,7 @@ private:
     }
 };
 
-wl_shm_format QWaylandSharedMemoryFormatHelper::fromQImageFormat(QImage::Format format)
+wl_shm_format WaylandSharedMemoryFormatHelper::fromQImageFormat(QImage::Format format)
 {
     Array array = getData();
     if (array.size <= size_t(format))
@@ -127,6 +129,8 @@ wl_shm_format QWaylandSharedMemoryFormatHelper::fromQImageFormat(QImage::Format 
     return array.data[format];
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif //QWAYLANDSHAREDMEMORYFORMATHELPER_H

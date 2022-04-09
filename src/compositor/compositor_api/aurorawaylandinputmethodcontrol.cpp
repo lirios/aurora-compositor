@@ -27,94 +27,94 @@
 **
 ****************************************************************************/
 
-#include "qwaylandinputmethodcontrol.h"
-#include "qwaylandinputmethodcontrol_p.h"
+#include "aurorawaylandinputmethodcontrol.h"
+#include "aurorawaylandinputmethodcontrol_p.h"
 
-#include "qwaylandcompositor.h"
-#include "qwaylandseat.h"
-#include "qwaylandsurface.h"
-#include "qwaylandview.h"
-#include "qwaylandtextinput.h"
+#include "aurorawaylandcompositor.h"
+#include "aurorawaylandseat.h"
+#include "aurorawaylandsurface.h"
+#include "aurorawaylandview.h"
+#include "aurorawaylandtextinput.h"
 #if QT_WAYLAND_TEXT_INPUT_V4_WIP
-#include "qwaylandtextinputv4.h"
+#include "aurorawaylandtextinputv4.h"
 #endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
-#include "qwaylandqttextinputmethod.h"
+#include "aurorawaylandqttextinputmethod.h"
 
 #include <QtGui/QInputMethodEvent>
 
-QWaylandInputMethodControl::QWaylandInputMethodControl(QWaylandSurface *surface)
-    : QObject(*new QWaylandInputMethodControlPrivate(surface), surface)
+WaylandInputMethodControl::WaylandInputMethodControl(WaylandSurface *surface)
+    : QObject(*new WaylandInputMethodControlPrivate(surface), surface)
 {
-    connect(d_func()->compositor, &QWaylandCompositor::defaultSeatChanged,
-            this, &QWaylandInputMethodControl::defaultSeatChanged);
+    connect(d_func()->compositor, &WaylandCompositor::defaultSeatChanged,
+            this, &WaylandInputMethodControl::defaultSeatChanged);
 
     updateTextInput();
 
 #if QT_WAYLAND_TEXT_INPUT_V4_WIP
-    QWaylandTextInputV4 *textInputV4 = d_func()->textInputV4();
+    WaylandTextInputV4 *textInputV4 = d_func()->textInputV4();
     if (textInputV4) {
-        connect(textInputV4, &QWaylandTextInputV4::surfaceEnabled, this, &QWaylandInputMethodControl::surfaceEnabled);
-        connect(textInputV4, &QWaylandTextInputV4::surfaceDisabled, this, &QWaylandInputMethodControl::surfaceDisabled);
-        connect(textInputV4, &QWaylandTextInputV4::updateInputMethod, this, &QWaylandInputMethodControl::updateInputMethod);
+        connect(textInputV4, &WaylandTextInputV4::surfaceEnabled, this, &WaylandInputMethodControl::surfaceEnabled);
+        connect(textInputV4, &WaylandTextInputV4::surfaceDisabled, this, &WaylandInputMethodControl::surfaceDisabled);
+        connect(textInputV4, &WaylandTextInputV4::updateInputMethod, this, &WaylandInputMethodControl::updateInputMethod);
     }
 #endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
 
-    QWaylandQtTextInputMethod *textInputMethod = d_func()->textInputMethod();
+    WaylandQtTextInputMethod *textInputMethod = d_func()->textInputMethod();
     if (textInputMethod) {
-        connect(textInputMethod, &QWaylandQtTextInputMethod::surfaceEnabled, this, &QWaylandInputMethodControl::surfaceEnabled);
-        connect(textInputMethod, &QWaylandQtTextInputMethod::surfaceDisabled, this, &QWaylandInputMethodControl::surfaceDisabled);
-        connect(textInputMethod, &QWaylandQtTextInputMethod::updateInputMethod, this, &QWaylandInputMethodControl::updateInputMethod);
+        connect(textInputMethod, &WaylandQtTextInputMethod::surfaceEnabled, this, &WaylandInputMethodControl::surfaceEnabled);
+        connect(textInputMethod, &WaylandQtTextInputMethod::surfaceDisabled, this, &WaylandInputMethodControl::surfaceDisabled);
+        connect(textInputMethod, &WaylandQtTextInputMethod::updateInputMethod, this, &WaylandInputMethodControl::updateInputMethod);
     }
 }
 
-QVariant QWaylandInputMethodControl::inputMethodQuery(Qt::InputMethodQuery query, QVariant argument) const
+QVariant WaylandInputMethodControl::inputMethodQuery(Qt::InputMethodQuery query, QVariant argument) const
 {
-    Q_D(const QWaylandInputMethodControl);
+    Q_D(const WaylandInputMethodControl);
 
-    QWaylandTextInput *textInput = d->textInput();
+    WaylandTextInput *textInput = d->textInput();
     if (textInput != nullptr && textInput->focus() == d->surface)
         return textInput->inputMethodQuery(query, argument);
 
 #if QT_WAYLAND_TEXT_INPUT_V4_WIP
-    QWaylandTextInputV4 *textInputV4 = d->textInputV4();
+    WaylandTextInputV4 *textInputV4 = d->textInputV4();
     if (textInputV4 != nullptr && textInputV4->focus() == d->surface)
         return textInputV4->inputMethodQuery(query, argument);
 #endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
 
-    QWaylandQtTextInputMethod *textInputMethod = d_func()->textInputMethod();
+    WaylandQtTextInputMethod *textInputMethod = d_func()->textInputMethod();
     if (textInputMethod && textInputMethod->focusedSurface() == d->surface)
         return textInputMethod->inputMethodQuery(query, argument);
 
     return QVariant();
 }
 
-void QWaylandInputMethodControl::inputMethodEvent(QInputMethodEvent *event)
+void WaylandInputMethodControl::inputMethodEvent(QInputMethodEvent *event)
 {
-    Q_D(QWaylandInputMethodControl);
+    Q_D(WaylandInputMethodControl);
 
-    if (QWaylandTextInput *textInput = d->textInput()) {
+    if (WaylandTextInput *textInput = d->textInput()) {
         textInput->sendInputMethodEvent(event);
 #if QT_WAYLAND_TEXT_INPUT_V4_WIP
-    } else if (QWaylandTextInputV4 *textInputV4 = d->textInputV4()) {
+    } else if (WaylandTextInputV4 *textInputV4 = d->textInputV4()) {
         textInputV4->sendInputMethodEvent(event);
 #endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
-    } else if (QWaylandQtTextInputMethod *textInputMethod = d->textInputMethod()) {
+    } else if (WaylandQtTextInputMethod *textInputMethod = d->textInputMethod()) {
         textInputMethod->sendInputMethodEvent(event);
     } else {
         event->ignore();
     }
 }
 
-bool QWaylandInputMethodControl::enabled() const
+bool WaylandInputMethodControl::enabled() const
 {
-    Q_D(const QWaylandInputMethodControl);
+    Q_D(const WaylandInputMethodControl);
 
     return d->enabled;
 }
 
-void QWaylandInputMethodControl::setEnabled(bool enabled)
+void WaylandInputMethodControl::setEnabled(bool enabled)
 {
-    Q_D(QWaylandInputMethodControl);
+    Q_D(WaylandInputMethodControl);
 
     if (d->enabled == enabled)
         return;
@@ -124,36 +124,36 @@ void QWaylandInputMethodControl::setEnabled(bool enabled)
     emit updateInputMethod(Qt::ImQueryInput);
 }
 
-void QWaylandInputMethodControl::surfaceEnabled(QWaylandSurface *surface)
+void WaylandInputMethodControl::surfaceEnabled(WaylandSurface *surface)
 {
-    Q_D(QWaylandInputMethodControl);
+    Q_D(WaylandInputMethodControl);
 
     if (surface == d->surface)
         setEnabled(true);
 }
 
-void QWaylandInputMethodControl::surfaceDisabled(QWaylandSurface *surface)
+void WaylandInputMethodControl::surfaceDisabled(WaylandSurface *surface)
 {
-    Q_D(QWaylandInputMethodControl);
+    Q_D(WaylandInputMethodControl);
 
     if (surface == d->surface)
         setEnabled(false);
 }
 
-void QWaylandInputMethodControl::setSurface(QWaylandSurface *surface)
+void WaylandInputMethodControl::setSurface(WaylandSurface *surface)
 {
-    Q_D(QWaylandInputMethodControl);
+    Q_D(WaylandInputMethodControl);
 
     if (d->surface == surface)
         return;
 
     d->surface = surface;
 
-    QWaylandTextInput *textInput = d->textInput();
+    WaylandTextInput *textInput = d->textInput();
 #if QT_WAYLAND_TEXT_INPUT_V4_WIP
-    QWaylandTextInputV4 *textInputV4 = d->textInputV4();
+    WaylandTextInputV4 *textInputV4 = d->textInputV4();
 #endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
-    QWaylandQtTextInputMethod *textInputMethod = d->textInputMethod();
+    WaylandQtTextInputMethod *textInputMethod = d->textInputMethod();
     setEnabled((textInput && textInput->isSurfaceEnabled(d->surface))
 #if QT_WAYLAND_TEXT_INPUT_V4_WIP
                || (textInputV4 && textInputV4->isSurfaceEnabled(d->surface))
@@ -161,20 +161,20 @@ void QWaylandInputMethodControl::setSurface(QWaylandSurface *surface)
                || (textInputMethod && textInputMethod->isSurfaceEnabled(d->surface)));
 }
 
-void QWaylandInputMethodControl::updateTextInput()
+void WaylandInputMethodControl::updateTextInput()
 {
-    QWaylandTextInput *textInput = d_func()->textInput();
+    WaylandTextInput *textInput = d_func()->textInput();
 
     if (textInput) {
-        connect(textInput, &QWaylandTextInput::surfaceEnabled, this, &QWaylandInputMethodControl::surfaceEnabled, Qt::UniqueConnection);
-        connect(textInput, &QWaylandTextInput::surfaceDisabled, this, &QWaylandInputMethodControl::surfaceDisabled, Qt::UniqueConnection);
-        connect(textInput, &QWaylandTextInput::updateInputMethod, this, &QWaylandInputMethodControl::updateInputMethod, Qt::UniqueConnection);
+        connect(textInput, &WaylandTextInput::surfaceEnabled, this, &WaylandInputMethodControl::surfaceEnabled, Qt::UniqueConnection);
+        connect(textInput, &WaylandTextInput::surfaceDisabled, this, &WaylandInputMethodControl::surfaceDisabled, Qt::UniqueConnection);
+        connect(textInput, &WaylandTextInput::updateInputMethod, this, &WaylandInputMethodControl::updateInputMethod, Qt::UniqueConnection);
     }
 }
 
-void QWaylandInputMethodControl::defaultSeatChanged()
+void WaylandInputMethodControl::defaultSeatChanged()
 {
-    Q_D(QWaylandInputMethodControl);
+    Q_D(WaylandInputMethodControl);
 
     disconnect(d->textInput(), nullptr, this, nullptr);
 #if QT_WAYLAND_TEXT_INPUT_V4_WIP
@@ -183,27 +183,27 @@ void QWaylandInputMethodControl::defaultSeatChanged()
     disconnect(d->textInputMethod(), nullptr, this, nullptr);
 
     d->seat = d->compositor->defaultSeat();
-    QWaylandTextInput *textInput = d->textInput();
+    WaylandTextInput *textInput = d->textInput();
 #if QT_WAYLAND_TEXT_INPUT_V4_WIP
-    QWaylandTextInputV4 *textInputV4 = d->textInputV4();
+    WaylandTextInputV4 *textInputV4 = d->textInputV4();
 #endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
-    QWaylandQtTextInputMethod *textInputMethod = d->textInputMethod();
+    WaylandQtTextInputMethod *textInputMethod = d->textInputMethod();
 
     if (textInput) {
-        connect(textInput, &QWaylandTextInput::surfaceEnabled, this, &QWaylandInputMethodControl::surfaceEnabled);
-        connect(textInput, &QWaylandTextInput::surfaceDisabled, this, &QWaylandInputMethodControl::surfaceDisabled);
+        connect(textInput, &WaylandTextInput::surfaceEnabled, this, &WaylandInputMethodControl::surfaceEnabled);
+        connect(textInput, &WaylandTextInput::surfaceDisabled, this, &WaylandInputMethodControl::surfaceDisabled);
     }
 
 #if QT_WAYLAND_TEXT_INPUT_V4_WIP
     if (textInputV4) {
-        connect(textInputV4, &QWaylandTextInputV4::surfaceEnabled, this, &QWaylandInputMethodControl::surfaceEnabled);
-        connect(textInputV4, &QWaylandTextInputV4::surfaceDisabled, this, &QWaylandInputMethodControl::surfaceDisabled);
+        connect(textInputV4, &WaylandTextInputV4::surfaceEnabled, this, &WaylandInputMethodControl::surfaceEnabled);
+        connect(textInputV4, &WaylandTextInputV4::surfaceDisabled, this, &WaylandInputMethodControl::surfaceDisabled);
     }
 #endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
 
     if (textInputMethod) {
-        connect(textInputMethod, &QWaylandQtTextInputMethod::surfaceEnabled, this, &QWaylandInputMethodControl::surfaceEnabled);
-        connect(textInputMethod, &QWaylandQtTextInputMethod::surfaceDisabled, this, &QWaylandInputMethodControl::surfaceDisabled);
+        connect(textInputMethod, &WaylandQtTextInputMethod::surfaceEnabled, this, &WaylandInputMethodControl::surfaceEnabled);
+        connect(textInputMethod, &WaylandQtTextInputMethod::surfaceDisabled, this, &WaylandInputMethodControl::surfaceDisabled);
     }
 
     setEnabled((textInput && textInput->isSurfaceEnabled(d->surface))
@@ -213,32 +213,32 @@ void QWaylandInputMethodControl::defaultSeatChanged()
                || (textInputMethod && textInputMethod->isSurfaceEnabled(d->surface)));
 }
 
-QWaylandInputMethodControlPrivate::QWaylandInputMethodControlPrivate(QWaylandSurface *surface)
+WaylandInputMethodControlPrivate::WaylandInputMethodControlPrivate(WaylandSurface *surface)
     : compositor(surface->compositor())
     , seat(compositor->defaultSeat())
     , surface(surface)
 {
 }
 
-QWaylandQtTextInputMethod *QWaylandInputMethodControlPrivate::textInputMethod() const
+WaylandQtTextInputMethod *WaylandInputMethodControlPrivate::textInputMethod() const
 {
-    if (!surface->client()->textInputProtocols().testFlag(QWaylandClient::TextInputProtocol::QtTextInputMethodV1))
+    if (!surface->client()->textInputProtocols().testFlag(WaylandClient::TextInputProtocol::QtTextInputMethodV1))
         return nullptr;
-    return QWaylandQtTextInputMethod::findIn(seat);
+    return WaylandQtTextInputMethod::findIn(seat);
 }
 
-QWaylandTextInput *QWaylandInputMethodControlPrivate::textInput() const
+WaylandTextInput *WaylandInputMethodControlPrivate::textInput() const
 {
-    if (!surface->client()->textInputProtocols().testFlag(QWaylandClient::TextInputProtocol::TextInputV2))
+    if (!surface->client()->textInputProtocols().testFlag(WaylandClient::TextInputProtocol::TextInputV2))
         return nullptr;
-    return QWaylandTextInput::findIn(seat);
+    return WaylandTextInput::findIn(seat);
 }
 
 #if QT_WAYLAND_TEXT_INPUT_V4_WIP
-QWaylandTextInputV4 *QWaylandInputMethodControlPrivate::textInputV4() const
+WaylandTextInputV4 *WaylandInputMethodControlPrivate::textInputV4() const
 {
-    return QWaylandTextInputV4::findIn(seat);
+    return WaylandTextInputV4::findIn(seat);
 }
 #endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
 
-#include "moc_qwaylandinputmethodcontrol.cpp"
+#include "moc_aurorawaylandinputmethodcontrol.cpp"

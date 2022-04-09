@@ -27,42 +27,44 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDVIEWPORTER_P_H
-#define QWAYLANDVIEWPORTER_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDVIEWPORTER_P_H
+#define AURORA_COMPOSITOR_WAYLANDVIEWPORTER_P_H
 
-#include "qwaylandviewporter.h"
+#include "aurorawaylandviewporter.h"
 
-#include <QtWaylandCompositor/private/qwaylandcompositorextension_p.h>
-#include <QtWaylandCompositor/private/qwayland-server-viewporter.h>
+#include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
+#include <LiriAuroraCompositor/private/aurora-server-viewporter.h>
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandSurface;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandViewporterPrivate
-        : public QWaylandCompositorExtensionPrivate
-        , public QtWaylandServer::wp_viewporter
+class WaylandSurface;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandViewporterPrivate
+        : public WaylandCompositorExtensionPrivate
+        , public PrivateServer::wp_viewporter
 {
-    Q_DECLARE_PUBLIC(QWaylandViewporter)
+    Q_DECLARE_PUBLIC(WaylandViewporter)
 public:
-    explicit QWaylandViewporterPrivate() = default;
+    explicit WaylandViewporterPrivate() = default;
 
     class Q_WAYLANDCOMPOSITOR_EXPORT Viewport
-            : public QtWaylandServer::wp_viewport
+            : public PrivateServer::wp_viewport
     {
     public:
-        explicit Viewport(QWaylandSurface *surface, wl_client *client, int id);
+        explicit Viewport(WaylandSurface *surface, wl_client *client, int id);
         ~Viewport() override;
         void checkCommittedState();
 
@@ -73,7 +75,7 @@ public:
         void wp_viewport_set_destination(Resource *resource, int32_t width, int32_t height) override;
 
     private:
-        QPointer<QWaylandSurface> m_surface = nullptr;
+        QPointer<WaylandSurface> m_surface = nullptr;
     };
 
 protected:
@@ -81,6 +83,8 @@ protected:
     void wp_viewporter_get_viewport(Resource *resource, uint32_t id, wl_resource *surface) override;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDVIEWPORTER_P_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDVIEWPORTER_P_H

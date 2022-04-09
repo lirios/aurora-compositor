@@ -27,51 +27,55 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDIVISURFACE_P_H
-#define QWAYLANDIVISURFACE_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDIVISURFACE_P_H
+#define AURORA_COMPOSITOR_WAYLANDIVISURFACE_P_H
 
-#include <QtWaylandCompositor/private/qwaylandcompositorextension_p.h>
-#include <QtWaylandCompositor/private/qwayland-server-ivi-application.h>
+#include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
+#include <LiriAuroraCompositor/private/aurora-server-ivi-application.h>
 
-#include <QtWaylandCompositor/QWaylandIviSurface>
+#include <LiriAuroraCompositor/WaylandIviSurface>
 
-#include <QtWaylandCompositor/QWaylandSurfaceRole>
+#include <LiriAuroraCompositor/WaylandSurfaceRole>
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandIviSurfacePrivate
-        : public QWaylandCompositorExtensionPrivate
-        , public QtWaylandServer::ivi_surface
+namespace Compositor {
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandIviSurfacePrivate
+        : public WaylandCompositorExtensionPrivate
+        , public PrivateServer::ivi_surface
 {
-    Q_DECLARE_PUBLIC(QWaylandIviSurface)
+    Q_DECLARE_PUBLIC(WaylandIviSurface)
 
 public:
-    QWaylandIviSurfacePrivate();
-    static QWaylandIviSurfacePrivate *get(QWaylandIviSurface *iviSurface) { return iviSurface->d_func(); }
+    WaylandIviSurfacePrivate();
+    static WaylandIviSurfacePrivate *get(WaylandIviSurface *iviSurface) { return iviSurface->d_func(); }
 
 protected:
     void ivi_surface_destroy_resource(Resource *resource) override;
     void ivi_surface_destroy(Resource *resource) override;
 
 private:
-    QWaylandIviApplication *m_iviApplication = nullptr;
-    QWaylandSurface *m_surface = nullptr;
+    WaylandIviApplication *m_iviApplication = nullptr;
+    WaylandSurface *m_surface = nullptr;
     uint m_iviId = UINT_MAX;
 
-    static QWaylandSurfaceRole s_role;
+    static WaylandSurfaceRole s_role;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDIVISURFACE_P_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDIVISURFACE_P_H

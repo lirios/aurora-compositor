@@ -27,16 +27,18 @@
 **
 ****************************************************************************/
 
-#include "qwlregion_p.h"
+#include "aurorawlregion_p.h"
 
-#include <QtWaylandCompositor/private/qwaylandutils_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandutils_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 namespace QtWayland {
 
 Region::Region(struct wl_client *client, uint32_t id)
-    : QtWaylandServer::wl_region(client, id, 1)
+    : PrivateServer::wl_region(client, id, 1)
 {
 }
 
@@ -71,4 +73,6 @@ void Region::region_subtract(Resource *, int32_t x, int32_t y, int32_t w, int32_
 
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

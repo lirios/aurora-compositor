@@ -27,30 +27,34 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDVIEWPORTER_H
-#define QWAYLANDVIEWPORTER_H
+#ifndef AURORA_COMPOSITOR_WAYLANDVIEWPORTER_H
+#define AURORA_COMPOSITOR_WAYLANDVIEWPORTER_H
 
-#include <QtWaylandCompositor/QWaylandCompositorExtension>
+#include <LiriAuroraCompositor/WaylandCompositorExtension>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandViewporterPrivate;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandViewporter
-        : public QWaylandCompositorExtensionTemplate<QWaylandViewporter>
+class WaylandViewporterPrivate;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandViewporter
+        : public WaylandCompositorExtensionTemplate<WaylandViewporter>
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandViewporter)
+    Q_DECLARE_PRIVATE(WaylandViewporter)
 
 public:
-    explicit QWaylandViewporter();
-    explicit QWaylandViewporter(QWaylandCompositor *compositor);
+    explicit WaylandViewporter();
+    explicit WaylandViewporter(WaylandCompositor *compositor);
 
     void initialize() override;
 
     static const struct wl_interface *interface();
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDVIEWPORTER_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDVIEWPORTER_H

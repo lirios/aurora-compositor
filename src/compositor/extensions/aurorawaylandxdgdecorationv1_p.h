@@ -27,39 +27,41 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDXDGDECORATIONV1_P_H
-#define QWAYLANDXDGDECORATIONV1_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDXDGDECORATIONV1_P_H
+#define AURORA_COMPOSITOR_WAYLANDXDGDECORATIONV1_P_H
 
-#include "qwaylandxdgdecorationv1.h"
+#include "aurorawaylandxdgdecorationv1.h"
 
-#include <QtWaylandCompositor/private/qwaylandcompositorextension_p.h>
-#include <QtWaylandCompositor/private/qwayland-server-xdg-decoration-unstable-v1.h>
+#include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
+#include <LiriAuroraCompositor/private/aurora-server-xdg-decoration-unstable-v1.h>
 
-#include <QtWaylandCompositor/QWaylandXdgToplevel>
+#include <LiriAuroraCompositor/WaylandXdgToplevel>
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandXdgToplevel;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandXdgDecorationManagerV1Private
-        : public QWaylandCompositorExtensionPrivate
-        , public QtWaylandServer::zxdg_decoration_manager_v1
+class WaylandXdgToplevel;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgDecorationManagerV1Private
+        : public WaylandCompositorExtensionPrivate
+        , public PrivateServer::zxdg_decoration_manager_v1
 {
-    Q_DECLARE_PUBLIC(QWaylandXdgDecorationManagerV1)
+    Q_DECLARE_PUBLIC(WaylandXdgDecorationManagerV1)
 public:
-    using DecorationMode = QWaylandXdgToplevel::DecorationMode;
-    explicit QWaylandXdgDecorationManagerV1Private() {}
+    using DecorationMode = WaylandXdgToplevel::DecorationMode;
+    explicit WaylandXdgDecorationManagerV1Private() {}
 
 protected:
     void zxdg_decoration_manager_v1_get_toplevel_decoration(Resource *resource, uint id, ::wl_resource *toplevelResource) override;
@@ -68,15 +70,15 @@ private:
     DecorationMode m_preferredMode = DecorationMode::ClientSideDecoration;
 };
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandXdgToplevelDecorationV1
-        : public QtWaylandServer::zxdg_toplevel_decoration_v1
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandXdgToplevelDecorationV1
+        : public PrivateServer::zxdg_toplevel_decoration_v1
 {
 public:
-    using DecorationMode = QWaylandXdgToplevel::DecorationMode;
-    explicit QWaylandXdgToplevelDecorationV1(QWaylandXdgToplevel *toplevel,
-                                             QWaylandXdgDecorationManagerV1 *manager,
+    using DecorationMode = WaylandXdgToplevel::DecorationMode;
+    explicit WaylandXdgToplevelDecorationV1(WaylandXdgToplevel *toplevel,
+                                             WaylandXdgDecorationManagerV1 *manager,
                                              wl_client *client, int id);
-    ~QWaylandXdgToplevelDecorationV1() override;
+    ~WaylandXdgToplevelDecorationV1() override;
 
     DecorationMode configuredMode() const { return DecorationMode(m_configuredMode); }
     void sendConfigure(DecorationMode mode);
@@ -90,12 +92,14 @@ protected:
 private:
     void handleClientPreferredModeChanged();
 
-    QWaylandXdgToplevel *m_toplevel = nullptr;
-    QWaylandXdgDecorationManagerV1 *m_manager = nullptr;
+    WaylandXdgToplevel *m_toplevel = nullptr;
+    WaylandXdgDecorationManagerV1 *m_manager = nullptr;
     uint m_configuredMode = 0;
     uint m_clientPreferredMode = 0;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // QWAYLANDXDGDECORATIONV1_P_H
+} // namespace Aurora
+
+#endif // AURORA_COMPOSITOR_WAYLANDXDGDECORATIONV1_P_H

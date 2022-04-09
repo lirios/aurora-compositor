@@ -36,7 +36,7 @@
 #include "xwaylandshellsurface.h"
 
 XWaylandQuickShellSurfaceItem::XWaylandQuickShellSurfaceItem(QQuickItem *parent)
-    : QWaylandQuickItem(parent)
+    : WaylandQuickItem(parent)
     , m_shellSurface(nullptr)
     , m_shellIntegration(nullptr)
     , m_moveItem(nullptr)
@@ -90,13 +90,13 @@ void XWaylandQuickShellSurfaceItem::setMoveItem(QQuickItem *moveItem)
 void XWaylandQuickShellSurfaceItem::mouseMoveEvent(QMouseEvent *event)
 {
     if (!m_shellIntegration->mouseMoveEvent(event))
-        QWaylandQuickItem::mouseMoveEvent(event);
+        WaylandQuickItem::mouseMoveEvent(event);
 }
 
 void XWaylandQuickShellSurfaceItem::mouseReleaseEvent(QMouseEvent *event)
 {
     if (!m_shellIntegration->mouseReleaseEvent(event))
-        QWaylandQuickItem::mouseReleaseEvent(event);
+        WaylandQuickItem::mouseReleaseEvent(event);
 }
 
 #include "moc_xwaylandquickshellsurfaceitem.cpp"

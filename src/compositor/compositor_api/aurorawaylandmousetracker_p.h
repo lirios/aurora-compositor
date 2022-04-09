@@ -27,14 +27,14 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDMOUSETRACKER_P_H
-#define QWAYLANDMOUSETRACKER_P_H
+#ifndef AURORA_COMPOSITOR_WAYLANDMOUSETRACKER_P_H
+#define AURORA_COMPOSITOR_WAYLANDMOUSETRACKER_P_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -43,16 +43,18 @@
 
 #include <QtQuick/private/qquickmousearea_p.h>
 
-#include <QtWaylandCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandMouseTrackerPrivate;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandMouseTracker : public QQuickItem
+class WaylandMouseTrackerPrivate;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandMouseTracker : public QQuickItem
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandMouseTracker)
+    Q_DECLARE_PRIVATE(WaylandMouseTracker)
     Q_PROPERTY(qreal mouseX READ mouseX NOTIFY mouseXChanged)
     Q_PROPERTY(qreal mouseY READ mouseY NOTIFY mouseYChanged)
     Q_PROPERTY(bool containsMouse READ hovered NOTIFY hoveredChanged)
@@ -61,7 +63,7 @@ class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandMouseTracker : public QQuickItem
     QML_NAMED_ELEMENT(WaylandMouseTracker)
     QML_ADDED_IN_VERSION(1, 0)
 public:
-    QWaylandMouseTracker(QQuickItem *parent = nullptr);
+    WaylandMouseTracker(QQuickItem *parent = nullptr);
 
     qreal mouseX() const;
     qreal mouseY() const;
@@ -84,6 +86,8 @@ protected:
     void hoverLeaveEvent(QHoverEvent *event) override;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif  /*QWAYLANDMOUSETRACKER_P_H*/

@@ -28,24 +28,26 @@
 **
 ****************************************************************************/
 
-#ifndef QWAYLANDDESTROYLISTENER_H
-#define QWAYLANDDESTROYLISTENER_H
+#ifndef AURORA_COMPOSITOR_WAYLANDDESTROYLISTENER_H
+#define AURORA_COMPOSITOR_WAYLANDDESTROYLISTENER_H
 
 #include <QtCore/QObject>
-#include <QtWaylandCompositor/qtwaylandcompositorglobal.h>
+#include <LiriAuroraCompositor/qtwaylandcompositorglobal.h>
 
 struct wl_resource;
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandDestroyListenerPrivate;
+namespace Compositor {
 
-class Q_WAYLANDCOMPOSITOR_EXPORT QWaylandDestroyListener : public QObject
+class WaylandDestroyListenerPrivate;
+
+class Q_WAYLANDCOMPOSITOR_EXPORT WaylandDestroyListener : public QObject
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QWaylandDestroyListener)
+    Q_DECLARE_PRIVATE(WaylandDestroyListener)
 public:
-    QWaylandDestroyListener(QObject *parent = nullptr);
+    WaylandDestroyListener(QObject *parent = nullptr);
     void listenForDestruction(struct wl_resource *resource);
     void reset();
 
@@ -54,6 +56,8 @@ Q_SIGNALS:
 
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif  /*QWAYLANDDESTROYLISTENER_H*/

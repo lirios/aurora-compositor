@@ -34,7 +34,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -42,22 +42,24 @@
 //
 
 #include <QPointer>
-#include <QtWaylandCompositor/private/qwayland-server-wayland.h>
-#include <QtWaylandCompositor/private/qtwaylandcompositorglobal_p.h>
+#include <LiriAuroraCompositor/private/aurora-server-wayland.h>
+#include <LiriAuroraCompositor/private/qtwaylandcompositorglobal_p.h>
 
 QT_REQUIRE_CONFIG(wayland_datadevice);
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 namespace QtWayland
 {
 
 class DataSource;
 
-class DataOffer : public QtWaylandServer::wl_data_offer
+class DataOffer : public PrivateServer::wl_data_offer
 {
 public:
-    DataOffer(DataSource *data_source, QtWaylandServer::wl_data_device::Resource *target);
+    DataOffer(DataSource *data_source, PrivateServer::wl_data_device::Resource *target);
     ~DataOffer() override;
 
 protected:
@@ -72,6 +74,8 @@ private:
 
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif // WLDATAOFFER_H

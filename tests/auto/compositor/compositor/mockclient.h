@@ -26,8 +26,11 @@
 **
 ****************************************************************************/
 
+#ifndef MOCKCLIENT_H
+#define MOCKCLIENT_H
+
 #include "wayland-wayland-client-protocol.h"
-#include <qwayland-xdg-shell.h>
+#include <aurora-client-xdg-shell.h>
 #include <wayland-ivi-application-client-protocol.h>
 #include "wayland-viewporter-client-protocol.h"
 #include "wayland-idle-inhibit-unstable-v1-client-protocol.h"
@@ -37,9 +40,13 @@
 #include <QRect>
 #include <QList>
 #include <QtCore/QMap>
-#include <QWaylandOutputMode>
+#include <LiriAuroraCompositor/WaylandOutputMode>
 
 #include "mockxdgoutputv1.h"
+
+namespace Aurora {
+
+namespace Compositor {
 
 class MockSeat;
 
@@ -81,16 +88,16 @@ public:
     wp_viewporter *viewporter = nullptr;
     ivi_application *iviApplication = nullptr;
     zwp_idle_inhibit_manager_v1 *idleInhibitManager = nullptr;
-    QtWayland::zxdg_output_manager_v1 *xdgOutputManager = nullptr;
+    Aurora::Client::PrivateClient::zxdg_output_manager_v1 *xdgOutputManager = nullptr;
 
     QList<MockSeat *> m_seats;
 
     QRect geometry;
     QSize resolution;
     int refreshRate = -1;
-    QWaylandOutputMode currentMode;
-    QWaylandOutputMode preferredMode;
-    QList<QWaylandOutputMode> modes;
+    WaylandOutputMode currentMode;
+    WaylandOutputMode preferredMode;
+    QList<WaylandOutputMode> modes;
 
     int fd;
     int error = 0 /* means no error according to spec */;
@@ -135,3 +142,8 @@ private:
     static const wl_output_listener outputListener;
 };
 
+} // namespace Compositor
+
+} // namespace Aurora
+
+#endif // MOCKCLIENT_H

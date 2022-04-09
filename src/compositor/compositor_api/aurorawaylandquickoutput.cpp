@@ -28,47 +28,49 @@
 **
 ****************************************************************************/
 
-#include "qwaylandquickoutput.h"
-#include "qwaylandquickcompositor.h"
-#include "qwaylandquickitem_p.h"
+#include "aurorawaylandquickoutput.h"
+#include "aurorawaylandquickcompositor.h"
+#include "aurorawaylandquickitem_p.h"
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-QWaylandQuickOutput::QWaylandQuickOutput()
+namespace Compositor {
+
+WaylandQuickOutput::WaylandQuickOutput()
 {
 }
 
-QWaylandQuickOutput::QWaylandQuickOutput(QWaylandCompositor *compositor, QWindow *window)
-    : QWaylandOutput(compositor, window)
+WaylandQuickOutput::WaylandQuickOutput(WaylandCompositor *compositor, QWindow *window)
+    : WaylandOutput(compositor, window)
 {
 }
 
-void QWaylandQuickOutput::initialize()
+void WaylandQuickOutput::initialize()
 {
-    QWaylandOutput::initialize();
+    WaylandOutput::initialize();
 
     QQuickWindow *quickWindow = qobject_cast<QQuickWindow *>(window());
     if (!quickWindow) {
-        qWarning("Initialization error: Could not locate QQuickWindow on initializing QWaylandQuickOutput %p.\n", this);
+        qWarning("Initialization error: Could not locate QQuickWindow on initializing WaylandQuickOutput %p.\n", this);
         return;
     }
     connect(quickWindow, &QQuickWindow::beforeSynchronizing,
-            this, &QWaylandQuickOutput::updateStarted,
+            this, &WaylandQuickOutput::updateStarted,
             Qt::DirectConnection);
 
     connect(quickWindow, &QQuickWindow::afterRendering,
-            this, &QWaylandQuickOutput::doFrameCallbacks);
+            this, &WaylandQuickOutput::doFrameCallbacks);
 }
 
-void QWaylandQuickOutput::classBegin()
+void WaylandQuickOutput::classBegin()
 {
 }
 
-void QWaylandQuickOutput::componentComplete()
+void WaylandQuickOutput::componentComplete()
 {
     if (!compositor()) {
         for (QObject *p = parent(); p != nullptr; p = p->parent()) {
-            if (auto c = qobject_cast<QWaylandCompositor *>(p)) {
+            if (auto c = qobject_cast<WaylandCompositor *>(p)) {
                 setCompositor(c);
                 break;
             }
@@ -76,7 +78,7 @@ void QWaylandQuickOutput::componentComplete()
     }
 }
 
-void QWaylandQuickOutput::update()
+void WaylandQuickOutput::update()
 {
     if (!m_updateScheduled) {
         //don't qobject_cast since we have verified the type in initialize
@@ -93,12 +95,12 @@ void QWaylandQuickOutput::update()
  *
  * The default is true.
  */
-bool QWaylandQuickOutput::automaticFrameCallback() const
+bool WaylandQuickOutput::automaticFrameCallback() const
 {
     return m_automaticFrameCallback;
 }
 
-void QWaylandQuickOutput::setAutomaticFrameCallback(bool automatic)
+void WaylandQuickOutput::setAutomaticFrameCallback(bool automatic)
 {
     if (m_automaticFrameCallback == automatic)
         return;
@@ -136,7 +138,7 @@ static QQuickItem* clickableItemAtPosition(QQuickItem *rootItem, const QPointF &
     return nullptr;
 }
 
-QQuickItem *QWaylandQuickOutput::pickClickableItem(const QPointF &position)
+QQuickItem *WaylandQuickOutput::pickClickableItem(const QPointF &position)
 {
     QQuickWindow *quickWindow = qobject_cast<QQuickWindow *>(window());
     if (!quickWindow)
@@ -148,7 +150,7 @@ QQuickItem *QWaylandQuickOutput::pickClickableItem(const QPointF &position)
 /*!
  * \internal
  */
-void QWaylandQuickOutput::updateStarted()
+void WaylandQuickOutput::updateStarted()
 {
     m_updateScheduled = false;
 
@@ -158,9 +160,11 @@ void QWaylandQuickOutput::updateStarted()
     frameStarted();
 }
 
-void QWaylandQuickOutput::doFrameCallbacks()
+void WaylandQuickOutput::doFrameCallbacks()
 {
     if (m_automaticFrameCallback)
         sendFrameCallbacks();
 }
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
