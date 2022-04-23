@@ -26,7 +26,7 @@
 
 #include <QtCore/QObject>
 
-#include <Qt5Udev/qt5udevglobal.h>
+#include <LiriAuroraUdev/liriauroraudevglobal.h>
 
 namespace QtUdev {
 
@@ -34,7 +34,7 @@ class Udev;
 class UdevDevice;
 class UdevMonitorPrivate;
 
-class QT5UDEV_EXPORT UdevMonitor : public QObject
+class LIRIAURORAUDEV_EXPORT UdevMonitor : public QObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(UdevMonitor)

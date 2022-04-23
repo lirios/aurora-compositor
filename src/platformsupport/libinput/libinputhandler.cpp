@@ -28,8 +28,8 @@
 #include <QtGui/private/qguiapplication_p.h>
 #include <qplatformdefs.h>
 
-#include <Qt5Udev/private/udev_p.h>
-#include <LiriLogind/Logind>
+#include <LiriAuroraUdev/private/udev_p.h>
+#include <LiriAuroraLogind/Logind>
 
 #include "logging_p.h"
 #include "libinputhandler.h"

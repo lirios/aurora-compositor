@@ -26,14 +26,14 @@
 
 #include <QtCore/QString>
 
-#include <Qt5Udev/qt5udevglobal.h>
+#include <LiriAuroraUdev/liriauroraudevglobal.h>
 
 namespace QtUdev {
 
 class UdevDevice;
 class UdevPrivate;
 
-class QT5UDEV_EXPORT Udev
+class LIRIAURORAUDEV_EXPORT Udev
 {
     Q_DECLARE_PRIVATE(Udev)
 public:

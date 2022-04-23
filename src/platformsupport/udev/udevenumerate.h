@@ -24,13 +24,13 @@
 #ifndef QTUDEVENUMERATE_H
 #define QTUDEVENUMERATE_H
 
-#include <Qt5Udev/UdevDevice>
+#include <LiriAuroraUdev/UdevDevice>
 
 namespace QtUdev {
 
 class UdevEnumeratePrivate;
 
-class QT5UDEV_EXPORT UdevEnumerate
+class LIRIAURORAUDEV_EXPORT UdevEnumerate
 {
     Q_DECLARE_PRIVATE(UdevEnumerate)
 public:

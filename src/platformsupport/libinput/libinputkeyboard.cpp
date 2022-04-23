@@ -35,7 +35,7 @@
 #include <QtCore/QTimer>
 #include <QtGui/qpa/qwindowsysteminterface.h>
 
-#include <LiriLogind/LiriLogind>
+#include <LiriAuroraLogind/Logind>
 
 #include "logging_p.h"
 #include "libinputkeyboard.h"

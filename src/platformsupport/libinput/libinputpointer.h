@@ -35,7 +35,7 @@
 
 #include <QtCore/QPoint>
 
-#include <LiriLibInput/lirilibinputglobal.h>
+#include <LiriAuroraLibInput/liriauroralibinputglobal.h>
 
 struct libinput_event_pointer;
 
@@ -45,7 +45,7 @@ namespace Platform {
 
 class LibInputHandler;
 
-class LIRILIBINPUT_EXPORT LibInputPointer
+class LIRIAURORALIBINPUT_EXPORT LibInputPointer
 {
 public:
     LibInputPointer(LibInputHandler *handler);

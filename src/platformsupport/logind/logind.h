@@ -26,13 +26,13 @@
 #include <QObject>
 #include <QDBusConnection>
 
-#include <LiriLogind/lirilogindglobal.h>
+#include <LiriAuroraLogind/liriauroralogindglobal.h>
 
 namespace Liri {
 
 class LogindPrivate;
 
-class LIRILOGIND_EXPORT Logind : public QObject
+class LIRIAURORALOGIND_EXPORT Logind : public QObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(Logind)

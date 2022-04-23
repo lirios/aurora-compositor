@@ -33,7 +33,8 @@
 #ifndef LIRI_LIBINPUTTOUCH_H
 #define LIRI_LIBINPUTTOUCH_H
 
-#include <LiriLibInput/lirilibinputglobal.h>
+#include <LiriAuroraLibInput/liriauroralibinputglobal.h>
+#include <QtGlobal>
 
 struct libinput_device;
 struct libinput_event_touch;
@@ -47,7 +48,7 @@ namespace Platform {
 class LibInputHandler;
 class LibInputTouchPrivate;
 
-class LIRILIBINPUT_EXPORT LibInputTouch
+class LIRIAURORALIBINPUT_EXPORT LibInputTouch
 {
     Q_DECLARE_PRIVATE(LibInputTouch)
 public:

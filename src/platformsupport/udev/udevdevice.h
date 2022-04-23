@@ -26,7 +26,7 @@
 
 #include <QtCore/QObject>
 
-#include <Qt5Udev/qt5udevglobal.h>
+#include <LiriAuroraUdev/liriauroraudevglobal.h>
 
 struct udev_device;
 
@@ -37,7 +37,7 @@ class UdevEnumerate;
 class UdevDevicePrivate;
 class UdevMonitorPrivate;
 
-class QT5UDEV_EXPORT UdevDevice
+class LIRIAURORAUDEV_EXPORT UdevDevice
 {
     Q_DECLARE_PRIVATE(UdevDevice)
 public:

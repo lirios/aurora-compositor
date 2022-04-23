@@ -57,7 +57,7 @@ namespace Liri {
 
 namespace Platform {
 
-class LIRILIBINPUT_EXPORT LibInputKeyboardPrivate : public QObjectPrivate
+class LIRIAURORALIBINPUT_EXPORT LibInputKeyboardPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(LibInputKeyboard)
 public:

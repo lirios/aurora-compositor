@@ -30,7 +30,7 @@
 #include <QtCore/QObject>
 #include <QtGui/qpa/qwindowsysteminterface.h>
 
-#include <LiriLibInput/lirilibinputglobal.h>
+#include <LiriAuroraLibInput/liriauroralibinputglobal.h>
 
 class QTouchDevice;
 
@@ -40,7 +40,7 @@ namespace Platform {
 
 class LibInputHandlerPrivate;
 
-struct LIRILIBINPUT_EXPORT LibInputKeyEvent
+struct LIRIAURORALIBINPUT_EXPORT LibInputKeyEvent
 {
     int key;
     Qt::KeyboardModifiers modifiers;
@@ -52,7 +52,7 @@ struct LIRILIBINPUT_EXPORT LibInputKeyEvent
     ushort repeatCount;
 };
 
-struct LIRILIBINPUT_EXPORT LibInputMouseEvent
+struct LIRIAURORALIBINPUT_EXPORT LibInputMouseEvent
 {
     QPoint pos;
     Qt::MouseButton button;
@@ -61,14 +61,14 @@ struct LIRILIBINPUT_EXPORT LibInputMouseEvent
     QPoint wheelDelta;
 };
 
-struct LIRILIBINPUT_EXPORT LibInputTouchEvent
+struct LIRIAURORALIBINPUT_EXPORT LibInputTouchEvent
 {
     QTouchDevice *device;
     QList<QWindowSystemInterface::TouchPoint> touchPoints;
     Qt::KeyboardModifiers modifiers;
 };
 
-class LIRILIBINPUT_EXPORT LibInputHandler : public QObject
+class LIRIAURORALIBINPUT_EXPORT LibInputHandler : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool suspended READ isSuspended NOTIFY suspendedChanged)

@@ -24,8 +24,8 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
 
-#include <LiriLibInput/LibInputHandler>
-#include <LiriLogind/Logind>
+#include <LiriAuroraLibInput/LibInputHandler>
+#include <LiriAuroraLogind/Logind>
 
 using namespace Liri;
 using namespace Liri::Platform;
@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
     });
     QObject::connect(handler, &LibInputHandler::mouseWheel,
                      [](const LibInputMouseEvent &e) {
-        qDebug() << "Mouse wheel:" << e.wheelDelta << e.wheelOrientation;
+        qDebug() << "Mouse wheel:" << e.wheelDelta;
     });
     QObject::connect(handler, &LibInputHandler::touchEvent,
                      [](const LibInputTouchEvent &e) {

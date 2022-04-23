@@ -6,9 +6,9 @@ liri_add_executable(tst_libinput
     SOURCES
         tst_libinput.cpp
     LIBRARIES
-        Qt5::Core
-        Qt5::Gui
-        Qt5::Test
+        Qt::Core
+        Qt::Gui
+        Qt::Test
         Liri::AuroraLibInput
         Liri::AuroraLogind
     NO_TARGET_INSTALLATION

@@ -27,7 +27,7 @@
 #ifndef LIRI_LIBINPUTGESTURE_H
 #define LIRI_LIBINPUTGESTURE_H
 
-#include <LiriLibInput/lirilibinputglobal.h>
+#include <LiriAuroraLibInput/liriauroralibinputglobal.h>
 
 struct libinput_event_gesture;
 
@@ -37,7 +37,7 @@ namespace Platform {
 
 class LibInputHandler;
 
-class LIRILIBINPUT_EXPORT LibInputGesture
+class LIRIAURORALIBINPUT_EXPORT LibInputGesture
 {
 public:
     LibInputGesture(LibInputHandler *handler);

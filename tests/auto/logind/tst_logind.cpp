@@ -23,7 +23,7 @@
 
 #include <QtTest>
 
-#include <LiriLogind/Logind>
+#include <LiriAuroraLogind/Logind>
 
 #include "fakelogind.h"
 

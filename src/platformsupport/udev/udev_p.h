@@ -37,7 +37,7 @@
 
 #include <QLoggingCategory>
 
-#include <Qt5Udev/qt5udevglobal.h>
+#include <LiriAuroraUdev/liriauroraudevglobal.h>
 
 extern "C" {
 #include <libudev.h>
@@ -49,7 +49,7 @@ namespace QtUdev {
 
 class Udev;
 
-class QT5UDEV_EXPORT UdevPrivate
+class LIRIAURORAUDEV_EXPORT UdevPrivate
 {
 public:
     UdevPrivate();

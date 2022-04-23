@@ -35,7 +35,7 @@
 
 #include <QtCore/QObject>
 
-#include <LiriLibInput/lirilibinputglobal.h>
+#include <LiriAuroraLibInput/liriauroralibinputglobal.h>
 
 struct libinput_event_keyboard;
 
@@ -46,7 +46,7 @@ namespace Platform {
 class LibInputHandler;
 class LibInputKeyboardPrivate;
 
-class LIRILIBINPUT_EXPORT LibInputKeyboard : public QObject
+class LIRIAURORALIBINPUT_EXPORT LibInputKeyboard : public QObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(LibInputKeyboard)

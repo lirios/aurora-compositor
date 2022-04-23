@@ -9,7 +9,7 @@ add_library(eglfsxkb STATIC
     eglfsxkb.h
 )
 target_link_libraries(eglfsxkb
-    Qt5::Core
+    Qt::Core
     PkgConfig::XkbCommon
 )
 target_include_directories(eglfsxkb INTERFACE

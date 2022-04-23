@@ -23,8 +23,8 @@
 
 #include <QtTest/QtTest>
 
-#include <Qt5Udev/Udev>
-#include <Qt5Udev/UdevEnumerate>
+#include <LiriAuroraUdev/Udev>
+#include <LiriAuroraUdev/UdevEnumerate>
 
 #include <umockdev.h>
 

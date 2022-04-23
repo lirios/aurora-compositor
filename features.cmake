@@ -44,6 +44,7 @@ find_package(Qt5 "${QT_MIN_VERSION}"
         DBus
         Xml
         Gui
+        Test
 )
 find_package(Qt5 "${QT_MIN_VERSION}"
     CONFIG QUIET
@@ -51,7 +52,6 @@ find_package(Qt5 "${QT_MIN_VERSION}"
         OpenGL
         Qml
         Quick
-        WaylandClient
 )
 find_package(Qt5FontDatabaseSupport QUIET)
 find_package(Qt5ThemeSupport QUIET)

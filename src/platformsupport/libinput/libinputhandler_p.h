@@ -29,14 +29,14 @@
 
 #include <QtCore/private/qobject_p.h>
 
-#include <LiriLibInput/lirilibinputglobal.h>
+#include <LiriAuroraLibInput/liriauroralibinputglobal.h>
 
-#include <Qt5Udev/Udev>
+#include <LiriAuroraUdev/Udev>
 
-#include <LiriLibInput/libinputgesture.h>
-#include <LiriLibInput/libinputkeyboard.h>
-#include <LiriLibInput/libinputpointer.h>
-#include <LiriLibInput/libinputtouch.h>
+#include <LiriAuroraLibInput/libinputgesture.h>
+#include <LiriAuroraLibInput/libinputkeyboard.h>
+#include <LiriAuroraLibInput/libinputpointer.h>
+#include <LiriAuroraLibInput/libinputtouch.h>
 
 #include <libinput.h>
 
@@ -55,7 +55,7 @@ namespace Liri {
 
 namespace Platform {
 
-class LIRILIBINPUT_EXPORT LibInputHandlerPrivate : public QObjectPrivate
+class LIRIAURORALIBINPUT_EXPORT LibInputHandlerPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(LibInputHandler)
 public:
