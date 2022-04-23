@@ -39,6 +39,10 @@
 
 #include "xwaylandshellsurface.h"
 
+namespace Aurora {
+
+namespace Compositor {
+
 class XWaylandQuickShellSurfaceItem;
 
 class XWaylandQuickShellIntegration : public QObject
@@ -80,5 +84,9 @@ private:
         bool initialized;
     } resizeState;
 };
+
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif // XWAYLANDQUICKSHELLINTEGRATION_H

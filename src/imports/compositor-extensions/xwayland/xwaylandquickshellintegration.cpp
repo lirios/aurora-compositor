@@ -36,6 +36,10 @@
 #include "xwaylandquickshellintegration.h"
 #include "xwaylandquickshellsurfaceitem.h"
 
+namespace Aurora {
+
+namespace Compositor {
+
 XWaylandQuickShellIntegration::XWaylandQuickShellIntegration(XWaylandQuickShellSurfaceItem *item)
     : m_item(item)
     , m_shellSurface(item->shellSurface())
@@ -105,7 +109,7 @@ void XWaylandQuickShellIntegration::handleStartResize(XWaylandShellSurface::Resi
     grabberState = GrabberState::Resize;
     resizeState.resizeEdges = edges;
     float scaleFactor = m_item->view()->output()->scaleFactor();
-    resizeState.initialSize = m_shellSurface->surface()->size() / scaleFactor;
+    resizeState.initialSize = m_shellSurface->surface()->destinationSize() / scaleFactor;
     resizeState.initialized = false;
     m_shellSurface->setResizing(true);
 }
@@ -124,5 +128,9 @@ void XWaylandQuickShellIntegration::handleActivatedChanged()
     if (m_shellSurface->isActivated())
         m_item->raise();
 }
+
+} // namespace Compositor
+
+} // namespace Aurora
 
 #include "moc_xwaylandquickshellintegration.cpp"

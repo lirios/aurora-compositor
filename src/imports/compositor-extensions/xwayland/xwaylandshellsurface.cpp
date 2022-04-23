@@ -65,6 +65,10 @@
         (MWM_DECOR_BORDER | MWM_DECOR_RESIZEH | MWM_DECOR_TITLE | \
          MWM_DECOR_MENU | MWM_DECOR_MINIMIZE | MWM_DECOR_MAXIMIZE)
 
+namespace Aurora {
+
+namespace Compositor {
+
 XWaylandShellSurface::XWaylandShellSurface(QObject *parent)
     : QObject(parent)
     , m_wm(nullptr)
@@ -760,5 +764,9 @@ void XWaylandShellSurface::handleSurfaceDestroyed()
     Q_EMIT surfaceChanged();
     Q_EMIT surfaceDestroyed();
 }
+
+} // namespace Compositor
+
+} // namespace Aurora
 
 #include "moc_xwaylandshellsurface.cpp"

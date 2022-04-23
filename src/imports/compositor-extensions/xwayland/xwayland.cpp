@@ -34,6 +34,10 @@
 Q_LOGGING_CATEGORY(XWAYLAND, "liri.xwayland")
 Q_LOGGING_CATEGORY(XWAYLAND_TRACE, "liri.xwayland.trace")
 
+namespace Aurora {
+
+namespace Compositor {
+
 XWayland::XWayland(QObject *parent)
     : QObject(parent)
     , m_compositor(nullptr)
@@ -191,5 +195,9 @@ void XWayland::handleSurfaceCreated(WaylandSurface *surface)
         }
     }
 }
+
+} // namespace Compositor
+
+} // namespace Aurora
 
 #include "moc_xwayland.cpp"

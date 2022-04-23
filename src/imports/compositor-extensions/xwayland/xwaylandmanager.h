@@ -35,6 +35,10 @@ class Window;
 class Resources;
 }
 
+namespace Aurora {
+
+namespace Compositor {
+
 class XWayland;
 class XWaylandShellSurface;
 class XWaylandServer;
@@ -79,8 +83,8 @@ public:
 Q_SIGNALS:
     void created();
     void shellSurfaceRequested(quint32 window, const QRect &geometry,
-                               bool overrideRedirect, XWaylandShellSurface *parentShellSurface);
-    void shellSurfaceCreated(XWaylandShellSurface *shellSurface);
+                               bool overrideRedirect, Aurora::Compositor::XWaylandShellSurface *parentShellSurface);
+    void shellSurfaceCreated(Aurora::Compositor::XWaylandShellSurface *shellSurface);
 
 private:
     XWaylandServer *m_server;
@@ -142,5 +146,9 @@ private:
 private Q_SLOTS:
     void wmEvents();
 };
+
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif // XWAYLANDMANAGER_H

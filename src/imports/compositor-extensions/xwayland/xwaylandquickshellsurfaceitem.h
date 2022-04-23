@@ -36,6 +36,10 @@
 
 #include <LiriAuroraCompositor/WaylandQuickItem>
 
+namespace Aurora {
+
+namespace Compositor {
+
 class XWaylandQuickShellIntegration;
 class XWaylandShellSurface;
 
@@ -67,5 +71,10 @@ private:
     XWaylandQuickShellIntegration *m_shellIntegration;
     QQuickItem *m_moveItem;
 };
+
+} // namespace Compositor
+
+} // namespace Aurora
+
 
 #endif // XWAYLANDQUICKSHELLSURFACEITEM_H

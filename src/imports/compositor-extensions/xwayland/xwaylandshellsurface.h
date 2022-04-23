@@ -27,6 +27,7 @@
 #include <QtCore/QRect>
 #include <QtCore/QPointer>
 
+#include <LiriAuroraCompositor/aurorawaylandquickchildren.h>
 #include <LiriAuroraCompositor/WaylandOutput>
 #include <LiriAuroraCompositor/WaylandSeat>
 #include <LiriAuroraCompositor/WaylandSurface>
@@ -36,6 +37,10 @@
 #include "xcbwindow.h"
 #include "sizehints.h"
 
+namespace Aurora {
+
+namespace Compositor {
+
 class XWaylandManager;
 class XWaylandSurface;
 class XWaylandQuickShellIntegration;
@@ -44,10 +49,11 @@ class XWaylandQuickShellSurfaceItem;
 class XWaylandShellSurface : public QObject
 {
     Q_OBJECT
+    Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(XWaylandShellSurface)
     Q_PROPERTY(Qt::WindowType windowType READ windowType NOTIFY windowTypeChanged)
     Q_PROPERTY(WmWindowType wmWindowType READ wmWindowType NOTIFY wmWindowTypeChanged)
-    Q_PROPERTY(WaylandSurface *surface READ surface NOTIFY surfaceChanged)
-    Q_PROPERTY(XWaylandShellSurface *parentSurface READ parentSurface NOTIFY parentSurfaceChanged)
+    Q_PROPERTY(Aurora::Compositor::WaylandSurface *surface READ surface NOTIFY surfaceChanged)
+    Q_PROPERTY(Aurora::Compositor::XWaylandShellSurface *parentSurface READ parentSurface NOTIFY parentSurfaceChanged)
     Q_PROPERTY(bool activated READ isActivated NOTIFY activatedChanged)
     Q_PROPERTY(QString appId READ appId NOTIFY appIdChanged)
     Q_PROPERTY(QString title READ title NOTIFY titleChanged)
@@ -93,9 +99,9 @@ public:
     XWaylandShellSurface(QObject *parent = nullptr);
     ~XWaylandShellSurface();
 
-    Q_INVOKABLE void initialize(XWaylandManager *wm, quint32 window,
+    Q_INVOKABLE void initialize(Aurora::Compositor::XWaylandManager *wm, quint32 window,
                                 const QRect &geometry, bool overrideRedirect,
-                                XWaylandShellSurface *parentShellSurface);
+                                Aurora::Compositor::XWaylandShellSurface *parentShellSurface);
 
     Qt::WindowType windowType() const;
     WmWindowType wmWindowType() const;
@@ -162,7 +168,7 @@ public:
     Q_INVOKABLE void sendY(qreal y);
     Q_INVOKABLE void sendResize(const QSizeF &size);
 
-    Q_INVOKABLE void maximize(WaylandOutput *output);
+    Q_INVOKABLE void maximize(Aurora::Compositor::WaylandOutput *output);
     Q_INVOKABLE void unmaximize();
 
     Q_INVOKABLE void close();
@@ -192,7 +198,7 @@ Q_SIGNALS:
     void maximizedChanged();
     void fullscreenChanged();
     void startMove();
-    void startResize(ResizeEdge edges);
+    void startResize(Aurora::Compositor::XWaylandShellSurface::ResizeEdge edges);
 
 private:
     XWaylandManager *m_wm;
@@ -230,11 +236,15 @@ private:
     friend class XWaylandManager;
 
 private Q_SLOTS:
-    void handleSeatChanged(WaylandSeat *newSeat, WaylandSeat *oldSeat);
-    void handleFocusChanged(WaylandSurface *newSurface, WaylandSurface *oldSurface);
+    void handleSeatChanged(Aurora::Compositor::WaylandSeat *newSeat, Aurora::Compositor::WaylandSeat *oldSeat);
+    void handleFocusChanged(Aurora::Compositor::WaylandSurface *newSurface, Aurora::Compositor::WaylandSurface *oldSurface);
     void handleFocusReceived();
     void handleFocusLost();
     void handleSurfaceDestroyed();
 };
+
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif // XWAYLANDWINDOW_H

@@ -38,6 +38,10 @@
 
 #include <wayland-server.h>
 
+namespace Aurora {
+
+namespace Compositor {
+
 class ServerProcess : public QProcess
 {
 public:
@@ -199,3 +203,7 @@ void XWaylandServer::handleServerStarted()
 
     Q_EMIT started(m_displayName);
 }
+
+} // namespace Compositor
+
+} // namespace Aurora

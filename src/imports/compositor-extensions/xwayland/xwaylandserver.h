@@ -31,12 +31,16 @@
 
 struct wl_client;
 
+namespace Aurora {
+
+namespace Compositor {
+
 class ServerProcess;
 
 class XWaylandServer : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(WaylandCompositor *compositor READ compositor CONSTANT)
+    Q_PROPERTY(Aurora::Compositor::WaylandCompositor *compositor READ compositor CONSTANT)
     Q_PROPERTY(QString displayName READ displayName NOTIFY displayNameChanged)
 public:
     XWaylandServer(WaylandCompositor *compositor, QObject *parent = nullptr);
@@ -76,5 +80,9 @@ private:
 private Q_SLOTS:
     void handleServerStarted();
 };
+
+} // namespace Compositor
+
+} // namespace Aurora
 
 #endif // XWAYLANDSERVER_H

@@ -35,6 +35,10 @@
 #include "xwaylandquickshellsurfaceitem.h"
 #include "xwaylandshellsurface.h"
 
+namespace Aurora {
+
+namespace Compositor {
+
 XWaylandQuickShellSurfaceItem::XWaylandQuickShellSurfaceItem(QQuickItem *parent)
     : WaylandQuickItem(parent)
     , m_shellSurface(nullptr)
@@ -98,5 +102,9 @@ void XWaylandQuickShellSurfaceItem::mouseReleaseEvent(QMouseEvent *event)
     if (!m_shellIntegration->mouseReleaseEvent(event))
         WaylandQuickItem::mouseReleaseEvent(event);
 }
+
+} // namespace Compositor
+
+} // namespace Aurora
 
 #include "moc_xwaylandquickshellsurfaceitem.cpp"

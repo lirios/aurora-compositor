@@ -65,6 +65,10 @@
 #include <xcb/composite.h>
 #include <wayland-server.h>
 
+namespace Aurora {
+
+namespace Compositor {
+
 XWaylandManager::XWaylandManager(QObject *parent)
     : QObject(parent)
     , m_server(nullptr)
@@ -853,3 +857,7 @@ void XWaylandManager::wmEvents()
     if (count > 0)
         xcb_flush(Xcb::connection());
 }
+
+} // namespace Compositor
+
+} // namespace Aurora
