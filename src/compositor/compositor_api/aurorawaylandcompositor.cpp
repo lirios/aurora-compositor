@@ -520,7 +520,7 @@ WaylandSeat *WaylandCompositorPrivate::seatFor(QInputEvent *inputEvent)
 
 /*!
    \class WaylandCompositor
-   \inmodule QtWaylandCompositor
+   \inmodule AuroraCompositor
    \since 5.8
    \brief The WaylandCompositor class manages the Wayland display server.
 
@@ -532,7 +532,7 @@ WaylandSeat *WaylandCompositorPrivate::seatFor(QInputEvent *inputEvent)
 */
 
 /*!
-  \qmlsignal void QtWaylandCompositor::WaylandCompositor::surfaceRequested(WaylandClient client, int id, int version)
+  \qmlsignal void AuroraCompositor::WaylandCompositor::surfaceRequested(WaylandClient client, int id, int version)
 
   This signal is emitted when a \a client has created a surface with id \a id.
   The interface \a version is also available.
@@ -554,7 +554,7 @@ WaylandSeat *WaylandCompositorPrivate::seatFor(QInputEvent *inputEvent)
 */
 
 /*!
-  \qmlsignal void QtWaylandCompositor::WaylandCompositor::surfaceCreated(WaylandSurface surface)
+  \qmlsignal void AuroraCompositor::WaylandCompositor::surfaceCreated(WaylandSurface surface)
 
   This signal is emitted when a new WaylandSurface instance \a surface has been created.
 */
@@ -601,7 +601,7 @@ void WaylandCompositor::create()
 }
 
 /*!
- * \qmlproperty bool QtWaylandCompositor::WaylandCompositor::created
+ * \qmlproperty bool AuroraCompositor::WaylandCompositor::created
  *
  * This property is true if WaylandCompositor has been initialized,
  * otherwise it's false.
@@ -620,7 +620,7 @@ bool WaylandCompositor::isCreated() const
 }
 
 /*!
- * \qmlproperty string QtWaylandCompositor::WaylandCompositor::socketName
+ * \qmlproperty string AuroraCompositor::WaylandCompositor::socketName
  *
  * This property holds the socket name used by WaylandCompositor to communicate with
  * clients. It must be set before the component is completed.
@@ -663,7 +663,7 @@ QByteArray WaylandCompositor::socketName() const
 }
 
 /*!
- * \qmlmethod QtWaylandCompositor::WaylandCompositor::addSocketDescriptor(fd)
+ * \qmlmethod AuroraCompositor::WaylandCompositor::addSocketDescriptor(fd)
  * \since 5.12
  *
  * Listen for client connections on a file descriptor, \a fd, referring to a
@@ -726,7 +726,7 @@ QList<WaylandClient *>WaylandCompositor::clients() const
 }
 
 /*!
- * \qmlmethod QtWaylandCompositor::WaylandCompositor::destroyClientForSurface(surface)
+ * \qmlmethod AuroraCompositor::WaylandCompositor::destroyClientForSurface(surface)
  *
  * Destroys the client for the WaylandSurface \a surface.
  */
@@ -740,7 +740,7 @@ void WaylandCompositor::destroyClientForSurface(WaylandSurface *surface)
 }
 
 /*!
- * \qmlmethod QtWaylandCompositor::WaylandCompositor::destroyClient(client)
+ * \qmlmethod AuroraCompositor::WaylandCompositor::destroyClient(client)
  *
  * Destroys the given WaylandClient \a client.
  */
@@ -798,7 +798,7 @@ WaylandOutput *WaylandCompositor::outputFor(QWindow *window) const
 }
 
 /*!
- * \qmlproperty WaylandOutput QtWaylandCompositor::WaylandCompositor::defaultOutput
+ * \qmlproperty WaylandOutput AuroraCompositor::WaylandCompositor::defaultOutput
  *
  * This property contains the first in the list of outputs added to the
  * WaylandCompositor, or null if no outputs have been added.
@@ -899,7 +899,7 @@ WaylandTouch *WaylandCompositor::createTouchDevice(WaylandSeat *seat)
 }
 
 /*!
- * \qmlproperty bool QtWaylandCompositor::WaylandCompositor::retainedSelection
+ * \qmlproperty bool AuroraCompositor::WaylandCompositor::retainedSelection
  *
  * This property holds whether retained selection is enabled.
  */
@@ -945,7 +945,7 @@ void WaylandCompositor::overrideSelection(const QMimeData *data)
 }
 
 /*!
- * \qmlproperty WaylandSeat QtWaylandCompositor::WaylandCompositor::defaultSeat
+ * \qmlproperty WaylandSeat AuroraCompositor::WaylandCompositor::defaultSeat
  *
  * This property contains the default seat for this
  * WaylandCompositor.
@@ -977,7 +977,7 @@ WaylandSeat *WaylandCompositor::seatFor(QInputEvent *inputEvent)
 }
 
 /*!
- * \qmlproperty bool QtWaylandCompositor::WaylandCompositor::useHardwareIntegrationExtension
+ * \qmlproperty bool AuroraCompositor::WaylandCompositor::useHardwareIntegrationExtension
  *
  * This property holds whether the hardware integration extension should be enabled for
  * this WaylandCompositor.
@@ -1063,7 +1063,7 @@ void WaylandCompositor::grabSurface(WaylandSurfaceGrabber *grabber, const Waylan
 }
 
 /*!
- * \qmlproperty list<enum> QtWaylandCompositor::WaylandCompositor::additionalShmFormats
+ * \qmlproperty list<enum> AuroraCompositor::WaylandCompositor::additionalShmFormats
  *
  * This property holds the list of additional wl_shm formats advertised as supported by the
  * compositor.

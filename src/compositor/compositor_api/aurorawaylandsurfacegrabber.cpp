@@ -40,7 +40,7 @@ namespace Compositor {
 
 /*!
     \class WaylandSurfaceGrabber
-    \inmodule QtWaylandCompositor
+    \inmodule AuroraCompositor
     \since 5.8
     \brief The WaylandSurfaceGrabber class allows to read the content of a WaylandSurface.
 

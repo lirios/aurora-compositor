@@ -32,7 +32,7 @@
 
 /*!
    \class WaylandOutputMode
-   \inmodule QtWaylandCompositor
+   \inmodule AuroraCompositor
    \since 5.8
    \brief The WaylandOutputMode class holds the resolution and refresh rate of an output.
 

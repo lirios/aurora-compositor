@@ -106,7 +106,7 @@ int WaylandTouchPrivate::toSequentialWaylandId(int touchId)
 
 /*!
  * \class WaylandTouch
- * \inmodule QtWaylandCompositor
+ * \inmodule AuroraCompositor
  * \since 5.8
  * \brief The WaylandTouch class provides access to a touch device.
  *

@@ -57,7 +57,7 @@ WaylandShell::WaylandShell(WaylandObject *waylandObject)
  */
 
 /*!
- * \qmlproperty enumeration QtWaylandCompositor::Shell::focusPolicy
+ * \qmlproperty enumeration AuroraCompositor::Shell::focusPolicy
  *
  * This property holds the focus policy of the Shell.
  */

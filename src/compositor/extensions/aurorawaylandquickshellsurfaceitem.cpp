@@ -68,7 +68,7 @@ WaylandQuickShellSurfaceItem *WaylandQuickShellSurfaceItemPrivate::maybeCreateAu
 
 /*!
  * \class WaylandQuickShellSurfaceItem
- * \inmodule QtWaylandCompositor
+ * \inmodule AuroraCompositor
  * \since 5.8
  * \brief The WaylandQuickShellSurfaceItem class provides a Qt Quick item that represents a WaylandShellSurface.
  *
@@ -105,7 +105,7 @@ WaylandQuickShellSurfaceItem::WaylandQuickShellSurfaceItem(WaylandQuickShellSurf
 }
 
 /*!
- * \qmlproperty ShellSurface QtWaylandCompositor::ShellSurfaceItem::shellSurface
+ * \qmlproperty ShellSurface AuroraCompositor::ShellSurfaceItem::shellSurface
  *
  * This property holds the ShellSurface rendered by this ShellSurfaceItem.
  * It may either be an XdgSurfaceV5, WlShellSurface or IviSurface depending on which shell protocol
@@ -148,7 +148,7 @@ void WaylandQuickShellSurfaceItem::setShellSurface(WaylandShellSurface *shellSur
 }
 
 /*!
- * \qmlproperty Item QtWaylandCompositor::ShellSurfaceItem::moveItem
+ * \qmlproperty Item AuroraCompositor::ShellSurfaceItem::moveItem
  *
  * This property holds the move item for this ShellSurfaceItem. This is the item that will be moved
  * when the clients request the ShellSurface to be moved, maximized, resized etc. This property is
@@ -179,7 +179,7 @@ void WaylandQuickShellSurfaceItem::setMoveItem(QQuickItem *moveItem)
 }
 
 /*!
- * \qmlproperty bool QtWaylandCompositor::ShellSurfaceItem::autoCreatePopupItems
+ * \qmlproperty bool AuroraCompositor::ShellSurfaceItem::autoCreatePopupItems
  *
  * This property holds whether ShellSurfaceItems for popups parented to the shell
  * surface managed by this item should automatically be created.

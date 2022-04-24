@@ -274,7 +274,7 @@ void WaylandWlShellSurfacePrivate::shell_surface_set_class(Resource *resource,
 
 /*!
  * \class WaylandWlShell
- * \inmodule QtWaylandCompositor
+ * \inmodule AuroraCompositor
  * \since 5.8
  * \brief The WaylandWlShell class is an extension for desktop-style user interfaces.
  *
@@ -373,7 +373,7 @@ const struct wl_interface *WaylandWlShell::interface()
 }
 
 /*!
- * \qmlsignal void QtWaylandCompositor::WlShell::wlShellSurfaceRequested(WaylandSurface surface, WaylandResource resource)
+ * \qmlsignal void AuroraCompositor::WlShell::wlShellSurfaceRequested(WaylandSurface surface, WaylandResource resource)
  *
  * This signal is emitted when the client has requested a \c wl_shell_surface to be associated with
  * \a surface. The handler for this signal may create a shell surface for \a resource and initialize
@@ -391,7 +391,7 @@ const struct wl_interface *WaylandWlShell::interface()
  */
 
 /*!
- * \qmlsignal void QtWaylandCompositor::WlShell::wlShellSurfaceCreated(WlShellSurface shellSurface)
+ * \qmlsignal void AuroraCompositor::WlShell::wlShellSurfaceCreated(WlShellSurface shellSurface)
  *
  * This signal is emitted when the client has created a \c wl_shell_surface.
  * A common use case is to let the handler of this signal instantiate a ShellSurfaceItem or
@@ -430,7 +430,7 @@ QByteArray WaylandWlShell::interfaceName()
 
 /*!
  * \class WaylandWlShellSurface
- * \inmodule QtWaylandCompositor
+ * \inmodule AuroraCompositor
  * \since 5.8
  * \brief The WaylandWlShellSurface class provides desktop-style compositor-specific features to a surface.
  *
@@ -466,7 +466,7 @@ WaylandWlShellSurface::~WaylandWlShellSurface()
 }
 
 /*!
- * \qmlmethod void QtWaylandCompositor::WlShellSurface::initialize(WlShell shell, WaylandSurface surface, WaylandResource resource)
+ * \qmlmethod void AuroraCompositor::WlShellSurface::initialize(WlShell shell, WaylandSurface surface, WaylandResource resource)
  *
  * Initializes the WlShellSurface and associates it with the given \a shell, \a surface, and \a resource.
  */
@@ -566,7 +566,7 @@ void WaylandWlShellSurface::sendConfigure(const QSize &size, ResizeEdge edges)
 }
 
 /*!
- * \qmlmethod void QtWaylandCompositor::WlShellSurface::sendPopupDone()
+ * \qmlmethod void AuroraCompositor::WlShellSurface::sendPopupDone()
  *
  * Sends a popup_done event to the client to indicate that the user has clicked
  * somewhere outside the client's surfaces.
@@ -590,7 +590,7 @@ WaylandQuickShellIntegration *WaylandWlShellSurface::createIntegration(WaylandQu
 #endif
 
 /*!
- * \qmlproperty WaylandSurface QtWaylandCompositor::WlShellSurface::surface
+ * \qmlproperty WaylandSurface AuroraCompositor::WlShellSurface::surface
  *
  * This property holds the \c wl_surface associated with this WlShellSurface.
  */
@@ -607,7 +607,7 @@ WaylandSurface *WaylandWlShellSurface::surface() const
 }
 
 /*!
- * \qmlproperty WlShell QtWaylandCompositor::WlShellSurface::shell
+ * \qmlproperty WlShell AuroraCompositor::WlShellSurface::shell
  *
  * This property holds the shell associated with this WlShellSurface.
  */
@@ -624,7 +624,7 @@ WaylandWlShell *WaylandWlShellSurface::shell() const
 }
 
 /*!
- * \qmlproperty enum QtWaylandCompositor::WlShellSurface::windowType
+ * \qmlproperty enum AuroraCompositor::WlShellSurface::windowType
  *
  * This property holds the window type of the WlShellSurface.
  */
@@ -636,7 +636,7 @@ Qt::WindowType WaylandWlShellSurface::windowType() const
 }
 
 /*!
- * \qmlproperty string QtWaylandCompositor::WlShellSurface::title
+ * \qmlproperty string AuroraCompositor::WlShellSurface::title
  *
  * This property holds the title of the WlShellSurface.
  */
@@ -653,7 +653,7 @@ QString WaylandWlShellSurface::title() const
 }
 
 /*!
- * \qmlproperty string QtWaylandCompositor::WlShellSurface::className
+ * \qmlproperty string AuroraCompositor::WlShellSurface::className
  *
  * This property holds the class name of the WlShellSurface.
  */
@@ -675,7 +675,7 @@ WaylandSurfaceRole *WaylandWlShellSurface::role()
 }
 
 /*!
- * \qmlmethod void QtWaylandCompositor::WlShellSurface::ping()
+ * \qmlmethod void AuroraCompositor::WlShellSurface::ping()
  *
  * Sends a ping event to the client. If the client replies to the event the pong
  * signal will be emitted.

@@ -94,7 +94,7 @@ public:
 
 /*!
  * \class WaylandClient
- * \inmodule QtWaylandCompositor
+ * \inmodule AuroraCompositor
  * \since 5.8
  * \brief The WaylandClient class represents a client connecting to the WaylandCompositor.
  *
@@ -162,7 +162,7 @@ WaylandClient *WaylandClient::fromWlClient(WaylandCompositor *compositor, wl_cli
 }
 
 /*!
- * \qmlproperty WaylandCompositor QtWaylandCompositor::WaylandClient::compositor
+ * \qmlproperty WaylandCompositor AuroraCompositor::WaylandClient::compositor
  *
  * This property holds the compositor of this WaylandClient.
  */
@@ -190,7 +190,7 @@ wl_client *WaylandClient::client() const
 }
 
 /*!
- * \qmlproperty int QtWaylandCompositor::WaylandClient::userId
+ * \qmlproperty int AuroraCompositor::WaylandClient::userId
  *
  * This property holds the user id of this WaylandClient.
  */
@@ -209,7 +209,7 @@ qint64 WaylandClient::userId() const
 }
 
 /*!
- * \qmlproperty int QtWaylandCompositor::WaylandClient::groupId
+ * \qmlproperty int AuroraCompositor::WaylandClient::groupId
  * \readonly
  *
  * This property holds the group id of this WaylandClient.
@@ -228,7 +228,7 @@ qint64 WaylandClient::groupId() const
 }
 
 /*!
- * \qmlproperty int QtWaylandCompositor::WaylandClient::processId
+ * \qmlproperty int AuroraCompositor::WaylandClient::processId
  * \readonly
  *
  * This property holds the process id of this WaylandClient.
@@ -247,7 +247,7 @@ qint64 WaylandClient::processId() const
 }
 
 /*!
- * \qmlmethod void QtWaylandCompositor::WaylandClient::kill(signal)
+ * \qmlmethod void AuroraCompositor::WaylandClient::kill(signal)
  *
  * Kills the client with the specified \a signal.
  */
@@ -263,7 +263,7 @@ void WaylandClient::kill(int signal)
 }
 
 /*!
- * \qmlmethod void QtWaylandCompositor::WaylandClient::close()
+ * \qmlmethod void AuroraCompositor::WaylandClient::close()
  *
  * Closes the client
  */

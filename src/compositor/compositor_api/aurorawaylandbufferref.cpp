@@ -51,7 +51,7 @@ public:
 
 /*!
  * \class WaylandBufferRef
- * \inmodule QtWaylandCompositor
+ * \inmodule AuroraCompositor
  * \since 5.8
  * \brief The WaylandBufferRef class holds the reference to a surface buffer.
  *

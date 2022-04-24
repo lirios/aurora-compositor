@@ -41,7 +41,7 @@ namespace Compositor {
 
 /*!
  * \class WaylandCompositorExtensionTemplate
- * \inmodule QtWaylandCompositor
+ * \inmodule AuroraCompositor
  * \since 5.8
  * \brief WaylandCompositorExtensionTemplate is a convenience class for subclassing
  * WaylandCompositorExtension.
@@ -85,7 +85,7 @@ namespace Compositor {
 
 /*!
  * \class WaylandCompositorExtension
- * \inmodule QtWaylandCompositor
+ * \inmodule AuroraCompositor
  * \since 5.8
  * \brief WaylandCompositorExtension is the base class for compositor extensions.
  *
@@ -224,7 +224,7 @@ bool WaylandCompositorExtension::event(QEvent *event)
 
 /*!
  * \class WaylandObject
- * \inmodule QtWaylandCompositor
+ * \inmodule AuroraCompositor
  * \since 5.8
  * \brief WaylandObject is the base class for objects that can contain Wayland extensions.
  *

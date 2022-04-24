@@ -371,7 +371,7 @@ Internal::ClientBuffer *WaylandSurfacePrivate::getBuffer(struct ::wl_resource *b
 
 /*!
  * \class WaylandSurfaceRole
- * \inmodule QtWaylandCompositor
+ * \inmodule AuroraCompositor
  * \since 5.8
  * \brief The WaylandSurfaceRole class represents the role of the surface in context of wl_surface.
  *
@@ -428,7 +428,7 @@ Internal::ClientBuffer *WaylandSurfacePrivate::getBuffer(struct ::wl_resource *b
 
 /*!
  * \class WaylandSurface
- * \inmodule QtWaylandCompositor
+ * \inmodule AuroraCompositor
  * \since 5.8
  * \brief The WaylandSurface class represents a rectangular area on an output device.
  *
@@ -474,7 +474,7 @@ WaylandSurface::~WaylandSurface()
 }
 
 /*!
- * \qmlmethod void QtWaylandCompositor::WaylandSurface::initialize(WaylandCompositor compositor, WaylandClient client, int id, int version)
+ * \qmlmethod void AuroraCompositor::WaylandSurface::initialize(WaylandCompositor compositor, WaylandClient client, int id, int version)
  *
  * Initializes the WaylandSurface with the given \a compositor and \a client, and with the given \a id
  * and \a version.
@@ -511,7 +511,7 @@ bool WaylandSurface::isInitialized() const
 }
 
 /*!
- * \qmlproperty WaylandClient QtWaylandCompositor::WaylandSurface::client
+ * \qmlproperty WaylandClient AuroraCompositor::WaylandSurface::client
  *
  * This property holds the client using this WaylandSurface.
  */
@@ -542,7 +542,7 @@ WaylandClient *WaylandSurface::client() const
 }
 
 /*!
- * \qmlproperty bool QtWaylandCompositor::WaylandSurface::hasContent
+ * \qmlproperty bool AuroraCompositor::WaylandSurface::hasContent
  *
  * This property holds whether the WaylandSurface has content.
  */
@@ -559,7 +559,7 @@ bool WaylandSurface::hasContent() const
 }
 
 /*!
- * \qmlproperty rect QtWaylandCompositor::WaylandSurface::sourceGeometry
+ * \qmlproperty rect AuroraCompositor::WaylandSurface::sourceGeometry
  * \since 5.13
  *
  * This property describes the portion of the attached Wayland buffer that should
@@ -590,7 +590,7 @@ QRectF WaylandSurface::sourceGeometry() const
 }
 
 /*!
- * \qmlproperty size QtWaylandCompositor::WaylandSurface::destinationSize
+ * \qmlproperty size AuroraCompositor::WaylandSurface::destinationSize
  * \since 5.13
  *
  * This property holds the size of this WaylandSurface in surface coordinates.
@@ -615,7 +615,7 @@ QSize WaylandSurface::destinationSize() const
 }
 
 /*!
- * \qmlproperty size QtWaylandCompositor::WaylandSurface::bufferSize
+ * \qmlproperty size AuroraCompositor::WaylandSurface::bufferSize
  *
  * This property holds the size of the current buffer of this WaylandSurface in pixels,
  * not in surface coordinates.
@@ -644,7 +644,7 @@ QSize WaylandSurface::bufferSize() const
 }
 
 /*!
- * \qmlproperty size QtWaylandCompositor::WaylandSurface::bufferScale
+ * \qmlproperty size AuroraCompositor::WaylandSurface::bufferScale
  *
  * This property holds the WaylandSurface's buffer scale. The buffer scale lets
  * a client supply higher resolution buffer data for use on high resolution
@@ -665,7 +665,7 @@ int WaylandSurface::bufferScale() const
 }
 
 /*!
- * \qmlproperty enum QtWaylandCompositor::WaylandSurface::contentOrientation
+ * \qmlproperty enum AuroraCompositor::WaylandSurface::contentOrientation
  *
  * This property holds the orientation of the WaylandSurface's contents.
  *
@@ -695,7 +695,7 @@ Qt::ScreenOrientation WaylandSurface::contentOrientation() const
  */
 
 /*!
- * \qmlproperty enum QtWaylandCompositor::WaylandSurface::origin
+ * \qmlproperty enum AuroraCompositor::WaylandSurface::origin
  *
  * This property holds the origin of the WaylandSurface's buffer, or
  * WaylandSurface.OriginTopLeft if the surface has no buffer.
@@ -786,7 +786,7 @@ bool WaylandSurface::inputRegionContains(const QPointF &position) const
 }
 
 /*!
- * \qmlmethod void QtWaylandCompositor::WaylandSurface::destroy()
+ * \qmlmethod void AuroraCompositor::WaylandSurface::destroy()
  *
  * Destroys the WaylandSurface.
  */
@@ -801,7 +801,7 @@ void WaylandSurface::destroy()
 }
 
 /*!
- * \qmlmethod bool QtWaylandCompositor::WaylandSurface::isDestroyed()
+ * \qmlmethod bool AuroraCompositor::WaylandSurface::isDestroyed()
  *
  * Returns \c true if the WaylandSurface has been destroyed. Otherwise returns \c false.
  */
@@ -816,7 +816,7 @@ bool WaylandSurface::isDestroyed() const
 }
 
 /*!
- * \qmlproperty bool QtWaylandCompositor::WaylandSurface::cursorSurface
+ * \qmlproperty bool AuroraCompositor::WaylandSurface::cursorSurface
  *
  * This property holds whether the WaylandSurface is a cursor surface.
  */
@@ -843,7 +843,7 @@ bool WaylandSurface::isCursorSurface() const
 }
 
 /*!
- * \qmlproperty bool QtWaylandCompositor::WaylandSurface::inhibitsIdle
+ * \qmlproperty bool AuroraCompositor::WaylandSurface::inhibitsIdle
  * \since 5.14
  *
  * This property holds whether this surface is intended to inhibit the idle
@@ -868,7 +868,7 @@ bool WaylandSurface::inhibitsIdle() const
 }
 
 /*!
- *  \qmlproperty bool QtWaylandCompositor::WaylandSurface::isOpaque
+ *  \qmlproperty bool AuroraCompositor::WaylandSurface::isOpaque
  *  \since 6.4
  *
  *  This property holds whether the surface is fully opaque, as reported by the
@@ -1111,7 +1111,7 @@ void WaylandSurfacePrivate::Subsurface::subsurface_set_desync(wl_subsurface::Res
 }
 
 /*!
- * \qmlsignal QtWaylandCompositor::WaylandSurface::childAdded(WaylandSurface child)
+ * \qmlsignal AuroraCompositor::WaylandSurface::childAdded(WaylandSurface child)
  *
  * This signal is emitted when a wl_subsurface, \a child, has been added to the surface.
  */
@@ -1123,7 +1123,7 @@ void WaylandSurfacePrivate::Subsurface::subsurface_set_desync(wl_subsurface::Res
  */
 
 /*!
- * \qmlsignal QtWaylandCompositor::WaylandSurface::surfaceDestroyed()
+ * \qmlsignal AuroraCompositor::WaylandSurface::surfaceDestroyed()
  *
  * This signal is emitted when the corresponding wl_surface is destroyed.
  */
@@ -1135,7 +1135,7 @@ void WaylandSurfacePrivate::Subsurface::subsurface_set_desync(wl_subsurface::Res
  */
 
 /*!
- * \qmlsignal void QtWaylandCompositor::WaylandSurface::dragStarted(WaylandDrag drag)
+ * \qmlsignal void AuroraCompositor::WaylandSurface::dragStarted(WaylandDrag drag)
  *
  * This signal is emitted when a \a drag has started from this surface.
  */

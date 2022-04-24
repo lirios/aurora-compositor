@@ -77,7 +77,7 @@ namespace Compositor {
 
 /*!
     \class WaylandXdgDecorationManagerV1
-    \inmodule QtWaylandCompositor
+    \inmodule AuroraCompositor
     \since 5.12
     \brief Provides an extension for negotiation of server-side and client-side window decorations.
 
@@ -115,7 +115,7 @@ void WaylandXdgDecorationManagerV1::initialize()
 }
 
 /*!
-    \qmlproperty string QtWaylandCompositor::XdgDecorationManagerV1::preferredMode
+    \qmlproperty string AuroraCompositor::XdgDecorationManagerV1::preferredMode
 
     This property holds the decoration mode the compositor prefers.
 

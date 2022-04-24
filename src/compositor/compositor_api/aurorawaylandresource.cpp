@@ -36,7 +36,7 @@ namespace Compositor {
 
 /*!
  * \class WaylandResource
- * \inmodule QtWaylandCompositor
+ * \inmodule AuroraCompositor
  * \since 5.8
  * \brief WaylandResource is a container for a \c wl_resource.
  *

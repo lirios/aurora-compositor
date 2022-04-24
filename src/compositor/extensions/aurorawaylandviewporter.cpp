@@ -40,7 +40,7 @@ namespace Compositor {
 
 /*!
     \class WaylandViewporter
-    \inmodule QtWaylandCompositor
+    \inmodule AuroraCompositor
     \since 5.13
     \brief Provides an extension for surface resizing and cropping.
 

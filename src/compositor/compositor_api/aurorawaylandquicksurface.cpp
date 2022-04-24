@@ -65,7 +65,7 @@ WaylandQuickSurface::~WaylandQuickSurface()
 }
 
 /*!
- * \qmlproperty bool QtWaylandCompositor::WaylandSurface::useTextureAlpha
+ * \qmlproperty bool AuroraCompositor::WaylandSurface::useTextureAlpha
  *
  * This property specifies whether the surface should use texture alpha.
  */

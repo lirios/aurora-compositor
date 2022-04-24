@@ -434,7 +434,7 @@ void WaylandKeyboardPrivate::sendRepeatInfo()
 
 /*!
  * \class WaylandKeyboard
- * \inmodule QtWaylandCompositor
+ * \inmodule AuroraCompositor
  * \since 5.8
  * \brief The WaylandKeyboard class represents a keyboard device.
  *

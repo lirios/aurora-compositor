@@ -98,7 +98,7 @@ namespace Compositor {
 
 /*!
  * \class WaylandXdgOutputManagerV1
- * \inmodule QtWaylandCompositor
+ * \inmodule AuroraCompositor
  * \since 5.14
  * \brief Provides an extension for describing outputs in a desktop oriented fashion.
  *
@@ -234,7 +234,7 @@ WaylandXdgOutputV1::~WaylandXdgOutputV1()
 }
 
 /*!
- * \qmlproperty XdgOutputManagerV1 QtWaylandCompositor::XdgOutputV1::manager
+ * \qmlproperty XdgOutputManagerV1 AuroraCompositor::XdgOutputV1::manager
  * \readonly
  *
  * This property holds the object that manages this XdgOutputV1.
@@ -252,7 +252,7 @@ WaylandXdgOutputManagerV1 *WaylandXdgOutputV1::manager() const
 }
 
 /*!
- * \qmlproperty WaylandOutput QtWaylandCompositor::XdgOutputV1::output
+ * \qmlproperty WaylandOutput AuroraCompositor::XdgOutputV1::output
  * \readonly
  *
  * This property holds the WaylandOutput associated with this XdgOutputV1.
@@ -270,7 +270,7 @@ WaylandOutput *WaylandXdgOutputV1::output() const
 }
 
 /*!
- * \qmlproperty string QtWaylandCompositor::XdgOutputV1::name
+ * \qmlproperty string AuroraCompositor::XdgOutputV1::name
  *
  * This property holds the name of this output.
  *
@@ -321,7 +321,7 @@ void WaylandXdgOutputV1::setName(const QString &name)
 }
 
 /*!
- *  \qmlproperty string QtWaylandCompositor::XdgOutputV1::description
+ *  \qmlproperty string AuroraCompositor::XdgOutputV1::description
  *
  *  This property holds the description of this output.
  *
@@ -362,7 +362,7 @@ void WaylandXdgOutputV1::setDescription(const QString &description)
 }
 
 /*!
- * \qmlproperty point QtWaylandCompositor::XdgOutputV1::logicalPosition
+ * \qmlproperty point AuroraCompositor::XdgOutputV1::logicalPosition
  *
  * This property holds the coordinates of the output within the global compositor space.
  *
@@ -398,7 +398,7 @@ void WaylandXdgOutputV1::setLogicalPosition(const QPoint &position)
 }
 
 /*!
- * \qmlproperty size QtWaylandCompositor::XdgOutputV1::logicalSize
+ * \qmlproperty size AuroraCompositor::XdgOutputV1::logicalSize
  *
  * This property holds the size of the output in the global compositor space.
  *
@@ -450,7 +450,7 @@ void WaylandXdgOutputV1::setLogicalSize(const QSize &size)
 }
 
 /*!
- * \qmlproperty rect QtWaylandCompositor::XdgOutputV1::logicalGeometry
+ * \qmlproperty rect AuroraCompositor::XdgOutputV1::logicalGeometry
  * \readonly
  *
  * This property holds the position and size of the output in the global compositor space.

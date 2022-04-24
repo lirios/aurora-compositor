@@ -1,0 +1,54 @@
+include($QT_INSTALL_DOCS/global/qt-module-defaults.qdocconf)
+
+project                                                     = AuroraCompositor
+description                                                 = Aurora Compositor Reference Documentation
+version                                                     = $QT_VERSION
+buildversion                                                = Aurora Compositor | Commercial or GPLv3
+
+qhp.projects                                                = AuroraCompositor
+
+qhp.AuroraCompositor.file                                = auroracompositor.qhp
+qhp.AuroraCompositor.namespace                           = io.liri.auroracompositor.$QT_VERSION_TAG
+qhp.AuroraCompositor.virtualFolder                       = auroracompositor
+qhp.AuroraCompositor.indexTitle                          = Aurora Compositor
+qhp.AuroraCompositor.indexRoot                           =
+
+qhp.AuroraCompositor.subprojects                         = qmltypes classes examples
+qhp.AuroraCompositor.subprojects.qmltypes.title          = QML Types
+qhp.AuroraCompositor.subprojects.qmltypes.indexTitle     = Aurora Compositor QML Types
+qhp.AuroraCompositor.subprojects.qmltypes.selectors      = qmlclass
+qhp.AuroraCompositor.subprojects.qmltypes.sortPages      = true
+qhp.AuroraCompositor.subprojects.classes.title           = C++ Classes
+qhp.AuroraCompositor.subprojects.classes.indexTitle      = Aurora Compositor C++ Classes
+qhp.AuroraCompositor.subprojects.classes.selectors       = class fake:headerfile
+qhp.AuroraCompositor.subprojects.classes.sortPages       = true
+qhp.AuroraCompositor.subprojects.examples.title          = Examples
+qhp.AuroraCompositor.subprojects.examples.indexTitle     = Aurora Compositor Examples
+qhp.AuroraCompositor.subprojects.examples.selectors      = fake:example
+qhp.AuroraCompositor.subprojects.examples.sortPages      = true
+
+depends += qtcore qtqml qtquick qtdoc qtquickcontrols qmake qtgui qtqmlmodels qtwidgets qtvirtualkeyboard
+
+exampledirs += ../../../examples/wayland
+headerdirs += \
+    ../ \
+    ../../imports/
+sourcedirs += \
+    ../ \
+    ../../imports/
+imagedirs  += images
+
+examplesinstallpath = wayland
+
+# Add generic thumbnail for all examples
+manifestmeta.thumbnail.names = *
+
+Cpp.ignoretokens         += LIRIAURORACOMPOSITOR_EXPORT
+Cpp.ignoredirectives     += Q_DECLARE_LOGGING_CATEGORY
+
+navigation.landingpage    = "Aurora Compositor"
+navigation.qmltypespage   = "Aurora Compositor QML Types"
+navigation.cppclassespage = "Aurora Compositor C++ Classes"
+
+# Enforce zero warnings when building the documentation
+warninglimit = 0

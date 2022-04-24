@@ -78,7 +78,7 @@ void WaylandQtTextInputMethodManagerPrivate::text_input_method_manager_v1_get_te
 
 /*!
    \class WaylandQtTextInputMethodManager
-   \inmodule QtWaylandCompositor
+   \inmodule AuroraCompositor
    \since 6.0
    \brief Provides access to input methods in the compositor.
 

@@ -26,7 +26,7 @@
 ****************************************************************************/
 
 /*!
-  \module QtWaylandCompositor
+  \module AuroraCompositor
   \title Qt Wayland Compositor C++ Classes
   \ingroup modules
   \qtcmakepackage Waylandcompositor

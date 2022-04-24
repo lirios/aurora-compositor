@@ -95,7 +95,7 @@ void WaylandTextInputManagerV4Private::zwp_text_input_manager_v4_get_text_input(
   \internal
   \preliminary
   \class WaylandTextInputManagerV4
-  \inmodule QtWaylandCompositor
+  \inmodule AuroraCompositor
   \brief Provides access to input methods in the compositor.
 
   The \c WaylandTextInputManagerV4 corresponds to the \c zwp_text_input_manager_v4 interface

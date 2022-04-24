@@ -31,7 +31,7 @@
 
 /*!
  * \class WaylandShellSurfaceTemplate
- * \inmodule QtWaylandCompositor
+ * \inmodule AuroraCompositor
  * \since 5.8
  * \brief WaylandShellSurfaceTemplate is a convenience class for creating custom shell surface
  * classes.
@@ -85,7 +85,7 @@
 
 /*!
  * \class WaylandShellSurface
- * \inmodule QtWaylandCompositor
+ * \inmodule AuroraCompositor
  * \since 5.8
  * \brief The WaylandShellSurface class is a common interface for surface roles specified by shell extensions.
  *
@@ -107,7 +107,7 @@
 #endif
 
 /*!
- * \qmlproperty enum QtWaylandCompositor::ShellSurface::windowType
+ * \qmlproperty enum AuroraCompositor::ShellSurface::windowType
  *
  * This property holds the window type of the ShellSurface.
  */

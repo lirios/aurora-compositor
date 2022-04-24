@@ -60,7 +60,7 @@ WaylandSurfaceRole WaylandIviSurfacePrivate::s_role("ivi_surface");
 
 /*!
  * \class WaylandIviSurface
- * \inmodule QtWaylandCompositor
+ * \inmodule AuroraCompositor
  * \since 5.8
  * \brief The WaylandIviSurface class provides a simple way to identify and resize a surface.
  *
@@ -89,7 +89,7 @@ WaylandIviSurface::WaylandIviSurface(WaylandIviApplication *application, Wayland
 }
 
 /*!
- * \qmlmethod void QtWaylandCompositor::IviSurface::initialize(IviApplication iviApplication, WaylandSurface surface, int iviId, WaylandResource resource)
+ * \qmlmethod void AuroraCompositor::IviSurface::initialize(IviApplication iviApplication, WaylandSurface surface, int iviId, WaylandResource resource)
  *
  * Initializes the IviSurface, associating it with the given \a iviApplication, \a surface,
  * \a iviId, and \a resource.
@@ -117,7 +117,7 @@ void WaylandIviSurface::initialize(WaylandIviApplication *iviApplication, Waylan
 }
 
 /*!
- * \qmlproperty WaylandSurface QtWaylandCompositor::IviSurface::surface
+ * \qmlproperty WaylandSurface AuroraCompositor::IviSurface::surface
  *
  * This property holds the surface associated with this IviSurface.
  */
@@ -134,7 +134,7 @@ WaylandSurface *WaylandIviSurface::surface() const
 }
 
 /*!
- * \qmlproperty int QtWaylandCompositor::IviSurface::iviId
+ * \qmlproperty int AuroraCompositor::IviSurface::iviId
  * \readonly
  *
  * This property holds the ivi id id of this IviSurface.
@@ -183,7 +183,7 @@ WaylandIviSurface *WaylandIviSurface::fromResource(wl_resource *resource)
 }
 
 /*!
- * \qmlmethod int QtWaylandCompositor::IviSurface::sendConfigure(size size)
+ * \qmlmethod int AuroraCompositor::IviSurface::sendConfigure(size size)
  *
  * Sends a configure event to the client, telling it to resize the surface to the given \a size.
  */

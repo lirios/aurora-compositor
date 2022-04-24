@@ -88,7 +88,7 @@ void WaylandQuickOutput::update()
 }
 
 /*!
- * \qmlproperty bool QtWaylandCompositor::WaylandOutput::automaticFrameCallback
+ * \qmlproperty bool AuroraCompositor::WaylandOutput::automaticFrameCallback
  *
  * This property holds whether the WaylandOutput automatically sends frame
  * callbacks when rendering.

@@ -73,7 +73,7 @@ namespace Compositor {
 
 /*!
  * \class WaylandIviApplication
- * \inmodule QtWaylandCompositor
+ * \inmodule AuroraCompositor
  * \since 5.8
  * \brief The WaylandIviApplication class is an extension for embedded-style user interfaces.
  *
@@ -134,7 +134,7 @@ QByteArray WaylandIviApplication::interfaceName()
 }
 
 /*!
- * \qmlsignal void QtWaylandCompositor::IviApplication::iviSurfaceRequested(WaylandSurface surface, int iviId, WaylandResource resource)
+ * \qmlsignal void AuroraCompositor::IviApplication::iviSurfaceRequested(WaylandSurface surface, int iviId, WaylandResource resource)
  *
  * This signal is emitted when the client has requested an \c ivi_surface to be associated
  * with \a surface, which is identified by \a iviId. The handler for this signal is
@@ -153,7 +153,7 @@ QByteArray WaylandIviApplication::interfaceName()
  */
 
 /*!
- * \qmlsignal void QtWaylandCompositor::IviApplication::iviSurfaceCreated(IviSurface *iviSurface)
+ * \qmlsignal void AuroraCompositor::IviApplication::iviSurfaceCreated(IviSurface *iviSurface)
  *
  * This signal is emitted when an IviSurface has been created. The supplied \a iviSurface is
  * most commonly used to instantiate a ShellSurfaceItem.

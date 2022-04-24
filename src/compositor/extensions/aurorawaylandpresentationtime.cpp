@@ -76,7 +76,7 @@ namespace Compositor {
 
 /*!
  * \class WaylandPresentationTime
- * \inmodule QtWaylandCompositor
+ * \inmodule AuroraCompositor
  * \since 6.3
  * \brief The WaylandPresentationTime class is an extension to get timing for on-screen presentation.
  *

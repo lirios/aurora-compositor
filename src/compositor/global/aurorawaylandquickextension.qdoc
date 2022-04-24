@@ -28,7 +28,7 @@
 /*!
  * \headerfile <WaylandQuickExtension>
  * \title Qt Wayland Compositor Qt Quick Extension Macro Declarations
- * \inmodule QtWaylandCompositor
+ * \inmodule AuroraCompositor
  * \ingroup funclists
  *
  * \brief The <WaylandQuickExtension> header file includes \l{macros} for creating Qt Quick types

@@ -75,7 +75,7 @@ void WaylandTextInputManagerPrivate::zwp_text_input_manager_v2_get_text_input(Re
 
 /*!
   \class WaylandTextInputManager
-  \inmodule QtWaylandCompositor
+  \inmodule AuroraCompositor
   \brief Provides access to input methods in the compositor.
 
   The \c WaylandTextInputManager corresponds to the \c zwp_text_input_manager_v2 interface

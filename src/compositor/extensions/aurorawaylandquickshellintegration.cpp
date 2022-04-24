@@ -35,7 +35,7 @@ namespace Compositor {
 
 /*!
  * \class WaylandQuickShellIntegration
- * \inmodule QtWaylandCompositor
+ * \inmodule AuroraCompositor
  * \since 5.14
  * \brief Provides support for shell surface integration with QtQuick.
  *

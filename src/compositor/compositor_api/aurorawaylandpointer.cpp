@@ -140,7 +140,7 @@ void WaylandPointerPrivate::pointer_set_cursor(wl_pointer::Resource *resource, u
 
 /*!
  * \class WaylandPointer
- * \inmodule QtWaylandCompositor
+ * \inmodule AuroraCompositor
  * \since 5.8
  * \brief The WaylandPointer class represents a pointer device.
  *

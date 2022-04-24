@@ -38,7 +38,7 @@ namespace Compositor {
 
 /*!
     \class WaylandIdleInhibitManagerV1
-    \inmodule QtWaylandCompositor
+    \inmodule AuroraCompositor
     \since 5.14
     \brief Provides an extension that allows to inhibit the idle behavior of the compositor.
     \sa WaylandSurface::inhibitsIdle
