@@ -187,9 +187,6 @@ WaylandSeat::WaylandSeat(WaylandCompositor *compositor, CapabilityFlags capabili
     d->capabilities = capabilityFlags;
     if (compositor->isCreated())
         initialize();
-
-    // Support deprecated signal for backward compatibility
-    connect(this, &WaylandSeat::cursorSurfaceRequested, this, &WaylandSeat::cursorSurfaceRequest);
 }
 
 /*!
@@ -755,9 +752,9 @@ void WaylandSeat::handleMouseFocusDestroyed()
  * \a oldFocus has the surface that lost keyboard focus; or \c nullptr if no surface had focus.
  */
 
-/*! \qmlsignal void QtWaylandCompositor::WaylandSeat::cursorSurfaceRequest(WaylandSurface surface, int hotspotX, int hotspotY)
+/*! \qmlsignal void QtWaylandCompositor::WaylandSeat::cursorSurfaceRequested(WaylandSurface surface, int hotspotX, int hotspotY, WaylandClient client)
  *
- * This signal is emitted when the client has requested for a specific \a surface to be the mouse
+ * This signal is emitted when the \a client has requested for a specific \a surface to be the mouse
  * cursor. For example, when the user hovers over a particular surface, and you want the cursor
  * to change into a resize arrow.
  *
@@ -768,9 +765,9 @@ void WaylandSeat::handleMouseFocusDestroyed()
 
 
 /*!
- * \fn void WaylandSeat::cursorSurfaceRequest(WaylandSurface *surface, int hotspotX, int hotspotY)
+ * \fn void WaylandSeat::cursorSurfaceRequested(WaylandSurface *surface, int hotspotX, int hotspotY, WaylandClient *client)
  *
- * This signal is emitted when the client has requested for a specific \a surface to be the mouse
+ * This signal is emitted when the \a client has requested for a specific \a surface to be the mouse
  * cursor. For example, when the user hovers over a particular surface, and you want the cursor
  * to change into a resize arrow.
  *

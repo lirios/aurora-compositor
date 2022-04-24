@@ -134,9 +134,6 @@ public:
 Q_SIGNALS:
     void mouseFocusChanged(Aurora::Compositor::WaylandView *newFocus, Aurora::Compositor::WaylandView *oldFocus);
     void keyboardFocusChanged(Aurora::Compositor::WaylandSurface *newFocus, Aurora::Compositor::WaylandSurface *oldFocus);
-#if QT_DEPRECATED_SINCE(6, 1)
-    void cursorSurfaceRequest(Aurora::Compositor::WaylandSurface *surface, int hotspotX, int hotspotY);
-#endif
     void cursorSurfaceRequested(Aurora::Compositor::WaylandSurface *surface, int hotspotX, int hotspotY, Aurora::Compositor::WaylandClient *client);
 
 private:
