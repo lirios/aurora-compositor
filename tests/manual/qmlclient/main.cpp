@@ -56,6 +56,6 @@ int main(int argc, char* argv[])
     setenv("QT_QPA_PLATFORM", "wayland", 1);
 
     QGuiApplication app(argc, argv);
-    QQmlApplicationEngine engine(QUrl("qrc:/main.qml"));
+    QQmlApplicationEngine engine(QUrl(QStringLiteral("qrc:/main.qml")));
     return app.exec();
 }

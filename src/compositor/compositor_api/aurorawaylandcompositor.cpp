@@ -287,7 +287,7 @@ void WaylandCompositorPrivate::preInit()
 void WaylandCompositorPrivate::destroySurface(WaylandSurface *surface)
 {
     Q_Q(WaylandCompositor);
-    q->surfaceAboutToBeDestroyed(surface);
+    emit q->surfaceAboutToBeDestroyed(surface);
 
     delete surface;
 }
@@ -1014,7 +1014,7 @@ void WaylandCompositor::setUseHardwareIntegrationExtension(bool use)
         qWarning("Setting WaylandCompositor::useHardwareIntegrationExtension after initialization has no effect");
 
     d->use_hw_integration_extension = use;
-    useHardwareIntegrationExtensionChanged();
+    emit useHardwareIntegrationExtensionChanged();
 #else
     if (use)
         qWarning() << "Hardware integration not supported without OpenGL support";

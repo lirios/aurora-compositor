@@ -29,8 +29,8 @@
 class FakeLogindSession : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(bool Active READ isActive)
-    Q_PROPERTY(uint VTNr READ vtNumber)
+    Q_PROPERTY(bool Active READ isActive CONSTANT)
+    Q_PROPERTY(uint VTNr READ vtNumber CONSTANT)
     Q_CLASSINFO("D-Bus Interface", "org.freedesktop.login1.Session")
 public:
     explicit FakeLogindSession(const QString &path, QObject *parent = nullptr);

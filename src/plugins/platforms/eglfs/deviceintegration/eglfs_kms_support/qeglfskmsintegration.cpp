@@ -79,7 +79,8 @@ void QEglFSKmsIntegration::platformInit()
     // Redraw all toplevel windows as soon as the session is reactivated
     QObject::connect(Liri::Logind::instance(), &Liri::Logind::sessionActiveChanged, [this](bool active) {
         if (active) {
-            for (QWindow *window : qGuiApp->topLevelWindows())
+            const auto windows = qGuiApp->topLevelWindows();
+            for (QWindow *window : windows)
                 QWindowSystemInterface::handleExposeEvent(window, QRegion(QRect(QPoint(0, 0), window->size())));
         }
     });

@@ -243,7 +243,7 @@ QPlatformOffscreenSurface *QEglFSIntegration::createPlatformOffscreenSurface(QOf
     EGLDisplay dpy = surface->screen() ? static_cast<QEglFSScreen *>(surface->screen()->handle())->display() : display();
     QSurfaceFormat fmt = qt_egl_device_integration()->surfaceFormatFor(surface->requestedFormat());
     if (qt_egl_device_integration()->supportsPBuffers()) {
-        QEGLPlatformContext::Flags flags = 0;
+        QEGLPlatformContext::Flags flags = QEGLPlatformContext::Flags();
         if (!qt_egl_device_integration()->supportsSurfacelessContexts())
             flags |= QEGLPlatformContext::NoSurfaceless;
         return new QEGLPbuffer(dpy, fmt, surface, flags);
@@ -449,7 +449,8 @@ void QEglFSIntegration::createInputHandlers()
 
 void QEglFSIntegration::setCursorThemeStatic(const QString &name, int size)
 {
-    for (auto *screen : qGuiApp->screens()) {
+    const auto screens = qGuiApp->screens();
+    for (auto *screen : screens) {
         auto *platformScreen = static_cast<QEglFSScreen *>(screen->handle());
         if (platformScreen)
             platformScreen->setCursorTheme(name, size);

@@ -73,7 +73,7 @@ void WaylandQtWindowManagerPrivate::windowmanager_open_url(Resource *resource, u
         urls.insert(resource, url);
     else {
         urls.remove(resource);
-        q->openUrl(WaylandClient::fromWlClient(compositor, resource->client()), QUrl(url));
+        emit q->openUrl(WaylandClient::fromWlClient(compositor, resource->client()), QUrl(url));
     }
 }
 

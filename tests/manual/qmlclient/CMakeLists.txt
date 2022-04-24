@@ -9,6 +9,9 @@ liri_add_executable(aurora-test-qmlclient
         main.cpp
     RESOURCES
         qml.qrc
+    DEFINES
+        QT_NO_CAST_FROM_ASCII
+        QT_NO_FOREACH
     LIBRARIES
         Qt::CorePrivate
         Qt::Gui

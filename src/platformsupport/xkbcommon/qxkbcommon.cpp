@@ -825,7 +825,7 @@ void QXkbCommon::setXkbContext(QPlatformInputContext *inputContext, struct xkb_c
     if (!setXkbContext.isValid())
         return;
 
-    setXkbContext.invoke(inputContext, Qt::DirectConnection, Q_ARG(struct xkb_context*, context));
+    setXkbContext.invoke(inputContext, Qt::DirectConnection, Q_ARG(xkb_context*, context));
 }
 
 } // namespace Compositor

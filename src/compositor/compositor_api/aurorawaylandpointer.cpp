@@ -119,7 +119,7 @@ void WaylandPointerPrivate::pointer_set_cursor(wl_pointer::Resource *resource, u
     Q_UNUSED(serial);
 
     if (!surface) {
-        seat->cursorSurfaceRequested(nullptr, 0, 0, WaylandClient::fromWlClient(compositor(), resource->client()));
+        emit seat->cursorSurfaceRequested(nullptr, 0, 0, WaylandClient::fromWlClient(compositor(), resource->client()));
         return;
     }
 
@@ -134,7 +134,7 @@ void WaylandPointerPrivate::pointer_set_cursor(wl_pointer::Resource *resource, u
     wl_resource *displayRes = wl_client_get_object(resource->client(), 1);
     if (s->setRole(&WaylandPointerPrivate::s_role, displayRes, WL_DISPLAY_ERROR_INVALID_OBJECT)) {
         s->markAsCursorSurface(true);
-        seat->cursorSurfaceRequested(s, hotspot_x, hotspot_y, WaylandClient::fromWlClient(compositor(), resource->client()));
+        emit seat->cursorSurfaceRequested(s, hotspot_x, hotspot_y, WaylandClient::fromWlClient(compositor(), resource->client()));
     }
 }
 
@@ -193,7 +193,7 @@ void WaylandPointer::setOutput(WaylandOutput *output)
     Q_D(WaylandPointer);
     if (d->output == output) return;
     d->output = output;
-    outputChanged();
+    emit outputChanged();
 }
 
 /*!
