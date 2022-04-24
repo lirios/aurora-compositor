@@ -53,7 +53,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandTextInputManagerPrivate : public Waylan
 {
     Q_DECLARE_PUBLIC(WaylandTextInputManager)
 public:
-    WaylandTextInputManagerPrivate();
+    WaylandTextInputManagerPrivate(WaylandTextInputManager *self);
 
 protected:
     void zwp_text_input_manager_v2_get_text_input(Resource *resource, uint32_t id, struct ::wl_resource *seatResource) override;

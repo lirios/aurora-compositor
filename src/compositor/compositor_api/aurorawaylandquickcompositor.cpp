@@ -55,9 +55,10 @@ namespace Compositor {
 class WaylandQuickCompositorPrivate : public WaylandCompositorPrivate
 {
 public:
-    explicit WaylandQuickCompositorPrivate(WaylandCompositor *compositor)
-        : WaylandCompositorPrivate(compositor)
-        , m_viewporter(new WaylandViewporter(compositor))
+    explicit WaylandQuickCompositorPrivate(WaylandQuickCompositor *self)
+        : WaylandCompositorPrivate(self)
+        , q_ptr(self)
+        , m_viewporter(new WaylandViewporter(self))
     {
     }
 protected:
@@ -66,11 +67,17 @@ protected:
         return new WaylandQuickSurface();
     }
 private:
+    WaylandQuickCompositor *q_ptr = nullptr;
     QScopedPointer<WaylandViewporter> m_viewporter;
 };
 
 WaylandQuickCompositor::WaylandQuickCompositor(QObject *parent)
-    : WaylandCompositor(*new WaylandQuickCompositorPrivate(this), parent)
+    : WaylandCompositor(parent)
+    , d_ptr(new WaylandQuickCompositorPrivate(this))
+{
+}
+
+WaylandQuickCompositor::~WaylandQuickCompositor()
 {
 }
 

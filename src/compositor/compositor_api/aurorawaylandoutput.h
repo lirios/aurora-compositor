@@ -182,6 +182,8 @@ protected:
     virtual void initialize();
 
 private:
+    QScopedPointer<WaylandOutputPrivate> const d_ptr;
+
     Q_PRIVATE_SLOT(d_func(), void _q_handleMaybeWindowPixelSizeChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_handleWindowDestroyed())
 };

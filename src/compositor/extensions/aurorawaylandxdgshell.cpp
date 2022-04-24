@@ -49,7 +49,8 @@ namespace Aurora {
 
 namespace Compositor {
 
-WaylandXdgShellPrivate::WaylandXdgShellPrivate()
+WaylandXdgShellPrivate::WaylandXdgShellPrivate(WaylandXdgShell *self)
+    : WaylandShellPrivate(self)
 {
 }
 
@@ -179,7 +180,8 @@ void WaylandXdgShellPrivate::xdg_wm_base_pong(Resource *resource, uint32_t seria
  * Constructs a WaylandXdgShell object.
  */
 WaylandXdgShell::WaylandXdgShell()
-    : WaylandShellTemplate<WaylandXdgShell>(*new WaylandXdgShellPrivate())
+    : WaylandShellTemplate<WaylandXdgShell>()
+    , d_ptr(new WaylandXdgShellPrivate(this))
 {
 }
 
@@ -187,7 +189,12 @@ WaylandXdgShell::WaylandXdgShell()
  * Constructs a WaylandXdgShell object for the provided \a compositor.
  */
 WaylandXdgShell::WaylandXdgShell(WaylandCompositor *compositor)
-    : WaylandShellTemplate<WaylandXdgShell>(compositor, *new WaylandXdgShellPrivate())
+    : WaylandShellTemplate<WaylandXdgShell>(compositor)
+    , d_ptr(new WaylandXdgShellPrivate(this))
+{
+}
+
+WaylandXdgShell::~WaylandXdgShell()
 {
 }
 
@@ -278,7 +285,8 @@ void WaylandXdgShell::handleFocusChanged(WaylandSurface *newSurface, WaylandSurf
         WaylandXdgSurfacePrivate::get(oldXdgSurface)->handleFocusLost();
 }
 
-WaylandXdgSurfacePrivate::WaylandXdgSurfacePrivate()
+WaylandXdgSurfacePrivate::WaylandXdgSurfacePrivate(WaylandXdgSurface *self)
+    : WaylandCompositorExtensionPrivate(self)
 {
 }
 
@@ -488,7 +496,8 @@ void WaylandXdgSurfacePrivate::xdg_surface_set_window_geometry(PrivateServer::xd
  * Constructs a WaylandXdgSurface.
  */
 WaylandXdgSurface::WaylandXdgSurface()
-    : WaylandShellSurfaceTemplate<WaylandXdgSurface>(*new WaylandXdgSurfacePrivate)
+    : WaylandShellSurfaceTemplate<WaylandXdgSurface>()
+    , d_ptr(new WaylandXdgSurfacePrivate(this))
 {
 }
 
@@ -497,9 +506,14 @@ WaylandXdgSurface::WaylandXdgSurface()
  * given \a xdgShell, \a surface, and resource \a res.
  */
 WaylandXdgSurface::WaylandXdgSurface(WaylandXdgShell *xdgShell, WaylandSurface *surface, const WaylandResource &res)
-    : WaylandShellSurfaceTemplate<WaylandXdgSurface>(*new WaylandXdgSurfacePrivate)
+    : WaylandShellSurfaceTemplate<WaylandXdgSurface>()
+    , d_ptr(new WaylandXdgSurfacePrivate(this))
 {
     initialize(xdgShell, surface, res);
+}
+
+WaylandXdgSurface::~WaylandXdgSurface()
+{
 }
 
 /*!
@@ -736,7 +750,8 @@ WaylandQuickShellIntegration *WaylandXdgSurface::createIntegration(WaylandQuickS
  * Constructs a WaylandXdgToplevel for the given \a xdgSurface and \a resource.
  */
 WaylandXdgToplevel::WaylandXdgToplevel(WaylandXdgSurface *xdgSurface, WaylandResource &resource)
-    : QObject(*new WaylandXdgToplevelPrivate(xdgSurface, resource))
+    : QObject()
+    , d_ptr(new WaylandXdgToplevelPrivate(this, xdgSurface, resource))
 {
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QList<WaylandXdgToplevel::State> states;
@@ -1307,8 +1322,9 @@ QList<int> WaylandXdgToplevel::statesAsInts() const
 
 WaylandSurfaceRole WaylandXdgToplevelPrivate::s_role("xdg_toplevel");
 
-WaylandXdgToplevelPrivate::WaylandXdgToplevelPrivate(WaylandXdgSurface *xdgSurface, const WaylandResource &resource)
+WaylandXdgToplevelPrivate::WaylandXdgToplevelPrivate(WaylandXdgToplevel *self, WaylandXdgSurface *xdgSurface, const WaylandResource &resource)
     : m_xdgSurface(xdgSurface)
+    , q_ptr(self)
 {
     init(resource.resource());
 }
@@ -1595,7 +1611,12 @@ void WaylandXdgToplevelPrivate::xdg_toplevel_set_minimized(PrivateServer::xdg_to
  */
 WaylandXdgPopup::WaylandXdgPopup(WaylandXdgSurface *xdgSurface, WaylandXdgSurface *parentXdgSurface,
                                    WaylandXdgPositioner *positioner, WaylandResource &resource)
-    : QObject(*new WaylandXdgPopupPrivate(xdgSurface, parentXdgSurface, positioner, resource))
+    : QObject()
+    , d_ptr(new WaylandXdgPopupPrivate(this, xdgSurface, parentXdgSurface, positioner, resource))
+{
+}
+
+WaylandXdgPopup::~WaylandXdgPopup()
 {
 }
 
@@ -1919,9 +1940,11 @@ WaylandSurfaceRole *WaylandXdgPopup::role()
     return &WaylandXdgPopupPrivate::s_role;
 }
 
-WaylandXdgPopupPrivate::WaylandXdgPopupPrivate(WaylandXdgSurface *xdgSurface, WaylandXdgSurface *parentXdgSurface,
-                                                 WaylandXdgPositioner *positioner, const WaylandResource &resource)
-    : m_xdgSurface(xdgSurface)
+WaylandXdgPopupPrivate::WaylandXdgPopupPrivate(WaylandXdgPopup *self,
+                                               WaylandXdgSurface *xdgSurface, WaylandXdgSurface *parentXdgSurface,
+                                               WaylandXdgPositioner *positioner, const WaylandResource &resource)
+    : q_ptr(self)
+    , m_xdgSurface(xdgSurface)
     , m_parentXdgSurface(parentXdgSurface)
     , m_positionerData(positioner->m_data)
 {
@@ -1932,6 +1955,10 @@ WaylandXdgPopupPrivate::WaylandXdgPopupPrivate(WaylandXdgSurface *xdgSurface, Wa
 
     //TODO: Need an API for sending a different initial configure
     sendConfigure(QRect(m_positionerData.unconstrainedPosition(), m_positionerData.size));
+}
+
+WaylandXdgPopupPrivate::~WaylandXdgPopupPrivate()
+{
 }
 
 void WaylandXdgPopupPrivate::handleAckConfigure(uint serial)

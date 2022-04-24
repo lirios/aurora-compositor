@@ -49,8 +49,9 @@ namespace Platform {
  * LibInputKeyboardPrivate
  */
 
-LibInputKeyboardPrivate::LibInputKeyboardPrivate(LibInputHandler *h)
-    : handler(h)
+LibInputKeyboardPrivate::LibInputKeyboardPrivate(LibInputKeyboard *self, LibInputHandler *h)
+    : q_ptr(self)
+    , handler(h)
     , context(nullptr)
     , keymap(nullptr)
     , state(nullptr)
@@ -105,10 +106,15 @@ LibInputKeyboardPrivate::~LibInputKeyboardPrivate()
  */
 
 LibInputKeyboard::LibInputKeyboard(LibInputHandler *handler, QObject *parent)
-    : QObject(*new LibInputKeyboardPrivate(handler), parent)
+    : QObject(parent)
+    , d_ptr(new LibInputKeyboardPrivate(this, handler))
 {
     Q_D(LibInputKeyboard);
     connect(&d->repeatTimer, &QTimer::timeout, this, &LibInputKeyboard::handleRepeat);
+}
+
+LibInputKeyboard::~LibInputKeyboard()
+{
 }
 
 void LibInputKeyboard::handleKey(libinput_event_keyboard *event)

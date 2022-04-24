@@ -35,7 +35,12 @@ namespace Aurora {
 namespace Compositor {
 
 WaylandKeymap::WaylandKeymap(const QString &layout, const QString &variant, const QString &options, const QString &model, const QString &rules, QObject *parent)
-    : QObject(*new WaylandKeymapPrivate(layout, variant, options, model, rules), parent)
+    : QObject(parent)
+    , d_ptr(new WaylandKeymapPrivate(this, layout, variant, options, model, rules))
+{
+}
+
+WaylandKeymap::~WaylandKeymap()
 {
 }
 
@@ -110,10 +115,12 @@ void WaylandKeymap::setModel(const QString &model)
     emit modelChanged();
 }
 
-WaylandKeymapPrivate::WaylandKeymapPrivate(const QString &layout, const QString &variant,
-                                             const QString &options, const QString &model,
-                                             const QString &rules)
-    : m_layout(layout)
+WaylandKeymapPrivate::WaylandKeymapPrivate(WaylandKeymap *self,
+                                           const QString &layout, const QString &variant,
+                                           const QString &options, const QString &model,
+                                           const QString &rules)
+    : q_ptr(self)
+    , m_layout(layout)
     , m_variant(variant)
     , m_options(options)
     , m_rules(rules)

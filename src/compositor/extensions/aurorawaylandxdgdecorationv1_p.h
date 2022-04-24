@@ -61,7 +61,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgDecorationManagerV1Private
     Q_DECLARE_PUBLIC(WaylandXdgDecorationManagerV1)
 public:
     using DecorationMode = WaylandXdgToplevel::DecorationMode;
-    explicit WaylandXdgDecorationManagerV1Private() {}
+    explicit WaylandXdgDecorationManagerV1Private(WaylandXdgDecorationManagerV1 *self);
 
 protected:
     void zxdg_decoration_manager_v1_get_toplevel_decoration(Resource *resource, uint id, ::wl_resource *toplevelResource) override;

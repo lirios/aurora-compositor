@@ -61,21 +61,34 @@ namespace Compositor {
     \value RendererNotReady The compositor renderer is not ready to grab the surface content.
  */
 
-class WaylandSurfaceGrabberPrivate : public QObjectPrivate
+class WaylandSurfaceGrabberPrivate
 {
     Q_DECLARE_PUBLIC(WaylandSurfaceGrabber)
+public:
+    WaylandSurfaceGrabberPrivate(WaylandSurfaceGrabber *self)
+        : q_ptr(self)
+    {
+    }
 
     WaylandSurface *surface = nullptr;
+
+private:
+    WaylandSurfaceGrabber *q_ptr = nullptr;
 };
 
 /*!
  * Create a WaylandSurfaceGrabber object with the given \a surface and \a parent
  */
 WaylandSurfaceGrabber::WaylandSurfaceGrabber(WaylandSurface *surface, QObject *parent)
-                      : QObject(*(new WaylandSurfaceGrabberPrivate), parent)
+    : QObject(parent)
+    , d_ptr(new WaylandSurfaceGrabberPrivate(this))
 {
     Q_D(WaylandSurfaceGrabber);
     d->surface = surface;
+}
+
+WaylandSurfaceGrabber::~WaylandSurfaceGrabber()
+{
 }
 
 /*!

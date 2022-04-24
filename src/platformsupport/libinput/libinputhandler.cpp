@@ -48,8 +48,9 @@ const struct libinput_interface LibInputHandlerPrivate::liInterface = {
     LibInputHandlerPrivate::restrictedCloseCallback
 };
 
-LibInputHandlerPrivate::LibInputHandlerPrivate()
-    : initialized(false)
+LibInputHandlerPrivate::LibInputHandlerPrivate(LibInputHandler *self)
+    : q_ptr(self)
+    , initialized(false)
     , udev(nullptr)
     , li(nullptr)
     , keyboard(nullptr)
@@ -254,7 +255,8 @@ void LibInputHandlerPrivate::restrictedClose(int fd)
  */
 
 LibInputHandler::LibInputHandler(QObject *parent)
-    : QObject(*new LibInputHandlerPrivate, parent)
+    : QObject(parent)
+    , d_ptr(new LibInputHandlerPrivate(this))
 {
     Q_D(LibInputHandler);
 
@@ -276,6 +278,10 @@ LibInputHandler::LibInputHandler(QObject *parent)
             // Initialize
             d->setup();
         });
+}
+
+LibInputHandler::~LibInputHandler()
+{
 }
 
 bool LibInputHandler::isSuspended() const

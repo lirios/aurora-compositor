@@ -52,9 +52,12 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandShellPrivate : public WaylandCompositor
 {
     Q_DECLARE_PUBLIC(WaylandShell)
 public:
-    WaylandShellPrivate();
+    WaylandShellPrivate(WaylandShell *self);
 
     WaylandShell::FocusPolicy focusPolicy = WaylandShell::AutomaticFocus;
+
+protected:
+    WaylandShell *q_ptr = nullptr;
 };
 
 } // namespace Compositor

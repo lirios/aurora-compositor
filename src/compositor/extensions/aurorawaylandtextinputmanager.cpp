@@ -39,7 +39,8 @@ namespace Aurora {
 
 namespace Compositor {
 
-WaylandTextInputManagerPrivate::WaylandTextInputManagerPrivate()
+WaylandTextInputManagerPrivate::WaylandTextInputManagerPrivate(WaylandTextInputManager *self)
+    : WaylandCompositorExtensionPrivate(self)
 {
 }
 
@@ -87,12 +88,18 @@ void WaylandTextInputManagerPrivate::zwp_text_input_manager_v2_get_text_input(Re
 */
 
 WaylandTextInputManager::WaylandTextInputManager()
-    : WaylandCompositorExtensionTemplate<WaylandTextInputManager>(*new WaylandTextInputManagerPrivate)
+    : WaylandCompositorExtensionTemplate<WaylandTextInputManager>()
+    , d_ptr(new WaylandTextInputManagerPrivate(this))
 {
 }
 
 WaylandTextInputManager::WaylandTextInputManager(WaylandCompositor *compositor)
-    : WaylandCompositorExtensionTemplate<WaylandTextInputManager>(compositor, *new WaylandTextInputManagerPrivate)
+    : WaylandCompositorExtensionTemplate<WaylandTextInputManager>(compositor)
+    , d_ptr(new WaylandTextInputManagerPrivate(this))
+{
+}
+
+WaylandTextInputManager::~WaylandTextInputManager()
 {
 }
 

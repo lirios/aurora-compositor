@@ -53,6 +53,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandKeyboard : public WaylandObject
     Q_PROPERTY(quint32 repeatDelay READ repeatDelay WRITE setRepeatDelay NOTIFY repeatDelayChanged)
 public:
     WaylandKeyboard(WaylandSeat *seat, QObject *parent = nullptr);
+    ~WaylandKeyboard();
 
     WaylandSeat *seat() const;
     WaylandCompositor *compositor() const;
@@ -82,6 +83,8 @@ Q_SIGNALS:
     void repeatDelayChanged(quint32 repeatDelay);
 
 private:
+    QScopedPointer<WaylandKeyboardPrivate> const d_ptr;
+
     void focusDestroyed(void *data);
 
 private Q_SLOTS:

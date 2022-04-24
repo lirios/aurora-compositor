@@ -43,20 +43,18 @@
 
 #include <LiriAuroraCompositor/WaylandDestroyListener>
 
-#include <QtCore/private/qobject_p.h>
-
 #include <wayland-server-core.h>
 
 namespace Aurora {
 
 namespace Compositor {
 
-class WaylandDestroyListenerPrivate : public QObjectPrivate
+class WaylandDestroyListenerPrivate
 {
 public:
     Q_DECLARE_PUBLIC(WaylandDestroyListener)
 
-    WaylandDestroyListenerPrivate();
+    WaylandDestroyListenerPrivate(WaylandDestroyListener *self);
 
     static void handler(wl_listener *listener, void *data);
 
@@ -65,6 +63,9 @@ public:
         WaylandDestroyListenerPrivate *parent = nullptr;
     };
     Listener listener;
+
+private:
+    WaylandDestroyListener *q_ptr = nullptr;
 };
 
 } // namespace Compositor

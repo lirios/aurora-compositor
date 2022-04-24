@@ -71,6 +71,9 @@ Q_SIGNALS:
     void surfaceEnabled(Aurora::Compositor::WaylandSurface *surface);
     void surfaceDisabled(Aurora::Compositor::WaylandSurface *surface);
 
+private:
+    QScopedPointer<WaylandQtTextInputMethodPrivate> const d_ptr;
+
 private Q_SLOTS:
     void sendVisibleChanged();
     void sendKeyboardRectangleChanged();

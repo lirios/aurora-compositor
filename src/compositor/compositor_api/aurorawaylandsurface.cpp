@@ -107,8 +107,9 @@ static QRegion infiniteRegion() {
 QList<WaylandSurfacePrivate *> WaylandSurfacePrivate::uninitializedSurfaces;
 #endif
 
-WaylandSurfacePrivate::WaylandSurfacePrivate()
-    : inputRegion(infiniteRegion())
+WaylandSurfacePrivate::WaylandSurfacePrivate(WaylandSurface *self)
+    : q_ptr(self)
+    , inputRegion(infiniteRegion())
 {
     pending.buffer = WaylandBufferRef();
     pending.newlyAttached = false;
@@ -440,7 +441,8 @@ Internal::ClientBuffer *WaylandSurfacePrivate::getBuffer(struct ::wl_resource *b
  * Constructs a an uninitialized WaylandSurface.
  */
 WaylandSurface::WaylandSurface()
-    : WaylandObject(*new WaylandSurfacePrivate())
+    : WaylandObject()
+    , d_ptr(new WaylandSurfacePrivate(this))
 {
 }
 
@@ -449,17 +451,10 @@ WaylandSurface::WaylandSurface()
  * and \a version.
  */
 WaylandSurface::WaylandSurface(WaylandCompositor *compositor, WaylandClient *client, uint id, int version)
-    : WaylandObject(*new WaylandSurfacePrivate())
+    : WaylandObject()
+    , d_ptr(new WaylandSurfacePrivate(this))
 {
     initialize(compositor, client, id, version);
-}
-
-/*!
- * \internal
- */
-WaylandSurface::WaylandSurface(WaylandSurfacePrivate &dptr)
-    : WaylandObject(dptr)
-{
 }
 
 /*!

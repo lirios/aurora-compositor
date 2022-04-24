@@ -52,7 +52,9 @@ public:
         RendererNotReady,
     };
     Q_ENUM(Error)
+
     explicit WaylandSurfaceGrabber(WaylandSurface *surface, QObject *parent = nullptr);
+    ~WaylandSurfaceGrabber();
 
     WaylandSurface *surface() const;
     void grab();
@@ -60,6 +62,9 @@ public:
 Q_SIGNALS:
     void success(const QImage &image);
     void failed(Aurora::Compositor::WaylandSurfaceGrabber::Error error);
+
+private:
+    QScopedPointer<WaylandSurfaceGrabberPrivate> const d_ptr;
 };
 
 } // namespace Compositor

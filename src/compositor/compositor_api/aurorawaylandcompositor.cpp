@@ -162,6 +162,7 @@ public:
 } // namespace
 
 WaylandCompositorPrivate::WaylandCompositorPrivate(WaylandCompositor *compositor)
+    : q_ptr(compositor)
 {
     if (QGuiApplication::platformNativeInterface())
         display = static_cast<wl_display*>(QGuiApplication::platformNativeInterface()->nativeResourceForIntegration("server_wl_display"));
@@ -569,16 +570,8 @@ WaylandSeat *WaylandCompositorPrivate::seatFor(QInputEvent *inputEvent)
  * Constructs a WaylandCompositor with the given \a parent.
  */
 WaylandCompositor::WaylandCompositor(QObject *parent)
-    : WaylandObject(*new WaylandCompositorPrivate(this), parent)
-{
-}
-
-/*!
- * \internal
- * Constructs a WaylandCompositor with the private object \a dptr and \a parent.
- */
-WaylandCompositor::WaylandCompositor(WaylandCompositorPrivate &dptr, QObject *parent)
-    : WaylandObject(dptr, parent)
+    : WaylandObject(parent)
+    , d_ptr(new WaylandCompositorPrivate(this))
 {
 }
 

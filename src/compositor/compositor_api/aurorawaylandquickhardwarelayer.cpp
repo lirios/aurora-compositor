@@ -39,18 +39,28 @@ namespace Aurora {
 
 namespace Compositor {
 
-class WaylandQuickHardwareLayerPrivate : public QObjectPrivate
+class WaylandQuickHardwareLayerPrivate
 {
     Q_DECLARE_PUBLIC(WaylandQuickHardwareLayer)
 public:
+    WaylandQuickHardwareLayerPrivate(WaylandQuickHardwareLayer *self);
+
     Internal::HardwareLayerIntegration *layerIntegration();
     WaylandQuickItem *m_waylandItem = nullptr;
     int m_stackingLevel = 0;
     QMatrix4x4 m_matrixFromRenderThread;
     static Internal::HardwareLayerIntegration *s_hardwareLayerIntegration;
+
+private:
+    WaylandQuickHardwareLayer *q_ptr = nullptr;
 };
 
 Internal::HardwareLayerIntegration *WaylandQuickHardwareLayerPrivate::s_hardwareLayerIntegration = nullptr;
+
+WaylandQuickHardwareLayerPrivate::WaylandQuickHardwareLayerPrivate(WaylandQuickHardwareLayer *self)
+    : q_ptr(self)
+{
+}
 
 Internal::HardwareLayerIntegration *WaylandQuickHardwareLayerPrivate::layerIntegration()
 {
@@ -95,7 +105,8 @@ Internal::HardwareLayerIntegration *WaylandQuickHardwareLayerPrivate::layerInteg
  */
 
 WaylandQuickHardwareLayer::WaylandQuickHardwareLayer(QObject *parent)
-    : QObject(*new WaylandQuickHardwareLayerPrivate(), parent)
+    : QObject(parent)
+    , d_ptr(new WaylandQuickHardwareLayerPrivate(this))
 {
 }
 

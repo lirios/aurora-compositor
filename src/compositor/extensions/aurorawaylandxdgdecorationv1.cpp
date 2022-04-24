@@ -94,7 +94,12 @@ namespace Compositor {
     Constructs a WaylandXdgDecorationManagerV1 object.
 */
 WaylandXdgDecorationManagerV1::WaylandXdgDecorationManagerV1()
-    : WaylandCompositorExtensionTemplate<WaylandXdgDecorationManagerV1>(*new WaylandXdgDecorationManagerV1Private)
+    : WaylandCompositorExtensionTemplate<WaylandXdgDecorationManagerV1>()
+    , d_ptr(new WaylandXdgDecorationManagerV1Private(this))
+{
+}
+
+WaylandXdgDecorationManagerV1::~WaylandXdgDecorationManagerV1()
 {
 }
 
@@ -152,6 +157,11 @@ void WaylandXdgDecorationManagerV1::setPreferredMode(WaylandXdgToplevel::Decorat
 const wl_interface *WaylandXdgDecorationManagerV1::interface()
 {
     return WaylandXdgDecorationManagerV1Private::interface();
+}
+
+WaylandXdgDecorationManagerV1Private::WaylandXdgDecorationManagerV1Private(WaylandXdgDecorationManagerV1 *self)
+    : WaylandCompositorExtensionPrivate(self)
+{
 }
 
 void WaylandXdgDecorationManagerV1Private::zxdg_decoration_manager_v1_get_toplevel_decoration(

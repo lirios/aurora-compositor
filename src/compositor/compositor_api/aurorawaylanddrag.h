@@ -59,6 +59,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandDrag : public QObject
 #endif
 public:
     explicit WaylandDrag(WaylandSeat *seat);
+    ~WaylandDrag();
 
     WaylandSurface *icon() const;
     WaylandSurface *origin() const;
@@ -73,6 +74,9 @@ public Q_SLOTS:
 Q_SIGNALS:
     void iconChanged();
     void dragStarted(); // WaylandSurface *icon????
+
+private:
+    QScopedPointer<WaylandDragPrivate> const d_ptr;
 };
 
 } // namespace Compositor

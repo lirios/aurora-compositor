@@ -34,7 +34,8 @@ namespace Aurora {
 
 namespace Compositor {
 
-WaylandDestroyListenerPrivate::WaylandDestroyListenerPrivate()
+WaylandDestroyListenerPrivate::WaylandDestroyListenerPrivate(WaylandDestroyListener *self)
+    : q_ptr(self)
 {
     listener.parent = this;
     listener.listener.notify = handler;
@@ -42,9 +43,15 @@ WaylandDestroyListenerPrivate::WaylandDestroyListenerPrivate()
 }
 
 WaylandDestroyListener::WaylandDestroyListener(QObject *parent)
-    : QObject(* new WaylandDestroyListenerPrivate(), parent)
+    : QObject(parent)
+    , d_ptr(new WaylandDestroyListenerPrivate(this))
 {
 }
+
+WaylandDestroyListener::~WaylandDestroyListener()
+{
+}
+
 void WaylandDestroyListener::listenForDestruction(::wl_resource *resource)
 {
     Q_D(WaylandDestroyListener);

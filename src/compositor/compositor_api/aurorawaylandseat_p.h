@@ -77,7 +77,7 @@ class InputMethod;
 
 }
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandSeatPrivate : public QObjectPrivate, public PrivateServer::wl_seat
+class LIRIAURORACOMPOSITOR_EXPORT WaylandSeatPrivate : public PrivateServer::wl_seat
 {
 public:
     Q_DECLARE_PUBLIC(WaylandSeat)
@@ -107,6 +107,8 @@ protected:
     void seat_destroy_resource(wl_seat::Resource *resource) override;
 
 private:
+    WaylandSeat *q_ptr = nullptr;
+
     bool isInitialized = false;
     WaylandCompositor *compositor = nullptr;
     WaylandView *mouseFocus = nullptr;

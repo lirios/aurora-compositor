@@ -64,8 +64,7 @@ namespace Compositor {
 
 class WaylandView;
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandPointerPrivate : public QObjectPrivate
-                                                 , public PrivateServer::wl_pointer
+class LIRIAURORACOMPOSITOR_EXPORT WaylandPointerPrivate : public PrivateServer::wl_pointer
 {
     Q_DECLARE_PUBLIC(WaylandPointer)
 public:
@@ -84,6 +83,7 @@ private:
     void sendLeave();
     void ensureEntered(WaylandSurface *surface);
 
+    WaylandPointer *q_ptr = nullptr;
     WaylandSeat *seat = nullptr;
     WaylandOutput *output = nullptr;
     QPointer<WaylandSurface> enteredSurface;

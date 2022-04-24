@@ -51,10 +51,14 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgOutputManagerV1
 public:
     explicit WaylandXdgOutputManagerV1();
     WaylandXdgOutputManagerV1(WaylandCompositor *compositor);
+    ~WaylandXdgOutputManagerV1();
 
     void initialize() override;
 
     static const wl_interface *interface();
+
+private:
+    QScopedPointer<WaylandXdgOutputManagerV1Private> const d_ptr;
 };
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgOutputV1 : public QObject
@@ -102,6 +106,9 @@ Q_SIGNALS:
     void logicalGeometryChanged();
     void nameChanged();
     void descriptionChanged();
+
+private:
+    QScopedPointer<WaylandXdgOutputV1Private> const d_ptr;
 };
 
 } // namespace Compositor

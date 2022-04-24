@@ -109,8 +109,9 @@ Qt::InputMethodQueries WaylandTextInputClientState::mergeChanged(const WaylandTe
     return queries;
 }
 
-WaylandTextInputPrivate::WaylandTextInputPrivate(WaylandCompositor *compositor)
-    : compositor(compositor)
+WaylandTextInputPrivate::WaylandTextInputPrivate(WaylandTextInput *self, WaylandCompositor *compositor)
+    : WaylandCompositorExtensionPrivate(self)
+    , compositor(compositor)
     , currentState(new WaylandTextInputClientState)
     , pendingState(new WaylandTextInputClientState)
 {
@@ -504,7 +505,8 @@ void WaylandTextInputPrivate::zwp_text_input_v2_set_surrounding_text(Resource *r
 }
 
 WaylandTextInput::WaylandTextInput(WaylandObject *container, WaylandCompositor *compositor)
-    : WaylandCompositorExtensionTemplate(container, *new WaylandTextInputPrivate(compositor))
+    : WaylandCompositorExtensionTemplate(container)
+    , d_ptr(new WaylandTextInputPrivate(this, compositor))
 {
     connect(&d_func()->focusDestroyListener, &WaylandDestroyListener::fired,
             this, &WaylandTextInput::focusSurfaceDestroyed);

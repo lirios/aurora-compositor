@@ -60,11 +60,12 @@ namespace Aurora {
 
 namespace Compositor {
 
-WaylandSeatPrivate::WaylandSeatPrivate(WaylandSeat *seat) :
+WaylandSeatPrivate::WaylandSeatPrivate(WaylandSeat *seat)
+    : q_ptr(seat)
 #if LIRI_FEATURE_aurora_datadevice
-    drag_handle(new WaylandDrag(seat)),
+    , drag_handle(new WaylandDrag(seat))
 #endif
-    keymap(new WaylandKeymap())
+    , keymap(new WaylandKeymap())
 {
 }
 
@@ -180,7 +181,8 @@ void WaylandSeatPrivate::seat_get_touch(wl_seat::Resource *resource, uint32_t id
  * Constructs a WaylandSeat for the given \a compositor and \a capabilityFlags.
  */
 WaylandSeat::WaylandSeat(WaylandCompositor *compositor, CapabilityFlags capabilityFlags)
-    : WaylandObject(*new WaylandSeatPrivate(this))
+    : WaylandObject()
+    , d_ptr(new WaylandSeatPrivate(this))
 {
     Q_D(WaylandSeat);
     d->compositor = compositor;

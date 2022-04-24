@@ -156,9 +156,6 @@ public Q_SLOTS:
     void updateSelection();
 #endif
 
-protected:
-    WaylandSurface(WaylandSurfacePrivate &dptr);
-
 Q_SIGNALS:
     void hasContentChanged();
     void damaged(const QRegion &rect);
@@ -182,6 +179,9 @@ Q_SIGNALS:
 
     void configure(bool hasBuffer);
     void redraw();
+
+private:
+    QScopedPointer<WaylandSurfacePrivate> const d_ptr;
 };
 
 } // namespace Compositor

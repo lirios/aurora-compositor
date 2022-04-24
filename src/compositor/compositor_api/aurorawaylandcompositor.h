@@ -182,7 +182,8 @@ protected:
     virtual WaylandKeyboard *createKeyboardDevice(WaylandSeat *seat);
     virtual WaylandTouch *createTouchDevice(WaylandSeat *seat);
 
-    WaylandCompositor(WaylandCompositorPrivate &dptr, QObject *parent = nullptr);
+private:
+    QScopedPointer<WaylandCompositorPrivate> const d_ptr;
 };
 
 } // namespace Compositor

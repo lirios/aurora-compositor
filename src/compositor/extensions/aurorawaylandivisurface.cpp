@@ -74,7 +74,8 @@ WaylandSurfaceRole WaylandIviSurfacePrivate::s_role("ivi_surface");
  * Constructs a WaylandIviSurface.
  */
 WaylandIviSurface::WaylandIviSurface()
-    : WaylandShellSurfaceTemplate<WaylandIviSurface>(*new WaylandIviSurfacePrivate())
+    : WaylandShellSurfaceTemplate<WaylandIviSurface>()
+    , d_ptr(new WaylandIviSurfacePrivate(this))
 {
 }
 
@@ -83,9 +84,14 @@ WaylandIviSurface::WaylandIviSurface()
  * given \a application, \a surface, \a iviId, and \a resource.
  */
 WaylandIviSurface::WaylandIviSurface(WaylandIviApplication *application, WaylandSurface *surface, uint iviId, const WaylandResource &resource)
-    : WaylandShellSurfaceTemplate<WaylandIviSurface>(*new WaylandIviSurfacePrivate())
+    : WaylandShellSurfaceTemplate<WaylandIviSurface>()
+    , d_ptr(new WaylandIviSurfacePrivate(this))
 {
     initialize(application, surface, iviId, resource);
+}
+
+WaylandIviSurface::~WaylandIviSurface()
+{
 }
 
 /*!
@@ -216,7 +222,8 @@ void WaylandIviSurface::initialize()
     WaylandShellSurfaceTemplate::initialize();
 }
 
-WaylandIviSurfacePrivate::WaylandIviSurfacePrivate()
+WaylandIviSurfacePrivate::WaylandIviSurfacePrivate(WaylandIviSurface *self)
+    : WaylandCompositorExtensionPrivate(self)
 {
 }
 

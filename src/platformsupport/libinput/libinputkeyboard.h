@@ -52,11 +52,15 @@ class LIRIAURORALIBINPUT_EXPORT LibInputKeyboard : public QObject
     Q_DECLARE_PRIVATE(LibInputKeyboard)
 public:
     explicit LibInputKeyboard(LibInputHandler *handler, QObject *parent = 0);
+    ~LibInputKeyboard();
 
     void handleKey(libinput_event_keyboard *event);
 
 private Q_SLOTS:
     void handleRepeat();
+
+private:
+    QScopedPointer<LibInputKeyboardPrivate> const d_ptr;
 };
 
 } // namespace Platform

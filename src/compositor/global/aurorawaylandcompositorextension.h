@@ -59,7 +59,6 @@ public:
 
 protected:
     WaylandObject(QObject *parent = nullptr);
-    WaylandObject(QObjectPrivate &d, QObject *parent = nullptr);
     QList<WaylandCompositorExtension *> extension_vector;
 };
 
@@ -86,10 +85,10 @@ public:
     virtual const struct wl_interface *extensionInterface() const = 0;
 
 protected:
-    WaylandCompositorExtension(WaylandCompositorExtensionPrivate &dd);
-    WaylandCompositorExtension(WaylandObject *container, WaylandCompositorExtensionPrivate &dd);
-
     bool event(QEvent *event) override;
+
+private:
+    QScopedPointer<WaylandCompositorExtensionPrivate> const d_ptr;
 };
 
 template <typename T>
@@ -114,15 +113,6 @@ public:
         if (!container) return nullptr;
         return qobject_cast<T *>(container->extension(T::interfaceName()));
     }
-
-protected:
-    WaylandCompositorExtensionTemplate(WaylandCompositorExtensionPrivate &dd)
-        : WaylandCompositorExtension(dd)
-    { }
-
-    WaylandCompositorExtensionTemplate(WaylandObject *container, WaylandCompositorExtensionPrivate &dd)
-        : WaylandCompositorExtension(container,dd)
-    { }
 };
 
 } // namespace Compositor

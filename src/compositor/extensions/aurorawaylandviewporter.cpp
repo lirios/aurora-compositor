@@ -54,7 +54,8 @@ namespace Compositor {
     Constructs a WaylandViewporter object.
 */
 WaylandViewporter::WaylandViewporter()
-    : WaylandCompositorExtensionTemplate<WaylandViewporter>(*new WaylandViewporterPrivate)
+    : WaylandCompositorExtensionTemplate<WaylandViewporter>()
+    , d_ptr(new WaylandViewporterPrivate(this))
 {
 }
 
@@ -62,7 +63,12 @@ WaylandViewporter::WaylandViewporter()
  * Constructs a WaylandViewporter object for the provided \a compositor.
  */
 WaylandViewporter::WaylandViewporter(WaylandCompositor *compositor)
-    : WaylandCompositorExtensionTemplate<WaylandViewporter>(compositor, *new WaylandViewporterPrivate())
+    : WaylandCompositorExtensionTemplate<WaylandViewporter>(compositor)
+    , d_ptr(new WaylandViewporterPrivate(this))
+{
+}
+
+WaylandViewporter::~WaylandViewporter()
 {
 }
 
@@ -88,6 +94,11 @@ void WaylandViewporter::initialize()
 const wl_interface *WaylandViewporter::interface()
 {
     return WaylandViewporterPrivate::interface();
+}
+
+WaylandViewporterPrivate::WaylandViewporterPrivate(WaylandViewporter *self)
+    : WaylandCompositorExtensionPrivate(self)
+{
 }
 
 void WaylandViewporterPrivate::wp_viewporter_destroy(Resource *resource)

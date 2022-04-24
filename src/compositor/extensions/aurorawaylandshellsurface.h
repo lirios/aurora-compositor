@@ -56,10 +56,6 @@ public:
     WaylandShellSurface(WaylandObject *waylandObject) : WaylandCompositorExtension(waylandObject) {}
     virtual Qt::WindowType windowType() const { return Qt::WindowType::Window; }
 
-protected:
-    WaylandShellSurface(WaylandCompositorExtensionPrivate &dd) : WaylandCompositorExtension(dd){}
-    WaylandShellSurface(WaylandObject *container, WaylandCompositorExtensionPrivate &dd) : WaylandCompositorExtension(container, dd) {}
-
 Q_SIGNALS:
     void windowTypeChanged();
 };
@@ -82,15 +78,6 @@ public:
         if (!container) return nullptr;
         return qobject_cast<T *>(container->extension(T::interfaceName()));
     }
-
-protected:
-    WaylandShellSurfaceTemplate(WaylandCompositorExtensionPrivate &dd)
-        : WaylandShellSurface(dd)
-    { }
-
-    WaylandShellSurfaceTemplate(WaylandObject *container, WaylandCompositorExtensionPrivate &dd)
-        : WaylandShellSurface(container,dd)
-    { }
 };
 
 } // namespace Compositor

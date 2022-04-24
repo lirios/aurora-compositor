@@ -93,16 +93,22 @@ namespace Compositor {
  * Constructs a WaylandPresentationTime object for \a compositor.
  */
 WaylandPresentationTime::WaylandPresentationTime(WaylandCompositor *compositor)
-    : WaylandCompositorExtensionTemplate(compositor, *new WaylandPresentationTimePrivate)
+    : WaylandCompositorExtensionTemplate(compositor)
+    , d_ptr(new WaylandPresentationTimePrivate(this))
 {
 
+}
+
+WaylandPresentationTime::~WaylandPresentationTime()
+{
 }
 
 /*!
  * Constructs an empty WaylandPresentationTime object.
  */
 WaylandPresentationTime::WaylandPresentationTime()
-    : WaylandCompositorExtensionTemplate(*new WaylandPresentationTimePrivate)
+    : WaylandCompositorExtensionTemplate()
+    , d_ptr(new WaylandPresentationTimePrivate(this))
 {
 }
 
@@ -352,7 +358,8 @@ void PresentationFeedback::wp_presentation_feedback_destroy_resource(Resource *r
     delete this;
 }
 
-WaylandPresentationTimePrivate::WaylandPresentationTimePrivate()
+WaylandPresentationTimePrivate::WaylandPresentationTimePrivate(WaylandPresentationTime *self)
+    : WaylandCompositorExtensionPrivate(self)
 {
 }
 

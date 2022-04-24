@@ -88,12 +88,11 @@ struct WaylandSurfaceViewMapper
     bool has_entered = false;
 };
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandOutputPrivate : public QObjectPrivate, public PrivateServer::wl_output
+class LIRIAURORACOMPOSITOR_EXPORT WaylandOutputPrivate : public PrivateServer::wl_output
 {
-public:
     Q_DECLARE_PUBLIC(WaylandOutput)
-
-    WaylandOutputPrivate();
+public:
+    WaylandOutputPrivate(WaylandOutput *self);
 
     ~WaylandOutputPrivate() override;
     static WaylandOutputPrivate *get(WaylandOutput *output) { return output->d_func(); }
@@ -118,6 +117,7 @@ private:
     void _q_handleMaybeWindowPixelSizeChanged();
     void _q_handleWindowDestroyed();
 
+    WaylandOutput *q_ptr = nullptr;
     WaylandCompositor *compositor = nullptr;
     QWindow *window = nullptr;
     QString manufacturer;

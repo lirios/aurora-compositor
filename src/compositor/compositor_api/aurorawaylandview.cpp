@@ -42,6 +42,11 @@ namespace Aurora {
 
 namespace Compositor {
 
+WaylandViewPrivate::WaylandViewPrivate(WaylandView *self)
+    : q_ptr(self)
+{
+}
+
 void WaylandViewPrivate::markSurfaceAsDestroyed(WaylandSurface *surface)
 {
     Q_Q(WaylandView);
@@ -81,7 +86,8 @@ void WaylandViewPrivate::markSurfaceAsDestroyed(WaylandSurface *surface)
  * Constructs a WaylandView with the given \a renderObject and \a parent.
  */
 WaylandView::WaylandView(QObject *renderObject, QObject *parent)
-    : QObject(*new WaylandViewPrivate(),parent)
+    : QObject(parent)
+    , d_ptr(new WaylandViewPrivate(this))
 {
     d_func()->renderObject = renderObject;
 }

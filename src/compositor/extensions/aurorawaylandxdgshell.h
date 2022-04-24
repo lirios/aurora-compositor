@@ -65,6 +65,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgShell : public WaylandShellTemplate<
 public:
     explicit WaylandXdgShell();
     explicit WaylandXdgShell(WaylandCompositor *compositor);
+    ~WaylandXdgShell();
 
     void initialize() override;
 
@@ -83,6 +84,9 @@ Q_SIGNALS:
 private Q_SLOTS:
     void handleSeatChanged(Aurora::Compositor::WaylandSeat *newSeat, Aurora::Compositor::WaylandSeat *oldSeat);
     void handleFocusChanged(Aurora::Compositor::WaylandSurface *newSurface, Aurora::Compositor::WaylandSurface *oldSurface);
+
+private:
+    QScopedPointer<WaylandXdgShellPrivate> const d_ptr;
 };
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgSurface : public WaylandShellSurfaceTemplate<WaylandXdgSurface>
@@ -101,6 +105,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgSurface : public WaylandShellSurface
 public:
     explicit WaylandXdgSurface();
     explicit WaylandXdgSurface(WaylandXdgShell* xdgShell, WaylandSurface *surface, const WaylandResource &resource);
+    ~WaylandXdgSurface();
 
     Q_INVOKABLE void initialize(Aurora::Compositor::WaylandXdgShell* xdgShell, Aurora::Compositor::WaylandSurface *surface, const Aurora::Compositor::WaylandResource &resource);
 
@@ -128,6 +133,8 @@ Q_SIGNALS:
     void windowGeometryChanged();
 
 private:
+    QScopedPointer<WaylandXdgSurfacePrivate> const d_ptr;
+
     void initialize() override;
 
 private Q_SLOTS:
@@ -233,6 +240,8 @@ Q_SIGNALS:
     void decorationModeChanged();
 
 private:
+    QScopedPointer<WaylandXdgToplevelPrivate> const d_ptr;
+
     QList<int> statesAsInts() const;
 };
 
@@ -255,6 +264,8 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgPopup : public QObject
     Q_PROPERTY(QSize positionerSize READ positionerSize CONSTANT)
     Q_PROPERTY(QPoint unconstrainedPosition READ unconstrainedPosition CONSTANT)
 public:
+    ~WaylandXdgPopup();
+
     WaylandXdgSurface *xdgSurface() const;
     WaylandXdgSurface *parentXdgSurface() const;
     QRect configuredGeometry() const;
@@ -279,6 +290,8 @@ Q_SIGNALS:
     void configuredGeometryChanged();
 
 private:
+    QScopedPointer<WaylandXdgPopupPrivate> const d_ptr;
+
     explicit WaylandXdgPopup(WaylandXdgSurface *xdgSurface, WaylandXdgSurface *parentXdgSurface,
                               WaylandXdgPositioner *positioner, WaylandResource &resource);
     friend class WaylandXdgSurfacePrivate;

@@ -48,6 +48,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandPresentationTime : public WaylandCompos
 public:
     WaylandPresentationTime();
     WaylandPresentationTime(WaylandCompositor *compositor);
+    ~WaylandPresentationTime();
 
     WaylandCompositor *compositor() const;
     void initialize() override;
@@ -59,6 +60,9 @@ public:
 
 signals:
     void presented(quint64 sequence, quint64 tv_sec, quint32 tv_nsec, quint32 refresh_nsec);
+
+private:
+    QScopedPointer<WaylandPresentationTimePrivate> const d_ptr;
 };
 
 } // namespace Compositor

@@ -41,7 +41,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-class WaylandClientPrivate : public QObjectPrivate
+class WaylandClientPrivate
 {
 public:
     WaylandClientPrivate(WaylandCompositor *compositor, wl_client *_client)
@@ -50,10 +50,6 @@ public:
     {
         // Save client credentials
         wl_client_get_credentials(client, &pid, &uid, &gid);
-    }
-
-    ~WaylandClientPrivate() override
-    {
     }
 
     static void client_destroy_callback(wl_listener *listener, void *data)
@@ -106,7 +102,8 @@ public:
  * Constructs a WaylandClient for the \a compositor and the Wayland \a client.
  */
 WaylandClient::WaylandClient(WaylandCompositor *compositor, wl_client *client)
-    : QObject(*new WaylandClientPrivate(compositor, client))
+    : QObject()
+    , d_ptr(new WaylandClientPrivate(compositor, client))
 {
     Q_D(WaylandClient);
 

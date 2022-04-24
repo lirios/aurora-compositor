@@ -58,6 +58,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandKeymap : public QObject
 public:
     WaylandKeymap(const QString &layout = QString(), const QString &variant = QString(), const QString &options = QString(),
                    const QString &model = QString(), const QString &rules = QString(), QObject *parent = nullptr);
+    ~WaylandKeymap();
 
     QString layout() const;
     void setLayout(const QString &layout);
@@ -76,6 +77,9 @@ Q_SIGNALS:
     void optionsChanged();
     void rulesChanged();
     void modelChanged();
+
+private:
+    QScopedPointer<WaylandKeymapPrivate> const d_ptr;
 };
 
 } // namespace Compositor

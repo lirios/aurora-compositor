@@ -58,6 +58,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandWlShell : public WaylandShellTemplate<W
 public:
     WaylandWlShell();
     WaylandWlShell(WaylandCompositor *compositor);
+    ~WaylandWlShell();
 
     void initialize() override;
     QList<WaylandWlShellSurface *> shellSurfaces() const;
@@ -74,6 +75,9 @@ public Q_SLOTS:
 Q_SIGNALS:
     void wlShellSurfaceRequested(Aurora::Compositor::WaylandSurface *surface, const Aurora::Compositor::WaylandResource &resource);
     void wlShellSurfaceCreated(Aurora::Compositor::WaylandWlShellSurface *shellSurface);
+
+private:
+    QScopedPointer<WaylandWlShellPrivate> const d_ptr;
 };
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandWlShellSurface : public WaylandShellSurfaceTemplate<WaylandWlShellSurface>
@@ -157,6 +161,8 @@ Q_SIGNALS:
     void setMaximized(Aurora::Compositor::WaylandOutput *output);
 
 private:
+    QScopedPointer<WaylandWlShellSurfacePrivate> const d_ptr;
+
     void initialize() override;
 };
 

@@ -34,8 +34,6 @@
 #ifndef LIRI_LIBINPUTKEYBOARD_P_H
 #define LIRI_LIBINPUTKEYBOARD_P_H
 
-#include <QtCore/private/qobject_p.h>
-
 #include "eglfsxkb.h"
 #include "libinputhandler.h"
 #include "libinputkeyboard.h"
@@ -57,11 +55,11 @@ namespace Liri {
 
 namespace Platform {
 
-class LIRIAURORALIBINPUT_EXPORT LibInputKeyboardPrivate : public QObjectPrivate
+class LIRIAURORALIBINPUT_EXPORT LibInputKeyboardPrivate
 {
     Q_DECLARE_PUBLIC(LibInputKeyboard)
 public:
-    LibInputKeyboardPrivate(LibInputHandler *h);
+    LibInputKeyboardPrivate(LibInputKeyboard *self, LibInputHandler *h);
     ~LibInputKeyboardPrivate();
 
     LibInputHandler *handler;
@@ -83,6 +81,9 @@ public:
         QString text;
         ushort repeatCount;
     } repeatData;
+
+private:
+    LibInputKeyboard *q_ptr = nullptr;
 };
 
 } // namespace Platform

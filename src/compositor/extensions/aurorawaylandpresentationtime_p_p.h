@@ -99,7 +99,7 @@ class WaylandPresentationTimePrivate : public WaylandCompositorExtensionPrivate,
 {
     Q_DECLARE_PUBLIC(WaylandPresentationTime)
 public:
-    WaylandPresentationTimePrivate();
+    WaylandPresentationTimePrivate(WaylandPresentationTime *self);
 
 protected:
     void wp_presentation_feedback(Resource *resource, struct ::wl_resource *surface, uint32_t callback) override;

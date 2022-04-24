@@ -74,7 +74,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgShellPrivate
 {
     Q_DECLARE_PUBLIC(WaylandXdgShell)
 public:
-    WaylandXdgShellPrivate();
+    WaylandXdgShellPrivate(WaylandXdgShell *self);
     void ping(Resource *resource, uint32_t serial);
     void registerXdgSurface(WaylandXdgSurface *xdgSurface);
     void unregisterXdgSurface(WaylandXdgSurface *xdgSurface);
@@ -99,7 +99,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgSurfacePrivate
 {
     Q_DECLARE_PUBLIC(WaylandXdgSurface)
 public:
-    WaylandXdgSurfacePrivate();
+    WaylandXdgSurfacePrivate(WaylandXdgSurface *self);
     void setWindowType(Qt::WindowType windowType);
     void handleFocusLost();
     void handleFocusReceived();
@@ -127,7 +127,7 @@ private:
     void xdg_surface_set_window_geometry(Resource *resource, int32_t x, int32_t y, int32_t width, int32_t height) override;
 };
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgToplevelPrivate : public QObjectPrivate, public PrivateServer::xdg_toplevel
+class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgToplevelPrivate : public PrivateServer::xdg_toplevel
 {
     Q_DECLARE_PUBLIC(WaylandXdgToplevel)
 public:
@@ -151,7 +151,7 @@ public:
         uint serial = 0;
     };
 
-    WaylandXdgToplevelPrivate(WaylandXdgSurface *xdgSurface, const WaylandResource& resource);
+    WaylandXdgToplevelPrivate(WaylandXdgToplevel *self, WaylandXdgSurface *xdgSurface, const WaylandResource& resource);
     ConfigureEvent lastSentConfigure() const { return m_pendingConfigures.empty() ? m_lastAckedConfigure : m_pendingConfigures.last(); }
     void handleAckConfigure(uint serial); //TODO: move?
     void handleFocusLost();
@@ -191,9 +191,12 @@ public:
     WaylandXdgToplevelDecorationV1 *m_decoration = nullptr;
 
     static WaylandSurfaceRole s_role;
+
+private:
+    WaylandXdgToplevel *q_ptr = nullptr;
 };
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgPopupPrivate : public QObjectPrivate, public PrivateServer::xdg_popup
+class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgPopupPrivate : public PrivateServer::xdg_popup
 {
     Q_DECLARE_PUBLIC(WaylandXdgPopup)
 public:
@@ -202,8 +205,9 @@ public:
         uint serial;
     };
 
-    WaylandXdgPopupPrivate(WaylandXdgSurface *xdgSurface, WaylandXdgSurface *parentXdgSurface,
+    WaylandXdgPopupPrivate(WaylandXdgPopup *self, WaylandXdgSurface *xdgSurface, WaylandXdgSurface *parentXdgSurface,
                             WaylandXdgPositioner *positioner, const WaylandResource& resource);
+    ~WaylandXdgPopupPrivate();
 
     void handleAckConfigure(uint serial);
 
@@ -219,6 +223,7 @@ protected:
     void xdg_popup_grab(Resource *resource, struct ::wl_resource *seat, uint32_t serial) override;
 
 private:
+    WaylandXdgPopup *q_ptr = nullptr;
     WaylandXdgSurface *m_xdgSurface = nullptr;
     WaylandXdgSurface *m_parentXdgSurface = nullptr;
     WaylandXdgPositionerData m_positionerData;

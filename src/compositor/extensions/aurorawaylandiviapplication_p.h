@@ -59,7 +59,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandIviApplicationPrivate
     Q_DECLARE_PUBLIC(WaylandIviApplication)
 
 public:
-    WaylandIviApplicationPrivate();
+    WaylandIviApplicationPrivate(WaylandIviApplication *self);
     static WaylandIviApplicationPrivate *get(WaylandIviApplication *iviApplication) { return iviApplication->d_func(); }
     void unregisterIviSurface(WaylandIviSurface *iviSurface);
 

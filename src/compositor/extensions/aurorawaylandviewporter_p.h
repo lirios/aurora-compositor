@@ -58,7 +58,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandViewporterPrivate
 {
     Q_DECLARE_PUBLIC(WaylandViewporter)
 public:
-    explicit WaylandViewporterPrivate() = default;
+    explicit WaylandViewporterPrivate(WaylandViewporter *self);
 
     class LIRIAURORACOMPOSITOR_EXPORT Viewport
             : public PrivateServer::wp_viewport

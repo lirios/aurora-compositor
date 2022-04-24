@@ -79,12 +79,12 @@ namespace Internal {
 class FrameCallback;
 }
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandSurfacePrivate : public QObjectPrivate, public PrivateServer::wl_surface
+class LIRIAURORACOMPOSITOR_EXPORT WaylandSurfacePrivate : public PrivateServer::wl_surface
 {
 public:
     static WaylandSurfacePrivate *get(WaylandSurface *surface);
 
-    WaylandSurfacePrivate();
+    WaylandSurfacePrivate(WaylandSurface *self);
     ~WaylandSurfacePrivate() override;
 
     void ref();
@@ -210,6 +210,9 @@ public: //member variables
 #endif
     Q_DECLARE_PUBLIC(WaylandSurface)
     Q_DISABLE_COPY(WaylandSurfacePrivate)
+
+private:
+    WaylandSurface *q_ptr = nullptr;
 };
 
 } // namespace Compositor

@@ -54,6 +54,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandTouch : public WaylandObject
     Q_DECLARE_PRIVATE(WaylandTouch)
 public:
     WaylandTouch(WaylandSeat *seat, QObject *parent = nullptr);
+    ~WaylandTouch();
 
     WaylandSeat *seat() const;
     WaylandCompositor *compositor() const;
@@ -64,6 +65,9 @@ public:
     virtual void sendFullTouchEvent(WaylandSurface *surface, QTouchEvent *event);
 
     virtual void addClient(WaylandClient *client, uint32_t id, uint32_t version);
+
+private:
+    QScopedPointer<WaylandTouchPrivate> const d_ptr;
 };
 
 } // namespace Compositor

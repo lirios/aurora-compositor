@@ -59,12 +59,12 @@ class WaylandTextInputV4;
 #endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
 class WaylandQtTextInputMethod;
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandInputMethodControlPrivate : public QObjectPrivate
+class LIRIAURORACOMPOSITOR_EXPORT WaylandInputMethodControlPrivate
 {
     Q_DECLARE_PUBLIC(WaylandInputMethodControl)
 
 public:
-    explicit WaylandInputMethodControlPrivate(WaylandSurface *surface);
+    explicit WaylandInputMethodControlPrivate(WaylandInputMethodControl *self, WaylandSurface *surface);
 
     WaylandTextInput *textInput() const;
 #if QT_WAYLAND_TEXT_INPUT_V4_WIP
@@ -76,6 +76,9 @@ public:
     WaylandSeat *seat = nullptr;
     WaylandSurface *surface = nullptr;
     bool enabled = false;
+
+private:
+    WaylandInputMethodControl *q_ptr = nullptr;
 };
 
 } // namespace Compositor

@@ -105,7 +105,8 @@ namespace Compositor {
  * \sa setExtensionContainer()
  */
 WaylandCompositorExtension::WaylandCompositorExtension()
-    : WaylandObject(*new WaylandCompositorExtensionPrivate())
+    : WaylandObject()
+    , d_ptr(new WaylandCompositorExtensionPrivate(this))
 {
 }
 
@@ -119,19 +120,8 @@ WaylandCompositorExtension::WaylandCompositorExtension()
  * The WaylandCompositorExtension will remove itself again when it is destroyed.
  */
 WaylandCompositorExtension::WaylandCompositorExtension(WaylandObject *container)
-    : WaylandObject(*new WaylandCompositorExtensionPrivate())
-{
-    d_func()->extension_container = container;
-    QCoreApplication::postEvent(this, new QEvent(QEvent::Polish));
-}
-
-WaylandCompositorExtension::WaylandCompositorExtension(WaylandCompositorExtensionPrivate &dd)
-    : WaylandObject(dd)
-{
-}
-
-WaylandCompositorExtension::WaylandCompositorExtension(WaylandObject *container, WaylandCompositorExtensionPrivate &dd)
-    : WaylandObject(dd)
+    : WaylandObject()
+    , d_ptr(new WaylandCompositorExtensionPrivate(this))
 {
     d_func()->extension_container = container;
     QCoreApplication::postEvent(this, new QEvent(QEvent::Polish));
@@ -239,11 +229,6 @@ bool WaylandCompositorExtension::event(QEvent *event)
  */
 WaylandObject::WaylandObject(QObject *parent)
     :QObject(parent)
-{
-}
-
-WaylandObject::WaylandObject(QObjectPrivate &d, QObject *parent)
-    :QObject(d, parent)
 {
 }
 

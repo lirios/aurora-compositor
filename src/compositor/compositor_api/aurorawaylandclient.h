@@ -95,6 +95,8 @@ public Q_SLOTS:
     void close();
 
 private:
+    QScopedPointer<WaylandClientPrivate> const d_ptr;
+
     explicit WaylandClient(WaylandCompositor *compositor, wl_client *client);
 };
 

@@ -50,6 +50,9 @@ public:
     void initialize() override;
 
     static const struct wl_interface *interface();
+
+private:
+    QScopedPointer<WaylandIdleInhibitManagerV1Private> const d_ptr;
 };
 
 } // namespace Compositor

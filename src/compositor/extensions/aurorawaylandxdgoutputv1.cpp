@@ -114,7 +114,8 @@ namespace Compositor {
  * Constructs a WaylandXdgOutputManagerV1 object.
  */
 WaylandXdgOutputManagerV1::WaylandXdgOutputManagerV1()
-    : WaylandCompositorExtensionTemplate<WaylandXdgOutputManagerV1>(*new WaylandXdgOutputManagerV1Private())
+    : WaylandCompositorExtensionTemplate<WaylandXdgOutputManagerV1>()
+    , d_ptr(new WaylandXdgOutputManagerV1Private(this))
 {
 }
 
@@ -122,7 +123,12 @@ WaylandXdgOutputManagerV1::WaylandXdgOutputManagerV1()
  * Constructs a WaylandXdgOutputManagerV1 object for the provided \a compositor.
  */
 WaylandXdgOutputManagerV1::WaylandXdgOutputManagerV1(WaylandCompositor *compositor)
-    : WaylandCompositorExtensionTemplate<WaylandXdgOutputManagerV1>(compositor, *new WaylandXdgOutputManagerV1Private())
+    : WaylandCompositorExtensionTemplate<WaylandXdgOutputManagerV1>(compositor)
+    , d_ptr(new WaylandXdgOutputManagerV1Private(this))
+{
+}
+
+WaylandXdgOutputManagerV1::~WaylandXdgOutputManagerV1()
 {
 }
 
@@ -153,6 +159,11 @@ const wl_interface *WaylandXdgOutputManagerV1::interface()
 }
 
 // WaylandXdgOutputManagerV1Private
+
+WaylandXdgOutputManagerV1Private::WaylandXdgOutputManagerV1Private(WaylandXdgOutputManagerV1 *self)
+    : WaylandCompositorExtensionPrivate(self)
+{
+}
 
 void WaylandXdgOutputManagerV1Private::registerXdgOutput(WaylandOutput *output, WaylandXdgOutputV1 *xdgOutput)
 {
@@ -205,12 +216,14 @@ void WaylandXdgOutputManagerV1Private::zxdg_output_manager_v1_get_xdg_output(Res
 // WaylandXdgOutputV1
 
 WaylandXdgOutputV1::WaylandXdgOutputV1()
-    : QObject(*new WaylandXdgOutputV1Private)
+    : QObject()
+    , d_ptr(new WaylandXdgOutputV1Private(this))
 {
 }
 
 WaylandXdgOutputV1::WaylandXdgOutputV1(WaylandOutput *output, WaylandXdgOutputManagerV1 *manager)
-    : QObject(*new WaylandXdgOutputV1Private)
+    : QObject()
+    , d_ptr(new WaylandXdgOutputV1Private(this))
 {
     Q_D(WaylandXdgOutputV1);
 
@@ -476,6 +489,12 @@ QRect WaylandXdgOutputV1::logicalGeometry() const
 }
 
 // WaylandXdgOutputV1Private
+
+WaylandXdgOutputV1Private::WaylandXdgOutputV1Private(WaylandXdgOutputV1 *self)
+    : PrivateServer::zxdg_output_v1()
+    , q_ptr(self)
+{
+}
 
 void WaylandXdgOutputV1Private::sendLogicalPosition(const QPoint &position)
 {

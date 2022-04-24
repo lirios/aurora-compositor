@@ -88,7 +88,8 @@ namespace Compositor {
  * Constructs a WaylandIviApplication object.
  */
 WaylandIviApplication::WaylandIviApplication()
-    : WaylandCompositorExtensionTemplate<WaylandIviApplication>(*new WaylandIviApplicationPrivate())
+    : WaylandCompositorExtensionTemplate<WaylandIviApplication>()
+    , d_ptr(new WaylandIviApplicationPrivate(this))
 {
 }
 
@@ -96,7 +97,12 @@ WaylandIviApplication::WaylandIviApplication()
  * Constructs a WaylandIviApplication object for the provided \a compositor.
  */
 WaylandIviApplication::WaylandIviApplication(WaylandCompositor *compositor)
-    : WaylandCompositorExtensionTemplate<WaylandIviApplication>(compositor, *new WaylandIviApplicationPrivate())
+    : WaylandCompositorExtensionTemplate<WaylandIviApplication>(compositor)
+    , d_ptr(new WaylandIviApplicationPrivate(this))
+{
+}
+
+WaylandIviApplication::~WaylandIviApplication()
 {
 }
 
@@ -165,7 +171,8 @@ QByteArray WaylandIviApplication::interfaceName()
  * This signal is emitted when an IviSurface, \a iviSurface, has been created.
  */
 
-WaylandIviApplicationPrivate::WaylandIviApplicationPrivate()
+WaylandIviApplicationPrivate::WaylandIviApplicationPrivate(WaylandIviApplication *self)
+    : WaylandCompositorExtensionPrivate(self)
 {
 }
 

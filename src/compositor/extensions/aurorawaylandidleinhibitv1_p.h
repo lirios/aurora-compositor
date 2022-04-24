@@ -56,7 +56,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandIdleInhibitManagerV1Private
 {
     Q_DECLARE_PUBLIC(WaylandIdleInhibitManagerV1)
 public:
-    explicit WaylandIdleInhibitManagerV1Private() = default;
+    explicit WaylandIdleInhibitManagerV1Private(WaylandIdleInhibitManagerV1 *self);
 
     class LIRIAURORACOMPOSITOR_EXPORT Inhibitor
             : public PrivateServer::zwp_idle_inhibitor_v1

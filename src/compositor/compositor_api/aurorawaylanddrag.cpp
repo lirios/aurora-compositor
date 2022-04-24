@@ -42,7 +42,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-class WaylandDragPrivate : public QObjectPrivate
+class WaylandDragPrivate
 {
 public:
     WaylandDragPrivate(WaylandSeat *seat)
@@ -64,7 +64,12 @@ public:
 };
 
 WaylandDrag::WaylandDrag(WaylandSeat *seat)
-    : QObject(* new WaylandDragPrivate(seat))
+    : QObject()
+    , d_ptr(new WaylandDragPrivate(seat))
+{
+}
+
+WaylandDrag::~WaylandDrag()
 {
 }
 

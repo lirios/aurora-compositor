@@ -60,11 +60,11 @@ public:
     bool useTextureAlpha() const;
     void setUseTextureAlpha(bool useTextureAlpha);
 
-protected:
-    WaylandQuickSurface(WaylandQuickSurfacePrivate &dptr);
-
 Q_SIGNALS:
     void useTextureAlphaChanged();
+
+private:
+    QScopedPointer<WaylandQuickSurfacePrivate> const d_ptr;
 };
 
 } // namespace Compositor

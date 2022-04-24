@@ -47,7 +47,8 @@ namespace Aurora {
 namespace Compositor {
 
 WaylandInputMethodControl::WaylandInputMethodControl(WaylandSurface *surface)
-    : QObject(*new WaylandInputMethodControlPrivate(surface), surface)
+    : QObject(surface)
+    , d_ptr(new WaylandInputMethodControlPrivate(this, surface))
 {
     connect(d_func()->compositor, &WaylandCompositor::defaultSeatChanged,
             this, &WaylandInputMethodControl::defaultSeatChanged);
@@ -69,6 +70,10 @@ WaylandInputMethodControl::WaylandInputMethodControl(WaylandSurface *surface)
         connect(textInputMethod, &WaylandQtTextInputMethod::surfaceDisabled, this, &WaylandInputMethodControl::surfaceDisabled);
         connect(textInputMethod, &WaylandQtTextInputMethod::updateInputMethod, this, &WaylandInputMethodControl::updateInputMethod);
     }
+}
+
+WaylandInputMethodControl::~WaylandInputMethodControl()
+{
 }
 
 QVariant WaylandInputMethodControl::inputMethodQuery(Qt::InputMethodQuery query, QVariant argument) const
@@ -217,8 +222,9 @@ void WaylandInputMethodControl::defaultSeatChanged()
                || (textInputMethod && textInputMethod->isSurfaceEnabled(d->surface)));
 }
 
-WaylandInputMethodControlPrivate::WaylandInputMethodControlPrivate(WaylandSurface *surface)
-    : compositor(surface->compositor())
+WaylandInputMethodControlPrivate::WaylandInputMethodControlPrivate(WaylandInputMethodControl *self, WaylandSurface *surface)
+    : q_ptr(self)
+    , compositor(surface->compositor())
     , seat(compositor->defaultSeat())
     , surface(surface)
 {

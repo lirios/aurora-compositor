@@ -58,6 +58,7 @@ public:
 
     WaylandShell();
     WaylandShell(WaylandObject *waylandObject);
+    ~WaylandShell();
 
     FocusPolicy focusPolicy() const;
     void setFocusPolicy(FocusPolicy focusPolicy);
@@ -65,9 +66,8 @@ public:
 Q_SIGNALS:
     void focusPolicyChanged();
 
-protected:
-    explicit WaylandShell(WaylandShellPrivate &dd);
-    explicit WaylandShell(WaylandObject *container, WaylandShellPrivate &dd);
+private:
+    QScopedPointer<WaylandShellPrivate> const d_ptr;
 };
 
 template <typename T>
@@ -92,15 +92,6 @@ public:
         if (!container) return nullptr;
         return qobject_cast<T *>(container->extension(T::interfaceName()));
     }
-
-protected:
-    WaylandShellTemplate(WaylandShellPrivate &dd)
-        : WaylandShell(dd)
-    { }
-
-    WaylandShellTemplate(WaylandObject *container, WaylandShellPrivate &dd)
-        : WaylandShell(container,dd)
-    { }
 };
 
 } // namespace Compositor

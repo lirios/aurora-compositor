@@ -50,7 +50,8 @@ namespace Compositor {
 
 WaylandSurfaceRole WaylandWlShellSurfacePrivate::s_role("wl_shell_surface");
 
-WaylandWlShellPrivate::WaylandWlShellPrivate()
+WaylandWlShellPrivate::WaylandWlShellPrivate(WaylandWlShell *self)
+    : WaylandShellPrivate(self)
 {
 }
 
@@ -92,7 +93,8 @@ void WaylandWlShellPrivate::unregisterShellSurface(WaylandWlShellSurface *shellS
         qWarning("Unexpected state. Can't find registered shell surface.");
 }
 
-WaylandWlShellSurfacePrivate::WaylandWlShellSurfacePrivate()
+WaylandWlShellSurfacePrivate::WaylandWlShellSurfacePrivate(WaylandWlShellSurface *self)
+    : WaylandCompositorExtensionPrivate(self)
 {
 }
 
@@ -289,16 +291,23 @@ void WaylandWlShellSurfacePrivate::shell_surface_set_class(Resource *resource,
  * Constructs a WaylandWlShell object.
  */
 WaylandWlShell::WaylandWlShell()
-    : WaylandShellTemplate<WaylandWlShell>(*new WaylandWlShellPrivate())
-{ }
+    : WaylandShellTemplate<WaylandWlShell>()
+    , d_ptr(new WaylandWlShellPrivate(this))
+{
+}
 
 /*!
  * Constructs a WaylandWlShell object for the provided \a compositor.
  */
 WaylandWlShell::WaylandWlShell(WaylandCompositor *compositor)
-    : WaylandShellTemplate<WaylandWlShell>(compositor, *new WaylandWlShellPrivate())
-{ }
+    : WaylandShellTemplate<WaylandWlShell>(compositor)
+    , d_ptr(new WaylandWlShellPrivate(this))
+{
+}
 
+WaylandWlShell::~WaylandWlShell()
+{
+}
 
 /*!
  * Initializes the WlShell extension.
@@ -445,7 +454,8 @@ QByteArray WaylandWlShell::interfaceName()
  * Constructs a WaylandWlShellSurface.
  */
 WaylandWlShellSurface::WaylandWlShellSurface()
-    : WaylandShellSurfaceTemplate<WaylandWlShellSurface>(*new WaylandWlShellSurfacePrivate)
+    : WaylandShellSurfaceTemplate<WaylandWlShellSurface>()
+    , d_ptr(new WaylandWlShellSurfacePrivate(this))
 {
 }
 
@@ -453,7 +463,8 @@ WaylandWlShellSurface::WaylandWlShellSurface()
  * Constructs a WaylandWlShellSurface for \a surface and initializes it with the given \a shell and resource \a res.
  */
 WaylandWlShellSurface::WaylandWlShellSurface(WaylandWlShell *shell, WaylandSurface *surface, const WaylandResource &res)
-    : WaylandShellSurfaceTemplate<WaylandWlShellSurface>(*new WaylandWlShellSurfacePrivate)
+    : WaylandShellSurfaceTemplate<WaylandWlShellSurface>()
+    , d_ptr(new WaylandWlShellSurfacePrivate(this))
 {
     initialize(shell, surface, res);
 }

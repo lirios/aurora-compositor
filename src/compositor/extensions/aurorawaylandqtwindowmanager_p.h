@@ -58,7 +58,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandQtWindowManagerPrivate
 {
     Q_DECLARE_PUBLIC(WaylandQtWindowManager)
 public:
-    WaylandQtWindowManagerPrivate();
+    WaylandQtWindowManagerPrivate(WaylandQtWindowManager *self);
 
 protected:
     void windowmanager_bind_resource(Resource *resource) override;

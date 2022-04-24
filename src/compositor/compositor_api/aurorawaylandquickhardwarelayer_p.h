@@ -76,6 +76,9 @@ public:
 
 Q_SIGNALS:
     void stackingLevelChanged();
+
+private:
+    QScopedPointer<WaylandQuickHardwareLayerPrivate> const d_ptr;
 };
 
 } // namespace Compositor

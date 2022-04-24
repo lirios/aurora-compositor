@@ -55,11 +55,11 @@ namespace Liri {
 
 namespace Platform {
 
-class LIRIAURORALIBINPUT_EXPORT LibInputHandlerPrivate : public QObjectPrivate
+class LIRIAURORALIBINPUT_EXPORT LibInputHandlerPrivate
 {
     Q_DECLARE_PUBLIC(LibInputHandler)
 public:
-    LibInputHandlerPrivate();
+    LibInputHandlerPrivate(LibInputHandler *self);
     ~LibInputHandlerPrivate();
 
     void setup();
@@ -95,6 +95,8 @@ public:
     static const struct libinput_interface liInterface;
 
 private:
+    LibInputHandler *q_ptr = nullptr;
+
     int restrictedOpen(const char *path, int flags);
     void restrictedClose(int fd);
 };

@@ -62,15 +62,14 @@ namespace Aurora {
 
 namespace Compositor {
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandKeyboardPrivate : public QObjectPrivate
-                                                  , public PrivateServer::wl_keyboard
+class LIRIAURORACOMPOSITOR_EXPORT WaylandKeyboardPrivate : public PrivateServer::wl_keyboard
 {
 public:
     Q_DECLARE_PUBLIC(WaylandKeyboard)
 
     static WaylandKeyboardPrivate *get(WaylandKeyboard *keyboard);
 
-    WaylandKeyboardPrivate(WaylandSeat *seat);
+    WaylandKeyboardPrivate(WaylandKeyboard *self, WaylandSeat *seat);
     ~WaylandKeyboardPrivate() override;
 
     WaylandCompositor *compositor() const { return seat->compositor(); }
@@ -110,6 +109,8 @@ private:
     static uint fromWaylandKey(const uint key);
 
     void sendRepeatInfo();
+
+    WaylandKeyboard *q_ptr = nullptr;
 
     WaylandSeat *seat = nullptr;
 

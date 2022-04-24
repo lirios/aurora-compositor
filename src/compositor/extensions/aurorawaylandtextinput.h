@@ -73,6 +73,8 @@ Q_SIGNALS:
     void surfaceDisabled(Aurora::Compositor::WaylandSurface *surface);
 
 private:
+    QScopedPointer<WaylandTextInputPrivate> const d_ptr;
+
     void focusSurfaceDestroyed(void *);
     void sendInputPanelState();
     void sendTextDirection();

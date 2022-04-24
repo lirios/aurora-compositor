@@ -52,6 +52,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandPointer : public WaylandObject
     Q_PROPERTY(bool isButtonPressed READ isButtonPressed NOTIFY buttonPressedChanged)
 public:
     WaylandPointer(WaylandSeat *seat, QObject *parent = nullptr);
+    ~WaylandPointer();
 
     WaylandSeat *seat() const;
     WaylandCompositor *compositor() const;
@@ -81,6 +82,8 @@ Q_SIGNALS:
     void buttonPressedChanged();
 
 private:
+    QScopedPointer<WaylandPointerPrivate> const d_ptr;
+
     void enteredSurfaceDestroyed(void *data);
     void pointerFocusChanged(WaylandView *newFocus, WaylandView *oldFocus);
 };

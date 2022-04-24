@@ -84,7 +84,8 @@ namespace Compositor {
     Constructs a WaylandIdleInhibitManagerV1 object.
 */
 WaylandIdleInhibitManagerV1::WaylandIdleInhibitManagerV1()
-    : WaylandCompositorExtensionTemplate<WaylandIdleInhibitManagerV1>(*new WaylandIdleInhibitManagerV1Private())
+    : WaylandCompositorExtensionTemplate<WaylandIdleInhibitManagerV1>()
+    , d_ptr(new WaylandIdleInhibitManagerV1Private(this))
 {
 }
 
@@ -92,7 +93,8 @@ WaylandIdleInhibitManagerV1::WaylandIdleInhibitManagerV1()
     Constructs a WaylandIdleInhibitManagerV1 object for the provided \a compositor.
 */
 WaylandIdleInhibitManagerV1::WaylandIdleInhibitManagerV1(WaylandCompositor *compositor)
-    : WaylandCompositorExtensionTemplate<WaylandIdleInhibitManagerV1>(compositor, *new WaylandIdleInhibitManagerV1Private())
+    : WaylandCompositorExtensionTemplate<WaylandIdleInhibitManagerV1>(compositor)
+    , d_ptr(new WaylandIdleInhibitManagerV1Private(this))
 {
 }
 
@@ -125,6 +127,11 @@ const wl_interface *WaylandIdleInhibitManagerV1::interface()
     return WaylandIdleInhibitManagerV1Private::interface();
 }
 
+
+WaylandIdleInhibitManagerV1Private::WaylandIdleInhibitManagerV1Private(WaylandIdleInhibitManagerV1 *self)
+    : WaylandCompositorExtensionPrivate(self)
+{
+}
 
 void WaylandIdleInhibitManagerV1Private::zwp_idle_inhibit_manager_v1_create_inhibitor(Resource *resource, uint id, wl_resource *surfaceResource)
 {

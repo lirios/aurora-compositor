@@ -84,6 +84,7 @@ public:
     Q_DECLARE_FLAGS(Capabilities, CapabilityFlag)
 
     LibInputHandler(QObject *parent = 0);
+    ~LibInputHandler();
 
     LibInputHandler::Capabilities capabilities() const;
 
@@ -128,6 +129,9 @@ Q_SIGNALS:
 
 private Q_SLOTS:
     void handleEvents();
+
+private:
+    QScopedPointer<LibInputHandlerPrivate> const d_ptr;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(LibInputHandler::Capabilities)

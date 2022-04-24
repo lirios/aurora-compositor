@@ -91,6 +91,9 @@ Q_SIGNALS:
     void outputChanged();
     void bufferLockedChanged();
     void allowDiscardFrontBufferChanged();
+
+private:
+    QScopedPointer<WaylandViewPrivate> const d_ptr;
 };
 
 } // namespace Compositor

@@ -65,7 +65,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandWlShellPrivate
 {
     Q_DECLARE_PUBLIC(WaylandWlShell)
 public:
-    WaylandWlShellPrivate();
+    WaylandWlShellPrivate(WaylandWlShell *self);
 
     void unregisterShellSurface(WaylandWlShellSurface *shellSurface);
 
@@ -83,7 +83,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandWlShellSurfacePrivate
 {
     Q_DECLARE_PUBLIC(WaylandWlShellSurface)
 public:
-    WaylandWlShellSurfacePrivate();
+    WaylandWlShellSurfacePrivate(WaylandWlShellSurface *self);
     ~WaylandWlShellSurfacePrivate() override;
 
     static WaylandWlShellSurfacePrivate *get(WaylandWlShellSurface *surface) { return surface->d_func(); }

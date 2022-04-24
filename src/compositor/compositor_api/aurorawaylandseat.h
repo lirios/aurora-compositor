@@ -137,6 +137,7 @@ Q_SIGNALS:
     void cursorSurfaceRequested(Aurora::Compositor::WaylandSurface *surface, int hotspotX, int hotspotY, Aurora::Compositor::WaylandClient *client);
 
 private:
+    QScopedPointer<WaylandSeatPrivate> const d_ptr;
     void handleMouseFocusDestroyed();
 };
 

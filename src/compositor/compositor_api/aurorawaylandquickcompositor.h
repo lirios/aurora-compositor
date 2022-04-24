@@ -48,6 +48,8 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickCompositor : public WaylandComposi
     Q_OBJECT
 public:
     WaylandQuickCompositor(QObject *parent = nullptr);
+    ~WaylandQuickCompositor();
+
     void create() override;
 
     void grabSurface(WaylandSurfaceGrabber *grabber, const WaylandBufferRef &buffer) override;
@@ -55,6 +57,9 @@ public:
 protected:
     void classBegin() override;
     void componentComplete() override;
+
+private:
+    QScopedPointer<WaylandQuickCompositorPrivate> const d_ptr;
 };
 
 } // namespace Compositor

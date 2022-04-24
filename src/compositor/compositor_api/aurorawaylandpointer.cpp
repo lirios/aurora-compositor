@@ -39,9 +39,9 @@ namespace Compositor {
 WaylandSurfaceRole WaylandPointerPrivate::s_role("wl_pointer");
 
 WaylandPointerPrivate::WaylandPointerPrivate(WaylandPointer *pointer, WaylandSeat *seat)
-    : seat(seat)
+    : q_ptr(pointer)
+    , seat(seat)
 {
-    Q_UNUSED(pointer);
 }
 
 uint WaylandPointerPrivate::sendButton(Qt::MouseButton button, uint32_t state)
@@ -152,10 +152,15 @@ void WaylandPointerPrivate::pointer_set_cursor(wl_pointer::Resource *resource, u
  * Constructs a WaylandPointer for the given \a seat and with the given \a parent.
  */
 WaylandPointer::WaylandPointer(WaylandSeat *seat, QObject *parent)
-    : WaylandObject(* new WaylandPointerPrivate(this, seat), parent)
+    : WaylandObject(parent)
+    , d_ptr(new WaylandPointerPrivate(this, seat))
 {
     connect(&d_func()->enteredSurfaceDestroyListener, &WaylandDestroyListener::fired, this, &WaylandPointer::enteredSurfaceDestroyed);
     connect(seat, &WaylandSeat::mouseFocusChanged, this, &WaylandPointer::pointerFocusChanged);
+}
+
+WaylandPointer::~WaylandPointer()
+{
 }
 
 /*!

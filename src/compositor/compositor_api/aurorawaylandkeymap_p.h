@@ -42,24 +42,27 @@
 //
 
 #include <LiriAuroraCompositor/aurorawaylandkeymap.h>
-#include <QtCore/private/qobject_p.h>
 
 namespace Aurora {
 
 namespace Compositor {
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandKeymapPrivate : public QObjectPrivate
+class LIRIAURORACOMPOSITOR_EXPORT WaylandKeymapPrivate
 {
     Q_DECLARE_PUBLIC(WaylandKeymap)
 public:
-    WaylandKeymapPrivate(const QString &layout, const QString &variant, const QString &options,
-                          const QString &model, const QString &rules);
+    WaylandKeymapPrivate(WaylandKeymap *self,
+                         const QString &layout, const QString &variant, const QString &options,
+                         const QString &model, const QString &rules);
 
     QString m_layout;
     QString m_variant;
     QString m_options;
     QString m_rules;
     QString m_model;
+
+private:
+    WaylandKeymap *q_ptr = nullptr;
 };
 
 } // namespace Compositor

@@ -41,7 +41,8 @@ namespace Aurora {
 
 namespace Compositor {
 
-WaylandQtWindowManagerPrivate::WaylandQtWindowManagerPrivate()
+WaylandQtWindowManagerPrivate::WaylandQtWindowManagerPrivate(WaylandQtWindowManager *self)
+    : WaylandCompositorExtensionPrivate(self)
 {
 }
 
@@ -78,12 +79,18 @@ void WaylandQtWindowManagerPrivate::windowmanager_open_url(Resource *resource, u
 }
 
 WaylandQtWindowManager::WaylandQtWindowManager()
-    : WaylandCompositorExtensionTemplate<WaylandQtWindowManager>(*new WaylandQtWindowManagerPrivate())
+    : WaylandCompositorExtensionTemplate<WaylandQtWindowManager>()
+    , d_ptr(new WaylandQtWindowManagerPrivate(this))
 {
 }
 
 WaylandQtWindowManager::WaylandQtWindowManager(WaylandCompositor *compositor)
-    : WaylandCompositorExtensionTemplate<WaylandQtWindowManager>(compositor, *new WaylandQtWindowManagerPrivate())
+    : WaylandCompositorExtensionTemplate<WaylandQtWindowManager>(compositor)
+    , d_ptr(new WaylandQtWindowManagerPrivate(this))
+{
+}
+
+WaylandQtWindowManager::~WaylandQtWindowManager()
 {
 }
 

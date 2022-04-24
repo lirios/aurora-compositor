@@ -72,7 +72,7 @@ namespace Internal {
 
 class WaylandSurface;
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandCompositorPrivate : public QObjectPrivate, public PrivateServer::wl_compositor, public PrivateServer::wl_subcompositor
+class LIRIAURORACOMPOSITOR_EXPORT WaylandCompositorPrivate : public PrivateServer::wl_compositor, public PrivateServer::wl_subcompositor
 {
 public:
     static WaylandCompositorPrivate *get(WaylandCompositor *compositor) { return compositor->d_func(); }
@@ -177,6 +177,9 @@ protected:
 
     Q_DECLARE_PUBLIC(WaylandCompositor)
     Q_DISABLE_COPY(WaylandCompositorPrivate)
+
+private:
+    WaylandCompositor *q_ptr = nullptr;
 };
 
 const QList<Internal::ClientBufferIntegration *> WaylandCompositorPrivate::clientBufferIntegrations() const

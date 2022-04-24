@@ -58,6 +58,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandIviSurface : public WaylandShellSurface
 public:
     WaylandIviSurface();
     WaylandIviSurface(WaylandIviApplication *application, WaylandSurface *surface, uint iviId, const WaylandResource &resource);
+    ~WaylandIviSurface();
 
     Q_INVOKABLE void initialize(Aurora::Compositor::WaylandIviApplication *iviApplication,
                                 Aurora::Compositor::WaylandSurface *surface,
@@ -82,6 +83,8 @@ Q_SIGNALS:
     void iviIdChanged();
 
 private:
+    QScopedPointer<WaylandIviSurfacePrivate> const d_ptr;
+
     void initialize() override;
 };
 

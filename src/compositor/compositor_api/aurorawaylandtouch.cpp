@@ -42,9 +42,9 @@ namespace Aurora {
 namespace Compositor {
 
 WaylandTouchPrivate::WaylandTouchPrivate(WaylandTouch *touch, WaylandSeat *seat)
-    : seat(seat)
+    : q_ptr(touch)
+    , seat(seat)
 {
-    Q_UNUSED(touch);
 }
 
 void WaylandTouchPrivate::touch_release(Resource *resource)
@@ -118,7 +118,12 @@ int WaylandTouchPrivate::toSequentialWaylandId(int touchId)
  * Constructs a WaylandTouch for the \a seat and with the given \a parent.
  */
 WaylandTouch::WaylandTouch(WaylandSeat *seat, QObject *parent)
-    : WaylandObject(*new WaylandTouchPrivate(this, seat), parent)
+    : WaylandObject(parent)
+    , d_ptr(new WaylandTouchPrivate(this, seat))
+{
+}
+
+WaylandTouch::~WaylandTouch()
 {
 }
 

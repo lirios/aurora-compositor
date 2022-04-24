@@ -52,8 +52,9 @@ namespace Aurora {
 
 namespace Compositor {
 
-WaylandKeyboardPrivate::WaylandKeyboardPrivate(WaylandSeat *seat)
-    : seat(seat)
+WaylandKeyboardPrivate::WaylandKeyboardPrivate(WaylandKeyboard *self, WaylandSeat *seat)
+    : q_ptr(self)
+    , seat(seat)
 {
 }
 
@@ -446,7 +447,8 @@ void WaylandKeyboardPrivate::sendRepeatInfo()
  * Constructs a WaylandKeyboard for the given \a seat and with the given \a parent.
  */
 WaylandKeyboard::WaylandKeyboard(WaylandSeat *seat, QObject *parent)
-    : WaylandObject(* new WaylandKeyboardPrivate(seat), parent)
+    : WaylandObject(parent)
+    , d_ptr(new WaylandKeyboardPrivate(this, seat))
 {
     Q_D(WaylandKeyboard);
     connect(&d->focusDestroyListener, &WaylandDestroyListener::fired, this, &WaylandKeyboard::focusDestroyed);
@@ -459,6 +461,10 @@ WaylandKeyboard::WaylandKeyboard(WaylandSeat *seat, QObject *parent)
 #if LIRI_FEATURE_aurora_xkbcommon
     d->createXKBKeymap();
 #endif
+}
+
+WaylandKeyboard::~WaylandKeyboard()
+{
 }
 
 /*!

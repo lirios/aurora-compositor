@@ -41,6 +41,7 @@
 // We mean it.
 //
 
+#include <LiriAuroraCompositor/WaylandQuickSurface>
 #include <LiriAuroraCompositor/private/aurorawaylandsurface_p.h>
 
 namespace Aurora {
@@ -51,16 +52,17 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickSurfacePrivate : public WaylandSur
 {
     Q_DECLARE_PUBLIC(WaylandQuickSurface)
 public:
-    WaylandQuickSurfacePrivate()
-    {
-    }
-
-    ~WaylandQuickSurfacePrivate() override
+    WaylandQuickSurfacePrivate(WaylandQuickSurface *self)
+        : WaylandSurfacePrivate(self)
+        , q_ptr(self)
     {
     }
 
     bool useTextureAlpha = true;
     bool clientRenderingEnabled = true;
+
+private:
+    WaylandQuickSurface *q_ptr = nullptr;
 };
 
 } // namespace Compositor
