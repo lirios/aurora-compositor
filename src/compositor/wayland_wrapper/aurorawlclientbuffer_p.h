@@ -62,7 +62,7 @@ class WaylandClientBufferIntegration;
 class WaylandBufferRef;
 class WaylandCompositor;
 
-namespace QtWayland {
+namespace Internal {
 
 struct surface_buffer_destroy_listener
 {

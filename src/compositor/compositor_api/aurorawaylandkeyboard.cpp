@@ -547,7 +547,7 @@ void WaylandKeyboardPrivate::checkAndRepairModifierState(QKeyEvent *ke)
                 && ke->key() != Qt::Key_Control && ke->key() != Qt::Key_Alt) {
             // Only repair the state for non-modifier keys
             // ### slightly awkward because the standard modifier handling
-            // is done by QtWayland::WindowSystemEventHandler after the
+            // is done by Internal::WindowSystemEventHandler after the
             // key event is delivered
             uint32_t mods = 0;
 

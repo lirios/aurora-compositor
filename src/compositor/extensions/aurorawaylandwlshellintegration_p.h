@@ -49,7 +49,7 @@ namespace Compositor {
 // We mean it.
 //
 
-namespace QtWayland {
+namespace Internal {
 
 class WlShellIntegration : public WaylandQuickShellIntegration
 {

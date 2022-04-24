@@ -438,7 +438,7 @@ void LinuxDmabufClientBufferIntegration::deleteImage(EGLImageKHR image)
     egl_destroy_image(m_eglDisplay, image);
 }
 
-QtWayland::ClientBuffer *LinuxDmabufClientBufferIntegration::createBufferFor(wl_resource *resource)
+Internal::ClientBuffer *LinuxDmabufClientBufferIntegration::createBufferFor(wl_resource *resource)
 {
     auto it = m_importedBuffers.find(resource);
     if (it != m_importedBuffers.end()) {

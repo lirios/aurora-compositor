@@ -51,7 +51,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-namespace QtWayland {
+namespace Internal {
 
 class HardwareLayerIntegration;
 

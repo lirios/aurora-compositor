@@ -56,7 +56,7 @@ namespace Compositor {
 
 class WaylandCompositor;
 
-namespace QtWayland {
+namespace Internal {
 class Display;
 
 class LIRIAURORACOMPOSITOR_EXPORT ClientBufferIntegration

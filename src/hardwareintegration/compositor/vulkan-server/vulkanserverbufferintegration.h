@@ -50,10 +50,10 @@ class VulkanServerBufferIntegration;
 class VulkanWrapper;
 struct VulkanImageWrapper;
 
-class VulkanServerBuffer : public QtWayland::ServerBuffer, public PrivateServer::qt_server_buffer
+class VulkanServerBuffer : public Internal::ServerBuffer, public PrivateServer::qt_server_buffer
 {
 public:
-    VulkanServerBuffer(VulkanServerBufferIntegration *integration, const QImage &qimage, QtWayland::ServerBuffer::Format format);
+    VulkanServerBuffer(VulkanServerBufferIntegration *integration, const QImage &qimage, Internal::ServerBuffer::Format format);
     VulkanServerBuffer(VulkanServerBufferIntegration *integration, VulkanImageWrapper *vImage, uint glInternalFormat, const QSize &size);
     ~VulkanServerBuffer() override;
 
@@ -79,7 +79,7 @@ private:
 };
 
 class VulkanServerBufferIntegration :
-    public QtWayland::ServerBufferIntegration,
+    public Internal::ServerBufferIntegration,
     public PrivateServer::zqt_vulkan_server_buffer_v1
 {
 public:
@@ -90,9 +90,9 @@ public:
 
     bool initializeHardware(WaylandCompositor *) override;
 
-    bool supportsFormat(QtWayland::ServerBuffer::Format format) const override;
-    QtWayland::ServerBuffer *createServerBufferFromImage(const QImage &qimage, QtWayland::ServerBuffer::Format format) override;
-    QtWayland::ServerBuffer *createServerBufferFromData(QByteArrayView view, const QSize &size,
+    bool supportsFormat(Internal::ServerBuffer::Format format) const override;
+    Internal::ServerBuffer *createServerBufferFromImage(const QImage &qimage, Internal::ServerBuffer::Format format) override;
+    Internal::ServerBuffer *createServerBufferFromData(QByteArrayView view, const QSize &size,
                                                         uint glInternalFormat) override;
 
 private:

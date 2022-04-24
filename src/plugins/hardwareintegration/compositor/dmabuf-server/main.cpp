@@ -34,15 +34,15 @@ namespace Aurora {
 
 namespace Compositor {
 
-class DmaBufServerBufferIntegrationPlugin : public QtWayland::ServerBufferIntegrationPlugin
+class DmaBufServerBufferIntegrationPlugin : public Internal::ServerBufferIntegrationPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QtWaylandServerBufferIntegrationFactoryInterface_iid FILE "dmabuf-server.json")
 public:
-    QtWayland::ServerBufferIntegration *create(const QString&, const QStringList&) override;
+    Internal::ServerBufferIntegration *create(const QString&, const QStringList&) override;
 };
 
-QtWayland::ServerBufferIntegration *DmaBufServerBufferIntegrationPlugin::create(const QString& system, const QStringList& paramList)
+Internal::ServerBufferIntegration *DmaBufServerBufferIntegrationPlugin::create(const QString& system, const QStringList& paramList)
 {
     Q_UNUSED(paramList);
     Q_UNUSED(system);

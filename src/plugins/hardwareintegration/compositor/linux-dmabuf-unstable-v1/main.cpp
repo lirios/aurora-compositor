@@ -35,15 +35,15 @@ namespace Aurora {
 
 namespace Compositor {
 
-class WaylandDmabufClientBufferIntegrationPlugin : public QtWayland::ClientBufferIntegrationPlugin
+class WaylandDmabufClientBufferIntegrationPlugin : public Internal::ClientBufferIntegrationPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QtWaylandClientBufferIntegrationFactoryInterface_iid FILE "linux-dmabuf-unstable-v1.json")
 public:
-    QtWayland::ClientBufferIntegration *create(const QString& key, const QStringList& paramList) override;
+    Internal::ClientBufferIntegration *create(const QString& key, const QStringList& paramList) override;
 };
 
-QtWayland::ClientBufferIntegration *WaylandDmabufClientBufferIntegrationPlugin::create(const QString& key, const QStringList& paramList)
+Internal::ClientBufferIntegration *WaylandDmabufClientBufferIntegrationPlugin::create(const QString& key, const QStringList& paramList)
 {
     Q_UNUSED(paramList);
     Q_UNUSED(key);

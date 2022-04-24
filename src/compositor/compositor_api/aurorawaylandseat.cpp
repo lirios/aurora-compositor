@@ -102,11 +102,11 @@ void WaylandSeatPrivate::setCapabilities(WaylandSeat::CapabilityFlags caps)
 }
 
 #if LIRI_FEATURE_aurora_datadevice
-void WaylandSeatPrivate::clientRequestedDataDevice(QtWayland::DataDeviceManager *, struct wl_client *client, uint32_t id)
+void WaylandSeatPrivate::clientRequestedDataDevice(Internal::DataDeviceManager *, struct wl_client *client, uint32_t id)
 {
     Q_Q(WaylandSeat);
     if (!data_device)
-        data_device.reset(new QtWayland::DataDevice(q));
+        data_device.reset(new Internal::DataDevice(q));
     data_device->add(client, id, 1);
 }
 #endif
@@ -506,7 +506,7 @@ void WaylandSeat::sendFullKeyEvent(QKeyEvent *event)
 #endif
 #endif
 
-    QtWayland::QtKeyExtensionGlobal *ext = QtWayland::QtKeyExtensionGlobal::findIn(d->compositor);
+    Internal::QtKeyExtensionGlobal *ext = Internal::QtKeyExtensionGlobal::findIn(d->compositor);
     if (ext && ext->postQtKeyEvent(event, keyboardFocus()))
         return;
 
@@ -709,7 +709,7 @@ bool WaylandSeat::isOwner(QInputEvent *inputEvent) const
  */
 WaylandSeat *WaylandSeat::fromSeatResource(struct ::wl_resource *resource)
 {
-    if (auto p = QtWayland::fromResource<WaylandSeatPrivate *>(resource))
+    if (auto p = Internal::fromResource<WaylandSeatPrivate *>(resource))
         return p->q_func();
     return nullptr;
 }

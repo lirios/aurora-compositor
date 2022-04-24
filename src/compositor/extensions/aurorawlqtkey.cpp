@@ -36,7 +36,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-namespace QtWayland {
+namespace Internal {
 
 QtKeyExtensionGlobal::QtKeyExtensionGlobal(WaylandCompositor *compositor)
     : WaylandCompositorExtensionTemplate(compositor)

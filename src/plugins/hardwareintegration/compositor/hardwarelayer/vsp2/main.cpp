@@ -34,15 +34,15 @@ namespace Aurora {
 
 namespace Compositor {
 
-class Vsp2HardwareLayerIntegrationPlugin : public QtWayland::HardwareLayerIntegrationPlugin
+class Vsp2HardwareLayerIntegrationPlugin : public Internal::HardwareLayerIntegrationPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QtWaylandHardwareLayerIntegrationFactoryInterface_iid FILE "vsp2.json")
 public:
-    QtWayland::HardwareLayerIntegration *create(const QString&, const QStringList&) override;
+    Internal::HardwareLayerIntegration *create(const QString&, const QStringList&) override;
 };
 
-QtWayland::HardwareLayerIntegration *Vsp2HardwareLayerIntegrationPlugin::create(const QString& system, const QStringList& paramList)
+Internal::HardwareLayerIntegration *Vsp2HardwareLayerIntegrationPlugin::create(const QString& system, const QStringList& paramList)
 {
     Q_UNUSED(paramList);
     Q_UNUSED(system);

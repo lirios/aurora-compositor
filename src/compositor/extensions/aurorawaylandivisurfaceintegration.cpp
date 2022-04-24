@@ -38,7 +38,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-namespace QtWayland {
+namespace Internal {
 
 IviSurfaceIntegration::IviSurfaceIntegration(WaylandQuickShellSurfaceItem *item)
     : WaylandQuickShellIntegration(item)

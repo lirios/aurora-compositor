@@ -211,7 +211,7 @@ void WaylandTouch::sendFullTouchEvent(WaylandSurface *surface, QTouchEvent *even
         return;
     }
 
-    QtWayland::TouchExtensionGlobal *ext = QtWayland::TouchExtensionGlobal::findIn(d->compositor());
+    Internal::TouchExtensionGlobal *ext = Internal::TouchExtensionGlobal::findIn(d->compositor());
     if (ext && ext->postTouchEvent(event, surface))
         return;
 

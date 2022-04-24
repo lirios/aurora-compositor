@@ -94,7 +94,7 @@ Q_LOGGING_CATEGORY(qLcWaylandCompositorInputMethods, "qt.waylandcompositor.input
 Q_LOGGING_CATEGORY(qLcWaylandCompositorTextInput, "qt.waylandcompositor.textinput")
 #endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
 
-namespace QtWayland {
+namespace Internal {
 
 class WindowSystemEventHandler : public QWindowSystemEventHandler
 {
@@ -171,7 +171,7 @@ WaylandCompositorPrivate::WaylandCompositorPrivate(WaylandCompositor *compositor
         ownsDisplay = true;
     }
 
-    eventHandler.reset(new QtWayland::WindowSystemEventHandler(compositor));
+    eventHandler.reset(new Internal::WindowSystemEventHandler(compositor));
     timer.start();
 
     QWindowSystemInterfacePrivate::installWindowSystemEventHandler(eventHandler.data());
@@ -199,9 +199,9 @@ void WaylandCompositorPrivate::init()
     wl_subcompositor::init(display, 1);
 
 #if LIRI_FEATURE_aurora_datadevice
-    data_device_manager =  new QtWayland::DataDeviceManager(q);
+    data_device_manager =  new Internal::DataDeviceManager(q);
 #endif
-    buffer_manager = new QtWayland::BufferManager(q);
+    buffer_manager = new Internal::BufferManager(q);
 
     wl_display_init_shm(display);
 
@@ -348,7 +348,7 @@ void WaylandCompositorPrivate::compositor_create_surface(wl_compositor::Resource
 
 void WaylandCompositorPrivate::compositor_create_region(wl_compositor::Resource *resource, uint32_t id)
 {
-    new QtWayland::Region(resource->client(), id);
+    new Internal::Region(resource->client(), id);
 }
 
 void WaylandCompositorPrivate::subcompositor_get_subsurface(wl_subcompositor::Resource *resource, uint32_t id, wl_resource *surface, wl_resource *parent)
@@ -371,21 +371,21 @@ WaylandSurface *WaylandCompositorPrivate::createDefaultSurface()
     return new WaylandSurface();
 }
 
-class SharedMemoryClientBufferIntegration : public QtWayland::ClientBufferIntegration
+class SharedMemoryClientBufferIntegration : public Internal::ClientBufferIntegration
 {
 public:
     void initializeHardware(wl_display *display) override;
-    QtWayland::ClientBuffer *createBufferFor(wl_resource *buffer) override;
+    Internal::ClientBuffer *createBufferFor(wl_resource *buffer) override;
 };
 
 void SharedMemoryClientBufferIntegration::initializeHardware(wl_display *)
 {
 }
 
-QtWayland::ClientBuffer *SharedMemoryClientBufferIntegration::createBufferFor(wl_resource *buffer)
+Internal::ClientBuffer *SharedMemoryClientBufferIntegration::createBufferFor(wl_resource *buffer)
 {
     if (wl_shm_buffer_get(buffer))
-        return new QtWayland::SharedMemoryBuffer(buffer);
+        return new Internal::SharedMemoryBuffer(buffer);
     return nullptr;
 }
 
@@ -396,7 +396,7 @@ void WaylandCompositorPrivate::initializeHardwareIntegration()
 #if QT_CONFIG(opengl)
     Q_Q(WaylandCompositor);
     if (use_hw_integration_extension)
-        hw_integration.reset(new QtWayland::HardwareIntegration(q));
+        hw_integration.reset(new Internal::HardwareIntegration(q));
 
     loadClientBufferIntegration();
     loadServerBufferIntegration();
@@ -416,7 +416,7 @@ void WaylandCompositorPrivate::loadClientBufferIntegration()
 {
 #if QT_CONFIG(opengl)
     Q_Q(WaylandCompositor);
-    QStringList keys = QtWayland::ClientBufferIntegrationFactory::keys();
+    QStringList keys = Internal::ClientBufferIntegrationFactory::keys();
     QStringList targetKeys;
     QByteArray clientBufferIntegration = qgetenv("QT_WAYLAND_HARDWARE_INTEGRATION");
     if (clientBufferIntegration.isEmpty())
@@ -439,7 +439,7 @@ void WaylandCompositorPrivate::loadClientBufferIntegration()
     QString hwIntegrationName;
 
     for (auto targetKey : qAsConst(targetKeys)) {
-        auto *integration = QtWayland::ClientBufferIntegrationFactory::create(targetKey, QStringList());
+        auto *integration = Internal::ClientBufferIntegrationFactory::create(targetKey, QStringList());
         if (integration) {
             integration->setCompositor(q);
             client_buffer_integrations.append(integration);
@@ -458,14 +458,14 @@ void WaylandCompositorPrivate::loadServerBufferIntegration()
 {
 #if QT_CONFIG(opengl)
     Q_Q(WaylandCompositor);
-    QStringList keys = QtWayland::ServerBufferIntegrationFactory::keys();
+    QStringList keys = Internal::ServerBufferIntegrationFactory::keys();
     QString targetKey;
     QByteArray serverBufferIntegration = qgetenv("QT_WAYLAND_SERVER_BUFFER_INTEGRATION");
     if (keys.contains(QString::fromLocal8Bit(serverBufferIntegration.constData()))) {
         targetKey = QString::fromLocal8Bit(serverBufferIntegration.constData());
     }
     if (!targetKey.isEmpty()) {
-        server_buffer_integration.reset(QtWayland::ServerBufferIntegrationFactory::create(targetKey, QStringList()));
+        server_buffer_integration.reset(Internal::ServerBufferIntegrationFactory::create(targetKey, QStringList()));
         if (server_buffer_integration) {
             qCDebug(qLcWaylandCompositorHardwareIntegration)
                     << "Loaded server buffer integration:" << targetKey;

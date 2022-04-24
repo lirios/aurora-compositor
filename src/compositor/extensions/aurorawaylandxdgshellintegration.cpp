@@ -37,7 +37,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-namespace QtWayland {
+namespace Internal {
 
 static void handlePopupCreated(WaylandQuickShellSurfaceItem *parentItem, WaylandXdgPopup *popup)
 {

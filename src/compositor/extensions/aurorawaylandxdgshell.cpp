@@ -685,7 +685,7 @@ QByteArray WaylandXdgSurface::interfaceName()
  */
 WaylandXdgSurface *WaylandXdgSurface::fromResource(wl_resource *resource)
 {
-    if (auto p = QtWayland::fromResource<WaylandXdgSurfacePrivate *>(resource))
+    if (auto p = Internal::fromResource<WaylandXdgSurfacePrivate *>(resource))
         return p->q_func();
     return nullptr;
 }
@@ -696,10 +696,10 @@ WaylandQuickShellIntegration *WaylandXdgSurface::createIntegration(WaylandQuickS
     Q_D(const WaylandXdgSurface);
 
     if (d->m_toplevel)
-        return new QtWayland::XdgToplevelIntegration(item);
+        return new Internal::XdgToplevelIntegration(item);
 
     if (d->m_popup)
-        return new QtWayland::XdgPopupIntegration(item);
+        return new Internal::XdgPopupIntegration(item);
 
     return nullptr;
 }
@@ -1213,7 +1213,7 @@ WaylandSurfaceRole *WaylandXdgToplevel::role()
  */
 WaylandXdgToplevel *WaylandXdgToplevel::fromResource(wl_resource *resource)
 {
-    if (auto p = QtWayland::fromResource<WaylandXdgToplevelPrivate *>(resource))
+    if (auto p = Internal::fromResource<WaylandXdgToplevelPrivate *>(resource))
         return p->q_func();
     return nullptr;
 }
@@ -2115,7 +2115,7 @@ void WaylandXdgPositioner::xdg_positioner_set_offset(PrivateServer::xdg_position
 
 WaylandXdgPositioner *WaylandXdgPositioner::fromResource(wl_resource *resource)
 {
-    return QtWayland::fromResource<WaylandXdgPositioner *>(resource);
+    return Internal::fromResource<WaylandXdgPositioner *>(resource);
 }
 
 Qt::Edges WaylandXdgPositioner::convertToEdges(anchor anchor)

@@ -48,7 +48,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-namespace QtWayland {
+namespace Internal {
 
 DataDeviceManager::DataDeviceManager(WaylandCompositor *compositor)
     : wl_data_device_manager(compositor->display(), 1)

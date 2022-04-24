@@ -134,8 +134,8 @@ bool VulkanServerBufferGlFunctions::create(QOpenGLContext *glContext)
     return true;
 }
 
-VulkanServerBuffer::VulkanServerBuffer(VulkanServerBufferIntegration *integration, const QImage &qimage, QtWayland::ServerBuffer::Format format)
-    : QtWayland::ServerBuffer(qimage.size(),format)
+VulkanServerBuffer::VulkanServerBuffer(VulkanServerBufferIntegration *integration, const QImage &qimage, Internal::ServerBuffer::Format format)
+    : Internal::ServerBuffer(qimage.size(),format)
     , m_integration(integration)
     , m_width(qimage.width())
     , m_height(qimage.height())
@@ -161,7 +161,7 @@ VulkanServerBuffer::VulkanServerBuffer(VulkanServerBufferIntegration *integratio
 }
 
 VulkanServerBuffer::VulkanServerBuffer(VulkanServerBufferIntegration *integration, VulkanImageWrapper *vImage, uint glInternalFormat, const QSize &size)
-    : QtWayland::ServerBuffer(size, QtWayland::ServerBuffer::Custom)
+    : Internal::ServerBuffer(size, Internal::ServerBuffer::Custom)
     , m_integration(integration)
     , m_width(size.width())
     , m_height(size.height())
@@ -275,19 +275,19 @@ bool VulkanServerBufferIntegration::initializeHardware(WaylandCompositor *compos
     return true;
 }
 
-bool VulkanServerBufferIntegration::supportsFormat(QtWayland::ServerBuffer::Format format) const
+bool VulkanServerBufferIntegration::supportsFormat(Internal::ServerBuffer::Format format) const
 {
     switch (format) {
-        case QtWayland::ServerBuffer::RGBA32:
+        case Internal::ServerBuffer::RGBA32:
             return true;
-        case QtWayland::ServerBuffer::A8:
+        case Internal::ServerBuffer::A8:
             return false;
         default:
             return false;
     }
 }
 
-QtWayland::ServerBuffer *VulkanServerBufferIntegration::createServerBufferFromImage(const QImage &qimage, QtWayland::ServerBuffer::Format format)
+Internal::ServerBuffer *VulkanServerBufferIntegration::createServerBufferFromImage(const QImage &qimage, Internal::ServerBuffer::Format format)
 {
     if (!m_vulkanWrapper) {
         CurrentContext current;
@@ -296,7 +296,7 @@ QtWayland::ServerBuffer *VulkanServerBufferIntegration::createServerBufferFromIm
     return new VulkanServerBuffer(this, qimage, format);
 }
 
-QtWayland::ServerBuffer *
+Internal::ServerBuffer *
 VulkanServerBufferIntegration::createServerBufferFromData(QByteArrayView view, const QSize &size,
                                                           uint glInternalFormat)
 {

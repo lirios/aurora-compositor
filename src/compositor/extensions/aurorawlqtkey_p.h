@@ -56,7 +56,7 @@ namespace Compositor {
 
 class WaylandSurface;
 
-namespace QtWayland {
+namespace Internal {
 
 class QtKeyExtensionGlobal : public WaylandCompositorExtensionTemplate<QtKeyExtensionGlobal>, public PrivateServer::zqt_key_v1
 {

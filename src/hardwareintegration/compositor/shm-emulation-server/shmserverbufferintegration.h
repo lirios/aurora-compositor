@@ -50,10 +50,10 @@ namespace Compositor {
 
 class ShmServerBufferIntegration;
 
-class ShmServerBuffer : public QtWayland::ServerBuffer, public PrivateServer::qt_server_buffer
+class ShmServerBuffer : public Internal::ServerBuffer, public PrivateServer::qt_server_buffer
 {
 public:
-    ShmServerBuffer(ShmServerBufferIntegration *integration, const QImage &qimage, QtWayland::ServerBuffer::Format format);
+    ShmServerBuffer(ShmServerBufferIntegration *integration, const QImage &qimage, Internal::ServerBuffer::Format format);
     ~ShmServerBuffer() override;
 
     struct ::wl_resource *resourceForClient(struct ::wl_client *) override;
@@ -72,7 +72,7 @@ private:
 };
 
 class ShmServerBufferIntegration :
-    public QtWayland::ServerBufferIntegration,
+    public Internal::ServerBufferIntegration,
     public PrivateServer::qt_shm_emulation_server_buffer
 {
 public:
@@ -81,8 +81,8 @@ public:
 
     bool initializeHardware(WaylandCompositor *) override;
 
-    bool supportsFormat(QtWayland::ServerBuffer::Format format) const override;
-    QtWayland::ServerBuffer *createServerBufferFromImage(const QImage &qimage, QtWayland::ServerBuffer::Format format) override;
+    bool supportsFormat(Internal::ServerBuffer::Format format) const override;
+    Internal::ServerBuffer *createServerBufferFromImage(const QImage &qimage, Internal::ServerBuffer::Format format) override;
 
 
 private:

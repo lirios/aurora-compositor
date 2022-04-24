@@ -62,7 +62,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-namespace QtWayland {
+namespace Internal {
 class FrameCallback {
 public:
     FrameCallback(WaylandSurface *surf, wl_resource *res)
@@ -128,13 +128,13 @@ WaylandSurfacePrivate::~WaylandSurfacePrivate()
 
     bufferRef = WaylandBufferRef();
 
-    for (QtWayland::FrameCallback *c : qAsConst(pendingFrameCallbacks))
+    for (Internal::FrameCallback *c : qAsConst(pendingFrameCallbacks))
         c->destroy();
-    for (QtWayland::FrameCallback *c : qAsConst(frameCallbacks))
+    for (Internal::FrameCallback *c : qAsConst(frameCallbacks))
         c->destroy();
 }
 
-void WaylandSurfacePrivate::removeFrameCallback(QtWayland::FrameCallback *callback)
+void WaylandSurfacePrivate::removeFrameCallback(Internal::FrameCallback *callback)
 {
     pendingFrameCallbacks.removeOne(callback);
     frameCallbacks.removeOne(callback);
@@ -222,18 +222,18 @@ void WaylandSurfacePrivate::surface_frame(Resource *resource, uint32_t callback)
 {
     Q_Q(WaylandSurface);
     struct wl_resource *frame_callback = wl_resource_create(resource->client(), &wl_callback_interface, wl_callback_interface.version, callback);
-    pendingFrameCallbacks << new QtWayland::FrameCallback(q, frame_callback);
+    pendingFrameCallbacks << new Internal::FrameCallback(q, frame_callback);
 }
 
 void WaylandSurfacePrivate::surface_set_opaque_region(Resource *, struct wl_resource *region)
 {
-    pending.opaqueRegion = region ? QtWayland::Region::fromResource(region)->region() : QRegion();
+    pending.opaqueRegion = region ? Internal::Region::fromResource(region)->region() : QRegion();
 }
 
 void WaylandSurfacePrivate::surface_set_input_region(Resource *, struct wl_resource *region)
 {
     if (region) {
-        pending.inputRegion = QtWayland::Region::fromResource(region)->region();
+        pending.inputRegion = Internal::Region::fromResource(region)->region();
     } else {
         pending.inputRegion = infiniteRegion();
     }
@@ -363,9 +363,9 @@ void WaylandSurfacePrivate::surface_set_buffer_scale(PrivateServer::wl_surface::
     pending.bufferScale = scale;
 }
 
-QtWayland::ClientBuffer *WaylandSurfacePrivate::getBuffer(struct ::wl_resource *buffer)
+Internal::ClientBuffer *WaylandSurfacePrivate::getBuffer(struct ::wl_resource *buffer)
 {
-    QtWayland::BufferManager *bufMan = WaylandCompositorPrivate::get(compositor)->bufferManager();
+    Internal::BufferManager *bufMan = WaylandCompositorPrivate::get(compositor)->bufferManager();
     return bufMan->getBuffer(buffer);
 }
 
@@ -734,7 +734,7 @@ WaylandCompositor *WaylandSurface::compositor() const
 void WaylandSurface::frameStarted()
 {
     Q_D(WaylandSurface);
-    for (QtWayland::FrameCallback *c : qAsConst(d->frameCallbacks))
+    for (Internal::FrameCallback *c : qAsConst(d->frameCallbacks))
         c->canSend = true;
 }
 
@@ -909,7 +909,7 @@ void WaylandSurface::updateSelection()
     Q_D(WaylandSurface);
     WaylandSeat *seat = d->compositor->defaultSeat();
     if (seat) {
-        const QtWayland::DataDevice *dataDevice = WaylandSeatPrivate::get(seat)->dataDevice();
+        const Internal::DataDevice *dataDevice = WaylandSeatPrivate::get(seat)->dataDevice();
         if (dataDevice) {
             WaylandCompositorPrivate::get(d->compositor)->dataDeviceManager()->offerRetainedSelection(
                         dataDevice->resourceMap().value(d->resource()->client())->handle);
@@ -976,7 +976,7 @@ QList<WaylandView *> WaylandSurface::views() const
  */
 WaylandSurface *WaylandSurface::fromResource(::wl_resource *resource)
 {
-    if (auto p = QtWayland::fromResource<WaylandSurfacePrivate *>(resource))
+    if (auto p = Internal::fromResource<WaylandSurfacePrivate *>(resource))
         return p->q_func();
     return nullptr;
 }

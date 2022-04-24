@@ -39,7 +39,7 @@ namespace Compositor {
 
 class WaylandEglStreamClientBufferIntegrationPrivate;
 
-class WaylandEglStreamClientBufferIntegration : public QtWayland::ClientBufferIntegration
+class WaylandEglStreamClientBufferIntegration : public Internal::ClientBufferIntegration
 {
     Q_DECLARE_PRIVATE(WaylandEglStreamClientBufferIntegration)
 public:
@@ -48,7 +48,7 @@ public:
 
     void initializeHardware(struct ::wl_display *display) override;
 
-    QtWayland::ClientBuffer *createBufferFor(wl_resource *buffer) override;
+    Internal::ClientBuffer *createBufferFor(wl_resource *buffer) override;
 
     void attachEglStreamConsumer(struct ::wl_resource *wl_surface, struct ::wl_resource *wl_buffer);
 
@@ -59,7 +59,7 @@ private:
 
 struct BufferState;
 
-class WaylandEglStreamClientBuffer : public QtWayland::ClientBuffer
+class WaylandEglStreamClientBuffer : public Internal::ClientBuffer
 {
 public:
     ~WaylandEglStreamClientBuffer() override;

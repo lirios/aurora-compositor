@@ -35,7 +35,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-namespace QtWayland {
+namespace Internal {
 
 HardwareIntegration::HardwareIntegration(WaylandCompositor *compositor)
     : WaylandCompositorExtensionTemplate<HardwareIntegration>(compositor)

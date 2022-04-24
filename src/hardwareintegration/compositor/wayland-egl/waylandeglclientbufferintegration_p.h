@@ -51,7 +51,7 @@ namespace Compositor {
 
 class WaylandEglClientBufferIntegrationPrivate;
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandEglClientBufferIntegration : public QtWayland::ClientBufferIntegration
+class LIRIAURORACOMPOSITOR_EXPORT WaylandEglClientBufferIntegration : public Internal::ClientBufferIntegration
 {
     Q_DECLARE_PRIVATE(WaylandEglClientBufferIntegration)
 public:
@@ -60,7 +60,7 @@ public:
 
     void initializeHardware(struct ::wl_display *display) override;
 
-    QtWayland::ClientBuffer *createBufferFor(wl_resource *buffer) override;
+    Internal::ClientBuffer *createBufferFor(wl_resource *buffer) override;
 
 private:
     Q_DISABLE_COPY(WaylandEglClientBufferIntegration)
@@ -69,7 +69,7 @@ private:
 
 struct BufferState;
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandEglClientBuffer : public QtWayland::ClientBuffer
+class LIRIAURORACOMPOSITOR_EXPORT WaylandEglClientBuffer : public Internal::ClientBuffer
 {
 public:
     WaylandEglClientBuffer(WaylandEglClientBufferIntegration* integration, wl_resource *bufferResource);

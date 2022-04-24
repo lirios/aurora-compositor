@@ -47,10 +47,10 @@ namespace Aurora {
 
 namespace Compositor {
 
-namespace QtWayland
+namespace Internal
 {
     class ClientBuffer;
-}
+} // namespace Internal
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandBufferRef
 {
@@ -101,8 +101,8 @@ public:
     void unlockNativeBuffer(quintptr handle);
 
 private:
-    explicit WaylandBufferRef(QtWayland::ClientBuffer *buffer);
-    QtWayland::ClientBuffer *buffer() const;
+    explicit WaylandBufferRef(Internal::ClientBuffer *buffer);
+    Internal::ClientBuffer *buffer() const;
     class WaylandBufferRefPrivate *const d;
     friend class WaylandBufferRefPrivate;
     friend class WaylandSurfacePrivate;

@@ -64,7 +64,7 @@ class WaylandSeat;
 class WaylandDrag;
 class WaylandView;
 
-namespace QtWayland {
+namespace Internal {
 
 class Compositor;
 class DataDevice;
@@ -90,8 +90,8 @@ public:
     static WaylandSeatPrivate *get(WaylandSeat *device) { return device->d_func(); }
 
 #if LIRI_FEATURE_aurora_datadevice
-    void clientRequestedDataDevice(QtWayland::DataDeviceManager *dndSelection, struct wl_client *client, uint32_t id);
-    QtWayland::DataDevice *dataDevice() const { return data_device.data(); }
+    void clientRequestedDataDevice(Internal::DataDeviceManager *dndSelection, struct wl_client *client, uint32_t id);
+    Internal::DataDevice *dataDevice() const { return data_device.data(); }
 #endif
 
 protected:
@@ -117,7 +117,7 @@ private:
     QScopedPointer<WaylandKeyboard> keyboard;
     QScopedPointer<WaylandTouch> touch;
 #if LIRI_FEATURE_aurora_datadevice
-    QScopedPointer<QtWayland::DataDevice> data_device;
+    QScopedPointer<Internal::DataDevice> data_device;
     QScopedPointer<WaylandDrag> drag_handle;
 #endif
     QScopedPointer<WaylandKeymap> keymap;

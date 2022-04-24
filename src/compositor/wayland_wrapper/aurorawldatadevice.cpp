@@ -48,7 +48,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-namespace QtWayland {
+namespace Internal {
 
 DataDevice::DataDevice(WaylandSeat *seat)
     : m_compositor(seat->compositor())

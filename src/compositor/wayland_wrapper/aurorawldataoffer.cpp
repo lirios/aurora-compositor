@@ -38,7 +38,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-namespace QtWayland
+namespace Internal
 {
 
 DataOffer::DataOffer(DataSource *dataSource, PrivateServer::wl_data_device::Resource *target)

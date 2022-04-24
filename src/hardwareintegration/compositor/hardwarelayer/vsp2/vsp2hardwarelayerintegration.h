@@ -53,7 +53,7 @@ class WaylandQuickHardwareLayer;
 
 class Vsp2Layer;
 
-class Vsp2HardwareLayerIntegration : public QtWayland::HardwareLayerIntegration
+class Vsp2HardwareLayerIntegration : public Internal::HardwareLayerIntegration
 {
     Q_OBJECT
 public:

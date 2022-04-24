@@ -46,7 +46,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-namespace QtWayland {
+namespace Internal {
 
 ClientBuffer::ClientBuffer(struct ::wl_resource *buffer)
     : m_buffer(buffer)

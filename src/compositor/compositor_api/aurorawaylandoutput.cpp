@@ -354,7 +354,7 @@ void WaylandOutput::initialize()
  */
 WaylandOutput *WaylandOutput::fromResource(wl_resource *resource)
 {
-    if (auto p = QtWayland::fromResource<WaylandOutputPrivate *>(resource))
+    if (auto p = Internal::fromResource<WaylandOutputPrivate *>(resource))
         return p->q_func();
     return nullptr;
 }

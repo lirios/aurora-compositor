@@ -63,14 +63,14 @@ struct YuvFormatConversion {
     struct YuvPlaneConversion plane[LinuxDmabufWlBuffer::MaxDmabufPlanes];
 };
 
-class LinuxDmabufClientBufferIntegration : public QtWayland::ClientBufferIntegration
+class LinuxDmabufClientBufferIntegration : public Internal::ClientBufferIntegration
 {
 public:
     LinuxDmabufClientBufferIntegration();
     ~LinuxDmabufClientBufferIntegration() override;
 
     void initializeHardware(struct ::wl_display *display) override;
-    QtWayland::ClientBuffer *createBufferFor(wl_resource *resource) override;
+    Internal::ClientBuffer *createBufferFor(wl_resource *resource) override;
     bool importBuffer(wl_resource *resource, LinuxDmabufWlBuffer *linuxDmabufBuffer);
     void removeBuffer(wl_resource *resource);
     void deleteOrphanedTextures();
@@ -108,7 +108,7 @@ private:
     QScopedPointer<LinuxDmabuf> m_linuxDmabuf;
 };
 
-class LinuxDmabufClientBuffer : public QtWayland::ClientBuffer
+class LinuxDmabufClientBuffer : public Internal::ClientBuffer
 {
 public:
     ~LinuxDmabufClientBuffer() override;

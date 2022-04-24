@@ -56,7 +56,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-namespace QtWayland {
+namespace Internal {
 
 class DataDevice;
 class DataSource;

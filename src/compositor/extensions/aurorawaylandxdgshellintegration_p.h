@@ -51,7 +51,7 @@ namespace Compositor {
 
 class WaylandXdgSurface;
 
-namespace QtWayland {
+namespace Internal {
 
 class XdgToplevelIntegration : public WaylandQuickShellIntegration
 {

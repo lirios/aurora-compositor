@@ -43,14 +43,14 @@ namespace Compositor {
 
 class BrcmEglIntegrationPrivate;
 
-class BrcmEglIntegration : public QtWayland::ClientBufferIntegration, public PrivateServer::qt_brcm
+class BrcmEglIntegration : public Internal::ClientBufferIntegration, public PrivateServer::qt_brcm
 {
     Q_DECLARE_PRIVATE(BrcmEglIntegration)
 public:
     BrcmEglIntegration();
 
     void initializeHardware(struct ::wl_display *display) override;
-    QtWayland::ClientBuffer *createBufferFor(wl_resource *buffer) override;
+    Internal::ClientBuffer *createBufferFor(wl_resource *buffer) override;
 
 protected:
     void brcm_bind_resource(Resource *resource) override;
@@ -61,7 +61,7 @@ private:
     QScopedPointer<BrcmEglIntegrationPrivate> d_ptr;
 };
 
-class BrcmEglClientBuffer : public QtWayland::ClientBuffer
+class BrcmEglClientBuffer : public Internal::ClientBuffer
 {
 public:
     BrcmEglClientBuffer(BrcmEglIntegration *integration, wl_resource *buffer);

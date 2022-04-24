@@ -35,15 +35,15 @@ namespace Aurora {
 
 namespace Compositor {
 
-class WaylandEglClientBufferIntegrationPlugin : public QtWayland::ClientBufferIntegrationPlugin
+class WaylandEglClientBufferIntegrationPlugin : public Internal::ClientBufferIntegrationPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QtWaylandClientBufferIntegrationFactoryInterface_iid FILE "wayland-egl.json")
 public:
-    QtWayland::ClientBufferIntegration *create(const QString&, const QStringList&) override;
+    Internal::ClientBufferIntegration *create(const QString&, const QStringList&) override;
 };
 
-QtWayland::ClientBufferIntegration *WaylandEglClientBufferIntegrationPlugin::create(const QString& system, const QStringList& paramList)
+Internal::ClientBufferIntegration *WaylandEglClientBufferIntegrationPlugin::create(const QString& system, const QStringList& paramList)
 {
     Q_UNUSED(paramList);
     Q_UNUSED(system);

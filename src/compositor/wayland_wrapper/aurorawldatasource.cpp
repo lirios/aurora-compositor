@@ -40,7 +40,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-namespace QtWayland {
+namespace Internal {
 
 DataSource::DataSource(struct wl_client *client, uint32_t id, uint32_t time)
     : PrivateServer::wl_data_source(client, id, 1)
@@ -94,7 +94,7 @@ void DataSource::setDevice(DataDevice *device)
 
 DataSource *DataSource::fromResource(struct ::wl_resource *resource)
 {
-    return QtWayland::fromResource<DataSource *>(resource);
+    return Internal::fromResource<DataSource *>(resource);
 }
 
 void DataSource::data_source_offer(Resource *, const QString &mime_type)

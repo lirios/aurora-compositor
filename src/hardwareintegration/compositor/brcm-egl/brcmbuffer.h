@@ -55,7 +55,7 @@ public:
 
     QSize size() { return m_size; }
 
-    static BrcmBuffer *fromResource(struct ::wl_resource *resource) { return QtWayland::fromResource<BrcmBuffer *>(resource); }
+    static BrcmBuffer *fromResource(struct ::wl_resource *resource) { return Internal::fromResource<BrcmBuffer *>(resource); }
 
 protected:
     void buffer_destroy_resource(Resource *resource) override;

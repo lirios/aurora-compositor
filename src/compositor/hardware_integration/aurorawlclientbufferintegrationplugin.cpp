@@ -33,7 +33,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-namespace QtWayland {
+namespace Internal {
 
 ClientBufferIntegrationPlugin::ClientBufferIntegrationPlugin(QObject *parent) :
     QObject(parent)

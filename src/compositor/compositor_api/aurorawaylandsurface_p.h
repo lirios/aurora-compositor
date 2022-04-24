@@ -75,7 +75,7 @@ class WaylandSurface;
 class WaylandView;
 class WaylandInputMethodControl;
 
-namespace QtWayland {
+namespace Internal {
 class FrameCallback;
 }
 
@@ -95,7 +95,7 @@ public:
 
     using PrivateServer::wl_surface::resource;
 
-    void removeFrameCallback(QtWayland::FrameCallback *callback);
+    void removeFrameCallback(Internal::FrameCallback *callback);
 
     void notifyViewsAboutDestruction();
 
@@ -128,7 +128,7 @@ protected:
     void surface_set_buffer_transform(Resource *resource, int32_t transform) override;
     void surface_set_buffer_scale(Resource *resource, int32_t bufferScale) override;
 
-    QtWayland::ClientBuffer *getBuffer(struct ::wl_resource *buffer);
+    Internal::ClientBuffer *getBuffer(struct ::wl_resource *buffer);
 
 public: //member variables
     WaylandCompositor *compositor = nullptr;
@@ -156,8 +156,8 @@ public: //member variables
     QPoint lastLocalMousePos;
     QPoint lastGlobalMousePos;
 
-    QList<QtWayland::FrameCallback *> pendingFrameCallbacks;
-    QList<QtWayland::FrameCallback *> frameCallbacks;
+    QList<Internal::FrameCallback *> pendingFrameCallbacks;
+    QList<Internal::FrameCallback *> frameCallbacks;
 
     QList<QPointer<WaylandSurface>> subsurfaceChildren;
 

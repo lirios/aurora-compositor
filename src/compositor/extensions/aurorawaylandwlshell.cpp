@@ -585,7 +585,7 @@ void WaylandWlShellSurface::sendPopupDone()
 #if LIRI_FEATURE_aurora_compositor_quick
 WaylandQuickShellIntegration *WaylandWlShellSurface::createIntegration(WaylandQuickShellSurfaceItem *item)
 {
-    return new QtWayland::WlShellIntegration(item);
+    return new Internal::WlShellIntegration(item);
 }
 #endif
 
@@ -697,7 +697,7 @@ void WaylandWlShellSurface::ping()
  */
 WaylandWlShellSurface *WaylandWlShellSurface::fromResource(wl_resource *resource)
 {
-    if (auto p = QtWayland::fromResource<WaylandWlShellSurfacePrivate *>(resource))
+    if (auto p = Internal::fromResource<WaylandWlShellSurfacePrivate *>(resource))
         return p->q_func();
     return nullptr;
 }

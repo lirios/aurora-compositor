@@ -39,8 +39,8 @@ namespace Aurora {
 
 namespace Compositor {
 
-DmaBufServerBuffer::DmaBufServerBuffer(DmaBufServerBufferIntegration *integration, const QImage &qimage, QtWayland::ServerBuffer::Format format)
-    : QtWayland::ServerBuffer(qimage.size(),format)
+DmaBufServerBuffer::DmaBufServerBuffer(DmaBufServerBufferIntegration *integration, const QImage &qimage, Internal::ServerBuffer::Format format)
+    : Internal::ServerBuffer(qimage.size(),format)
     , m_integration(integration)
 {
     m_format = format;
@@ -184,20 +184,20 @@ bool DmaBufServerBufferIntegration::initializeHardware(WaylandCompositor *compos
     return true;
 }
 
-bool DmaBufServerBufferIntegration::supportsFormat(QtWayland::ServerBuffer::Format format) const
+bool DmaBufServerBufferIntegration::supportsFormat(Internal::ServerBuffer::Format format) const
 {
     // TODO: 8-bit format support
     switch (format) {
-    case QtWayland::ServerBuffer::RGBA32:
+    case Internal::ServerBuffer::RGBA32:
         return true;
-    case QtWayland::ServerBuffer::A8:
+    case Internal::ServerBuffer::A8:
         return false;
     default:
         return false;
     }
 }
 
-QtWayland::ServerBuffer *DmaBufServerBufferIntegration::createServerBufferFromImage(const QImage &qimage, QtWayland::ServerBuffer::Format format)
+Internal::ServerBuffer *DmaBufServerBufferIntegration::createServerBufferFromImage(const QImage &qimage, Internal::ServerBuffer::Format format)
 {
     return new DmaBufServerBuffer(this, qimage, format);
 }

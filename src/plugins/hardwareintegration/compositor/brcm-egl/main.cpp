@@ -34,15 +34,15 @@ namespace Aurora {
 
 namespace Compositor {
 
-class WaylandBrcmClientBufferIntegrationPlugin : public QtWayland::ClientBufferIntegrationPlugin
+class WaylandBrcmClientBufferIntegrationPlugin : public Internal::ClientBufferIntegrationPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QtWaylandClientBufferIntegrationFactoryInterface_iid FILE "brcm-egl.json")
 public:
-    QtWayland::ClientBufferIntegration *create(const QString&, const QStringList&) override;
+    Internal::ClientBufferIntegration *create(const QString&, const QStringList&) override;
 };
 
-QtWayland::ClientBufferIntegration *WaylandBrcmClientBufferIntegrationPlugin::create(const QString& system, const QStringList& paramList)
+Internal::ClientBufferIntegration *WaylandBrcmClientBufferIntegrationPlugin::create(const QString& system, const QStringList& paramList)
 {
     Q_UNUSED(paramList);
     Q_UNUSED(system);

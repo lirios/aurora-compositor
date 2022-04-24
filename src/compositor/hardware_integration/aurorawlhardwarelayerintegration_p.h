@@ -54,7 +54,7 @@ class QPoint;
 
 class WaylandQuickHardwareLayer;
 
-namespace QtWayland {
+namespace Internal {
 
 class LIRIAURORACOMPOSITOR_EXPORT HardwareLayerIntegration : public QObject
 {
@@ -68,7 +68,7 @@ public:
     virtual void remove(WaylandQuickHardwareLayer *) {}
 };
 
-} // namespace QtWayland
+} // namespace Internal
 
 } // namespace Compositor
 

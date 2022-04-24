@@ -43,30 +43,30 @@ class WaylandQuickHardwareLayerPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(WaylandQuickHardwareLayer)
 public:
-    QtWayland::HardwareLayerIntegration *layerIntegration();
+    Internal::HardwareLayerIntegration *layerIntegration();
     WaylandQuickItem *m_waylandItem = nullptr;
     int m_stackingLevel = 0;
     QMatrix4x4 m_matrixFromRenderThread;
-    static QtWayland::HardwareLayerIntegration *s_hardwareLayerIntegration;
+    static Internal::HardwareLayerIntegration *s_hardwareLayerIntegration;
 };
 
-QtWayland::HardwareLayerIntegration *WaylandQuickHardwareLayerPrivate::s_hardwareLayerIntegration = nullptr;
+Internal::HardwareLayerIntegration *WaylandQuickHardwareLayerPrivate::s_hardwareLayerIntegration = nullptr;
 
-QtWayland::HardwareLayerIntegration *WaylandQuickHardwareLayerPrivate::layerIntegration()
+Internal::HardwareLayerIntegration *WaylandQuickHardwareLayerPrivate::layerIntegration()
 {
     if (!s_hardwareLayerIntegration) {
-        QStringList keys = QtWayland::HardwareLayerIntegrationFactory::keys();
+        QStringList keys = Internal::HardwareLayerIntegrationFactory::keys();
 
         QString environmentKey = QString::fromLocal8Bit(qgetenv("QT_WAYLAND_HARDWARE_LAYER_INTEGRATION").constData());
         if (!environmentKey.isEmpty()) {
             if (keys.contains(environmentKey)) {
-                s_hardwareLayerIntegration = QtWayland::HardwareLayerIntegrationFactory::create(environmentKey, QStringList());
+                s_hardwareLayerIntegration = Internal::HardwareLayerIntegrationFactory::create(environmentKey, QStringList());
             } else {
                 qWarning() << "Unknown hardware layer integration:" << environmentKey
                            << "Valid layer integrations are" << keys;
             }
         } else if (!keys.isEmpty()) {
-            s_hardwareLayerIntegration = QtWayland::HardwareLayerIntegrationFactory::create(keys.first(), QStringList());
+            s_hardwareLayerIntegration = Internal::HardwareLayerIntegrationFactory::create(keys.first(), QStringList());
         } else {
             qWarning() << "No wayland hardware layer integrations found";
         }

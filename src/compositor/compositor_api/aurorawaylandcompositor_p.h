@@ -62,7 +62,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-namespace QtWayland {
+namespace Internal {
     class HardwareIntegration;
     class ClientBufferIntegration;
     class ServerBufferIntegration;
@@ -92,13 +92,13 @@ public:
 
     WaylandOutput *defaultOutput() const { return outputs.size() ? outputs.first() : nullptr; }
 
-    inline const QList<QtWayland::ClientBufferIntegration *> clientBufferIntegrations() const;
-    inline QtWayland::ServerBufferIntegration *serverBufferIntegration() const;
+    inline const QList<Internal::ClientBufferIntegration *> clientBufferIntegrations() const;
+    inline Internal::ServerBufferIntegration *serverBufferIntegration() const;
 
 #if LIRI_FEATURE_aurora_datadevice
-    QtWayland::DataDeviceManager *dataDeviceManager() const { return data_device_manager; }
+    Internal::DataDeviceManager *dataDeviceManager() const { return data_device_manager; }
 #endif
-    QtWayland::BufferManager *bufferManager() const { return buffer_manager; }
+    Internal::BufferManager *bufferManager() const { return buffer_manager; }
     void feedRetainedSelectionData(QMimeData *data);
 
     WaylandPointer *callCreatePointerDevice(WaylandSeat *seat)
@@ -147,9 +147,9 @@ protected:
     QList<WaylandSurface *> all_surfaces;
 
 #if LIRI_FEATURE_aurora_datadevice
-    QtWayland::DataDeviceManager *data_device_manager = nullptr;
+    Internal::DataDeviceManager *data_device_manager = nullptr;
 #endif
-    QtWayland::BufferManager *buffer_manager = nullptr;
+    Internal::BufferManager *buffer_manager = nullptr;
 
     QElapsedTimer timer;
 
@@ -159,10 +159,10 @@ protected:
 
 #if QT_CONFIG(opengl)
     bool use_hw_integration_extension = true;
-    QScopedPointer<QtWayland::HardwareIntegration> hw_integration;
-    QScopedPointer<QtWayland::ServerBufferIntegration> server_buffer_integration;
+    QScopedPointer<Internal::HardwareIntegration> hw_integration;
+    QScopedPointer<Internal::ServerBufferIntegration> server_buffer_integration;
 #endif
-    QList<QtWayland::ClientBufferIntegration*> client_buffer_integrations;
+    QList<Internal::ClientBufferIntegration*> client_buffer_integrations;
 
     QScopedPointer<QWindowSystemEventHandler> eventHandler;
 
@@ -179,12 +179,12 @@ protected:
     Q_DISABLE_COPY(WaylandCompositorPrivate)
 };
 
-const QList<QtWayland::ClientBufferIntegration *> WaylandCompositorPrivate::clientBufferIntegrations() const
+const QList<Internal::ClientBufferIntegration *> WaylandCompositorPrivate::clientBufferIntegrations() const
 {
     return client_buffer_integrations;
 }
 
-QtWayland::ServerBufferIntegration * WaylandCompositorPrivate::serverBufferIntegration() const
+Internal::ServerBufferIntegration * WaylandCompositorPrivate::serverBufferIntegration() const
 {
 #if QT_CONFIG(opengl)
     return server_buffer_integration.data();

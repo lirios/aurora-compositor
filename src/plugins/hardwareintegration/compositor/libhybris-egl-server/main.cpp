@@ -35,15 +35,15 @@ namespace Aurora {
 
 namespace Compositor {
 
-class LibHybrisEglServerBufferIntegrationPlugin : public QtWayland::ServerBufferIntegrationPlugin
+class LibHybrisEglServerBufferIntegrationPlugin : public Internal::ServerBufferIntegrationPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QtWaylandServerBufferIntegrationFactoryInterface_iid FILE "libhybris-egl-server.json")
 public:
-    QtWayland::ServerBufferIntegration *create(const QString&, const QStringList&);
+    Internal::ServerBufferIntegration *create(const QString&, const QStringList&);
 };
 
-QtWayland::ServerBufferIntegration *LibHybrisEglServerBufferIntegrationPlugin::create(const QString& system, const QStringList& paramList)
+Internal::ServerBufferIntegration *LibHybrisEglServerBufferIntegrationPlugin::create(const QString& system, const QStringList& paramList)
 {
     Q_UNUSED(paramList);
     Q_UNUSED(system);

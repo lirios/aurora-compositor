@@ -111,7 +111,7 @@ void BrcmEglIntegration::initializeHardware(struct ::wl_display *display)
     }
 }
 
-QtWayland::ClientBuffer *BrcmEglIntegration::createBufferFor(wl_resource *buffer)
+Internal::ClientBuffer *BrcmEglIntegration::createBufferFor(wl_resource *buffer)
 {
     if (wl_shm_buffer_get(buffer))
         return nullptr;

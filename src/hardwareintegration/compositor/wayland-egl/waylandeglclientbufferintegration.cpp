@@ -477,7 +477,7 @@ void WaylandEglClientBufferIntegration::initializeHardware(struct wl_display *di
     d->funcs->initialize(d->egl_display);
 }
 
-QtWayland::ClientBuffer *WaylandEglClientBufferIntegration::createBufferFor(wl_resource *buffer)
+Internal::ClientBuffer *WaylandEglClientBufferIntegration::createBufferFor(wl_resource *buffer)
 {
     Q_D(WaylandEglClientBufferIntegration);
     int w = -1;

@@ -68,10 +68,10 @@ namespace Compositor {
 class DmaBufServerBufferIntegration;
 class QImage;
 
-class DmaBufServerBuffer : public QtWayland::ServerBuffer, public PrivateServer::qt_server_buffer
+class DmaBufServerBuffer : public Internal::ServerBuffer, public PrivateServer::qt_server_buffer
 {
 public:
-    DmaBufServerBuffer(DmaBufServerBufferIntegration *integration, const QImage &qimage, QtWayland::ServerBuffer::Format format);
+    DmaBufServerBuffer(DmaBufServerBufferIntegration *integration, const QImage &qimage, Internal::ServerBuffer::Format format);
     ~DmaBufServerBuffer() override;
 
     struct ::wl_resource *resourceForClient(struct ::wl_client *) override;
@@ -94,7 +94,7 @@ private:
 };
 
 class DmaBufServerBufferIntegration :
-    public QtWayland::ServerBufferIntegration,
+    public Internal::ServerBufferIntegration,
     public PrivateServer::qt_dmabuf_server_buffer
 {
 public:
@@ -103,8 +103,8 @@ public:
 
     bool initializeHardware(WaylandCompositor *) override;
 
-    bool supportsFormat(QtWayland::ServerBuffer::Format format) const override;
-    QtWayland::ServerBuffer *createServerBufferFromImage(const QImage &qimage, QtWayland::ServerBuffer::Format format) override;
+    bool supportsFormat(Internal::ServerBuffer::Format format) const override;
+    Internal::ServerBuffer *createServerBufferFromImage(const QImage &qimage, Internal::ServerBuffer::Format format) override;
 
     EGLDisplay display() const { return m_egl_display; }
 

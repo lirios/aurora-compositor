@@ -57,7 +57,7 @@ namespace Compositor {
 class Surface;
 class WaylandView;
 
-namespace QtWayland {
+namespace Internal {
 
 class TouchExtensionGlobal : public WaylandCompositorExtensionTemplate<TouchExtensionGlobal>, public PrivateServer::qt_touch_extension
 {

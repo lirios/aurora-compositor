@@ -54,7 +54,7 @@ namespace Compositor {
 
 class WaylandCompositor;
 
-namespace QtWayland {
+namespace Internal {
 
 class HardwareIntegration : public WaylandCompositorExtensionTemplate<HardwareIntegration>, public PrivateServer::qt_hardware_integration
 {

@@ -36,8 +36,8 @@ namespace Aurora {
 
 namespace Compositor {
 
-DrmEglServerBuffer::DrmEglServerBuffer(DrmEglServerBufferIntegration *integration, const QImage &qimage, QtWayland::ServerBuffer::Format format)
-    : QtWayland::ServerBuffer(qimage.size(),format)
+DrmEglServerBuffer::DrmEglServerBuffer(DrmEglServerBufferIntegration *integration, const QImage &qimage, Internal::ServerBuffer::Format format)
+    : Internal::ServerBuffer(qimage.size(),format)
     , m_integration(integration)
 {
     m_format = format;
@@ -170,12 +170,12 @@ bool DrmEglServerBufferIntegration::initializeHardware(WaylandCompositor *compos
     return true;
 }
 
-bool DrmEglServerBufferIntegration::supportsFormat(QtWayland::ServerBuffer::Format format) const
+bool DrmEglServerBufferIntegration::supportsFormat(Internal::ServerBuffer::Format format) const
 {
     switch (format) {
-        case QtWayland::ServerBuffer::RGBA32:
+        case Internal::ServerBuffer::RGBA32:
             return true;
-        case QtWayland::ServerBuffer::A8:
+        case Internal::ServerBuffer::A8:
 #ifdef EGL_DRM_BUFFER_FORMAT_A8_MESA
             return true;
 #else
@@ -186,7 +186,7 @@ bool DrmEglServerBufferIntegration::supportsFormat(QtWayland::ServerBuffer::Form
     }
 }
 
-QtWayland::ServerBuffer *DrmEglServerBufferIntegration::createServerBufferFromImage(const QImage &qimage, QtWayland::ServerBuffer::Format format)
+Internal::ServerBuffer *DrmEglServerBufferIntegration::createServerBufferFromImage(const QImage &qimage, Internal::ServerBuffer::Format format)
 {
     return new DrmEglServerBuffer(this, qimage, format);
 }

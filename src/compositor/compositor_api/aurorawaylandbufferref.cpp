@@ -42,7 +42,7 @@ namespace Compositor {
 class WaylandBufferRefPrivate
 {
 public:
-    QtWayland::ClientBuffer *buffer = nullptr;
+    Internal::ClientBuffer *buffer = nullptr;
 
     bool nullOrDestroyed() {
         return !buffer || buffer->isDestroyed();
@@ -71,7 +71,7 @@ WaylandBufferRef::WaylandBufferRef()
 /*!
  * Constructs a reference to \a buffer.
  */
-WaylandBufferRef::WaylandBufferRef(QtWayland::ClientBuffer *buffer)
+WaylandBufferRef::WaylandBufferRef(Internal::ClientBuffer *buffer)
                  : d(new WaylandBufferRefPrivate)
 {
     d->buffer = buffer;
@@ -162,7 +162,7 @@ bool WaylandBufferRef::hasBuffer() const
  */
 bool WaylandBufferRef::hasContent() const
 {
-    return QtWayland::ClientBuffer::hasContent(d->buffer);
+    return Internal::ClientBuffer::hasContent(d->buffer);
 }
 /*!
  * Returns true if this WaylandBufferRef references a buffer that has protected content. Otherwise returns false.
@@ -175,7 +175,7 @@ bool WaylandBufferRef::hasContent() const
  */
 bool WaylandBufferRef::hasProtectedContent() const
 {
-    return QtWayland::ClientBuffer::hasProtectedContent(d->buffer);
+    return Internal::ClientBuffer::hasProtectedContent(d->buffer);
 }
 
 /*!
@@ -198,7 +198,7 @@ struct ::wl_resource *WaylandBufferRef::wl_buffer() const
 /*!
  * \internal
  */
-QtWayland::ClientBuffer *WaylandBufferRef::buffer() const
+Internal::ClientBuffer *WaylandBufferRef::buffer() const
 {
     return d->buffer;
 }

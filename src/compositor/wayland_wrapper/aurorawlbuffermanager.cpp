@@ -37,7 +37,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-namespace QtWayland {
+namespace Internal {
 
 BufferManager::BufferManager(WaylandCompositor *compositor)
     : QObject(compositor)

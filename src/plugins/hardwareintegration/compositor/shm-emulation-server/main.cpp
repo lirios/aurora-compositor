@@ -34,15 +34,15 @@ namespace Aurora {
 
 namespace Compositor {
 
-class ShmServerBufferIntegrationPlugin : public QtWayland::ServerBufferIntegrationPlugin
+class ShmServerBufferIntegrationPlugin : public Internal::ServerBufferIntegrationPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QtWaylandServerBufferIntegrationFactoryInterface_iid FILE "shm-emulation-server.json")
 public:
-    QtWayland::ServerBufferIntegration *create(const QString&, const QStringList&) override;
+    Internal::ServerBufferIntegration *create(const QString&, const QStringList&) override;
 };
 
-QtWayland::ServerBufferIntegration *ShmServerBufferIntegrationPlugin::create(const QString& system, const QStringList& paramList)
+Internal::ServerBufferIntegration *ShmServerBufferIntegrationPlugin::create(const QString& system, const QStringList& paramList)
 {
     Q_UNUSED(paramList);
     Q_UNUSED(system);

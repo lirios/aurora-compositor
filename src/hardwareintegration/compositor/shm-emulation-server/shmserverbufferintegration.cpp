@@ -43,8 +43,8 @@ namespace Aurora {
 
 namespace Compositor {
 
-ShmServerBuffer::ShmServerBuffer(ShmServerBufferIntegration *integration, const QImage &qimage, QtWayland::ServerBuffer::Format format)
-    : QtWayland::ServerBuffer(qimage.size(),format)
+ShmServerBuffer::ShmServerBuffer(ShmServerBufferIntegration *integration, const QImage &qimage, Internal::ServerBuffer::Format format)
+    : Internal::ServerBuffer(qimage.size(),format)
     , m_integration(integration)
     , m_width(qimage.width())
     , m_height(qimage.height())
@@ -127,19 +127,19 @@ bool ShmServerBufferIntegration::initializeHardware(WaylandCompositor *composito
     return true;
 }
 
-bool ShmServerBufferIntegration::supportsFormat(QtWayland::ServerBuffer::Format format) const
+bool ShmServerBufferIntegration::supportsFormat(Internal::ServerBuffer::Format format) const
 {
     switch (format) {
-        case QtWayland::ServerBuffer::RGBA32:
+        case Internal::ServerBuffer::RGBA32:
             return true;
-        case QtWayland::ServerBuffer::A8:
+        case Internal::ServerBuffer::A8:
             return true;
         default:
             return false;
     }
 }
 
-QtWayland::ServerBuffer *ShmServerBufferIntegration::createServerBufferFromImage(const QImage &qimage, QtWayland::ServerBuffer::Format format)
+Internal::ServerBuffer *ShmServerBufferIntegration::createServerBufferFromImage(const QImage &qimage, Internal::ServerBuffer::Format format)
 {
     return new ShmServerBuffer(this, qimage, format);
 }

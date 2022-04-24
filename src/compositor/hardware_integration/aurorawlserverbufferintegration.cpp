@@ -33,7 +33,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-namespace QtWayland {
+namespace Internal {
 
 ServerBuffer::ServerBuffer(const QSize &size, ServerBuffer::Format format)
     : m_size(size)

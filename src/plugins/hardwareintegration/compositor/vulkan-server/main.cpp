@@ -34,15 +34,15 @@ namespace Aurora {
 
 namespace Compositor {
 
-class VulkanServerBufferIntegrationPlugin : public QtWayland::ServerBufferIntegrationPlugin
+class VulkanServerBufferIntegrationPlugin : public Internal::ServerBufferIntegrationPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QtWaylandServerBufferIntegrationFactoryInterface_iid FILE "vulkan-server.json")
 public:
-    QtWayland::ServerBufferIntegration *create(const QString&, const QStringList&) override;
+    Internal::ServerBufferIntegration *create(const QString&, const QStringList&) override;
 };
 
-QtWayland::ServerBufferIntegration *VulkanServerBufferIntegrationPlugin::create(const QString& key, const QStringList& paramList)
+Internal::ServerBufferIntegration *VulkanServerBufferIntegrationPlugin::create(const QString& key, const QStringList& paramList)
 {
     Q_UNUSED(paramList);
     Q_UNUSED(key);

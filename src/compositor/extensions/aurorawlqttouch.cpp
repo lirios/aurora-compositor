@@ -39,7 +39,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-namespace QtWayland {
+namespace Internal {
 
 static const int maxRawPos = 24;
 

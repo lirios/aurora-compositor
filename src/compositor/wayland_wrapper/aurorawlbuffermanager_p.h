@@ -50,7 +50,7 @@ namespace Compositor {
 
 class WaylandCompositor;
 
-namespace QtWayland {
+namespace Internal {
 
 class ClientBuffer;
 

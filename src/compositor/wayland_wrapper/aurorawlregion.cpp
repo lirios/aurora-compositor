@@ -35,7 +35,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-namespace QtWayland {
+namespace Internal {
 
 Region::Region(struct wl_client *client, uint32_t id)
     : PrivateServer::wl_region(client, id, 1)
@@ -48,7 +48,7 @@ Region::~Region()
 
 Region *Region::fromResource(struct ::wl_resource *resource)
 {
-    return QtWayland::fromResource<Region *>(resource);
+    return Internal::fromResource<Region *>(resource);
 }
 
 void Region::region_destroy_resource(Resource *)

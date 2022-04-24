@@ -50,12 +50,12 @@ public:
     {
     }
 
-    QtWayland::DataDevice *dataDevice()
+    Internal::DataDevice *dataDevice()
     {
         return WaylandSeatPrivate::get(seat)->dataDevice();
     }
 
-    const QtWayland::DataDevice *dataDevice() const
+    const Internal::DataDevice *dataDevice() const
     {
         return WaylandSeatPrivate::get(seat)->dataDevice();
     }
@@ -72,7 +72,7 @@ WaylandSurface *WaylandDrag::icon() const
 {
     Q_D(const WaylandDrag);
 
-    const QtWayland::DataDevice *dataDevice = d->dataDevice();
+    const Internal::DataDevice *dataDevice = d->dataDevice();
     if (!dataDevice)
         return nullptr;
 
@@ -82,7 +82,7 @@ WaylandSurface *WaylandDrag::icon() const
 WaylandSurface *WaylandDrag::origin() const
 {
     Q_D(const WaylandDrag);
-    const QtWayland::DataDevice *dataDevice = d->dataDevice();
+    const Internal::DataDevice *dataDevice = d->dataDevice();
     return dataDevice ? dataDevice->dragOrigin() : nullptr;
 }
 
@@ -97,7 +97,7 @@ bool WaylandDrag::visible() const
 {
     Q_D(const WaylandDrag);
 
-    const QtWayland::DataDevice *dataDevice = d->dataDevice();
+    const Internal::DataDevice *dataDevice = d->dataDevice();
     if (!dataDevice)
         return false;
 
@@ -107,7 +107,7 @@ bool WaylandDrag::visible() const
 void WaylandDrag::dragMove(WaylandSurface *target, const QPointF &pos)
 {
     Q_D(WaylandDrag);
-    QtWayland::DataDevice *dataDevice = d->dataDevice();
+    Internal::DataDevice *dataDevice = d->dataDevice();
     if (!dataDevice)
         return;
     dataDevice->dragMove(target, pos);
@@ -115,7 +115,7 @@ void WaylandDrag::dragMove(WaylandSurface *target, const QPointF &pos)
 void WaylandDrag::drop()
 {
     Q_D(WaylandDrag);
-    QtWayland::DataDevice *dataDevice = d->dataDevice();
+    Internal::DataDevice *dataDevice = d->dataDevice();
     if (!dataDevice)
         return;
     dataDevice->drop();
@@ -124,7 +124,7 @@ void WaylandDrag::drop()
 void WaylandDrag::cancelDrag()
 {
     Q_D(WaylandDrag);
-    QtWayland::DataDevice *dataDevice = d->dataDevice();
+    Internal::DataDevice *dataDevice = d->dataDevice();
     if (!dataDevice)
         return;
     dataDevice->cancelDrag();

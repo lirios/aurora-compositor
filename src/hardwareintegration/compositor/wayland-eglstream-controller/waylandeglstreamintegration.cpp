@@ -365,7 +365,7 @@ void WaylandEglStreamClientBufferIntegration::initializeHardware(struct wl_displ
     d->funcs->initialize(d->egl_display);
 }
 
-QtWayland::ClientBuffer *WaylandEglStreamClientBufferIntegration::createBufferFor(wl_resource *buffer)
+Internal::ClientBuffer *WaylandEglStreamClientBufferIntegration::createBufferFor(wl_resource *buffer)
 {
     if (wl_shm_buffer_get(buffer))
         return nullptr;

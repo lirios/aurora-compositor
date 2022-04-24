@@ -38,7 +38,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-namespace QtWayland {
+namespace Internal {
 
 WlShellIntegration::WlShellIntegration(WaylandQuickShellSurfaceItem *item)
     : WaylandQuickShellIntegration(item)

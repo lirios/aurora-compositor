@@ -49,7 +49,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-namespace QtWayland {
+namespace Internal {
 
 template<typename return_type>
 return_type fromResource(struct ::wl_resource *resource) {
@@ -58,7 +58,7 @@ return_type fromResource(struct ::wl_resource *resource) {
     return nullptr;
 }
 
-} // namespace QtWayland
+} // namespace Internal
 
 } // namespace Compositor
 

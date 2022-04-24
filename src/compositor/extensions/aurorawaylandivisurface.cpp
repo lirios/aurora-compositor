@@ -177,7 +177,7 @@ WaylandSurfaceRole *WaylandIviSurface::role()
  */
 WaylandIviSurface *WaylandIviSurface::fromResource(wl_resource *resource)
 {
-    if (auto p = QtWayland::fromResource<WaylandIviSurfacePrivate *>(resource))
+    if (auto p = Internal::fromResource<WaylandIviSurfacePrivate *>(resource))
         return p->q_func();
     return nullptr;
 }
@@ -204,7 +204,7 @@ void WaylandIviSurface::sendConfigure(const QSize &size)
 #if LIRI_FEATURE_aurora_compositor_quick
 WaylandQuickShellIntegration *WaylandIviSurface::createIntegration(WaylandQuickShellSurfaceItem *item)
 {
-    return new QtWayland::IviSurfaceIntegration(item);
+    return new Internal::IviSurfaceIntegration(item);
 }
 #endif
 
