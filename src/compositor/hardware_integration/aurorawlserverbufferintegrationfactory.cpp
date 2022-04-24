@@ -41,7 +41,7 @@ namespace Compositor {
 namespace QtWayland {
 
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
-    (QtWaylandServerBufferIntegrationFactoryInterface_iid, QLatin1String("/wayland-graphics-integration-server"), Qt::CaseInsensitive))
+    (QtWaylandServerBufferIntegrationFactoryInterface_iid, QLatin1String("/aurora/wayland-graphics-integration-server"), Qt::CaseInsensitive))
 
 QStringList ServerBufferIntegrationFactory::keys()
 {
