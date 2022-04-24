@@ -47,7 +47,7 @@
 #include <QtCore/QLoggingCategory>
 #include <QtCore/private/qcore_unix_p.h>
 
-#include <LiriLogind/Logind>
+#include <LiriAuroraLogind/Logind>
 
 #define ARRAY_LENGTH(a) (sizeof (a) / sizeof (a)[0])
 

@@ -50,7 +50,7 @@
 #include <QtGui/private/qtguiglobal_p.h>
 #include <QtFbSupport/private/qfbvthandler_p.h>
 
-#include <LiriLogind/LiriLogind>
+#include <LiriAuroraLogind/Logind>
 
 #include <errno.h>
 

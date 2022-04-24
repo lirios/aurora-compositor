@@ -40,7 +40,7 @@
 #include "qeglfshooks_p.h"
 #include "qeglfslogindhandler_p.h"
 
-#include <LiriLogind/Logind>
+#include <LiriAuroraLogind/Logind>
 
 using namespace Liri;
 

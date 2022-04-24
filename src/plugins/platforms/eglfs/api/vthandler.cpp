@@ -27,7 +27,7 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/private/qcore_unix_p.h>
 
-#include <LiriLogind/Logind>
+#include <LiriAuroraLogind/Logind>
 
 #include "vthandler.h"
 #include "vthandler_p.h"

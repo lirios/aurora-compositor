@@ -52,9 +52,9 @@
 #include <QtGui/QWindow>
 #include <qpa/qwindowsysteminterface.h>
 
-#include <Qt5Udev/Udev>
-#include <Qt5Udev/UdevEnumerate>
-#include <LiriLogind/LiriLogind>
+#include <LiriAuroraUdev/Udev>
+#include <LiriAuroraUdev/UdevEnumerate>
+#include <LiriAuroraLogind/Logind>
 
 #include <gbm.h>
 
