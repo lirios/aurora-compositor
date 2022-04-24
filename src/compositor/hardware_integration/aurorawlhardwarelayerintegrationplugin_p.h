@@ -55,7 +55,7 @@ namespace Internal {
 
 class HardwareLayerIntegration;
 
-#define QtWaylandHardwareLayerIntegrationFactoryInterface_iid "org.qt-project.Qt.Compositor.QtWaylandHardwareLayerIntegrationFactoryInterface.5.11"
+#define AuroraHardwareLayerIntegrationFactoryInterface_iid "org.qt-project.Qt.Compositor.AuroraHardwareLayerIntegrationFactoryInterface.5.11"
 
 class LIRIAURORACOMPOSITOR_EXPORT HardwareLayerIntegrationPlugin : public QObject
 {

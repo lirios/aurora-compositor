@@ -38,7 +38,7 @@ namespace Compositor {
 class WaylandDmabufClientBufferIntegrationPlugin : public Internal::ClientBufferIntegrationPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID QtWaylandClientBufferIntegrationFactoryInterface_iid FILE "linux-dmabuf-unstable-v1.json")
+    Q_PLUGIN_METADATA(IID AuroraClientBufferIntegrationFactoryInterface_iid FILE "linux-dmabuf-unstable-v1.json")
 public:
     Internal::ClientBufferIntegration *create(const QString& key, const QStringList& paramList) override;
 };

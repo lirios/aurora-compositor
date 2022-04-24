@@ -38,7 +38,7 @@ namespace Compositor {
 class WaylandEglClientBufferIntegrationPlugin : public Internal::ClientBufferIntegrationPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID QtWaylandClientBufferIntegrationFactoryInterface_iid FILE "wayland-egl.json")
+    Q_PLUGIN_METADATA(IID AuroraClientBufferIntegrationFactoryInterface_iid FILE "wayland-egl.json")
 public:
     Internal::ClientBufferIntegration *create(const QString&, const QStringList&) override;
 };

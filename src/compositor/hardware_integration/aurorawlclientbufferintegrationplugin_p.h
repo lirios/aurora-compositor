@@ -55,7 +55,7 @@ namespace Internal {
 
 class ClientBufferIntegration;
 
-#define QtWaylandClientBufferIntegrationFactoryInterface_iid "org.qt-project.Qt.WaylandCompositor.QtWaylandClientBufferIntegrationFactoryInterface.5.3"
+#define AuroraClientBufferIntegrationFactoryInterface_iid "org.qt-project.Qt.WaylandCompositor.AuroraClientBufferIntegrationFactoryInterface.5.3"
 
 class LIRIAURORACOMPOSITOR_EXPORT ClientBufferIntegrationPlugin : public QObject
 {

@@ -42,7 +42,7 @@ namespace Compositor {
 namespace Internal {
 
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
-    (QtWaylandHardwareLayerIntegrationFactoryInterface_iid, QLatin1String("/aurora/wayland-hardware-layer-integration"), Qt::CaseInsensitive))
+    (AuroraHardwareLayerIntegrationFactoryInterface_iid, QLatin1String("/aurora/wayland-hardware-layer-integration"), Qt::CaseInsensitive))
 
 QStringList HardwareLayerIntegrationFactory::keys()
 {

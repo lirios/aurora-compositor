@@ -37,7 +37,7 @@ namespace Compositor {
 class DrmEglServerBufferIntegrationPlugin : public Internal::ServerBufferIntegrationPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID QtWaylandServerBufferIntegrationFactoryInterface_iid FILE "drm-egl-server.json")
+    Q_PLUGIN_METADATA(IID AuroraServerBufferIntegrationFactoryInterface_iid FILE "drm-egl-server.json")
 public:
     Internal::ServerBufferIntegration *create(const QString&, const QStringList&) override;
 };

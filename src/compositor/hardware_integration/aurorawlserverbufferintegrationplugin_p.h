@@ -55,7 +55,7 @@ namespace Internal {
 
 class ServerBufferIntegration;
 
-#define QtWaylandServerBufferIntegrationFactoryInterface_iid "org.qt-project.Qt.Compositor.QtWaylandServerBufferIntegrationFactoryInterface.5.3"
+#define AuroraServerBufferIntegrationFactoryInterface_iid "org.qt-project.Qt.Compositor.AuroraServerBufferIntegrationFactoryInterface.5.3"
 
 class LIRIAURORACOMPOSITOR_EXPORT ServerBufferIntegrationPlugin : public QObject
 {

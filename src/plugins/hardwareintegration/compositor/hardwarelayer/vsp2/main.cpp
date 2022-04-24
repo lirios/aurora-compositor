@@ -37,7 +37,7 @@ namespace Compositor {
 class Vsp2HardwareLayerIntegrationPlugin : public Internal::HardwareLayerIntegrationPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID QtWaylandHardwareLayerIntegrationFactoryInterface_iid FILE "vsp2.json")
+    Q_PLUGIN_METADATA(IID AuroraHardwareLayerIntegrationFactoryInterface_iid FILE "vsp2.json")
 public:
     Internal::HardwareLayerIntegration *create(const QString&, const QStringList&) override;
 };

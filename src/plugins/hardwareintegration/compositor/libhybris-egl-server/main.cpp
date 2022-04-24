@@ -38,7 +38,7 @@ namespace Compositor {
 class LibHybrisEglServerBufferIntegrationPlugin : public Internal::ServerBufferIntegrationPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID QtWaylandServerBufferIntegrationFactoryInterface_iid FILE "libhybris-egl-server.json")
+    Q_PLUGIN_METADATA(IID AuroraServerBufferIntegrationFactoryInterface_iid FILE "libhybris-egl-server.json")
 public:
     Internal::ServerBufferIntegration *create(const QString&, const QStringList&);
 };
