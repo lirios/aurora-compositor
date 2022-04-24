@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/main.qml</file>
+        <file>qml/Chrome.qml</file>
+        <file>qml/CompositorOutput.qml</file>
+    </qresource>
+</RCC>
