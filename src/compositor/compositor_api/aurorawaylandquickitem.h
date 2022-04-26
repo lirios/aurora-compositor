@@ -189,7 +189,8 @@ Q_SIGNALS:
 protected:
     QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data) override;
 
-    WaylandQuickItem(WaylandQuickItemPrivate &dd, QQuickItem *parent = nullptr);
+private:
+    QScopedPointer<WaylandQuickItemPrivate> const d_ptr;
 };
 
 } // namespace Compositor

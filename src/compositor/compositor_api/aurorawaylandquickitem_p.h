@@ -139,11 +139,14 @@ private:
 #endif
 #endif // QT_CONFIG(opengl)
 
-class WaylandQuickItemPrivate : public QQuickItemPrivate
+class WaylandQuickItemPrivate
 {
     Q_DECLARE_PUBLIC(WaylandQuickItem)
 public:
-    WaylandQuickItemPrivate() = default;
+    WaylandQuickItemPrivate(WaylandQuickItem *self)
+        : q_ptr(self)
+    {
+    }
 
     void init()
     {
@@ -221,6 +224,9 @@ public:
     WaylandSurface::Origin origin = WaylandSurface::OriginTopLeft;
     QPointer<QObject> subsurfaceHandler;
     QList<WaylandSeat *> touchingSeats;
+
+private:
+    WaylandQuickItem *q_ptr = nullptr;
 };
 
 } // namespace Compositor

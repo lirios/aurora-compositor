@@ -65,6 +65,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandMouseTracker : public QQuickItem
 #endif
 public:
     WaylandMouseTracker(QQuickItem *parent = nullptr);
+    ~WaylandMouseTracker();
 
     qreal mouseX() const;
     qreal mouseY() const;
@@ -85,6 +86,9 @@ protected:
     void hoverMoveEvent(QHoverEvent *event) override;
     void hoverEnterEvent(QHoverEvent *event) override;
     void hoverLeaveEvent(QHoverEvent *event) override;
+
+private:
+    QScopedPointer<WaylandMouseTrackerPrivate> const d_ptr;
 };
 
 } // namespace Compositor

@@ -82,7 +82,8 @@ WaylandQuickShellSurfaceItem *WaylandQuickShellSurfaceItemPrivate::maybeCreateAu
  * Constructs a WaylandQuickWlShellSurfaceItem with the given \a parent.
  */
 WaylandQuickShellSurfaceItem::WaylandQuickShellSurfaceItem(QQuickItem *parent)
-    : WaylandQuickItem(*new WaylandQuickShellSurfaceItemPrivate(), parent)
+    : WaylandQuickItem(parent)
+    , d_ptr(new WaylandQuickShellSurfaceItemPrivate(this))
 {
 }
 
@@ -94,14 +95,6 @@ WaylandQuickShellSurfaceItem::~WaylandQuickShellSurfaceItem()
         removeEventFilter(d->m_shellIntegration);
         delete d->m_shellIntegration;
     }
-}
-
-/*!
- * \internal
- */
-WaylandQuickShellSurfaceItem::WaylandQuickShellSurfaceItem(WaylandQuickShellSurfaceItemPrivate &dd, QQuickItem *parent)
-    : WaylandQuickItem(dd, parent)
-{
 }
 
 /*!

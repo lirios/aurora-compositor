@@ -55,6 +55,7 @@
 
 #include <QtGui/QKeyEvent>
 #include <QtGui/QGuiApplication>
+#include <QtGui/QWindow>
 #include <QtGui/QScreen>
 
 #include <QtQuick/QSGSimpleTextureNode>
@@ -735,16 +736,8 @@ private:
  * Constructs a WaylandQuickItem with the given \a parent.
  */
 WaylandQuickItem::WaylandQuickItem(QQuickItem *parent)
-    : QQuickItem(*new WaylandQuickItemPrivate(), parent)
-{
-    d_func()->init();
-}
-
-/*!
- * \internal
- */
-WaylandQuickItem::WaylandQuickItem(WaylandQuickItemPrivate &dd, QQuickItem *parent)
-    : QQuickItem(dd, parent)
+    : QQuickItem(parent)
+    , d_ptr(new WaylandQuickItemPrivate(this))
 {
     d_func()->init();
 }
@@ -2097,10 +2090,12 @@ void WaylandQuickItem::handleDragStarted(WaylandDrag *drag)
 
 qreal WaylandQuickItemPrivate::scaleFactor() const
 {
+    Q_Q(const WaylandQuickItem);
+
     qreal f = view->output() ? view->output()->scaleFactor() : 1;
 #if !defined(Q_OS_MACOS)
-    if (window)
-        f /= window->devicePixelRatio();
+    if (q->window())
+        f /= q->window()->devicePixelRatio();
 #endif
     return f;
 }

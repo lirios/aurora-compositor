@@ -27,19 +27,22 @@
 **
 ****************************************************************************/
 
-#include "aurorawaylandmousetracker_p.h"
+#include <QCursor>
+#include <QImage>
+#include <QPixmap>
 
-#include <QtQuick/private/qquickitem_p.h>
+#include "aurorawaylandmousetracker_p.h"
 
 namespace Aurora {
 
 namespace Compositor {
 
-class WaylandMouseTrackerPrivate : public QQuickItemPrivate
+class WaylandMouseTrackerPrivate
 {
     Q_DECLARE_PUBLIC(WaylandMouseTracker)
 public:
-    WaylandMouseTrackerPrivate()
+    WaylandMouseTrackerPrivate(WaylandMouseTracker *self)
+        : q_ptr(self)
     {
         QImage cursorImage(64,64,QImage::Format_ARGB32);
         cursorImage.fill(Qt::transparent);
@@ -72,10 +75,14 @@ public:
     bool windowSystemCursorEnabled = false;
     QPixmap cursorPixmap;
     bool hovered = false;
+
+private:
+    WaylandMouseTracker *q_ptr = nullptr;
 };
 
 WaylandMouseTracker::WaylandMouseTracker(QQuickItem *parent)
-        : QQuickItem(*(new WaylandMouseTrackerPrivate), parent)
+    : QQuickItem(parent)
+    , d_ptr(new WaylandMouseTrackerPrivate(this))
 {
     Q_D(WaylandMouseTracker);
     setFiltersChildMouseEvents(true);
@@ -84,6 +91,10 @@ WaylandMouseTracker::WaylandMouseTracker(QQuickItem *parent)
 #if QT_CONFIG(cursor)
     setCursor(QCursor(d->cursorPixmap));
 #endif
+}
+
+WaylandMouseTracker::~WaylandMouseTracker()
+{
 }
 
 qreal WaylandMouseTracker::mouseX() const

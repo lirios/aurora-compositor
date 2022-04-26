@@ -109,12 +109,39 @@ void WaylandQuickOutput::setAutomaticFrameCallback(bool automatic)
     emit automaticFrameCallbackChanged();
 }
 
+static bool itemZOrder_sort(QQuickItem *lhs, QQuickItem *rhs)
+{
+    return lhs->z() < rhs->z();
+}
+
+static QList<QQuickItem *> paintOrderChildItems(QQuickItem *rootItem)
+{
+    const auto childItems = rootItem->childItems();
+
+    // If none of the items have set Z then the paint order list is the same as
+    // the childItems list.  This is by far the most common case.
+    bool haveZ = false;
+    for (int i = 0; i < childItems.count(); ++i) {
+        if (childItems.at(i)->z() != 0.) {
+            haveZ = true;
+            break;
+        }
+    }
+    if (haveZ) {
+        const auto sortedChildItems = new QList<QQuickItem*>(childItems);
+        std::stable_sort(sortedChildItems->begin(), sortedChildItems->end(), itemZOrder_sort);
+        return *sortedChildItems;
+    }
+
+    return childItems;
+}
+
 static QQuickItem* clickableItemAtPosition(QQuickItem *rootItem, const QPointF &position)
 {
     if (!rootItem->isEnabled() || !rootItem->isVisible())
         return nullptr;
 
-    QList<QQuickItem *> paintOrderItems = QQuickItemPrivate::get(rootItem)->paintOrderChildItems();
+    QList<QQuickItem *> paintOrderItems = paintOrderChildItems(rootItem);
     auto negativeZStart = paintOrderItems.crend();
     for (auto it = paintOrderItems.crbegin(); it != paintOrderItems.crend(); ++it) {
         if ((*it)->z() < 0) {

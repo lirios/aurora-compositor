@@ -79,8 +79,8 @@ Q_SIGNALS:
     void staysOnTopChanged();
     void staysOnBottomChanged();
 
-protected:
-    WaylandQuickShellSurfaceItem(WaylandQuickShellSurfaceItemPrivate &dd, QQuickItem *parent);
+private:
+    QScopedPointer<WaylandQuickShellSurfaceItemPrivate> const d_ptr;
 };
 
 } // namespace Compositor
