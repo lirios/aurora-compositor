@@ -1,9 +1,10 @@
 /****************************************************************************
 **
 ** Copyright (C) 2017 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+** Copyright (C) 2021 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the plugins of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial License Usage
@@ -40,27 +41,33 @@
 #ifndef QEDIDPARSER_P_H
 #define QEDIDPARSER_P_H
 
-#include <QtCore/QSize>
 #include <QtCore/QMap>
+#include <QtCore/QPointF>
+#include <QtCore/QSize>
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Aurora API. It exists purely as an
+// This file is not part of the Qt API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
+#include <QtGui/qtguiglobal.h>
+#include <QtCore/qlist.h>
+#include <QtCore/qpoint.h>
+#include <QtCore/qsize.h>
+#include <QtCore/qstring.h>
+#include <QtCore/private/qglobal_p.h>
+
 QT_BEGIN_NAMESPACE
 
-class QEdidParser
+class Q_GUI_EXPORT QEdidParser
 {
 public:
-    QEdidParser();
-
     bool parse(const QByteArray &blob);
 
     QString identifier;
@@ -68,10 +75,16 @@ public:
     QString model;
     QString serialNumber;
     QSizeF physicalSize;
+    qreal gamma;
+    QPointF redChromaticity;
+    QPointF greenChromaticity;
+    QPointF blueChromaticity;
+    QPointF whiteChromaticity;
+    QList<QList<uint16_t>> tables;
+    bool sRgb;
+    bool useTables;
 
 private:
-    QMap<QString, QString> m_vendorCache;
-
     QString parseEdidString(const quint8 *data);
 };
 
