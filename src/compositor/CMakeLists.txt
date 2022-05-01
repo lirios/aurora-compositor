@@ -68,6 +68,7 @@ liri_add_module(AuroraCompositor
         wayland_wrapper/aurorawldataoffer.cpp wayland_wrapper/aurorawldataoffer_p.h
         wayland_wrapper/aurorawldatasource.cpp wayland_wrapper/aurorawldatasource_p.h
         wayland_wrapper/aurorawlregion.cpp wayland_wrapper/aurorawlregion_p.h
+        utils/aurorafactoryloader.cpp utils/aurorafactoryloader_p.h
     RESOURCES
         compositor.qrc
     INCLUDE_DIRECTORIES
@@ -143,6 +144,8 @@ liri_extend_target(AuroraCompositor CONDITION TARGET Qt::OpenGL
         hardware_integration/aurorawlserverbufferintegration.cpp hardware_integration/aurorawlserverbufferintegration_p.h
         hardware_integration/aurorawlserverbufferintegrationfactory.cpp hardware_integration/aurorawlserverbufferintegrationfactory_p.h
         hardware_integration/aurorawlserverbufferintegrationplugin.cpp hardware_integration/aurorawlserverbufferintegrationplugin_p.h
+    INCLUDE_DIRECTORIES
+        utils
     PUBLIC_LIBRARIES
         Qt::OpenGL
     PKGCONFIG_DEPENDENCIES

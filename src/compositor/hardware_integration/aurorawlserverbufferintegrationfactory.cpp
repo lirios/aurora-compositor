@@ -27,12 +27,13 @@
 **
 ****************************************************************************/
 
+#include "aurorafactoryloader_p.h"
 #include "aurorawlserverbufferintegrationfactory_p.h"
 #include "aurorawlserverbufferintegrationplugin_p.h"
 #include "aurorawlserverbufferintegration_p.h"
-#include <QtCore/private/qfactoryloader_p.h>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDir>
+#include <QtCore/QPluginLoader>
 
 namespace Aurora {
 
@@ -40,8 +41,8 @@ namespace Compositor {
 
 namespace Internal {
 
-Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
-    (AuroraServerBufferIntegrationFactoryInterface_iid, QLatin1String("/aurora/wayland-graphics-integration-server"), Qt::CaseInsensitive))
+Q_GLOBAL_STATIC_WITH_ARGS(FactoryLoader, loader,
+    (AuroraServerBufferIntegrationFactoryInterface_iid, QLatin1String("aurora/wayland-graphics-integration-server"), Qt::CaseInsensitive))
 
 QStringList ServerBufferIntegrationFactory::keys()
 {
@@ -50,7 +51,7 @@ QStringList ServerBufferIntegrationFactory::keys()
 
 ServerBufferIntegration *ServerBufferIntegrationFactory::create(const QString &name, const QStringList &args)
 {
-    return qLoadPlugin<ServerBufferIntegration, ServerBufferIntegrationPlugin>(loader(), name, args);
+    return auroraLoadPlugin<ServerBufferIntegration, ServerBufferIntegrationPlugin>(loader(), name, args);
 }
 
 }

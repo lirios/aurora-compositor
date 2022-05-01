@@ -27,11 +27,11 @@
 **
 ****************************************************************************/
 
+#include "aurorafactoryloader_p.h"
 #include "aurorawlhardwarelayerintegrationfactory_p.h"
 #include "aurorawlhardwarelayerintegrationplugin_p.h"
 #include "aurorawlhardwarelayerintegration_p.h"
 
-#include <QtCore/private/qfactoryloader_p.h>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDir>
 
@@ -41,8 +41,8 @@ namespace Compositor {
 
 namespace Internal {
 
-Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
-    (AuroraHardwareLayerIntegrationFactoryInterface_iid, QLatin1String("/aurora/wayland-hardware-layer-integration"), Qt::CaseInsensitive))
+Q_GLOBAL_STATIC_WITH_ARGS(FactoryLoader, loader,
+    (AuroraHardwareLayerIntegrationFactoryInterface_iid, QLatin1String("aurora/wayland-hardware-layer-integration"), Qt::CaseInsensitive))
 
 QStringList HardwareLayerIntegrationFactory::keys()
 {
@@ -51,7 +51,7 @@ QStringList HardwareLayerIntegrationFactory::keys()
 
 HardwareLayerIntegration *HardwareLayerIntegrationFactory::create(const QString &name, const QStringList &args)
 {
-    return qLoadPlugin<HardwareLayerIntegration, HardwareLayerIntegrationPlugin>(loader(), name, args);
+    return auroraLoadPlugin<HardwareLayerIntegration, HardwareLayerIntegrationPlugin>(loader(), name, args);
 }
 
 }
