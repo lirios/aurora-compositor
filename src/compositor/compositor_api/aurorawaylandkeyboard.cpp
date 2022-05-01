@@ -28,7 +28,6 @@
 **
 ****************************************************************************/
 
-#include "qtwaylandcompositorglobal_p.h"
 #include "aurorawaylandkeyboard.h"
 #include "aurorawaylandkeyboard_p.h"
 #include <LiriAuroraCompositor/WaylandKeymap>

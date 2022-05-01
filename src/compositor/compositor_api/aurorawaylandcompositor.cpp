@@ -28,7 +28,6 @@
 **
 ****************************************************************************/
 
-#include "qtwaylandcompositorglobal_p.h"
 #include "aurorawaylandcompositor.h"
 #include "aurorawaylandcompositor_p.h"
 
