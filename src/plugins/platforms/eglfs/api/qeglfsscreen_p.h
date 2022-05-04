@@ -90,6 +90,9 @@ public:
 
     void handleCursorMove(const QPoint &pos);
 
+    qreal scaleFactor() const;
+    void setScaleFactor(qreal factor);
+
     virtual void setCursorTheme(const QString &name, int size);
 
     virtual bool modeChangeRequested() const { return m_modeChangeRequested; }
@@ -105,9 +108,9 @@ private:
     void setPrimarySurface(EGLSurface surface);
 
     EGLDisplay m_dpy;
-    QPointer<QWindow> m_pointerWindow;
     EGLSurface m_surface;
     QPlatformCursor *m_cursor;
+    qreal m_scaleFactor = 1;
     bool m_recordingEnabled = false;
 
     friend class QEglFSWindow;

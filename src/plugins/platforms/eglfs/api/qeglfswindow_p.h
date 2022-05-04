@@ -64,6 +64,7 @@ QT_BEGIN_NAMESPACE
 
 class QOpenGLCompositorBackingStore;
 class QPlatformTextureList;
+
 #ifndef QT_NO_OPENGL
 class Q_EGLFS_EXPORT QEglFSWindow : public QPlatformWindow, public QOpenGLCompositorWindow
 #else
@@ -96,6 +97,9 @@ public:
     EGLNativeWindowType eglWindow() const;
     EGLSurface surface() const;
     QEglFSScreen *screen() const override;
+#if QT_CONFIG(vulkan)
+    virtual void *vulkanSurfacePtr() { return nullptr; }
+#endif
 
     bool hasNativeWindow() const { return m_flags.testFlag(HasNativeWindow); }
 
@@ -119,7 +123,6 @@ protected:
     QOpenGLCompositorBackingStore *m_backingStore;
     QOpenGLContext *m_rasterCompositingContext;
 #endif
-    bool m_raster;
     WId m_winId;
 
     EGLSurface m_surface;

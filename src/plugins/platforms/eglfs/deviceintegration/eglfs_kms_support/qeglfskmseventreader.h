@@ -1,8 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-** Copyright (C) 2016 The Qt Company Ltd.
-** Copyright (C) 2016 Pelagicore AG
+** Copyright (C) 2019 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the plugins of the Qt Toolkit.
@@ -39,51 +37,63 @@
 **
 ****************************************************************************/
 
-#ifndef QEGLFSKMSGBMDEVICE_H
-#define QEGLFSKMSGBMDEVICE_H
+#ifndef QEGLFSKKMSEVENTREADER_H
+#define QEGLFSKKMSEVENTREADER_H
 
-#include <LiriEglFSKmsSupport/qeglfskmsdevice.h>
-
-#include "qeglfskmsgbmcursor.h"
-
-#include <gbm.h>
+#include "qeglfsglobal_p.h"
+#include <QObject>
+#include <QThread>
+#include <QMutex>
+#include <QWaitCondition>
 
 QT_BEGIN_NAMESPACE
 
-class QEglFSKmsScreen;
+class QEglFSKmsDevice;
 
-class QEglFSKmsGbmDevice: public QEglFSKmsDevice
+struct QEglFSKmsEventHost : public QObject
+{
+    struct PendingFlipWait {
+        void *key;
+        QMutex *mutex;
+        QWaitCondition *cond;
+    };
+
+    static const int MAX_FLIPS = 32;
+    void *completedFlips[MAX_FLIPS] = {};
+    QEglFSKmsEventHost::PendingFlipWait pendingFlipWaits[MAX_FLIPS] = {};
+
+    bool event(QEvent *event) override;
+    void updateStatus();
+    void handlePageFlipCompleted(void *key);
+};
+
+class QEglFSKmsEventReaderThread : public QThread
 {
 public:
-    QEglFSKmsGbmDevice(QKmsScreenConfig *screenConfig, const QString &path);
-
-    bool open() override;
-    void close() override;
-
-    void *nativeDisplay() const override;
-    gbm_device *gbmDevice() const;
-
-    QPlatformCursor *globalCursor() const;
-    void destroyGlobalCursor();
-
-    QPlatformScreen *createScreen(const QKmsOutput &output) override;
-    QPlatformScreen *createHeadlessScreen() override;
-    void registerScreenCloning(QPlatformScreen *screen,
-                               QPlatformScreen *screenThisScreenClones,
-                               const QVector<QPlatformScreen *> &screensCloningThisScreen) override;
-    void registerScreen(QPlatformScreen *screen,
-                        bool isPrimary,
-                        const QPoint &virtualPos,
-                        const QList<QPlatformScreen *> &virtualSiblings) override;
+    QEglFSKmsEventReaderThread(int fd) : m_fd(fd) { }
+    void run() override;
+    QEglFSKmsEventHost *eventHost() { return &m_ev; }
 
 private:
-    Q_DISABLE_COPY(QEglFSKmsGbmDevice)
+    int m_fd;
+    QEglFSKmsEventHost m_ev;
+};
 
-    gbm_device *m_gbm_device;
+class Q_EGLFS_EXPORT QEglFSKmsEventReader
+{
+public:
+    ~QEglFSKmsEventReader();
 
-    QEglFSKmsGbmCursor *m_globalCursor;
+    void create(QEglFSKmsDevice *device);
+    void destroy();
+
+    void startWaitFlip(void *key, QMutex *mutex, QWaitCondition *cond);
+
+private:
+    QEglFSKmsDevice *m_device = nullptr;
+    QEglFSKmsEventReaderThread *m_thread = nullptr;
 };
 
 QT_END_NAMESPACE
 
-#endif // QEGLFSKMSGBMDEVICE_H
+#endif // QEGLFSKKMSEVENTREADER_H

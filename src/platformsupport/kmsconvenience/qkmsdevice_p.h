@@ -57,6 +57,7 @@
 #include <qpa/qplatformscreen.h>
 #include <QtCore/QMap>
 #include <QtCore/QVariant>
+#include <QtCore/QThreadStorage>
 
 #include <xf86drm.h>
 #include <xf86drmMode.h>
@@ -125,14 +126,14 @@ public:
 private:
     void loadConfig();
 
-    QMap<QString, QVariantMap> m_outputSettings;
     QString m_devicePath;
-    QSize m_headlessSize;
-    VirtualDesktopLayout m_virtualDesktopLayout;
     bool m_headless;
+    QSize m_headlessSize;
     bool m_hwCursor;
     bool m_separateScreens;
     bool m_pbuffers;
+    VirtualDesktopLayout m_virtualDesktopLayout;
+    QMap<QString, QVariantMap> m_outputSettings;
 };
 
 // NB! QKmsPlane does not store the current state and offers no functions to
@@ -178,6 +179,9 @@ struct QKmsPlane
     uint32_t crtcwidthPropertyId = 0;
     uint32_t crtcheightPropertyId = 0;
     uint32_t zposPropertyId = 0;
+    uint32_t blendOpPropertyId = 0;
+
+    uint32_t activeCrtcId = 0;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QKmsPlane::Rotations)
@@ -201,6 +205,7 @@ struct QKmsOutput
     uint32_t forced_plane_id = 0;
     bool forced_plane_set = false;
     uint32_t drm_format = DRM_FORMAT_XRGB8888;
+    bool drm_format_requested_by_user = false;
     QString clone_source;
     QVector<QKmsPlane> available_planes;
     struct QKmsPlane *eglfs_plane = nullptr;
@@ -237,10 +242,9 @@ public:
     bool hasAtomicSupport();
 
 #ifdef EGLFS_ENABLE_DRM_ATOMIC
-    bool atomicCommit(void *user_data);
-    void atomicReset();
-
-    drmModeAtomicReq *atomic_request();
+    drmModeAtomicReq *threadLocalAtomicRequest();
+    bool threadLocalAtomicCommit(void *user_data);
+    void threadLocalAtomicReset();
 #endif
     void createScreens();
 
@@ -280,8 +284,11 @@ protected:
     bool m_has_atomic_support;
 
 #ifdef EGLFS_ENABLE_DRM_ATOMIC
-    drmModeAtomicReq *m_atomic_request;
-    drmModeAtomicReq *m_previous_request;
+    struct AtomicReqs {
+        drmModeAtomicReq *request = nullptr;
+        drmModeAtomicReq *previous_request = nullptr;
+    };
+    QThreadStorage<AtomicReqs> m_atomicReqs;
 #endif
     quint32 m_crtc_allocator;
 

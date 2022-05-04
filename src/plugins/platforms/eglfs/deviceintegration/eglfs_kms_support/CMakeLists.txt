@@ -8,6 +8,7 @@ liri_add_module(EglFSKmsSupport
     SOURCES
         qeglfskmsdevice.cpp
         qeglfskmsdevice.h
+        qeglfskmseventreader.cpp qeglfskmseventreader.h
         qeglfskmshelpers.h
         qeglfskmsintegration.cpp
         qeglfskmsintegration.h

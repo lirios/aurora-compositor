@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include <qpa/qplatformintegrationplugin.h>
-#include "api/qeglfsintegration_p.h"
+#include "qeglfsintegration_p.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -57,6 +57,7 @@ QPlatformIntegration* QEglFSIntegrationPlugin::create(const QString& system, con
         return new QEglFSIntegration;
 
     return 0;
+    return nullptr;
 }
 
 QT_END_NAMESPACE

@@ -52,6 +52,7 @@
 #include <QScreen>
 #include <QDir>
 #if QT_CONFIG(regularexpression)
+#  include <QFileInfo>
 #  include <QRegularExpression>
 #endif
 #include <QLoggingCategory>
@@ -143,8 +144,13 @@ int QEglFSDeviceIntegration::framebufferIndex() const
 {
     int fbIndex = 0;
 #if QT_CONFIG(regularexpression)
-    QRegularExpression fbIndexRx(QStringLiteral("fb(\\d+)"));
-    QRegularExpressionMatch match = fbIndexRx.match(QString::fromLocal8Bit(fbDeviceName()));
+    QRegularExpression fbIndexRx(QLatin1String("fb(\\d+)"));
+    QFileInfo fbinfo(QString::fromLocal8Bit(fbDeviceName()));
+    QRegularExpressionMatch match;
+    if (fbinfo.isSymLink())
+        match = fbIndexRx.match(fbinfo.symLinkTarget());
+    else
+        match = fbIndexRx.match(fbinfo.fileName());
     if (match.hasMatch())
         fbIndex = match.captured(1).toInt();
 #endif
@@ -179,7 +185,9 @@ void QEglFSDeviceIntegration::platformDestroy()
 
 EGLNativeDisplayType QEglFSDeviceIntegration::platformDisplay() const
 {
-    return EGL_DEFAULT_DISPLAY;
+    bool displayOk;
+    const int defaultDisplay = qEnvironmentVariableIntValue("QT_QPA_EGLFS_DEFAULT_DISPLAY", &displayOk);
+    return displayOk ? EGLNativeDisplayType(quintptr(defaultDisplay)) : EGL_DEFAULT_DISPLAY;
 }
 
 EGLDisplay QEglFSDeviceIntegration::createDisplay(EGLNativeDisplayType nativeDisplay)
@@ -200,16 +208,8 @@ void QEglFSDeviceIntegration::screenInit()
 void QEglFSDeviceIntegration::screenDestroy()
 {
     QGuiApplication *app = qGuiApp;
-#if QT_VERSION < QT_VERSION_CHECK(5, 12, 3)
-    QEglFSIntegration *platformIntegration = static_cast<QEglFSIntegration *>(
-        QGuiApplicationPrivate::platformIntegration());
-#endif
     while (!app->screens().isEmpty())
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 3)
         QWindowSystemInterface::handleScreenRemoved(app->screens().constLast()->handle());
-#else
-        platformIntegration->removeScreen(app->screens().constLast()->handle());
-#endif
 }
 
 QSizeF QEglFSDeviceIntegration::physicalScreenSize() const
@@ -382,6 +382,14 @@ void *QEglFSDeviceIntegration::wlDisplay() const
 {
     return nullptr;
 }
+
+#if QT_CONFIG(vulkan)
+QPlatformVulkanInstance *QEglFSDeviceIntegration::createPlatformVulkanInstance(QVulkanInstance *instance)
+{
+    Q_UNUSED(instance);
+    return nullptr;
+}
+#endif
 
 EGLConfig QEglFSDeviceIntegration::chooseConfig(EGLDisplay display, const QSurfaceFormat &format)
 {

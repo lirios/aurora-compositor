@@ -51,12 +51,13 @@
 
 QT_BEGIN_NAMESPACE
 
+class QEglFSKmsDevice;
 class QEglFSKmsInterruptHandler;
 
 class Q_EGLFS_EXPORT QEglFSKmsScreen : public QEglFSScreen
 {
 public:
-    QEglFSKmsScreen(QKmsDevice *device, const QKmsOutput &output, bool headless = false);
+    QEglFSKmsScreen(QEglFSKmsDevice *device, const QKmsOutput &output, bool headless = false);
     ~QEglFSKmsScreen();
 
     void setVirtualPosition(const QPoint &pos);
@@ -68,7 +69,6 @@ public:
 
     QSizeF physicalSize() const override;
     QDpi logicalDpi() const override;
-    qreal pixelDensity() const override;
     Qt::ScreenOrientation nativeOrientation() const override;
     Qt::ScreenOrientation orientation() const override;
 
@@ -88,7 +88,7 @@ public:
     int currentMode() const override;
     int preferredMode() const override;
 
-    QKmsDevice *device() const { return m_device; }
+    QEglFSKmsDevice *device() const { return m_device; }
 
     virtual void waitForFlip();
 
@@ -102,16 +102,16 @@ public:
 
     bool setMode(const QSize &size, qreal refreshRate);
 
-    qreal scaleFactor() const;
-    void setScaleFactor(qreal value);
+    bool isCursorOutOfRange() const { return m_cursorOutOfRange; }
+    void setCursorOutOfRange(bool b) { m_cursorOutOfRange = b; }
 
 protected:
-    QKmsDevice *m_device;
+    QEglFSKmsDevice *m_device;
 
     QKmsOutput m_output;
     QEdidParser m_edid;
     QPoint m_pos;
-    qreal m_scaleFactor = -1;
+    bool m_cursorOutOfRange;
 
     QList<QPlatformScreen *> m_siblings;
 

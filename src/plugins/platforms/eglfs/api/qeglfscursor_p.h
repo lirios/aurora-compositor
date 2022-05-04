@@ -60,6 +60,7 @@
 #include <QtGui/private/qinputdevicemanager_p.h>
 
 #include <LiriEglFSDeviceIntegration/private/xcursortheme_p.h>
+#include <QtCore/qvector.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -129,15 +130,15 @@ private:
 
     // current cursor information
     struct Cursor {
-        Cursor() : customCursorKey(0), shape(Qt::BlankCursor), customCursorPending(false), useCustomCursor(false) { }
+        Cursor() : shape(Qt::BlankCursor), customCursorPending(false), customCursorKey(0), useCustomCursor(false) { }
+        Qt::CursorShape shape;
         QRectF textureRect; // normalized rect inside texture
         QSize size; // size of the cursor
         QPoint hotSpot;
         QImage customCursorImage;
         QPoint pos; // current cursor position
-        qint64 customCursorKey;
-        Qt::CursorShape shape;
         bool customCursorPending;
+        qint64 customCursorKey;
         bool useCustomCursor;
     } m_cursor;
 
@@ -147,29 +148,17 @@ private:
         int cursorsPerRow;
         int width, height; // width and height of the atlas
         int cursorWidth, cursorHeight; // width and height of cursors inside the atlas
-        QList<QPoint> hotSpots;
+        QVector<QPoint> hotSpots;
         QImage image; // valid until it's uploaded
     } m_cursorAtlas;
 
-    QMatrix4x4 m_rotationMatrix;
+    bool m_visible;
     QEglFSScreen *m_screen;
     QPlatformScreen *m_activeScreen;
     QEglFSCursorDeviceListener *m_deviceListener;
     Liri::Platform::XcursorTheme m_cursorTheme;
     bool m_updateRequested;
-    bool m_visible;
-
-    struct GraphicsContextData {
-        GraphicsContextData() : program(nullptr), textureEntry(0), matEntry(0),
-            customCursorTexture(0), atlasTexture(0), customCursorKey(0) { }
-        QOpenGLShaderProgram *program;
-        int textureEntry;
-        int matEntry;
-        uint customCursorTexture;
-        uint atlasTexture;
-        qint64 customCursorKey;
-    };
-    QHash<QOpenGLContext *, GraphicsContextData> m_gfx;
+    QMatrix4x4 m_rotationMatrix;
 };
 #endif // QT_CONFIG(opengl)
 

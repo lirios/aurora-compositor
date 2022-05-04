@@ -112,7 +112,7 @@ QEglFSKmsGbmScreen::FrameBuffer *QEglFSKmsGbmScreen::framebufferForBufferObject(
     return fb.take();
 }
 
-QEglFSKmsGbmScreen::QEglFSKmsGbmScreen(QKmsDevice *device, const QKmsOutput &output, bool headless)
+QEglFSKmsGbmScreen::QEglFSKmsGbmScreen(QEglFSKmsDevice *device, const QKmsOutput &output, bool headless)
     : QEglFSKmsScreen(device, output, headless)
     , m_gbm_surface(nullptr)
     , m_gbm_bo_current(nullptr)
@@ -158,7 +158,7 @@ gbm_surface *QEglFSKmsGbmScreen::createGbmSurface(EGLConfig eglConfig, const QSi
     const auto gbmDevice = static_cast<QEglFSKmsGbmDevice *>(device())->gbmDevice();
     EGLint native_format = -1;
     EGLBoolean success = eglGetConfigAttrib(display(), eglConfig, EGL_NATIVE_VISUAL_ID, &native_format);
-    qCDebug(qLcEglfsKmsDebug) << "Got native format" << hex << native_format << dec << "from eglGetConfigAttrib() with return code" << bool(success);
+    qCDebug(qLcEglfsKmsDebug) << "Got native format" << Qt::hex << native_format << Qt::dec << "from eglGetConfigAttrib() with return code" << bool(success);
     gbm_surface *gbmSurface = nullptr;
 
     if (success)
@@ -239,23 +239,18 @@ void QEglFSKmsGbmScreen::ensureModeSet(uint32_t fb)
 
         bool doModeSet = true;
         drmModeCrtcPtr currentMode = drmModeGetCrtc(fd, op.crtc_id);
-        const bool alreadySet = currentMode && !memcmp(&currentMode->mode, &op.modes[op.mode], sizeof(drmModeModeInfo));
+        const bool alreadySet = currentMode && currentMode->buffer_id == fb && !memcmp(&currentMode->mode, &op.modes[op.mode], sizeof(drmModeModeInfo));
         if (currentMode)
             drmModeFreeCrtc(currentMode);
-        if (alreadySet) {
-            static bool alwaysDoSet = qEnvironmentVariableIntValue("QT_QPA_EGLFS_ALWAYS_SET_MODE");
-            if (!alwaysDoSet) {
-                qCDebug(qLcEglfsKmsDebug, "Mode already set, skipping modesetting for screen %s", qPrintable(name()));
-                doModeSet = false;
-            }
-        }
+        if (alreadySet)
+            doModeSet = false;
 
         if (doModeSet) {
             qCDebug(qLcEglfsKmsDebug, "Setting mode for screen %s", qPrintable(name()));
 
             if (device()->hasAtomicSupport()) {
 #ifdef EGLFS_ENABLE_DRM_ATOMIC
-                drmModeAtomicReq *request = device()->atomic_request();
+                drmModeAtomicReq *request = device()->threadLocalAtomicRequest();
                 if (request) {
                     drmModeAtomicAddProperty(request, op.connector_id, op.crtcIdPropertyId, op.crtc_id);
                     drmModeAtomicAddProperty(request, op.crtc_id, op.modeIdPropertyId, op.mode_blob_id);
@@ -292,19 +287,15 @@ void QEglFSKmsGbmScreen::waitForFlip()
     if (!m_gbm_bo_next)
         return;
 
-    QMutexLocker lock(&m_waitForFlipMutex);
-    while (m_gbm_bo_next) {
-        drmEventContext drmEvent;
-        memset(&drmEvent, 0, sizeof(drmEvent));
-        drmEvent.version = 2;
-        drmEvent.vblank_handler = nullptr;
-        drmEvent.page_flip_handler = pageFlipHandler;
-        drmHandleEvent(device()->fd(), &drmEvent);
-    }
+    m_flipMutex.lock();
+    device()->eventReader()->startWaitFlip(this, &m_flipMutex, &m_flipCond);
+    m_flipCond.wait(&m_flipMutex);
+    m_flipMutex.unlock();
+
+    flipFinished();
 
 #if EGLFS_ENABLE_DRM_ATOMIC
-    if (device()->hasAtomicSupport())
-        device()->atomicReset();
+    device()->threadLocalAtomicReset();
 #endif
 }
 
@@ -343,16 +334,16 @@ void QEglFSKmsGbmScreen::flip()
 
     if (device()->hasAtomicSupport()) {
 #ifdef EGLFS_ENABLE_DRM_ATOMIC
-        drmModeAtomicReq *request = device()->atomic_request();
+        drmModeAtomicReq *request = device()->threadLocalAtomicRequest();
         if (request) {
             drmModeAtomicAddProperty(request, op.eglfs_plane->id, op.eglfs_plane->framebufferPropertyId, fb->fb);
             drmModeAtomicAddProperty(request, op.eglfs_plane->id, op.eglfs_plane->crtcPropertyId, op.crtc_id);
             drmModeAtomicAddProperty(request, op.eglfs_plane->id, op.eglfs_plane->srcwidthPropertyId,
-                                     output().size.width() << 16);
+                                     op.size.width() << 16);
             drmModeAtomicAddProperty(request, op.eglfs_plane->id, op.eglfs_plane->srcXPropertyId, 0);
             drmModeAtomicAddProperty(request, op.eglfs_plane->id, op.eglfs_plane->srcYPropertyId, 0);
             drmModeAtomicAddProperty(request, op.eglfs_plane->id, op.eglfs_plane->srcheightPropertyId,
-                                     output().size.height() << 16);
+                                     op.size.height() << 16);
             drmModeAtomicAddProperty(request, op.eglfs_plane->id, op.eglfs_plane->crtcXPropertyId, 0);
             drmModeAtomicAddProperty(request, op.eglfs_plane->id, op.eglfs_plane->crtcYPropertyId, 0);
             drmModeAtomicAddProperty(request, op.eglfs_plane->id, op.eglfs_plane->crtcwidthPropertyId,
@@ -363,6 +354,9 @@ void QEglFSKmsGbmScreen::flip()
             static int zpos = qEnvironmentVariableIntValue("QT_QPA_EGLFS_KMS_ZPOS");
             if (zpos)
                 drmModeAtomicAddProperty(request, op.eglfs_plane->id, op.eglfs_plane->zposPropertyId, zpos);
+            static uint blendOp = uint(qEnvironmentVariableIntValue("QT_QPA_EGLFS_KMS_BLEND_OP"));
+            if (blendOp)
+                drmModeAtomicAddProperty(request, op.eglfs_plane->id, op.eglfs_plane->blendOpPropertyId, blendOp);
         }
 #endif
     } else {
@@ -387,7 +381,7 @@ void QEglFSKmsGbmScreen::flip()
 
             if (device()->hasAtomicSupport()) {
 #ifdef EGLFS_ENABLE_DRM_ATOMIC
-                drmModeAtomicReq *request = device()->atomic_request();
+                drmModeAtomicReq *request = device()->threadLocalAtomicRequest();
                 if (request) {
                     drmModeAtomicAddProperty(request, d.screen->output().eglfs_plane->id,
                                                       d.screen->output().eglfs_plane->framebufferPropertyId, fb->fb);
@@ -410,8 +404,7 @@ void QEglFSKmsGbmScreen::flip()
     }
 
 #ifdef EGLFS_ENABLE_DRM_ATOMIC
-    if (device()->hasAtomicSupport())
-         device()->atomicCommit(this);
+    device()->threadLocalAtomicCommit(this);
 #endif
 }
 
@@ -423,20 +416,7 @@ void QEglFSKmsGbmScreen::setCursorTheme(const QString &name, int size)
 
 void QEglFSKmsGbmScreen::setModeChangeRequested(bool enabled)
 {
-    QMutexLocker lock(&m_waitForFlipMutex);
     m_modeChangeRequested = enabled;
-}
-
-void QEglFSKmsGbmScreen::pageFlipHandler(int fd, unsigned int sequence, unsigned int tv_sec, unsigned int tv_usec, void *user_data)
-{
-    Q_UNUSED(fd);
-    Q_UNUSED(sequence);
-    Q_UNUSED(tv_sec);
-    Q_UNUSED(tv_usec);
-
-    QEglFSKmsGbmScreen *screen = static_cast<QEglFSKmsGbmScreen *>(user_data);
-    screen->flipFinished();
-    screen->recordFrame(tv_sec, tv_usec);
 }
 
 void QEglFSKmsGbmScreen::flipFinished()

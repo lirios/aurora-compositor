@@ -65,9 +65,6 @@ void QEglFSKmsDevice::registerScreen(QPlatformScreen *screen,
     static_cast<QEglFSIntegration *>(QGuiApplicationPrivate::platformIntegration())->addScreen(s, isPrimary);
 #endif
 
-    qCInfo(qLcEglfsKmsDebug) << "Adding QPlatformScreen" << s << "(" << s->name() << ")"
-                             << "to QPA with geometry" << s->geometry()
-                             << "and isPrimary=" << isPrimary;
 }
 
 QT_END_NAMESPACE

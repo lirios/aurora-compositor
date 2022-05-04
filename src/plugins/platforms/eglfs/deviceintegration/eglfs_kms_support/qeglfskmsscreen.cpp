@@ -40,6 +40,7 @@
 ****************************************************************************/
 
 #include "qeglfskmsscreen.h"
+#include "qeglfskmsdevice.h"
 #include "qeglfsintegration_p.h"
 #include "vthandler.h"
 
@@ -69,10 +70,11 @@ private:
     QEglFSKmsScreen *m_screen;
 };
 
-QEglFSKmsScreen::QEglFSKmsScreen(QKmsDevice *device, const QKmsOutput &output, bool headless)
+QEglFSKmsScreen::QEglFSKmsScreen(QEglFSKmsDevice *device, const QKmsOutput &output, bool headless)
     : QEglFSScreen(static_cast<QEglFSIntegration *>(QGuiApplicationPrivate::platformIntegration())->display())
     , m_device(device)
     , m_output(output)
+    , m_cursorOutOfRange(false)
     , m_powerState(PowerStateOn)
     , m_interruptHandler(new QEglFSKmsInterruptHandler(this))
     , m_headless(headless)
@@ -169,14 +171,6 @@ QDpi QEglFSKmsScreen::logicalDpi() const
         return QDpi(100, 100);
 }
 
-qreal QEglFSKmsScreen::pixelDensity() const
-{
-    if (m_scaleFactor > 0)
-        return m_scaleFactor;
-
-    return qMax(1, int(logicalDpi().first / qreal(100)));
-}
-
 Qt::ScreenOrientation QEglFSKmsScreen::nativeOrientation() const
 {
     return Qt::PrimaryOrientation;
@@ -261,16 +255,6 @@ void QEglFSKmsScreen::setPowerState(QPlatformScreen::PowerState state)
 {
     m_output.setPowerState(m_device, state);
     m_powerState = state;
-}
-
-qreal QEglFSKmsScreen::scaleFactor() const
-{
-    return m_scaleFactor;
-}
-
-void QEglFSKmsScreen::setScaleFactor(qreal value)
-{
-    m_scaleFactor = value;
 }
 
 bool QEglFSKmsScreen::setMode(const QSize &size, qreal refreshRate)

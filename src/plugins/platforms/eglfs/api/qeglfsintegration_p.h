@@ -52,7 +52,9 @@
 //
 
 #include "qeglfsglobal_p.h"
+#include <QtCore/QPointer>
 #include <QtCore/QVariant>
+#include <QtGui/QWindow>
 #include <qpa/qplatformintegration.h>
 #include <qpa/qplatformnativeinterface.h>
 #include <qpa/qplatformscreen.h>
@@ -96,6 +98,9 @@ public:
     QPlatformOpenGLContext *createPlatformOpenGLContext(QOpenGLContext *context) const override;
     QPlatformOffscreenSurface *createPlatformOffscreenSurface(QOffscreenSurface *surface) const override;
 #endif
+#if QT_CONFIG(vulkan)
+    QPlatformVulkanInstance *createPlatformVulkanInstance(QVulkanInstance *instance) const override;
+#endif
     bool hasCapability(QPlatformIntegration::Capability cap) const override;
 
     QPlatformNativeInterface *nativeInterface() const override;
@@ -113,10 +118,8 @@ public:
 
     Liri::Platform::VtHandler *vtHandler() { return m_vtHandler.data(); }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 12, 3)
-    void addScreen(QPlatformScreen *screen, bool isPrimary = false);
-    void removeScreen(QPlatformScreen *screen);
-#endif
+    QPointer<QWindow> pointerWindow() { return m_pointerWindow; }
+    void setPointerWindow(QWindow *pointerWindow) { m_pointerWindow = pointerWindow; }
 
 private:
     EGLNativeDisplayType nativeDisplay() const;
@@ -136,6 +139,7 @@ private:
     QScopedPointer<Liri::Platform::VtHandler> m_vtHandler;
     QScopedPointer<Liri::Platform::LibInputManager> m_liHandler;
     QEglFSLogindHandler *m_logindHandler;
+    QPointer<QWindow> m_pointerWindow;
     bool m_disableInputHandlers;
 };
 

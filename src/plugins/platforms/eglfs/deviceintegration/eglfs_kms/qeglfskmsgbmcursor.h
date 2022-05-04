@@ -41,7 +41,7 @@
 #define QEGLFSKMSGBMCURSOR_H
 
 #include <qpa/qplatformcursor.h>
-#include <QtCore/QList>
+#include <QtCore/QVector>
 #include <QtGui/QImage>
 #include <QtGui/private/qinputdevicemanager_p.h>
 
@@ -88,6 +88,7 @@ public:
     void updateMouseStatus();
 
     void setCursorTheme(const QString &name, int size);
+    void reevaluateVisibilityForScreens() { setPos(pos()); }
 
 private:
     void initCursorAtlas();
@@ -115,7 +116,7 @@ private:
         int cursorsPerRow;
         int width, height; // width and height of the atlas
         int cursorWidth, cursorHeight; // width and height of cursors inside the atlas
-        QList<QPoint> hotSpots;
+        QVector<QPoint> hotSpots;
         QImage image;
     } m_cursorAtlas;
 };

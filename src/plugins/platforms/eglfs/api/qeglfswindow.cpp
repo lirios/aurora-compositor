@@ -61,14 +61,12 @@ QT_BEGIN_NAMESPACE
 QEglFSWindow::QEglFSWindow(QWindow *w)
     : QPlatformWindow(w),
 #ifndef QT_NO_OPENGL
-      m_backingStore(0),
-      m_rasterCompositingContext(0),
+      m_backingStore(nullptr),
+      m_rasterCompositingContext(nullptr),
 #endif
-      m_raster(false),
       m_winId(0),
       m_surface(EGL_NO_SURFACE),
-      m_window(0),
-      m_flags()
+      m_window(0)
 {
 }
 
@@ -93,11 +91,6 @@ void QEglFSWindow::create()
         return;
 
     m_winId = newWId();
-
-    // Save the original surface type before changing to OpenGLSurface.
-    m_raster = (window()->surfaceType() == QSurface::RasterSurface);
-    if (m_raster) // change to OpenGL, but not for RasterGLSurface
-        window()->setSurfaceType(QSurface::OpenGLSurface);
 
     if (window()->type() == Qt::Desktop) {
         QRect fullscreenRect(QPoint(), screen()->availableGeometry().size());
@@ -155,18 +148,17 @@ void QEglFSWindow::create()
         compositor->setRotation(qEnvironmentVariableIntValue("QT_QPA_EGLFS_ROTATION"));
         // If there is a "root" window into which raster and QOpenGLWidget content is
         // composited, all other contexts must share with its context.
-        if (!qt_gl_global_share_context()) {
+        if (!qt_gl_global_share_context())
             qt_gl_set_global_share_context(m_rasterCompositingContext);
-            // What we set up here is in effect equivalent to the application setting
-            // AA_ShareOpenGLContexts. Set the attribute to be fully consistent.
-            QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
-        }
     }
 #endif // QT_NO_OPENGL
 }
 
 void QEglFSWindow::destroy()
 {
+    if (!m_flags.testFlag(Created))
+        return; // already destroyed
+
 #ifndef QT_NO_OPENGL
     QOpenGLCompositor::instance()->removeWindow(this);
 #endif
@@ -189,7 +181,7 @@ void QEglFSWindow::destroy()
 #endif
     }
 
-    m_flags = Flags();
+    m_flags = { };
 }
 
 void QEglFSWindow::invalidateSurface()
@@ -211,14 +203,13 @@ void QEglFSWindow::resetSurface()
     m_format = q_glFormatFromConfig(display, m_config, platformFormat);
     const QSize surfaceSize = screen()->rawGeometry().size();
     m_window = qt_egl_device_integration()->createNativeWindow(this, surfaceSize, m_format);
-    m_surface = eglCreateWindowSurface(display, m_config, m_window, NULL);
 }
 
 bool QEglFSWindow::resizeSurface(const QSize &size)
 {
     EGLDisplay display = screen()->display();
     EGLNativeWindowType window = qt_egl_device_integration()->createNativeWindow(this, size, m_format);
-    EGLSurface surface = eglCreateWindowSurface(display, m_config, window, NULL);
+    EGLSurface surface = eglCreateWindowSurface(display, m_config, window, nullptr);
 
     if (Q_UNLIKELY(surface == EGL_NO_SURFACE)) {
         qt_egl_device_integration()->destroyNativeWindow(window);
@@ -355,7 +346,8 @@ QEglFSScreen *QEglFSWindow::screen() const
 
 bool QEglFSWindow::isRaster() const
 {
-    return m_raster || window()->surfaceType() == QSurface::RasterGLSurface;
+    const QWindow::SurfaceType type = window()->surfaceType();
+    return type == QSurface::RasterSurface || type == QSurface::RasterGLSurface;
 }
 
 #ifndef QT_NO_OPENGL
@@ -369,7 +361,7 @@ const QPlatformTextureList *QEglFSWindow::textures() const
     if (m_backingStore)
         return m_backingStore->textures();
 
-    return 0;
+    return nullptr;
 }
 
 void QEglFSWindow::endCompositing()
