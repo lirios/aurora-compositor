@@ -51,6 +51,11 @@ liri_add_module(AuroraCompositor
         extensions/aurorawaylandtextinput.cpp extensions/aurorawaylandtextinput.h extensions/aurorawaylandtextinput_p.h
         extensions/aurorawaylandtextinputmanager.cpp extensions/aurorawaylandtextinputmanager.h extensions/aurorawaylandtextinputmanager_p.h
         extensions/aurorawaylandviewporter.cpp extensions/aurorawaylandviewporter.h extensions/aurorawaylandviewporter_p.h
+        extensions/aurorawaylandwlrexportdmabufv1.cpp extensions/aurorawaylandwlrexportdmabufv1.h extensions/aurorawaylandwlrexportdmabufv1_p.h
+        extensions/aurorawaylandwlrforeigntoplevelmanagementv1.cpp extensions/aurorawaylandwlrforeigntoplevelmanagementv1.h extensions/aurorawaylandwlrforeigntoplevelmanagementv1_p.h
+        extensions/aurorawaylandwlrlayershellv1.cpp extensions/aurorawaylandwlrlayershellv1.h extensions/aurorawaylandwlrlayershellv1_p.h
+        extensions/aurorawaylandwlrscreencopyv1.cpp extensions/aurorawaylandwlrscreencopyv1.h extensions/aurorawaylandwlrscreencopyv1_p.h
+        extensions/aurorawaylandwlroutputmanagementv1.cpp extensions/aurorawaylandwlroutputmanagementv1.h extensions/aurorawaylandwlroutputmanagementv1_p.h
         extensions/aurorawaylandwlshell.cpp extensions/aurorawaylandwlshell.h extensions/aurorawaylandwlshell_p.h
         extensions/aurorawaylandxdgdecorationv1.cpp extensions/aurorawaylandxdgdecorationv1.h extensions/aurorawaylandxdgdecorationv1_p.h
         extensions/aurorawaylandxdgoutputv1.cpp extensions/aurorawaylandxdgoutputv1.h extensions/aurorawaylandxdgoutputv1_p.h
@@ -115,6 +120,11 @@ liri_generate_wayland_protocol_server_sources(AuroraCompositor
         ${CMAKE_CURRENT_SOURCE_DIR}/../3rdparty/protocol/text-input-unstable-v4-wip.xml
         ${CMAKE_CURRENT_SOURCE_DIR}/../3rdparty/protocol/viewporter.xml
         ${CMAKE_CURRENT_SOURCE_DIR}/../3rdparty/protocol/wayland.xml
+        ${CMAKE_CURRENT_SOURCE_DIR}/../3rdparty/protocol/wlr-export-dmabuf-unstable-v1.xml
+        ${CMAKE_CURRENT_SOURCE_DIR}/../3rdparty/protocol/wlr-foreign-toplevel-management-unstable-v1.xml
+        ${CMAKE_CURRENT_SOURCE_DIR}/../3rdparty/protocol/wlr-layer-shell-unstable-v1.xml
+        ${CMAKE_CURRENT_SOURCE_DIR}/../3rdparty/protocol/wlr-output-management-unstable-v1.xml
+        ${CMAKE_CURRENT_SOURCE_DIR}/../3rdparty/protocol/wlr-screencopy-unstable-v1.xml
         ${CMAKE_CURRENT_SOURCE_DIR}/../3rdparty/protocol/xdg-decoration-unstable-v1.xml
         ${CMAKE_CURRENT_SOURCE_DIR}/../3rdparty/protocol/xdg-output-unstable-v1.xml
         ${CMAKE_CURRENT_SOURCE_DIR}/../3rdparty/protocol/xdg-shell.xml
@@ -172,9 +182,12 @@ liri_extend_target(AuroraCompositor CONDITION TARGET Qt::Quick
         extensions/aurorawaylandivisurfaceintegration.cpp extensions/aurorawaylandivisurfaceintegration_p.h
         extensions/aurorawaylandquickshellintegration.cpp extensions/aurorawaylandquickshellintegration.h
         extensions/aurorawaylandquickshellsurfaceitem.cpp extensions/aurorawaylandquickshellsurfaceitem.h extensions/aurorawaylandquickshellsurfaceitem_p.h
+        extensions/aurorawaylandquickwlroutputmanagementv1.cpp extensions/aurorawaylandquickwlroutputmanagementv1.h
         extensions/aurorawaylandquickxdgoutputv1.cpp extensions/aurorawaylandquickxdgoutputv1.h
         extensions/aurorawaylandwlshellintegration.cpp extensions/aurorawaylandwlshellintegration_p.h
         extensions/aurorawaylandxdgshellintegration.cpp extensions/aurorawaylandxdgshellintegration_p.h
+        extensions/aurorawaylandwlrlayersurfaceitem.cpp extensions/aurorawaylandwlrlayersurfaceitem.h extensions/aurorawaylandwlrlayersurfaceitem_p.h
+        extensions/aurorawaylandsurfacelayout.cpp extensions/aurorawaylandsurfacelayout.h extensions/aurorawaylandsurfacelayout_p.h
         extensions/aurorawaylandpresentationtime.cpp extensions/aurorawaylandpresentationtime_p.h extensions/aurorawaylandpresentationtime_p_p.h
         global/aurorawaylandquickextension.h
     CLASS_HEADERS

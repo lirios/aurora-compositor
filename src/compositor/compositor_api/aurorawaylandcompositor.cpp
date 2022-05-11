@@ -92,6 +92,10 @@ Q_LOGGING_CATEGORY(gLcAuroraCompositorInputMethods, "aurora.compositor.inputmeth
 #if QT_WAYLAND_TEXT_INPUT_V4_WIP
 Q_LOGGING_CATEGORY(gLcAuroraCompositorTextInput, "aurora.compositor.textinput")
 #endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
+Q_LOGGING_CATEGORY(gLcAuroraCompositorWlrLayerShellV1, "aurora.compositor.wlrlayershellv1")
+Q_LOGGING_CATEGORY(gLcAuroraCompositorWlrExportDmabufV1, "aurora.compositor.wlrexportdmabufv1")
+Q_LOGGING_CATEGORY(gLcAuroraCompositorWlrForeignToplevelManagementV1, "aurora.compositor.wlrforeigntoplevelmanagementv1")
+Q_LOGGING_CATEGORY(gLcAuroraCompositorWlrScreencopyV1, "aurora.compositor.wlrscreencopyv1")
 
 namespace Internal {
 
