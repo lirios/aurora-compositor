@@ -31,9 +31,9 @@
 
 struct libinput_event_gesture;
 
-namespace Liri {
+namespace Aurora {
 
-namespace Platform {
+namespace PlatformSupport {
 
 class LibInputHandler;
 
@@ -51,8 +51,8 @@ public:
     void handleSwipeUpdate(libinput_event_gesture *event);
 };
 
-} // namespace Platform
+} // namespace PlatformSupport
 
-} // namespace Liri
+} // namespace Aurora
 
 #endif // LIRI_LIBINPUTGESTURE_H

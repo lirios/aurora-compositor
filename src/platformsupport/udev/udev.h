@@ -28,7 +28,9 @@
 
 #include <LiriAuroraUdev/liriauroraudevglobal.h>
 
-namespace QtUdev {
+namespace Aurora {
+
+namespace PlatformSupport {
 
 class UdevDevice;
 class UdevPrivate;
@@ -50,6 +52,8 @@ private:
     UdevPrivate *const d_ptr;
 };
 
-} // namespace QtUdev
+} // namespace PlatformSupport
+
+} // namespace Aurora
 
 #endif // QTUDEV_H

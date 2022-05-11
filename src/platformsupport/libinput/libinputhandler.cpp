@@ -34,9 +34,9 @@
 #include "libinputhandler.h"
 #include "libinputhandler_p.h"
 
-namespace Liri {
+namespace Aurora {
 
-namespace Platform {
+namespace PlatformSupport {
 
 Q_LOGGING_CATEGORY(gLcLibinput, "aurora.libinput", QtInfoMsg)
 
@@ -119,9 +119,9 @@ void LibInputHandlerPrivate::initialize()
     qCDebug(gLcLibinput) << "Initializing libinput";
 
     // Create context
-    udev = new QtUdev::Udev;
+    udev = new Aurora::PlatformSupport::Udev;
     li = libinput_udev_create_context(&liInterface, nullptr,
-                                      QtUdev::UdevPrivate::get(udev)->udev);
+                                      Aurora::PlatformSupport::UdevPrivate::get(udev)->udev);
     if (Q_UNLIKELY(!li)) {
         qFatal("Unable to get libinput context");
         return;
@@ -139,7 +139,7 @@ void LibInputHandlerPrivate::initialize()
     // Assign current seat, don't use XDG_SEAT directly as it's not
     // reliable when we are not in a login session such as when
     // we are spawned by systemd --user
-    QString seat = Liri::Logind::instance()->seat();
+    QString seat = Aurora::PlatformSupport::Logind::instance()->seat();
     if (seat.isEmpty()) {
         qFatal("Cannot determine seat, aborting...");
         return;
@@ -522,6 +522,6 @@ void LibInputHandler::handleEvents()
     }
 }
 
-} // namespace Platform
+} // namespace PlatformSupport
 
-} // namespace Liri
+} // namespace Aurora

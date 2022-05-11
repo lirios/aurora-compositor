@@ -42,7 +42,7 @@
 
 #include <LiriAuroraLogind/Logind>
 
-using namespace Liri;
+using namespace Aurora::PlatformSupport;
 
 QEglFSLogindHandler::QEglFSLogindHandler()
     : QObject()

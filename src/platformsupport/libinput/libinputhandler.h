@@ -34,9 +34,9 @@
 
 class QTouchDevice;
 
-namespace Liri {
+namespace Aurora {
 
-namespace Platform {
+namespace PlatformSupport {
 
 class LibInputHandlerPrivate;
 
@@ -116,16 +116,16 @@ Q_SIGNALS:
     void touchDeviceRegistered(QTouchDevice *td);
     void touchDeviceUnregistered(QTouchDevice *td);
 
-    void keyPressed(const Liri::Platform::LibInputKeyEvent &event);
-    void keyReleased(const Liri::Platform::LibInputKeyEvent &event);
+    void keyPressed(const Aurora::PlatformSupport::LibInputKeyEvent &event);
+    void keyReleased(const Aurora::PlatformSupport::LibInputKeyEvent &event);
 
-    void mousePressed(const Liri::Platform::LibInputMouseEvent &event);
-    void mouseReleased(const Liri::Platform::LibInputMouseEvent &event);
-    void mouseMoved(const Liri::Platform::LibInputMouseEvent &event);
-    void mouseWheel(const Liri::Platform::LibInputMouseEvent &event);
+    void mousePressed(const Aurora::PlatformSupport::LibInputMouseEvent &event);
+    void mouseReleased(const Aurora::PlatformSupport::LibInputMouseEvent &event);
+    void mouseMoved(const Aurora::PlatformSupport::LibInputMouseEvent &event);
+    void mouseWheel(const Aurora::PlatformSupport::LibInputMouseEvent &event);
 
-    void touchEvent(const Liri::Platform::LibInputTouchEvent &event);
-    void touchCancel(const Liri::Platform::LibInputTouchEvent &event);
+    void touchEvent(const Aurora::PlatformSupport::LibInputTouchEvent &event);
+    void touchCancel(const Aurora::PlatformSupport::LibInputTouchEvent &event);
 
 private Q_SLOTS:
     void handleEvents();
@@ -136,12 +136,12 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(LibInputHandler::Capabilities)
 
-} // namespace Platform
+} // namespace PlatformSupport
 
-} // namespace Liri
+} // namespace Aurora
 
-Q_DECLARE_METATYPE(Liri::Platform::LibInputKeyEvent)
-Q_DECLARE_METATYPE(Liri::Platform::LibInputMouseEvent)
-Q_DECLARE_METATYPE(Liri::Platform::LibInputTouchEvent)
+Q_DECLARE_METATYPE(Aurora::PlatformSupport::LibInputKeyEvent)
+Q_DECLARE_METATYPE(Aurora::PlatformSupport::LibInputMouseEvent)
+Q_DECLARE_METATYPE(Aurora::PlatformSupport::LibInputTouchEvent)
 
 #endif // LIRI_LIBINPUTHANDLER_H

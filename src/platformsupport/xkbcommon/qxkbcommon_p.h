@@ -68,7 +68,7 @@ class QPlatformInputContext;
 
 namespace Aurora {
 
-namespace Compositor {
+namespace PlatformSupport {
 
 Q_DECLARE_LOGGING_CATEGORY(gLcXkbcommon)
 
@@ -121,7 +121,7 @@ public:
     using ScopedXKBContext = std::unique_ptr<struct xkb_context, XKBContextDeleter>;
 };
 
-} // namespace Compositor
+} // namespace PlatformSupport
 
 } // namespace Aurora
 

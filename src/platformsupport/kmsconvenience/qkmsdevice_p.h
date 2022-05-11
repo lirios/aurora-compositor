@@ -98,7 +98,9 @@
 #define DRM_MODE_PROP_SIGNED_RANGE DRM_MODE_PROP_TYPE(2)
 #endif
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace PlatformSupport {
 
 class QKmsDevice;
 
@@ -298,6 +300,8 @@ private:
     Q_DISABLE_COPY(QKmsDevice)
 };
 
-QT_END_NAMESPACE
+} // namespace PlatformSupport
+
+} // namespace Aurora
 
 #endif

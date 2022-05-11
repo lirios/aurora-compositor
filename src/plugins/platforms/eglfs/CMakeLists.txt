@@ -69,7 +69,7 @@ liri_add_module(EglFSDeviceIntegration
         Qt5FbSupport::Qt5FbSupport
         Liri::AuroraLibInput
         Liri::AuroraLibInputPrivate
-        Liri::PlatformHeaders
+        Liri::AuroraPlatformHeaders
         Liri::AuroraUdev
         Liri::AuroraLogind
         PkgConfig::EGL

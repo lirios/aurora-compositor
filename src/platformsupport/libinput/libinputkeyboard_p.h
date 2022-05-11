@@ -51,9 +51,9 @@
 // We mean it.
 //
 
-namespace Liri {
+namespace Aurora {
 
-namespace Platform {
+namespace PlatformSupport {
 
 class LIRIAURORALIBINPUT_EXPORT LibInputKeyboardPrivate
 {
@@ -86,8 +86,8 @@ private:
     LibInputKeyboard *q_ptr = nullptr;
 };
 
-} // namespace Platform
+} // namespace PlatformSupport
 
-} // namespace Liri
+} // namespace Aurora
 
 #endif // LIRI_LIBINPUTKEYBOARD_P_H

@@ -44,7 +44,9 @@
 
 Q_DECLARE_LOGGING_CATEGORY(gLcLogind)
 
-namespace Liri {
+namespace Aurora {
+
+namespace PlatformSupport {
 
 class Logind;
 
@@ -86,4 +88,6 @@ private:
     void getSeat();
 };
 
-} // namespace Liri
+} // namespace PlatformSupport
+
+} // namespace Aurora

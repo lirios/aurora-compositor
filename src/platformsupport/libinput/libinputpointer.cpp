@@ -43,9 +43,9 @@
 
 #include <libinput.h>
 
-namespace Liri {
+namespace Aurora {
 
-namespace Platform {
+namespace PlatformSupport {
 
 LibInputPointer::LibInputPointer(LibInputHandler *handler)
     : m_handler(handler)
@@ -167,6 +167,6 @@ void LibInputPointer::processMotion(const QPoint &pos)
     Q_EMIT m_handler->mouseMoved(event);
 }
 
-} // namespace Platform
+} // namespace PlatformSupport
 
-} // namespace Liri
+} // namespace Aurora

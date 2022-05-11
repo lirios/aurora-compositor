@@ -32,9 +32,9 @@
 
 #include <xkbcommon/xkbcommon.h>
 
-namespace Liri {
+namespace Aurora {
 
-namespace Platform {
+namespace PlatformSupport {
 
 class EglFSXkb
 {
@@ -44,8 +44,8 @@ public:
     static Qt::KeyboardModifiers modifiers(xkb_state *state);
 };
 
-} // namespace Platform
+} // namespace PlatformSupport
 
-} // namespace Liri
+} // namespace Aurora
 
 #endif // LIRI_EGLFSXKB_H

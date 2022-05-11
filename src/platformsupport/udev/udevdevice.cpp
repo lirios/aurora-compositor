@@ -27,7 +27,9 @@
 #include "udevdevice.h"
 #include "udevdevice_p.h"
 
-namespace QtUdev {
+namespace Aurora {
+
+namespace PlatformSupport {
 
 static inline QStringList listFromEntries(udev_list_entry *l)
 {
@@ -251,4 +253,6 @@ QDebug operator<<(QDebug dbg, const UdevDevice &device)
     return dbg;
 }
 
-} // namespace QtUdev
+} // namespace PlatformSupport
+
+} // namespace Aurora

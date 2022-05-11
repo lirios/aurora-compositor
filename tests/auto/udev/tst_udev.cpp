@@ -28,7 +28,7 @@
 
 #include <umockdev.h>
 
-using namespace QtUdev;
+using namespace Aurora::PlatformSupport;
 
 class TestUdev : public QObject
 {

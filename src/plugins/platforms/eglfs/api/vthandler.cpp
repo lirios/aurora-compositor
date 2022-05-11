@@ -59,11 +59,9 @@ extern "C" {
 
 Q_LOGGING_CATEGORY(lcVtHandler, "aurora.eglfs.vthandler", QtInfoMsg)
 
-using namespace Liri;
+namespace Aurora {
 
-namespace Liri {
-
-namespace Platform {
+namespace PlatformSupport {
 
 static VtHandler *vth;
 
@@ -432,8 +430,8 @@ void VtHandler::activate(quint32 nr)
     d->setActive(false);
 }
 
-} // namespace Platform
+} // namespace PlatformSupport
 
-} // namespace Liri
+} // namespace Aurora
 
 #include "moc_vthandler.cpp"

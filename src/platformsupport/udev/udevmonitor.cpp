@@ -29,7 +29,9 @@
 #include "udevmonitor.h"
 #include "udevmonitor_p.h"
 
-namespace QtUdev {
+namespace Aurora {
+
+namespace PlatformSupport {
 
 /*
  * UdevMonitorPrivate
@@ -133,6 +135,8 @@ void UdevMonitor::filterTag(const QString &tag)
     udev_monitor_filter_add_match_tag(d->monitor, qPrintable(tag));
 }
 
-} // namespace QtUdev
+} // namespace PlatformSupport
+
+} // namespace Aurora
 
 #include "moc_udevmonitor.cpp"

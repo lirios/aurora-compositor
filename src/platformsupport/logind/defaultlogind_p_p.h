@@ -34,9 +34,11 @@
 // We mean it.
 //
 
-#include "logind.h"
+#include <LiriAuroraLogind/Logind>
 
-namespace Liri {
+namespace Aurora {
+
+namespace PlatformSupport {
 
 class DefaultLogind : public Logind
 {
@@ -45,4 +47,6 @@ public:
     explicit DefaultLogind(QObject *parent = nullptr);
 };
 
-} // namespace Liri
+} // namespace PlatformSupport
+
+} // namespace Aurora

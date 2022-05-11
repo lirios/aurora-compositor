@@ -30,9 +30,9 @@
 
 Q_DECLARE_LOGGING_CATEGORY(lcVtHandler)
 
-namespace Liri {
+namespace Aurora {
 
-namespace Platform {
+namespace PlatformSupport {
 
 class VtHandlerPrivate;
 
@@ -59,6 +59,6 @@ private:
     VtHandlerPrivate *const d_ptr;
 };
 
-} // namespace Platform
+} // namespace PlatformSupport
 
-} // namespace Liri
+} // namespace Aurora

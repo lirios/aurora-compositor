@@ -29,7 +29,9 @@
 
 Q_LOGGING_CATEGORY(gLcUdev, "aurora.udev")
 
-namespace QtUdev {
+namespace Aurora {
+
+namespace PlatformSupport {
 
 /*
  * UdevPrivate
@@ -128,4 +130,6 @@ UdevDevice *Udev::deviceFromSysfsPath(const QString &sysfsPath) const
     return device;
 }
 
-} // namespace QtUdev
+} // namespace PlatformSupport
+
+} // namespace Aurora

@@ -83,7 +83,7 @@
 
 #include <QtPlatformHeaders/qeglfsfunctions.h>
 
-using namespace Liri::Platform;
+using namespace Aurora::PlatformSupport;
 
 static void initResources()
 {
@@ -432,15 +432,15 @@ QPlatformNativeInterface::NativeResourceForContextFunction QEglFSIntegration::na
 
 QFunctionPointer QEglFSIntegration::platformFunction(const QByteArray &function) const
 {
-    if (function == Liri::Platform::EglFSFunctions::setCursorThemeIdentifier())
+    if (function == Aurora::PlatformSupport::EglFSFunctions::setCursorThemeIdentifier())
         return QFunctionPointer(setCursorThemeStatic);
-    else if (function == Liri::Platform::EglFSFunctions::getPowerStateIdentifier())
+    else if (function == Aurora::PlatformSupport::EglFSFunctions::getPowerStateIdentifier())
         return QFunctionPointer(getPowerStateStatic);
-    else if (function == Liri::Platform::EglFSFunctions::setPowerStateIdentifier())
+    else if (function == Aurora::PlatformSupport::EglFSFunctions::setPowerStateIdentifier())
         return QFunctionPointer(setPowerStateStatic);
-    else if (function == Liri::Platform::EglFSFunctions::enableScreenCastIdentifier())
+    else if (function == Aurora::PlatformSupport::EglFSFunctions::enableScreenCastIdentifier())
         return QFunctionPointer(enableScreenCastStatic);
-    else if (function == Liri::Platform::EglFSFunctions::disableScreenCastIdentifier())
+    else if (function == Aurora::PlatformSupport::EglFSFunctions::disableScreenCastIdentifier())
         return QFunctionPointer(disableScreenCastStatic);
 
     return qt_egl_device_integration()->platformFunction(function);
@@ -448,7 +448,7 @@ QFunctionPointer QEglFSIntegration::platformFunction(const QByteArray &function)
 
 void QEglFSIntegration::createInputHandlers()
 {
-    m_liHandler.reset(new Liri::Platform::LibInputManager(this));
+    m_liHandler.reset(new Aurora::PlatformSupport::LibInputManager(this));
 }
 
 void QEglFSIntegration::setCursorThemeStatic(const QString &name, int size)
@@ -461,35 +461,35 @@ void QEglFSIntegration::setCursorThemeStatic(const QString &name, int size)
     }
 }
 
-Liri::Platform::EglFSFunctions::PowerState QEglFSIntegration::getPowerStateStatic(QScreen *screen)
+Aurora::PlatformSupport::EglFSFunctions::PowerState QEglFSIntegration::getPowerStateStatic(QScreen *screen)
 {
     QPlatformScreen::PowerState powerState = screen->handle()->powerState();
     switch (powerState) {
     case QPlatformScreen::PowerStateOn:
-        return Liri::Platform::EglFSFunctions::PowerStateOn;
+        return Aurora::PlatformSupport::EglFSFunctions::PowerStateOn;
     case QPlatformScreen::PowerStateOff:
-        return Liri::Platform::EglFSFunctions::PowerStateOff;
+        return Aurora::PlatformSupport::EglFSFunctions::PowerStateOff;
     case QPlatformScreen::PowerStateStandby:
-        return Liri::Platform::EglFSFunctions::PowerStateStandby;
+        return Aurora::PlatformSupport::EglFSFunctions::PowerStateStandby;
     case QPlatformScreen::PowerStateSuspend:
-        return Liri::Platform::EglFSFunctions::PowerStateSuspend;
+        return Aurora::PlatformSupport::EglFSFunctions::PowerStateSuspend;
     }
     Q_UNREACHABLE();
 }
 
-void QEglFSIntegration::setPowerStateStatic(QScreen *screen, Liri::Platform::EglFSFunctions::PowerState powerState)
+void QEglFSIntegration::setPowerStateStatic(QScreen *screen, Aurora::PlatformSupport::EglFSFunctions::PowerState powerState)
 {
     switch (powerState) {
-    case Liri::Platform::EglFSFunctions::PowerStateOn:
+    case Aurora::PlatformSupport::EglFSFunctions::PowerStateOn:
         screen->handle()->setPowerState(QPlatformScreen::PowerStateOn);
         break;
-    case Liri::Platform::EglFSFunctions::PowerStateOff:
+    case Aurora::PlatformSupport::EglFSFunctions::PowerStateOff:
         screen->handle()->setPowerState(QPlatformScreen::PowerStateOff);
         break;
-    case Liri::Platform::EglFSFunctions::PowerStateStandby:
+    case Aurora::PlatformSupport::EglFSFunctions::PowerStateStandby:
         screen->handle()->setPowerState(QPlatformScreen::PowerStateStandby);
         break;
-    case Liri::Platform::EglFSFunctions::PowerStateSuspend:
+    case Aurora::PlatformSupport::EglFSFunctions::PowerStateSuspend:
         screen->handle()->setPowerState(QPlatformScreen::PowerStateSuspend);
         break;
     }

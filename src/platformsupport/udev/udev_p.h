@@ -45,7 +45,9 @@ extern "C" {
 
 Q_DECLARE_LOGGING_CATEGORY(gLcUdev)
 
-namespace QtUdev {
+namespace Aurora {
+
+namespace PlatformSupport {
 
 class Udev;
 
@@ -60,7 +62,9 @@ public:
     struct udev *udev;
 };
 
-} // namespace QtUdev
+} // namespace PlatformSupport
+
+} // namespace Aurora
 
 #endif // QTUDEV_P_H
 

@@ -27,7 +27,7 @@
 
 #include "fakelogind.h"
 
-using namespace Liri;
+using namespace Aurora::PlatformSupport;
 
 class CustomLogind : public Logind
 {

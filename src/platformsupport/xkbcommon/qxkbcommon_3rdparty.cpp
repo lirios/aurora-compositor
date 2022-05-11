@@ -109,7 +109,7 @@ static void qt_UCSConvertCase(uint32_t code, xkb_keysym_t *lower, xkb_keysym_t *
 
 namespace Aurora {
 
-namespace Compositor {
+namespace PlatformSupport {
 
 void QXkbCommon::xkbcommon_XConvertCase(xkb_keysym_t sym, xkb_keysym_t *lower, xkb_keysym_t *upper)
 {
@@ -222,6 +222,6 @@ void QXkbCommon::xkbcommon_XConvertCase(xkb_keysym_t sym, xkb_keysym_t *lower, x
     }
 }
 
-} // namespace Compositor
+} // namespace PlatformSupport
 
 } // namespace Aurora

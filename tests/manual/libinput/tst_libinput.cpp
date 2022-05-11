@@ -27,8 +27,7 @@
 #include <LiriAuroraLibInput/LibInputHandler>
 #include <LiriAuroraLogind/Logind>
 
-using namespace Liri;
-using namespace Liri::Platform;
+using namespace Aurora::PlatformSupport;
 
 int main(int argc, char *argv[])
 {

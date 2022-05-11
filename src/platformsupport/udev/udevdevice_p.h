@@ -39,7 +39,9 @@ extern "C" {
 #include <libudev.h>
 }
 
-namespace QtUdev {
+namespace Aurora {
+
+namespace PlatformSupport {
 
 class UdevDevicePrivate
 {
@@ -50,6 +52,8 @@ public:
     udev_device *device = nullptr;
 };
 
-} // namespace QtUdev
+} // namespace PlatformSupport
+
+} // namespace Aurora
 
 #endif // QTUDEVDEVICE_P_H

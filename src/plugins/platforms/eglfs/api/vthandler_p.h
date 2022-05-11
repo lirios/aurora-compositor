@@ -26,12 +26,11 @@
 
 #pragma once
 
-namespace Liri {
+namespace Aurora {
+
+namespace PlatformSupport {
 
 class Logind;
-
-namespace Platform {
-
 class VtHandler;
 
 class VtHandlerPrivate
@@ -54,7 +53,7 @@ public:
     static bool isValidVt(int fd);
     static void signalHandler(int sigNo);
 
-    Liri::Logind *logind;
+    Logind *logind;
 
     int signalFd[2];
     QSocketNotifier *notifier;
@@ -71,6 +70,6 @@ protected:
     VtHandler *q_ptr;
 };
 
-} // namespace Platform
+} // namespace PlatformSupport
 
-} // namespace Liri
+} // namespace Aurora

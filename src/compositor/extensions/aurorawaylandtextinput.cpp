@@ -45,6 +45,10 @@
 #include <LiriAuroraXkbCommonSupport/private/qxkbcommon_p.h>
 #endif
 
+#if LIRI_FEATURE_aurora_xkbcommon
+using namespace Aurora::PlatformSupport;
+#endif
+
 namespace Aurora {
 
 namespace Compositor {

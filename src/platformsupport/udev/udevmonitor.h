@@ -28,7 +28,9 @@
 
 #include <LiriAuroraUdev/liriauroraudevglobal.h>
 
-namespace QtUdev {
+namespace Aurora {
+
+namespace PlatformSupport {
 
 class Udev;
 class UdevDevice;
@@ -48,11 +50,11 @@ public:
     void filterTag(const QString &tag);
 
 Q_SIGNALS:
-    void deviceAdded(const QtUdev::UdevDevice &device);
-    void deviceRemoved(const QtUdev::UdevDevice &device);
-    void deviceChanged(const QtUdev::UdevDevice &device);
-    void deviceOnlined(const QtUdev::UdevDevice &device);
-    void deviceOfflined(const QtUdev::UdevDevice &device);
+    void deviceAdded(const Aurora::PlatformSupport::UdevDevice &device);
+    void deviceRemoved(const Aurora::PlatformSupport::UdevDevice &device);
+    void deviceChanged(const Aurora::PlatformSupport::UdevDevice &device);
+    void deviceOnlined(const Aurora::PlatformSupport::UdevDevice &device);
+    void deviceOfflined(const Aurora::PlatformSupport::UdevDevice &device);
 
 private:
     UdevMonitorPrivate *const d_ptr;
@@ -60,6 +62,8 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_udevEventHandler())
 };
 
-} // namespace QtUdev
+} // namespace PlatformSupport
+
+} // namespace Aurora
 
 #endif // QTUDEVMONITOR_H

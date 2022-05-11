@@ -43,7 +43,9 @@ extern "C" {
 
 class LogindSeat;
 
-namespace QtUdev {
+namespace Aurora {
+
+namespace PlatformSupport {
 
 class UdevEnumeratePrivate
 {
@@ -57,6 +59,8 @@ public:
     udev_enumerate *enumerate;
 };
 
-} // namespace QtUdev
+} // namespace PlatformSupport
+
+} // namespace Aurora
 
 #endif // UDEVENUMERATE_P_H

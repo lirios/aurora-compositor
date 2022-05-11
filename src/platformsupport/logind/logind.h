@@ -28,7 +28,9 @@
 
 #include <LiriAuroraLogind/liriauroralogindglobal.h>
 
-namespace Liri {
+namespace Aurora {
+
+namespace PlatformSupport {
 
 class LogindPrivate;
 
@@ -127,4 +129,6 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Logind::InhibitFlags)
 
-} // namespace Liri
+} // namespace PlatformSupport
+
+} // namespace Aurora

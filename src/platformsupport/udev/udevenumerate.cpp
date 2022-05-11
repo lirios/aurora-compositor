@@ -27,7 +27,9 @@
 #include "udevenumerate.h"
 #include "udevenumerate_p.h"
 
-namespace QtUdev {
+namespace Aurora {
+
+namespace PlatformSupport {
 
 /*
  * UdevEnumeratePrivate
@@ -171,4 +173,6 @@ QList<UdevDevice *> UdevEnumerate::scan() const
     return list;
 }
 
-} // namespace QtUdev
+} // namespace PlatformSupport
+
+} // namespace Aurora

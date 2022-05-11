@@ -32,9 +32,9 @@
 
 #include <libinput.h>
 
-namespace Liri {
+namespace Aurora {
 
-namespace Platform {
+namespace PlatformSupport {
 
 LibInputGesture::LibInputGesture(LibInputHandler *handler)
 {
@@ -149,6 +149,6 @@ void LibInputGesture::handleSwipeUpdate(libinput_event_gesture *event)
 #endif
 }
 
-} // namespace Platform
+} // namespace PlatformSupport
 
-} // namespace Liri
+} // namespace Aurora

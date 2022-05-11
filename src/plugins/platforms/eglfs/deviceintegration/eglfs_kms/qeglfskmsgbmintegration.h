@@ -47,12 +47,9 @@
 
 #include <LiriEglFSKmsSupport/qeglfskmsintegration.h>
 
-namespace QtUdev {
+namespace Aurora {
+namespace PlatformSupport {
 class Udev;
-}
-
-namespace Liri {
-namespace Platform {
 class ScreenChange;
 }
 }
@@ -81,13 +78,13 @@ public:
     QFunctionPointer platformFunction(const QByteArray &function) const override;
 
 protected:
-    QKmsDevice *createDevice() override;
+    Aurora::PlatformSupport::QKmsDevice *createDevice() override;
 
 private:
-    QtUdev::Udev *m_udev;
+    Aurora::PlatformSupport::Udev *m_udev;
 
-    static bool testScreenChangesStatic(const QVector<Liri::Platform::ScreenChange> &changes);
-    static bool applyScreenChangesStatic(const QVector<Liri::Platform::ScreenChange> &changes);
+    static bool testScreenChangesStatic(const QVector<Aurora::PlatformSupport::ScreenChange> &changes);
+    static bool applyScreenChangesStatic(const QVector<Aurora::PlatformSupport::ScreenChange> &changes);
 };
 
 QT_END_NAMESPACE

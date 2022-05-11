@@ -50,7 +50,7 @@
 
 namespace Aurora {
 
-namespace Compositor {
+namespace PlatformSupport {
 
 Q_LOGGING_CATEGORY(gLcXkbcommon, "aurora.xkbcommon")
 
@@ -828,6 +828,6 @@ void QXkbCommon::setXkbContext(QPlatformInputContext *inputContext, struct xkb_c
     setXkbContext.invoke(inputContext, Qt::DirectConnection, Q_ARG(xkb_context*, context));
 }
 
-} // namespace Compositor
+} // namespace PlatformSupport
 
 } // namespace Aurora

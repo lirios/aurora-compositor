@@ -60,7 +60,9 @@
 #define EDID_FEATURE_SUPPORT 0x18
 #define EDID_CHROMATICITIES_BLOCK 0x19
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace PlatformSupport {
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 using namespace Qt::StringLiterals;
@@ -329,4 +331,6 @@ QString QEdidParser::parseEdidString(const quint8 *data)
     return QString::fromLatin1(buffer.trimmed());
 }
 
-QT_END_NAMESPACE
+} // namespace PlatformSupport
+
+} // namespace Aurora

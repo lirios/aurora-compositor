@@ -58,7 +58,7 @@
 
 #include <gbm.h>
 
-using namespace Liri::Platform;
+using namespace Aurora::PlatformSupport;
 
 QT_BEGIN_NAMESPACE
 
@@ -66,7 +66,7 @@ QEglFSKmsGbmIntegration::QEglFSKmsGbmIntegration()
 {
     qCDebug(qLcEglfsKmsDebug, "New DRM/KMS via GBM integration created");
 
-    m_udev = new QtUdev::Udev();
+    m_udev = new Aurora::PlatformSupport::Udev();
 }
 
 QEglFSKmsGbmIntegration::~QEglFSKmsGbmIntegration()
@@ -155,7 +155,7 @@ QPlatformCursor *QEglFSKmsGbmIntegration::createCursor(QPlatformScreen *screen) 
 
 void QEglFSKmsGbmIntegration::presentBuffer(QPlatformSurface *surface)
 {
-    if (!Liri::Logind::instance()->isSessionActive())
+    if (!Aurora::PlatformSupport::Logind::instance()->isSessionActive())
         return;
 
     QWindow *window = static_cast<QWindow *>(surface->surface());
@@ -174,9 +174,9 @@ QFunctionPointer QEglFSKmsGbmIntegration::platformFunction(const QByteArray &fun
     if (returnValue)
         return returnValue;
 
-    if (function == Liri::Platform::EglFSFunctions::testScreenChangesIdentifier())
+    if (function == Aurora::PlatformSupport::EglFSFunctions::testScreenChangesIdentifier())
         return QFunctionPointer(testScreenChangesStatic);
-    else if (function == Liri::Platform::EglFSFunctions::applyScreenChangesIdentifier())
+    else if (function == Aurora::PlatformSupport::EglFSFunctions::applyScreenChangesIdentifier())
         return QFunctionPointer(applyScreenChangesStatic);
 
     return nullptr;
@@ -188,8 +188,8 @@ QKmsDevice *QEglFSKmsGbmIntegration::createDevice()
     if (!path.isEmpty()) {
         qCDebug(qLcEglfsKmsDebug) << "GBM: Using DRM device" << path << "specified in config file";
     } else {
-        QtUdev::UdevEnumerate enumerate(QtUdev::UdevDevice::PrimaryVideoDevice | QtUdev::UdevDevice::GenericVideoDevice, m_udev);
-        QList<QtUdev::UdevDevice *> devices = enumerate.scan();
+        Aurora::PlatformSupport::UdevEnumerate enumerate(Aurora::PlatformSupport::UdevDevice::PrimaryVideoDevice | Aurora::PlatformSupport::UdevDevice::GenericVideoDevice, m_udev);
+        QList<Aurora::PlatformSupport::UdevDevice *> devices = enumerate.scan();
         qCDebug(qLcEglfsKmsDebug) << "Found the following video devices:";
         for (auto device : qAsConst(devices))
             qCDebug(qLcEglfsKmsDebug) << '\t' << device->deviceNode().toLocal8Bit().constData();
@@ -204,13 +204,13 @@ QKmsDevice *QEglFSKmsGbmIntegration::createDevice()
     return new QEglFSKmsGbmDevice(screenConfig(), path);
 }
 
-bool QEglFSKmsGbmIntegration::testScreenChangesStatic(const QVector<Liri::Platform::ScreenChange> &changes)
+bool QEglFSKmsGbmIntegration::testScreenChangesStatic(const QVector<Aurora::PlatformSupport::ScreenChange> &changes)
 {
     Q_UNUSED(changes)
     return true;
 }
 
-bool QEglFSKmsGbmIntegration::applyScreenChangesStatic(const QVector<Liri::Platform::ScreenChange> &changes)
+bool QEglFSKmsGbmIntegration::applyScreenChangesStatic(const QVector<Aurora::PlatformSupport::ScreenChange> &changes)
 {
     for (auto &change : qAsConst(changes)) {
         if (!change.screen || !change.enabled)

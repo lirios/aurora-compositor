@@ -27,13 +27,13 @@
 #include <QEvent>
 #include <QGuiApplication>
 
-#include <LiriPlatformHeaders/liriplatformheadersglobal.h>
+#include <LiriAuroraPlatformHeaders/liriauroraplatformheadersglobal.h>
 
-namespace Liri {
+namespace Aurora {
 
-namespace Platform {
+namespace PlatformSupport {
 
-class LIRIPLATFORMHEADERS_EXPORT ScreenChange
+class LIRIAURORAPLATFORMHEADERS_EXPORT ScreenChange
 {
 public:
     explicit ScreenChange() = default;
@@ -46,7 +46,7 @@ public:
     qreal scale = 1.0f;
 };
 
-class LIRIPLATFORMHEADERS_EXPORT EglFSFunctions
+class LIRIAURORAPLATFORMHEADERS_EXPORT EglFSFunctions
 {
 public:
     enum PowerState {
@@ -85,7 +85,7 @@ public:
     static void disableScreenCast(QScreen *screen);
 };
 
-class LIRIPLATFORMHEADERS_EXPORT ScreenCastFrameEvent : public QEvent
+class LIRIAURORAPLATFORMHEADERS_EXPORT ScreenCastFrameEvent : public QEvent
 {
 public:
     explicit ScreenCastFrameEvent();
@@ -102,7 +102,7 @@ public:
     static QEvent::Type registeredType();
 };
 
-class LIRIPLATFORMHEADERS_EXPORT ScreenCastObjectEvent : public QEvent
+class LIRIAURORAPLATFORMHEADERS_EXPORT ScreenCastObjectEvent : public QEvent
 {
 public:
     explicit ScreenCastObjectEvent();
@@ -120,7 +120,7 @@ public:
     static QEvent::Type registeredType();
 };
 
-class LIRIPLATFORMHEADERS_EXPORT ScreenCastReadyEvent : public QEvent
+class LIRIAURORAPLATFORMHEADERS_EXPORT ScreenCastReadyEvent : public QEvent
 {
 public:
     explicit ScreenCastReadyEvent();
@@ -134,8 +134,8 @@ public:
     static QEvent::Type registeredType();
 };
 
-} // namespace Platform
+} // namespace PlatformSupport
 
-} // namespace Liri
+} // namespace Aurora
 
 #endif // LIRIEGLFSFUNCTIONS_H

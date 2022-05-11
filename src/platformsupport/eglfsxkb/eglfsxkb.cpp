@@ -30,9 +30,9 @@
 
 #include "eglfsxkb.h"
 
-namespace Liri {
+namespace Aurora {
 
-namespace Platform {
+namespace PlatformSupport {
 
 struct KeyTableEntry {
     int xkb;
@@ -198,6 +198,6 @@ Qt::KeyboardModifiers EglFSXkb::modifiers(xkb_state *state)
     return modifiers;
 }
 
-} // namespace Platform
+} // namespace PlatformSupport
 
-} // namespace Liri
+} // namespace Aurora

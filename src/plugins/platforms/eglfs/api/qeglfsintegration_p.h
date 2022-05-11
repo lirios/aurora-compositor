@@ -61,8 +61,8 @@
 
 #include <LiriPlatformHeaders/lirieglfsfunctions.h>
 
-namespace Liri {
-namespace Platform {
+namespace Aurora {
+namespace PlatformSupport {
 class LibInputManager;
 class VtHandler;
 }
@@ -116,7 +116,7 @@ public:
 
     QFunctionPointer platformFunction(const QByteArray &function) const override;
 
-    Liri::Platform::VtHandler *vtHandler() { return m_vtHandler.data(); }
+    Aurora::PlatformSupport::VtHandler *vtHandler() { return m_vtHandler.data(); }
 
     QPointer<QWindow> pointerWindow() { return m_pointerWindow; }
     void setPointerWindow(QWindow *pointerWindow) { m_pointerWindow = pointerWindow; }
@@ -126,8 +126,8 @@ private:
     void createInputHandlers();
 
     static void setCursorThemeStatic(const QString &name, int size);
-    static Liri::Platform::EglFSFunctions::PowerState getPowerStateStatic(QScreen *screen);
-    static void setPowerStateStatic(QScreen *screen, Liri::Platform::EglFSFunctions::PowerState powerState);
+    static Aurora::PlatformSupport::EglFSFunctions::PowerState getPowerStateStatic(QScreen *screen);
+    static void setPowerStateStatic(QScreen *screen, Aurora::PlatformSupport::EglFSFunctions::PowerState powerState);
 
     static void enableScreenCastStatic(QScreen *screen);
     static void disableScreenCastStatic(QScreen *screen);
@@ -136,8 +136,8 @@ private:
     QPlatformInputContext *m_inputContext;
     QScopedPointer<QPlatformFontDatabase> m_fontDb;
     QScopedPointer<QPlatformServices> m_services;
-    QScopedPointer<Liri::Platform::VtHandler> m_vtHandler;
-    QScopedPointer<Liri::Platform::LibInputManager> m_liHandler;
+    QScopedPointer<Aurora::PlatformSupport::VtHandler> m_vtHandler;
+    QScopedPointer<Aurora::PlatformSupport::LibInputManager> m_liHandler;
     QEglFSLogindHandler *m_logindHandler;
     QPointer<QWindow> m_pointerWindow;
     bool m_disableInputHandlers;

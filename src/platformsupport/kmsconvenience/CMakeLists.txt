@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-liri_add_module(KmsSupport
+liri_add_module(AuroraKmsSupport
     DESCRIPTION
         "KMS shared code"
     SOURCES
@@ -24,9 +24,9 @@ liri_add_module(KmsSupport
     STATIC
 )
 
-liri_extend_target(KmsSupport CONDITION FEATURE_aurora_drm_atomic
+liri_extend_target(AuroraKmsSupport CONDITION FEATURE_aurora_drm_atomic
     DEFINES
         EGLFS_ENABLE_DRM_ATOMIC
 )
 
-liri_finalize_module(KmsSupport)
+liri_finalize_module(AuroraKmsSupport)

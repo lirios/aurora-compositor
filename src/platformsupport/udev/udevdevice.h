@@ -30,7 +30,9 @@
 
 struct udev_device;
 
-namespace QtUdev {
+namespace Aurora {
+
+namespace PlatformSupport {
 
 class Udev;
 class UdevEnumerate;
@@ -96,8 +98,10 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(UdevDevice::DeviceTypes)
 
 QDebug operator<<(QDebug, const UdevDevice &);
 
-} // namespace QtUdev
+} // namespace PlatformSupport
 
-Q_DECLARE_METATYPE(QtUdev::UdevDevice)
+} // namespace Aurora
+
+Q_DECLARE_METATYPE(Aurora::PlatformSupport::UdevDevice)
 
 #endif // QTUDEVDEVICE_H

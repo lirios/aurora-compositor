@@ -28,9 +28,9 @@
 
 #include "libinputmanager_p.h"
 
-namespace Liri {
+namespace Aurora {
 
-namespace Platform {
+namespace PlatformSupport {
 
 LibInputManager::LibInputManager(QObject *parent)
     : QObject(parent)
@@ -146,6 +146,6 @@ LibInputHandler *LibInputManager::handler() const
     return m_handler;
 }
 
-} // namespace Platform
+} // namespace PlatformSupport
 
-} // namespace Liri
+} // namespace Aurora

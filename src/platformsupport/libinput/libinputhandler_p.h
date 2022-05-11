@@ -53,9 +53,9 @@
 // We mean it.
 //
 
-namespace Liri {
+namespace Aurora {
 
-namespace Platform {
+namespace PlatformSupport {
 
 Q_DECLARE_LOGGING_CATEGORY(gLcLibinput)
 
@@ -77,7 +77,7 @@ public:
 
     bool initialized;
 
-    QtUdev::Udev *udev;
+    Aurora::PlatformSupport::Udev *udev;
     libinput *li;
 
     LibInputKeyboard *keyboard;
@@ -105,8 +105,8 @@ private:
     void restrictedClose(int fd);
 };
 
-} // namespace Platform
+} // namespace PlatformSupport
 
-} // namespace Liri
+} // namespace Aurora
 
 #endif // LIRI_LIBINPUTHANDLER_P_H

@@ -41,9 +41,9 @@ struct libinput_event_touch;
 
 class QTouchDevice;
 
-namespace Liri {
+namespace Aurora {
 
-namespace Platform {
+namespace PlatformSupport {
 
 class LibInputHandler;
 class LibInputTouchPrivate;
@@ -68,8 +68,8 @@ private:
     LibInputTouchPrivate *const d_ptr;
 };
 
-} // namespace Platform
+} // namespace PlatformSupport
 
-} // namespace Liri
+} // namespace Aurora
 
 #endif // LIRI_LIBINPUTTOUCH_H

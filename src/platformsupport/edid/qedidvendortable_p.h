@@ -60,7 +60,9 @@
 
 #include <QtCore/private/qglobal_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace PlatformSupport {
 
 struct VendorTable {
     const char id[4];
@@ -2538,6 +2540,8 @@ static const VendorTable q_edidVendorTable[] = {
     { "ZZZ", "Boca Research Inc" },
 };
 
-QT_END_NAMESPACE
+} // namespace PlatformSupport
+
+} // namespace Aurora
 
 #endif // QEDIDVENDORTABLE_P_H

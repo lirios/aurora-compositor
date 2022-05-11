@@ -40,9 +40,9 @@
 
 #include <libinput.h>
 
-namespace Liri {
+namespace Aurora {
 
-namespace Platform {
+namespace PlatformSupport {
 
 /*
  * LibInputTouchPrivate
@@ -242,6 +242,6 @@ void LibInputTouch::handleTouchFrame(libinput_event_touch *event)
     }
 }
 
-} // namespace Platform
+} // namespace PlatformSupport
 
 } // namespace Liri

@@ -63,7 +63,9 @@
 #include <QtCore/qstring.h>
 #include <QtCore/private/qglobal_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace PlatformSupport {
 
 class Q_GUI_EXPORT QEdidParser
 {
@@ -88,6 +90,8 @@ private:
     QString parseEdidString(const quint8 *data);
 };
 
-QT_END_NAMESPACE
+} // namespace PlatformSupport
+
+} // namespace Aurora
 
 #endif // QEDIDPARSER_P_H

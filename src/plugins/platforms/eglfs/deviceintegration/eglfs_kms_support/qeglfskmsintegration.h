@@ -49,8 +49,12 @@
 
 QT_BEGIN_NAMESPACE
 
+namespace Aurora {
+namespace PlatformSupport {
 class QKmsDevice;
 class QKmsScreenConfig;
+}
+}
 
 Q_EGLFS_EXPORT Q_DECLARE_LOGGING_CATEGORY(qLcEglfsKmsDebug)
 
@@ -72,14 +76,14 @@ public:
     void *nativeResourceForIntegration(const QByteArray &name) override;
     void *nativeResourceForScreen(const QByteArray &resource, QScreen *screen) override;
 
-    QKmsDevice *device() const;
-    QKmsScreenConfig *screenConfig() const;
+    Aurora::PlatformSupport::QKmsDevice *device() const;
+    Aurora::PlatformSupport::QKmsScreenConfig *screenConfig() const;
 
 protected:
-    virtual QKmsDevice *createDevice() = 0;
+    virtual Aurora::PlatformSupport::QKmsDevice *createDevice() = 0;
 
-    QKmsDevice *m_device;
-    QKmsScreenConfig *m_screenConfig;
+    Aurora::PlatformSupport::QKmsDevice *m_device;
+    Aurora::PlatformSupport::QKmsScreenConfig *m_screenConfig;
 };
 
 QT_END_NAMESPACE

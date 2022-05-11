@@ -48,7 +48,9 @@ Q_LOGGING_CATEGORY(gLcLogind, "aurora.logind")
 #define DBUS_SERVICE QLatin1String("org.freedesktop.DBus")
 #define DBUS_PROPERTIES_INTERFACE QLatin1String("org.freedesktop.DBus.Properties")
 
-namespace Liri {
+namespace Aurora {
+
+namespace PlatformSupport {
 
 /*
  * DefaultLogind
@@ -965,6 +967,8 @@ void Logind::switchTo(quint32 vt)
     d->bus.asyncCall(message);
 }
 
-} // namespace Liri
+} // namespace PlatformSupport
+
+} // namespace Aurora
 
 #include "moc_logind.cpp"

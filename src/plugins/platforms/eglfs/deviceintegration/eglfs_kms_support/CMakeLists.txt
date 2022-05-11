@@ -32,10 +32,10 @@ liri_add_module(EglFSKmsSupport
         Qt5::GuiPrivate
         Liri::EglFSDeviceIntegration
         Liri::EglFSDeviceIntegrationPrivate
-        Liri::EdidSupport
-        Liri::EdidSupportPrivate
-        Liri::KmsSupport
-        Liri::KmsSupportPrivate
+        Liri::AuroraEdidSupport
+        Liri::AuroraEdidSupportPrivate
+        Liri::AuroraKmsSupport
+        Liri::AuroraKmsSupportPrivate
         PkgConfig::Libdrm
         PkgConfig::Gbm
         PkgConfig::EGL

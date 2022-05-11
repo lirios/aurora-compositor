@@ -42,7 +42,7 @@
 #include "qeglfskmsintegration.h"
 #include "qeglfskmsscreen.h"
 
-#include <LiriKmsSupport/private/qkmsdevice_p.h>
+#include <LiriAuroraKmsSupport/private/qkmsdevice_p.h>
 
 #include <QtGui/qpa/qplatformwindow.h>
 #include <QtGui/qpa/qwindowsysteminterface.h>
@@ -57,6 +57,8 @@
 QT_BEGIN_NAMESPACE
 
 Q_LOGGING_CATEGORY(qLcEglfsKmsDebug, "aurora.eglfs.kms", QtInfoMsg)
+
+using namespace Aurora::PlatformSupport;
 
 QEglFSKmsIntegration::QEglFSKmsIntegration()
     : m_device(nullptr),
@@ -77,7 +79,7 @@ void QEglFSKmsIntegration::platformInit()
         qFatal("Could not open DRM device");
 
     // Redraw all toplevel windows as soon as the session is reactivated
-    QObject::connect(Liri::Logind::instance(), &Liri::Logind::sessionActiveChanged, [this](bool active) {
+    QObject::connect(Logind::instance(), &Logind::sessionActiveChanged, [this](bool active) {
         if (active) {
             const auto windows = qGuiApp->topLevelWindows();
             for (QWindow *window : windows)

@@ -51,9 +51,11 @@
 
 #define ARRAY_LENGTH(a) (sizeof (a) / sizeof (a)[0])
 
-QT_BEGIN_NAMESPACE
-
 Q_LOGGING_CATEGORY(qLcKmsDebug, "aurora.eglfs.kms")
+
+namespace Aurora {
+
+namespace PlatformSupport {
 
 enum OutputConfiguration {
     OutputConfigOff,
@@ -1202,4 +1204,6 @@ void QKmsOutput::setPowerState(QKmsDevice *device, QPlatformScreen::PowerState s
                                     dpms_prop->prop_id, (int) state);
 }
 
-QT_END_NAMESPACE
+} // namespace PlatformSupport
+
+} // namespace Aurora

@@ -37,7 +37,9 @@
 
 #include "udevmonitor.h"
 
-namespace QtUdev {
+namespace Aurora {
+
+namespace PlatformSupport {
 
 class UdevMonitorPrivate
 {
@@ -55,6 +57,8 @@ protected:
     UdevMonitor *q_ptr;
 };
 
-} // namespace QtUdev
+} // namespace PlatformSupport
+
+} // namespace Aurora
 
 #endif // QTUDEVMONITOR_P_H

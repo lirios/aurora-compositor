@@ -41,9 +41,9 @@
 #include "libinputkeyboard.h"
 #include "libinputkeyboard_p.h"
 
-namespace Liri {
+namespace Aurora {
 
-namespace Platform {
+namespace PlatformSupport {
 
 /*
  * LibInputKeyboardPrivate
@@ -211,6 +211,6 @@ void LibInputKeyboard::handleRepeat()
     d->repeatTimer.start();
 }
 
-} // namespace Platform
+} // namespace PlatformSupport
 
-} // namespace Liri
+} // namespace Aurora

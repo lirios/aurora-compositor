@@ -39,9 +39,9 @@
 
 struct libinput_event_keyboard;
 
-namespace Liri {
+namespace Aurora {
 
-namespace Platform {
+namespace PlatformSupport {
 
 class LibInputHandler;
 class LibInputKeyboardPrivate;
@@ -63,8 +63,8 @@ private:
     QScopedPointer<LibInputKeyboardPrivate> const d_ptr;
 };
 
-} // namespace Platform
+} // namespace PlatformSupport
 
-} // namespace Liri
+} // namespace Aurora
 
 #endif // LIRI_LIBINPUTKEYBOARD_H

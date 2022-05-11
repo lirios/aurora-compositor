@@ -41,11 +41,13 @@
 #ifndef QEGLFSKMSDEVICE_H
 #define QEGLFSKMSDEVICE_H
 
-#include <LiriKmsSupport/private/qkmsdevice_p.h>
+#include <LiriAuroraKmsSupport/private/qkmsdevice_p.h>
 #include "qeglfsglobal_p.h"
 #include "qeglfskmseventreader.h"
 
 QT_BEGIN_NAMESPACE
+
+using namespace Aurora::PlatformSupport;
 
 class Q_EGLFS_EXPORT QEglFSKmsDevice : public QKmsDevice
 {

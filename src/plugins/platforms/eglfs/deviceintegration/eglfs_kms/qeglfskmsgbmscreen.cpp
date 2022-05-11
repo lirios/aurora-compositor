@@ -280,7 +280,7 @@ void QEglFSKmsGbmScreen::waitForFlip()
         return;
 
     // Avoid permission denied error when session is not active
-    if (!Liri::Logind::instance()->isSessionActive())
+    if (!Aurora::PlatformSupport::Logind::instance()->isSessionActive())
         return;
 
     // Don't lock the mutex unless we actually need to
@@ -471,7 +471,7 @@ void QEglFSKmsGbmScreen::recordFrame(unsigned int tv_sec, unsigned int tv_usec)
 
     auto *bo = m_gbm_bo_current;
 
-    auto *frameEvent = new Liri::Platform::ScreenCastFrameEvent();
+    auto *frameEvent = new Aurora::PlatformSupport::ScreenCastFrameEvent();
     frameEvent->screen = screen();
     frameEvent->offset = rawGeometry().topLeft();
     frameEvent->size = QSize(gbm_bo_get_width(bo), gbm_bo_get_height(bo));
@@ -480,7 +480,7 @@ void QEglFSKmsGbmScreen::recordFrame(unsigned int tv_sec, unsigned int tv_usec)
     frameEvent->numObjects = 1;
     QCoreApplication::postEvent(QCoreApplication::instance(), frameEvent);
 
-    auto *objectEvent = new Liri::Platform::ScreenCastObjectEvent();
+    auto *objectEvent = new Aurora::PlatformSupport::ScreenCastObjectEvent();
     objectEvent->screen = screen();
     objectEvent->index = 0;
     objectEvent->fd = gbm_bo_get_fd(bo);
@@ -489,7 +489,7 @@ void QEglFSKmsGbmScreen::recordFrame(unsigned int tv_sec, unsigned int tv_usec)
     objectEvent->planeIndex = 0;
     QCoreApplication::postEvent(QCoreApplication::instance(), objectEvent);
 
-    auto *readyEvent = new Liri::Platform::ScreenCastReadyEvent();
+    auto *readyEvent = new Aurora::PlatformSupport::ScreenCastReadyEvent();
     readyEvent->screen = screen();
     readyEvent->tv_sec = tv_sec;
     readyEvent->tv_nsec = tv_usec * 1000;

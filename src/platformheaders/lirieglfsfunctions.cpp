@@ -25,9 +25,9 @@
 
 #include "lirieglfsfunctions.h"
 
-namespace Liri {
+namespace Aurora {
 
-namespace Platform {
+namespace PlatformSupport {
 
 QByteArray EglFSFunctions::setCursorThemeIdentifier()
 {
@@ -173,6 +173,6 @@ QEvent::Type ScreenCastReadyEvent::registeredType()
     return eventType;
 }
 
-} // namespace Platform
+} // namespace PlatformSupport
 
-} // namespace Liri
+} // namespace Aurora

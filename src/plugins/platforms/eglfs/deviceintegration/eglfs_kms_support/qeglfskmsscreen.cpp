@@ -58,15 +58,15 @@ class QEglFSKmsInterruptHandler : public QObject
 public:
     QEglFSKmsInterruptHandler(QEglFSKmsScreen *screen) : m_screen(screen) {
         m_vtHandler = static_cast<QEglFSIntegration *>(QGuiApplicationPrivate::platformIntegration())->vtHandler();
-        connect(m_vtHandler, &Liri::Platform::VtHandler::interrupted, this, &QEglFSKmsInterruptHandler::restoreVideoMode);
-        connect(m_vtHandler, &Liri::Platform::VtHandler::aboutToSuspend, this, &QEglFSKmsInterruptHandler::restoreVideoMode);
+        connect(m_vtHandler, &Aurora::PlatformSupport::VtHandler::interrupted, this, &QEglFSKmsInterruptHandler::restoreVideoMode);
+        connect(m_vtHandler, &Aurora::PlatformSupport::VtHandler::aboutToSuspend, this, &QEglFSKmsInterruptHandler::restoreVideoMode);
     }
 
 public slots:
     void restoreVideoMode() { m_screen->restoreMode(); }
 
 private:
-    Liri::Platform::VtHandler *m_vtHandler;
+    Aurora::PlatformSupport::VtHandler *m_vtHandler;
     QEglFSKmsScreen *m_screen;
 };
 

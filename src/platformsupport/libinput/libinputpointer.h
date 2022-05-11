@@ -39,9 +39,9 @@
 
 struct libinput_event_pointer;
 
-namespace Liri {
+namespace Aurora {
 
-namespace Platform {
+namespace PlatformSupport {
 
 class LibInputHandler;
 
@@ -65,8 +65,8 @@ private:
     void processMotion(const QPoint &pos);
 };
 
-} // namespace Platform
+} // namespace PlatformSupport
 
-} // namespace Liri
+} // namespace Aurora
 
 #endif // LIRI_LIBINPUTPOINTER_H

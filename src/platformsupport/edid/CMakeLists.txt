@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-liri_add_module(EdidSupport
+liri_add_module(AuroraEdidSupport
     DESCRIPTION
         "EDID parser for EGL device integration"
     SOURCES
@@ -23,4 +23,4 @@ liri_add_module(EdidSupport
     STATIC
 )
 
-liri_finalize_module(EdidSupport)
+liri_finalize_module(AuroraEdidSupport)

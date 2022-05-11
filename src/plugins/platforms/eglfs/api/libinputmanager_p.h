@@ -37,9 +37,9 @@
 // We mean it.
 //
 
-namespace Liri {
+namespace Aurora {
 
-namespace Platform {
+namespace PlatformSupport {
 
 class LibInputHandler;
 
@@ -55,8 +55,8 @@ private:
     LibInputHandler *m_handler;
 };
 
-} // namespace Platform
+} // namespace PlatformSupport
 
-} // namespace Liri
+} // namespace Aurora
 
 #endif // LIRI_LIBINPUTMANAGER_P_H

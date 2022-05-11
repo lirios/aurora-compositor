@@ -2,12 +2,11 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-liri_add_module(PlatformHeaders
+liri_add_module(AuroraPlatformHeaders
     DESCRIPTION
         "Platform-specific functionality"
     SOURCES
-        lirieglfsfunctions.cpp
-        lirieglfsfunctions.h
+        lirieglfsfunctions.cpp lirieglfsfunctions.h
     CLASS_HEADERS
         LiriEglFSFunctions:lirieglfsfunctions.h
     DEFINES
@@ -21,4 +20,4 @@ liri_add_module(PlatformHeaders
         Qt${QT_DEFAULT_MAJOR_VERSION}Gui
 )
 
-liri_finalize_module(PlatformHeaders)
+liri_finalize_module(AuroraPlatformHeaders)

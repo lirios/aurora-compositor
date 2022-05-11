@@ -46,10 +46,12 @@
 #include <QtCore/QList>
 #include <QtCore/QMutex>
 
-#include <LiriKmsSupport/private/qkmsdevice_p.h>
-#include <LiriEdidSupport/private/qedidparser_p.h>
+#include <LiriAuroraKmsSupport/private/qkmsdevice_p.h>
+#include <LiriAuroraEdidSupport/private/qedidparser_p.h>
 
 QT_BEGIN_NAMESPACE
+
+using namespace Aurora::PlatformSupport;
 
 class QEglFSKmsDevice;
 class QEglFSKmsInterruptHandler;
