@@ -70,7 +70,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-Q_DECLARE_LOGGING_CATEGORY(lcXkbcommon)
+Q_DECLARE_LOGGING_CATEGORY(gLcXkbcommon)
 
 class LIRIAURORAXKBCOMMONSUPPORT_EXPORT QXkbCommon
 {

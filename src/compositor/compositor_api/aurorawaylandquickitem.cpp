@@ -168,7 +168,7 @@ void WaylandBufferMaterialShader::setupExternalOESShader(const QString &shaderFi
 #if QT_CONFIG(opengl)
     QFile shaderFile(shaderFilename);
     if (!shaderFile.open(QIODevice::ReadOnly)) {
-        qCWarning(qLcWaylandCompositor) << "Cannot find external OES shader file:" << shaderFilename;
+        qCWarning(gLcAuroraCompositor) << "Cannot find external OES shader file:" << shaderFilename;
         return;
     }
     QByteArray FS = shaderFile.readAll();
@@ -627,7 +627,7 @@ public:
                 auto size = surface->bufferSize();
                 m_sgTex = QNativeInterface::QSGOpenGLTexture::fromNative(textureId, surfaceItem->window(), size, opt);
 #else
-                qCWarning(qLcWaylandCompositor) << "Without OpenGL support only shared memory textures are supported";
+                qCWarning(gLcAuroraCompositor) << "Without OpenGL support only shared memory textures are supported";
 #endif
             }
         }
@@ -687,7 +687,7 @@ public:
                 auto size = surface->bufferSize();
                 m_sgTex = surfaceItem->window()->createTextureFromNativeObject(QQuickWindow::NativeObjectTexture, &textureId, 0, size, opt);
 #else
-                qCWarning(qLcWaylandCompositor) << "Without OpenGL support only shared memory textures are supported";
+                qCWarning(gLcAuroraCompositor) << "Without OpenGL support only shared memory textures are supported";
 #endif
             }
         }
@@ -1442,7 +1442,7 @@ void WaylandQuickItem::takeFocus(WaylandSeat *device)
     }
     target->setKeyboardFocus(surface());
 
-    qCDebug(qLcWaylandCompositorInputMethods) << Q_FUNC_INFO << " surface:" << surface()
+    qCDebug(gLcAuroraCompositorInputMethods) << Q_FUNC_INFO << " surface:" << surface()
         << ", client:" << surface()->client()
         << ", textinputprotocol:" << (int)(surface()->client()->textInputProtocols());
     if (surface()->client()->textInputProtocols().testFlag(WaylandClient::TextInputProtocol::TextInputV2)) {
@@ -1899,7 +1899,7 @@ QSGNode *WaylandQuickItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData
 
     return node;
 #else
-    qCWarning(qLcWaylandCompositor) << "Without OpenGL support only shared memory textures are supported";
+    qCWarning(gLcAuroraCompositor) << "Without OpenGL support only shared memory textures are supported";
     return nullptr;
 #endif // QT_CONFIG(opengl)
 }
@@ -1992,7 +1992,7 @@ QSGNode *WaylandQuickItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData
 
     return node;
 #else
-    qCWarning(qLcWaylandCompositor) << "Without OpenGL support only shared memory textures are supported";
+    qCWarning(gLcAuroraCompositor) << "Without OpenGL support only shared memory textures are supported";
     return nullptr;
 #endif // QT_CONFIG(opengl)
 }

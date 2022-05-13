@@ -113,7 +113,7 @@ void WaylandIdleInhibitManagerV1::initialize()
     WaylandCompositorExtensionTemplate::initialize();
     WaylandCompositor *compositor = static_cast<WaylandCompositor *>(extensionContainer());
     if (!compositor) {
-        qCWarning(qLcWaylandCompositor) << "Failed to find WaylandCompositor when initializing WaylandIdleInhibitManagerV1";
+        qCWarning(gLcAuroraCompositor) << "Failed to find WaylandCompositor when initializing WaylandIdleInhibitManagerV1";
         return;
     }
     d->init(compositor->display(), d->interfaceVersion());
@@ -137,7 +137,7 @@ void WaylandIdleInhibitManagerV1Private::zwp_idle_inhibit_manager_v1_create_inhi
 {
     auto *surface = WaylandSurface::fromResource(surfaceResource);
     if (!surface) {
-        qCWarning(qLcWaylandCompositor) << "Couldn't find surface requested for creating an inhibitor";
+        qCWarning(gLcAuroraCompositor) << "Couldn't find surface requested for creating an inhibitor";
         wl_resource_post_error(resource->handle, WL_DISPLAY_ERROR_INVALID_OBJECT,
                                "invalid wl_surface@%d", wl_resource_get_id(surfaceResource));
         return;

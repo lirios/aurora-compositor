@@ -68,7 +68,7 @@ void WaylandQtTextInputMethodPrivate::text_input_method_v1_disable(Resource *res
         WaylandSurface *enabledSurface = enabledSurfaces.take(resource);
 
         if (Q_UNLIKELY(enabledSurface != waylandSurface))
-            qCWarning(qLcWaylandCompositorInputMethods) << "Disabled surface does not match the one currently enabled";
+            qCWarning(gLcAuroraCompositorInputMethods) << "Disabled surface does not match the one currently enabled";
 
         emit q->surfaceEnabled(waylandSurface);
     }
@@ -268,7 +268,7 @@ void WaylandQtTextInputMethod::sendInputMethodEvent(QInputMethodEvent *event)
         return;
 
     if (d->updatingQueries != 0) {
-        qCWarning(qLcWaylandCompositorInputMethods) << "Input method event sent while client is updating. Ignored.";
+        qCWarning(gLcAuroraCompositorInputMethods) << "Input method event sent while client is updating. Ignored.";
         return;
     }
 
@@ -290,7 +290,7 @@ void WaylandQtTextInputMethod::sendInputMethodEvent(QInputMethodEvent *event)
         {
             auto properties = attribute.value.value<QTextFormat>().properties();
             if (properties.size() != 2 || properties.firstKey() != QTextFormat::FontUnderline || properties.lastKey() != QTextFormat::TextUnderlineStyle) {
-                qCWarning(qLcWaylandCompositorInputMethods()) << "Only underline text formats currently supported";
+                qCWarning(gLcAuroraCompositorInputMethods()) << "Only underline text formats currently supported";
             }
 
             d->send_input_method_event_attribute(d->resource->handle,

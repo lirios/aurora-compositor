@@ -42,7 +42,7 @@
 
 #include "logindtypes_p.h"
 
-Q_DECLARE_LOGGING_CATEGORY(lcLogind)
+Q_DECLARE_LOGGING_CATEGORY(gLcLogind)
 
 namespace Liri {
 

@@ -37,7 +37,7 @@
 
 #include <LiriAuroraLogind/Logind>
 
-#include "logging_p.h"
+#include "libinputhandler_p.h"
 #include "libinputkeyboard.h"
 #include "libinputkeyboard_p.h"
 
@@ -60,14 +60,14 @@ LibInputKeyboardPrivate::LibInputKeyboardPrivate(LibInputKeyboard *self, LibInpu
 {
     context = xkb_context_new(XKB_CONTEXT_NO_FLAGS);
     if (!context) {
-        qCWarning(lcInput) << "Unable to create xkb context";
+        qCWarning(gLcLibinput) << "Unable to create xkb context";
         return;
     }
 
     keymap = xkb_keymap_new_from_names(context, nullptr,
                                        XKB_KEYMAP_COMPILE_NO_FLAGS);
     if (!keymap) {
-        qCWarning(lcInput) << "Unable to compile xkb keymap";
+        qCWarning(gLcLibinput) << "Unable to compile xkb keymap";
         xkb_context_unref(context);
         context = nullptr;
         return;
@@ -75,7 +75,7 @@ LibInputKeyboardPrivate::LibInputKeyboardPrivate(LibInputKeyboard *self, LibInpu
 
     state = xkb_state_new(keymap);
     if (!state) {
-        qCWarning(lcInput) << "Unable to create xkb state";
+        qCWarning(gLcLibinput) << "Unable to create xkb state";
         xkb_keymap_unref(keymap);
         keymap = nullptr;
         xkb_context_unref(context);

@@ -11,7 +11,6 @@ liri_add_module(AuroraLibInput
         libinputkeyboard.cpp libinputkeyboard.h libinputkeyboard_p.h
         libinputpointer.cpp libinputpointer.h
         libinputtouch.cpp libinputtouch.h
-        logging.cpp logging_p.h
     PRIVATE_HEADERS
         libinputhandler_p.h
         libinputkeyboard_p.h

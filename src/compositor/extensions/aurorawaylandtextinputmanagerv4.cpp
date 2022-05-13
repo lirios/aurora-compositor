@@ -55,7 +55,7 @@ WaylandTextInputManagerV4Private::WaylandTextInputManagerV4Private()
 
 void WaylandTextInputManagerV4Private::zwp_text_input_manager_v4_get_text_input(Resource *resource, uint32_t id, struct ::wl_resource *seatResource)
 {
-    qCDebug(qLcWaylandCompositorTextInput) << Q_FUNC_INFO;
+    qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
     Q_Q(WaylandTextInputManagerV4);
     WaylandCompositor *compositor = static_cast<WaylandCompositor *>(q->extensionContainer());
@@ -123,7 +123,7 @@ WaylandTextInputManagerV4::~WaylandTextInputManagerV4()
 
 void WaylandTextInputManagerV4::initialize()
 {
-    qCDebug(qLcWaylandCompositorTextInput) << Q_FUNC_INFO;
+    qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
     Q_D(WaylandTextInputManagerV4);
 

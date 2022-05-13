@@ -96,7 +96,7 @@ static WaylandBufferRef::BufferFormatEgl formatFromDrmFormat(EGLint format) {
     case DRM_FORMAT_YUYV:
         return WaylandBufferRef::BufferFormatEgl_Y_XUXV;
     default:
-        qCDebug(qLcWaylandCompositorHardwareIntegration) << "Buffer format" << Qt::hex << format << "not supported";
+        qCDebug(gLcAuroraCompositorHardwareIntegration) << "Buffer format" << Qt::hex << format << "not supported";
         return WaylandBufferRef::BufferFormatEgl_Null;
     }
 }
@@ -126,7 +126,7 @@ bool LinuxDmabufClientBufferIntegration::initSimpleTexture(LinuxDmabufWlBuffer *
         gl_egl_image_target_texture_2d = reinterpret_cast<PFNGLEGLIMAGETARGETTEXTURE2DOESPROC>(eglGetProcAddress("glEGLImageTargetTexture2DOES"));
 
     if (dmabufBuffer->plane(0).modifiers != DRM_FORMAT_MOD_INVALID && !m_supportsDmabufModifiers) {
-        qCWarning(qLcWaylandCompositorHardwareIntegration) << "Buffer uses dmabuf modifiers, which are not supported.";
+        qCWarning(gLcAuroraCompositorHardwareIntegration) << "Buffer uses dmabuf modifiers, which are not supported.";
         success = false;
     }
 
@@ -170,7 +170,7 @@ bool LinuxDmabufClientBufferIntegration::initSimpleTexture(LinuxDmabufWlBuffer *
         ADD_PLANE_ATTRIBS(0);
         break;
     default:
-        qCWarning(qLcWaylandCompositorHardwareIntegration) << "Buffer uses invalid number of planes:" << dmabufBuffer->planesNumber();
+        qCWarning(gLcAuroraCompositorHardwareIntegration) << "Buffer uses invalid number of planes:" << dmabufBuffer->planesNumber();
         return false;
     }
 
@@ -184,7 +184,7 @@ bool LinuxDmabufClientBufferIntegration::initSimpleTexture(LinuxDmabufWlBuffer *
                                          attribs.constData());
 
     if (image == EGL_NO_IMAGE_KHR) {
-        qCWarning(qLcWaylandCompositorHardwareIntegration) << "failed to create EGL image from" <<
+        qCWarning(gLcAuroraCompositorHardwareIntegration) << "failed to create EGL image from" <<
             dmabufBuffer->planesNumber() << "plane(s)";
         success = false;
     }
@@ -200,7 +200,7 @@ bool LinuxDmabufClientBufferIntegration::initYuvTexture(LinuxDmabufWlBuffer *dma
 
     const YuvFormatConversion conversion = m_yuvFormats.value(dmabufBuffer->drmFormat());
     if (conversion.inputPlanes != dmabufBuffer->planesNumber()) {
-        qCWarning(qLcWaylandCompositorHardwareIntegration) << "Buffer for this format must provide" << conversion.inputPlanes
+        qCWarning(gLcAuroraCompositorHardwareIntegration) << "Buffer for this format must provide" << conversion.inputPlanes
                                                            << "planes but only" << dmabufBuffer->planesNumber() << "received";
         return false;
     }
@@ -211,7 +211,7 @@ bool LinuxDmabufClientBufferIntegration::initYuvTexture(LinuxDmabufWlBuffer *dma
 
 
     if (dmabufBuffer->plane(0).modifiers != DRM_FORMAT_MOD_INVALID && !m_supportsDmabufModifiers) {
-        qCWarning(qLcWaylandCompositorHardwareIntegration) << "Buffer uses dmabuf modifiers, which are not supported.";
+        qCWarning(gLcAuroraCompositorHardwareIntegration) << "Buffer uses dmabuf modifiers, which are not supported.";
         success = false;
     }
 
@@ -238,7 +238,7 @@ bool LinuxDmabufClientBufferIntegration::initYuvTexture(LinuxDmabufWlBuffer *dma
                                              attribs.constData());
 
         if (image == EGL_NO_IMAGE_KHR) {
-            qCWarning(qLcWaylandCompositorHardwareIntegration) << "failed to create EGL image for plane" << i;
+            qCWarning(gLcAuroraCompositorHardwareIntegration) << "failed to create EGL image for plane" << i;
             success = false;
         }
 
@@ -277,7 +277,7 @@ LinuxDmabufClientBufferIntegration::~LinuxDmabufClientBufferIntegration()
     if (egl_unbind_wayland_display != nullptr && m_displayBound) {
         Q_ASSERT(m_wlDisplay != nullptr);
         if (!egl_unbind_wayland_display(m_eglDisplay, m_wlDisplay))
-            qCWarning(qLcWaylandCompositorHardwareIntegration) << "eglUnbindWaylandDisplayWL failed";
+            qCWarning(gLcAuroraCompositorHardwareIntegration) << "eglUnbindWaylandDisplayWL failed";
     }
 }
 
@@ -291,40 +291,40 @@ void LinuxDmabufClientBufferIntegration::initializeHardware(struct ::wl_display 
     egl_query_dmabuf_modifiers_ext = reinterpret_cast<PFNEGLQUERYDMABUFMODIFIERSEXTPROC>(eglGetProcAddress("eglQueryDmaBufModifiersEXT"));
     egl_query_dmabuf_formats_ext = reinterpret_cast<PFNEGLQUERYDMABUFFORMATSEXTPROC>(eglGetProcAddress("eglQueryDmaBufFormatsEXT"));
     if (!egl_query_dmabuf_modifiers_ext || !egl_query_dmabuf_formats_ext) {
-        qCWarning(qLcWaylandCompositorHardwareIntegration) << "Failed to initialize EGL display. Could not find eglQueryDmaBufModifiersEXT and eglQueryDmaBufFormatsEXT.";
+        qCWarning(gLcAuroraCompositorHardwareIntegration) << "Failed to initialize EGL display. Could not find eglQueryDmaBufModifiersEXT and eglQueryDmaBufFormatsEXT.";
         return;
     }
 
     egl_bind_wayland_display = reinterpret_cast<PFNEGLBINDWAYLANDDISPLAYWL>(eglGetProcAddress("eglBindWaylandDisplayWL"));
     egl_unbind_wayland_display = reinterpret_cast<PFNEGLUNBINDWAYLANDDISPLAYWL>(eglGetProcAddress("eglUnbindWaylandDisplayWL"));
     if ((!egl_bind_wayland_display || !egl_unbind_wayland_display) && !ignoreBindDisplay) {
-        qCWarning(qLcWaylandCompositorHardwareIntegration) << "Failed to initialize EGL display. Could not find eglBindWaylandDisplayWL and eglUnbindWaylandDisplayWL.";
+        qCWarning(gLcAuroraCompositorHardwareIntegration) << "Failed to initialize EGL display. Could not find eglBindWaylandDisplayWL and eglUnbindWaylandDisplayWL.";
         return;
     }
 
     egl_create_image = reinterpret_cast<PFNEGLCREATEIMAGEKHRPROC>(eglGetProcAddress("eglCreateImageKHR"));
     egl_destroy_image = reinterpret_cast<PFNEGLDESTROYIMAGEKHRPROC>(eglGetProcAddress("eglDestroyImageKHR"));
     if (!egl_create_image || !egl_destroy_image) {
-        qCWarning(qLcWaylandCompositorHardwareIntegration) << "Failed to initialize EGL display. Could not find eglCreateImageKHR and eglDestroyImageKHR.";
+        qCWarning(gLcAuroraCompositorHardwareIntegration) << "Failed to initialize EGL display. Could not find eglCreateImageKHR and eglDestroyImageKHR.";
         return;
     }
 
     // initialize EGL display
     QPlatformNativeInterface *nativeInterface = QGuiApplication::platformNativeInterface();
     if (!nativeInterface) {
-        qCWarning(qLcWaylandCompositorHardwareIntegration) << "Failed to initialize EGL display. No native platform interface available.";
+        qCWarning(gLcAuroraCompositorHardwareIntegration) << "Failed to initialize EGL display. No native platform interface available.";
         return;
     }
 
     m_eglDisplay = nativeInterface->nativeResourceForIntegration("EglDisplay");
     if (!m_eglDisplay) {
-        qCWarning(qLcWaylandCompositorHardwareIntegration) << "Failed to initialize EGL display. Could not get EglDisplay for window.";
+        qCWarning(gLcAuroraCompositorHardwareIntegration) << "Failed to initialize EGL display. Could not get EglDisplay for window.";
         return;
     }
 
     const char *extensionString = eglQueryString(m_eglDisplay, EGL_EXTENSIONS);
     if (!extensionString || !strstr(extensionString, "EGL_EXT_image_dma_buf_import")) {
-        qCWarning(qLcWaylandCompositorHardwareIntegration) << "Failed to initialize EGL display. There is no EGL_EXT_image_dma_buf_import extension.";
+        qCWarning(gLcAuroraCompositorHardwareIntegration) << "Failed to initialize EGL display. There is no EGL_EXT_image_dma_buf_import extension.";
         return;
     }
     if (strstr(extensionString, "EGL_EXT_image_dma_buf_import_modifiers"))
@@ -333,7 +333,7 @@ void LinuxDmabufClientBufferIntegration::initializeHardware(struct ::wl_display 
     if (egl_bind_wayland_display && egl_unbind_wayland_display) {
         m_displayBound = egl_bind_wayland_display(m_eglDisplay, display);
         if (!m_displayBound)
-            qCDebug(qLcWaylandCompositorHardwareIntegration) << "Wayland display already bound by other client buffer integration.";
+            qCDebug(gLcAuroraCompositorHardwareIntegration) << "Wayland display already bound by other client buffer integration.";
         m_wlDisplay = display;
     }
 
@@ -452,7 +452,7 @@ Internal::ClientBuffer *LinuxDmabufClientBufferIntegration::createBufferFor(wl_r
 bool LinuxDmabufClientBufferIntegration::importBuffer(wl_resource *resource, LinuxDmabufWlBuffer *linuxDmabufBuffer)
 {
     if (m_importedBuffers.contains(resource)) {
-        qCWarning(qLcWaylandCompositorHardwareIntegration) << "buffer has already been added";
+        qCWarning(gLcAuroraCompositorHardwareIntegration) << "buffer has already been added";
         return false;
     }
     m_importedBuffers[resource] = linuxDmabufBuffer;

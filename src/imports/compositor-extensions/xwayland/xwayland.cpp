@@ -31,8 +31,8 @@
 
 #include <wayland-server-core.h>
 
-Q_LOGGING_CATEGORY(XWAYLAND, "liri.xwayland")
-Q_LOGGING_CATEGORY(XWAYLAND_TRACE, "liri.xwayland.trace")
+Q_LOGGING_CATEGORY(gLcXwayland, "aurora.compositor.xwayland")
+Q_LOGGING_CATEGORY(gLcXwaylandTrace, "aurora.compositor.xwayland.trace")
 
 namespace Aurora {
 
@@ -56,7 +56,7 @@ bool XWayland::isEnabled() const
 void XWayland::setEnabled(bool enabled)
 {
     if (m_initialized) {
-        qCWarning(XWAYLAND, "Cannot enable or disable XWayland after initialization");
+        qCWarning(gLcXwayland, "Cannot enable or disable XWayland after initialization");
         return;
     }
 
@@ -75,7 +75,7 @@ WaylandCompositor *XWayland::compositor() const
 void XWayland::setCompositor(WaylandCompositor *compositor)
 {
     if (m_compositor) {
-        qCWarning(XWAYLAND, "Cannot move XWayland to another compositor");
+        qCWarning(gLcXwayland, "Cannot move XWayland to another compositor");
         return;
     }
 
@@ -91,7 +91,7 @@ XWaylandManager *XWayland::manager() const
 void XWayland::setManager(XWaylandManager *manager)
 {
     if (m_manager) {
-        qCWarning(XWAYLAND, "Cannot move XWayland to another window manager");
+        qCWarning(gLcXwayland, "Cannot move XWayland to another window manager");
         return;
     }
 
@@ -107,12 +107,12 @@ QString XWayland::displayName() const
 bool XWayland::startServer()
 {
     if (!m_enabled) {
-        qCWarning(XWAYLAND) << "XWayland support is disabled, the server won't be started";
+        qCWarning(gLcXwayland) << "XWayland support is disabled, the server won't be started";
         return true;
     }
 
     if (!m_server->start()) {
-        qCWarning(XWAYLAND) << "Failed to start XWayland";
+        qCWarning(gLcXwayland) << "Failed to start XWayland";
         return false;
     }
 
@@ -138,7 +138,7 @@ void XWayland::initialize()
 
     // Check whether we have a compositor assigned
     if (!m_compositor) {
-        qCWarning(XWAYLAND, "Please assign a compositor to XWayland");
+        qCWarning(gLcXwayland, "Please assign a compositor to XWayland");
         return;
     }
 
@@ -146,7 +146,7 @@ void XWayland::initialize()
 
     // Do not continue unless enabled
     if (!m_enabled) {
-        qCWarning(XWAYLAND, "XWayland is disabled");
+        qCWarning(gLcXwayland, "XWayland is disabled");
         return;
     }
 

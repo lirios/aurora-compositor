@@ -298,7 +298,7 @@ WaylandEglStreamClientBufferIntegration::~WaylandEglStreamClientBufferIntegratio
     if (d->egl_unbind_wayland_display != nullptr && d->display_bound) {
         Q_ASSERT(d->wlDisplay != nullptr);
         if (!d->egl_unbind_wayland_display(d->egl_display, d->wlDisplay))
-            qCWarning(qLcWaylandCompositorHardwareIntegration) << "eglUnbindWaylandDisplayWL failed";
+            qCWarning(gLcAuroraCompositorHardwareIntegration) << "eglUnbindWaylandDisplayWL failed";
     }
 }
 
@@ -354,7 +354,7 @@ void WaylandEglStreamClientBufferIntegration::initializeHardware(struct wl_displ
     if (d->egl_bind_wayland_display && d->egl_unbind_wayland_display) {
         d->display_bound = d->egl_bind_wayland_display(d->egl_display, display);
         if (!d->display_bound)
-            qCDebug(qLcWaylandCompositorHardwareIntegration) << "Wayland display already bound by other client buffer integration.";
+            qCDebug(gLcAuroraCompositorHardwareIntegration) << "Wayland display already bound by other client buffer integration.";
 
         d->wlDisplay = display;
     }

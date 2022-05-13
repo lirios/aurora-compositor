@@ -27,7 +27,7 @@
 #include "udev_p.h"
 #include "udevdevice.h"
 
-Q_LOGGING_CATEGORY(lcUdev, "qtudev")
+Q_LOGGING_CATEGORY(gLcUdev, "aurora.udev")
 
 namespace QtUdev {
 
@@ -39,7 +39,7 @@ UdevPrivate::UdevPrivate()
 {
     udev = udev_new();
     if (!udev)
-        qCWarning(lcUdev, "Unable to get udev library context: no devices can be detected");
+        qCWarning(gLcUdev, "Unable to get udev library context: no devices can be detected");
 }
 
 UdevPrivate::~UdevPrivate()

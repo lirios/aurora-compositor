@@ -42,7 +42,7 @@ Resources::Resources()
 
     xfixes = xcb_get_extension_data(connection(), &xcb_xfixes_id);
     if (!xfixes || !xfixes->present)
-        qCWarning(XWAYLAND) << "xfixes not available";
+        qCWarning(gLcXwayland) << "xfixes not available";
 
     xcb_xfixes_query_version_cookie_t xfixesCookie =
             xcb_xfixes_query_version(connection(),
@@ -51,7 +51,7 @@ Resources::Resources()
     xcb_xfixes_query_version_reply_t *xfixesReply =
             xcb_xfixes_query_version_reply(connection(), xfixesCookie, nullptr);
 
-    qCDebug(XWAYLAND, "xfixes version: %d.%d",
+    qCDebug(gLcXwayland, "xfixes version: %d.%d",
             xfixesReply->major_version,
             xfixesReply->minor_version);
 

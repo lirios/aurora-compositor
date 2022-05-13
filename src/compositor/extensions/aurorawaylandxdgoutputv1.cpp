@@ -144,7 +144,7 @@ void WaylandXdgOutputManagerV1::initialize()
     WaylandCompositorExtensionTemplate::initialize();
     WaylandCompositor *compositor = static_cast<WaylandCompositor *>(extensionContainer());
     if (!compositor) {
-        qCWarning(qLcWaylandCompositor) << "Failed to find WaylandCompositor when initializing WaylandXdgOutputManagerV1";
+        qCWarning(gLcAuroraCompositor) << "Failed to find WaylandCompositor when initializing WaylandXdgOutputManagerV1";
         return;
     }
     d->init(compositor->display(), d->interfaceVersion());
@@ -187,7 +187,7 @@ void WaylandXdgOutputManagerV1Private::zxdg_output_manager_v1_get_xdg_output(Res
     // Verify if the associated output exist
     auto *output = WaylandOutput::fromResource(outputResource);
     if (!output) {
-        qCWarning(qLcWaylandCompositor,
+        qCWarning(gLcAuroraCompositor,
                   "The client is requesting a WaylandXdgOutputV1 for a "
                   "WaylandOutput that doesn't exist");
         wl_resource_post_error(resource->handle, WL_DISPLAY_ERROR_INVALID_OBJECT, "output not found");
@@ -196,7 +196,7 @@ void WaylandXdgOutputManagerV1Private::zxdg_output_manager_v1_get_xdg_output(Res
 
     // Do we have a WaylandXdgOutputV1 for this output?
     if (!xdgOutputs.contains(output)) {
-        qCWarning(qLcWaylandCompositor,
+        qCWarning(gLcAuroraCompositor,
                   "The client is requesting a WaylandXdgOutputV1 that the compositor "
                   "didn't create before");
         wl_resource_post_error(resource->handle, WL_DISPLAY_ERROR_INVALID_OBJECT,
@@ -325,7 +325,7 @@ void WaylandXdgOutputV1::setName(const QString &name)
 
     // Can't change after clients bound to xdg-output
     if (d->initialized) {
-        qCWarning(qLcWaylandCompositor, "WaylandXdgOutputV1::name cannot be changed after initialization");
+        qCWarning(gLcAuroraCompositor, "WaylandXdgOutputV1::name cannot be changed after initialization");
         return;
     }
 
@@ -366,7 +366,7 @@ void WaylandXdgOutputV1::setDescription(const QString &description)
 
     // Can't change after clients bound to xdg-output
     if (d->initialized) {
-        qCWarning(qLcWaylandCompositor, "WaylandXdgOutputV1::description cannot be changed after initialization");
+        qCWarning(gLcAuroraCompositor, "WaylandXdgOutputV1::description cannot be changed after initialization");
         return;
     }
 
@@ -529,7 +529,7 @@ void WaylandXdgOutputV1Private::setManager(WaylandXdgOutputManagerV1 *_manager)
     Q_Q(WaylandXdgOutputV1);
 
     if (!_manager) {
-        qCWarning(qLcWaylandCompositor,
+        qCWarning(gLcAuroraCompositor,
                   "Cannot associate a null WaylandXdgOutputManagerV1 to WaylandXdgOutputV1 %p", this);
         return;
     }
@@ -538,7 +538,7 @@ void WaylandXdgOutputV1Private::setManager(WaylandXdgOutputManagerV1 *_manager)
         return;
 
     if (manager) {
-        qCWarning(qLcWaylandCompositor,
+        qCWarning(gLcAuroraCompositor,
                   "Cannot associate a different WaylandXdgOutputManagerV1 to WaylandXdgOutputV1 %p "
                   "after initialization", this);
         return;
@@ -553,7 +553,7 @@ void WaylandXdgOutputV1Private::setOutput(WaylandOutput *_output)
     Q_Q(WaylandXdgOutputV1);
 
     if (!_output) {
-        qCWarning(qLcWaylandCompositor,
+        qCWarning(gLcAuroraCompositor,
                   "Cannot associate a null WaylandOutput to WaylandXdgOutputV1 %p", this);
         return;
     }
@@ -562,7 +562,7 @@ void WaylandXdgOutputV1Private::setOutput(WaylandOutput *_output)
         return;
 
     if (output) {
-        qCWarning(qLcWaylandCompositor,
+        qCWarning(gLcAuroraCompositor,
                   "Cannot associate a different WaylandOutput to WaylandXdgOutputV1 %p "
                   "after initialization", this);
         return;

@@ -178,7 +178,7 @@ void XWaylandShellSurface::setSurface(WaylandSurface *surface)
         connect(m_surface, &WaylandSurface::surfaceDestroyed,
                 this, &XWaylandShellSurface::handleSurfaceDestroyed);
 
-        qCDebug(XWAYLAND) << "Assign surface" << surface << "to shell surface for" << m_window;
+        qCDebug(gLcXwayland) << "Assign surface" << surface << "to shell surface for" << m_window;
 
         readProperties();
         Q_EMIT m_wm->shellSurfaceCreated(this);
@@ -189,7 +189,7 @@ void XWaylandShellSurface::setSurface(WaylandSurface *surface)
 
         Q_EMIT mapped();
     } else {
-        qCDebug(XWAYLAND) << "Unassign surface to shell surface for" << m_window;
+        qCDebug(gLcXwayland) << "Unassign surface to shell surface for" << m_window;
         Q_EMIT unmapped();
         m_wm->removeWindow(m_window);
     }
@@ -356,7 +356,7 @@ void XWaylandShellSurface::readProperties()
         Q_EMIT decorateChanged();
     }
 
-    qCDebug(XWAYLAND_TRACE) << "Properties:";
+    qCDebug(gLcXwaylandTrace) << "Properties:";
 
     for (xcb_atom_t atom : props.keys()) {
         xcb_get_property_reply_t *reply =
@@ -757,7 +757,7 @@ void XWaylandShellSurface::handleFocusLost()
 
 void XWaylandShellSurface::handleSurfaceDestroyed()
 {
-    qCWarning(XWAYLAND) << "Surface paired with window" << m_window << "destroyed";
+    qCWarning(gLcXwayland) << "Surface paired with window" << m_window << "destroyed";
 
     Q_EMIT unmapped();
     m_surface = nullptr;

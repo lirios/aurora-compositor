@@ -565,7 +565,7 @@ void WaylandKeyboardPrivate::checkAndRepairModifierState(QKeyEvent *ke)
                 mods |= 1 << controlIndex;
             if (ke->modifiers() & Qt::AltModifier)
                 mods |= 1 << altIndex;
-            qCDebug(qLcWaylandCompositor) << "Keyboard modifier state mismatch detected for event" << ke << "state:" << currentModifierState << "repaired:" << Qt::hex << mods;
+            qCDebug(gLcAuroraCompositor) << "Keyboard modifier state mismatch detected for event" << ke << "state:" << currentModifierState << "repaired:" << Qt::hex << mods;
             send_modifiers(focusResource->handle, compositor()->nextSerial(), mods,
                     0, 0, group);
             currentModifierState = ke->modifiers();

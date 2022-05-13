@@ -110,10 +110,10 @@ void XWaylandManager::setCompositor(WaylandCompositor *compositor)
 void XWaylandManager::start(int fd)
 {
     // Connect to XCB (xcb_connect_to_fd() takes ownership of the fd)
-    qCDebug(XWAYLAND) << "Connect to X11";
+    qCDebug(gLcXwayland) << "Connect to X11";
     Xcb::openConnection(fd);
     if (xcb_connection_has_error(Xcb::connection())) {
-        qCWarning(XWAYLAND) << "Connection failed!";
+        qCWarning(gLcXwayland) << "Connection failed!";
         ::close(fd);
         return;
     }
@@ -175,7 +175,7 @@ void XWaylandManager::start(int fd)
     // Xwayland that the setup is done
     createWindowManager();
 
-    qCDebug(XWAYLAND) << "X window manager created, root" << Xcb::rootWindow();
+    qCDebug(gLcXwayland) << "X window manager created, root" << Xcb::rootWindow();
 
     Q_EMIT created();
 }
@@ -261,7 +261,7 @@ void XWaylandManager::setupVisualAndColormap()
     }
 
     if (!visualType) {
-        qCDebug(XWAYLAND) << "No 32-bit visualtype";
+        qCDebug(gLcXwayland) << "No 32-bit visualtype";
         return;
     }
 
@@ -346,7 +346,7 @@ void XWaylandManager::createWindowManager()
 
 void XWaylandManager::handleButton(xcb_button_press_event_t *event)
 {
-    qCDebug(XWAYLAND_TRACE, "XCB_BUTTON_%s (detail %d)",
+    qCDebug(gLcXwaylandTrace, "XCB_BUTTON_%s (detail %d)",
             event->response_type == XCB_BUTTON_PRESS ? "PRESS" : "RELEASE",
             event->detail);
 }
@@ -363,7 +363,7 @@ void XWaylandManager::handleLeave(xcb_leave_notify_event_t *event)
 
 void XWaylandManager::handleMotion(xcb_motion_notify_event_t *event)
 {
-    qCDebug(XWAYLAND_TRACE, "XCB_MOTION_NOTIFY (window %d, x %d, y %d)",
+    qCDebug(gLcXwaylandTrace, "XCB_MOTION_NOTIFY (window %d, x %d, y %d)",
             event->event, event->event_x, event->event_y);
 
     if (!m_windowsMap.contains(event->event))
@@ -375,7 +375,7 @@ void XWaylandManager::handleMotion(xcb_motion_notify_event_t *event)
 
 void XWaylandManager::handleCreateNotify(xcb_create_notify_event_t *event)
 {
-    qCDebug(XWAYLAND_TRACE, "XCB_CREATE_NOTIFY (window %d, %d,%d @ %dx%d%s%s)",
+    qCDebug(gLcXwaylandTrace, "XCB_CREATE_NOTIFY (window %d, %d,%d @ %dx%d%s%s)",
             event->window, event->x, event->y, event->width, event->height,
             event->override_redirect ? ", override" : "",
             Xcb::isOurResource(event->window) ? ", ours" : "");
@@ -386,7 +386,7 @@ void XWaylandManager::handleCreateNotify(xcb_create_notify_event_t *event)
     XWaylandShellSurface *parentShellSurface = nullptr;
     if (event->override_redirect != 0)
         parentShellSurface = m_windowsMap[event->parent];
-    qCDebug(XWAYLAND_TRACE) << "Parent" << parentShellSurface;
+    qCDebug(gLcXwaylandTrace) << "Parent" << parentShellSurface;
 
     Q_EMIT shellSurfaceRequested(static_cast<quint32>(event->window),
                                  QRect(QPoint(event->x, event->y), QSize(event->width, event->height)),
@@ -396,7 +396,7 @@ void XWaylandManager::handleCreateNotify(xcb_create_notify_event_t *event)
 void XWaylandManager::handleMapRequest(xcb_map_request_event_t *event)
 {
     if (Xcb::isOurResource(event->window)) {
-        qCDebug(XWAYLAND_TRACE, "XCB_MAP_REQUEST (window %d, ours)",
+        qCDebug(gLcXwaylandTrace, "XCB_MAP_REQUEST (window %d, ours)",
                 event->window);
         return;
     }
@@ -406,7 +406,7 @@ void XWaylandManager::handleMapRequest(xcb_map_request_event_t *event)
 
     XWaylandShellSurface *shellSurface = m_windowsMap[event->window];
 
-    qCDebug(XWAYLAND_TRACE, "XCB_MAP_REQUEST (window %d, %p)",
+    qCDebug(gLcXwaylandTrace, "XCB_MAP_REQUEST (window %d, %p)",
             event->window, shellSurface);
 
     shellSurface->readProperties();
@@ -419,14 +419,14 @@ void XWaylandManager::handleMapRequest(xcb_map_request_event_t *event)
 
 void XWaylandManager::handleMapNotify(xcb_map_notify_event_t *event)
 {
-    qCDebug(XWAYLAND_TRACE, "XCB_MAP_NOTIFY (window %d%s)",
+    qCDebug(gLcXwaylandTrace, "XCB_MAP_NOTIFY (window %d%s)",
             event->window,
             Xcb::isOurResource(event->window) ? ", ours" : "");
 }
 
 void XWaylandManager::handleUnmapNotify(xcb_unmap_notify_event_t *event)
 {
-    qCDebug(XWAYLAND_TRACE, "XCB_UNMAP_NOTIFY (window %d, event %d%s)",
+    qCDebug(gLcXwaylandTrace, "XCB_UNMAP_NOTIFY (window %d, event %d%s)",
             event->window, event->event,
             Xcb::isOurResource(event->window) ? ", ours" : "");
 
@@ -456,7 +456,7 @@ void XWaylandManager::handleUnmapNotify(xcb_unmap_notify_event_t *event)
 
 void XWaylandManager::handleReparentNotify(xcb_reparent_notify_event_t *event)
 {
-    qCDebug(XWAYLAND_TRACE, "XCB_REPARENT_NOTIFY (window %d, parent %d, event %d)",
+    qCDebug(gLcXwaylandTrace, "XCB_REPARENT_NOTIFY (window %d, parent %d, event %d)",
             event->window, event->parent, event->event);
 
     if (event->parent == Xcb::rootWindow()) {
@@ -472,7 +472,7 @@ void XWaylandManager::handleReparentNotify(xcb_reparent_notify_event_t *event)
 
 void XWaylandManager::handleConfigureRequest(xcb_configure_request_event_t *event)
 {
-    qCDebug(XWAYLAND_TRACE, "XCB_CONFIGURE_REQUEST (window %d) %d,%d @ %dx%d",
+    qCDebug(gLcXwaylandTrace, "XCB_CONFIGURE_REQUEST (window %d) %d,%d @ %dx%d",
             event->window, event->x, event->y, event->width, event->height);
 
     XWaylandShellSurface *shellSurface = m_windowsMap[event->window];
@@ -524,7 +524,7 @@ void XWaylandManager::handleConfigureRequest(xcb_configure_request_event_t *even
 
 void XWaylandManager::handleConfigureNotify(xcb_configure_notify_event_t *event)
 {
-    qCDebug(XWAYLAND_TRACE, "XCB_CONFIGURE_NOTIFY (window %d) %d,%d @ %dx%d",
+    qCDebug(gLcXwaylandTrace, "XCB_CONFIGURE_NOTIFY (window %d) %d,%d @ %dx%d",
             event->window, event->x, event->y, event->width, event->height);
 
     if (!m_windowsMap.contains(event->window))
@@ -538,7 +538,7 @@ void XWaylandManager::handleConfigureNotify(xcb_configure_notify_event_t *event)
 
 void XWaylandManager::handleDestroyNotify(xcb_destroy_notify_event_t *event)
 {
-    qCDebug(XWAYLAND_TRACE, "XCB_DESTROY_NOTIFY (window %d, event %d%s)",
+    qCDebug(gLcXwaylandTrace, "XCB_DESTROY_NOTIFY (window %d, event %d%s)",
             event->window, event->event,
             Xcb::isOurResource(event->window) ? ", ours" : "");
 
@@ -556,7 +556,7 @@ void XWaylandManager::handleDestroyNotify(xcb_destroy_notify_event_t *event)
 
 void XWaylandManager::handlePropertyNotify(xcb_property_notify_event_t *event)
 {
-    qCDebug(XWAYLAND_TRACE, "XCB_PROPERTY_NOTIFY (window %d)", event->window);
+    qCDebug(gLcXwaylandTrace, "XCB_PROPERTY_NOTIFY (window %d)", event->window);
 
     XWaylandShellSurface *shellSurface = m_windowsMap[event->window];
     if (!shellSurface)
@@ -565,7 +565,7 @@ void XWaylandManager::handlePropertyNotify(xcb_property_notify_event_t *event)
     shellSurface->dirtyProperties();
 
     if (event->state == XCB_PROPERTY_DELETE)
-        qCDebug(XWAYLAND_TRACE, "\tdeleted");
+        qCDebug(gLcXwaylandTrace, "\tdeleted");
     else
         Xcb::Properties::readAndDumpProperty(event->atom, event->window);
 }
@@ -573,7 +573,7 @@ void XWaylandManager::handlePropertyNotify(xcb_property_notify_event_t *event)
 void XWaylandManager::handleClientMessage(xcb_client_message_event_t *event)
 {
     QString name = Xcb::Atom::nameFromAtom(event->type);
-    qCDebug(XWAYLAND_TRACE, "XCB_CLIENT_MESSAGE (%s %d %d %d %d %d win %d)",
+    qCDebug(gLcXwaylandTrace, "XCB_CLIENT_MESSAGE (%s %d %d %d %d %d win %d)",
             qPrintable(name),
             event->data.data32[0],
             event->data.data32[1],
@@ -770,7 +770,7 @@ void XWaylandManager::handleSurfaceId(XWaylandShellSurface *shellSurface, xcb_cl
         return;
 
     if (shellSurface->surface()) {
-        qCWarning(XWAYLAND_TRACE) << "Window" << shellSurface->window() << "already has a surface id";
+        qCWarning(gLcXwaylandTrace) << "Window" << shellSurface->window() << "already has a surface id";
         return;
     }
 
@@ -788,7 +788,7 @@ void XWaylandManager::handleSurfaceId(XWaylandShellSurface *shellSurface, xcb_cl
 void XWaylandManager::wmEvents()
 {
     // Uncomment if you want to be flooded by messages
-    //qCDebug(XWAYLAND_TRACE) << "WM event";
+    //qCDebug(gLcXwaylandTrace) << "WM event";
 
     xcb_generic_event_t *event;
     int count = 0;

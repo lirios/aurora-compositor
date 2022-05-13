@@ -137,7 +137,7 @@ private:
 EGLImageKHR DmaBufServerBufferIntegration::eglCreateImageKHR(EGLContext ctx, EGLenum target, EGLClientBuffer buffer, const EGLint *attrib_list)
 {
     if (!m_egl_create_image) {
-        qCWarning(qLcWaylandCompositorHardwareIntegration) << "DmaBufServerBufferIntegration: Trying to use unresolved function eglCreateImageKHR";
+        qCWarning(gLcAuroraCompositorHardwareIntegration) << "DmaBufServerBufferIntegration: Trying to use unresolved function eglCreateImageKHR";
         return EGL_NO_IMAGE_KHR;
     }
     return m_egl_create_image(m_egl_display, ctx, target, buffer, attrib_list);
@@ -146,7 +146,7 @@ EGLImageKHR DmaBufServerBufferIntegration::eglCreateImageKHR(EGLContext ctx, EGL
 EGLBoolean DmaBufServerBufferIntegration::eglDestroyImageKHR(EGLImageKHR image)
 {
     if (!m_egl_destroy_image) {
-        qCWarning(qLcWaylandCompositorHardwareIntegration) << "DmaBufServerBufferIntegration: Trying to use unresolved function eglDestroyImageKHR";
+        qCWarning(gLcAuroraCompositorHardwareIntegration) << "DmaBufServerBufferIntegration: Trying to use unresolved function eglDestroyImageKHR";
         return false;
     }
     return m_egl_destroy_image(m_egl_display, image);
@@ -160,7 +160,7 @@ EGLBoolean DmaBufServerBufferIntegration::eglExportDMABUFImageQueryMESA(EGLImage
     if (m_egl_export_dmabuf_image_query)
         return m_egl_export_dmabuf_image_query(m_egl_display, image, fourcc, num_planes, modifiers);
     else
-        qCWarning(qLcWaylandCompositorHardwareIntegration) << "DmaBufServerBufferIntegration: Trying to use unresolved function eglExportDMABUFImageQueryMESA";
+        qCWarning(gLcAuroraCompositorHardwareIntegration) << "DmaBufServerBufferIntegration: Trying to use unresolved function eglExportDMABUFImageQueryMESA";
     return false;
 }
 
@@ -172,7 +172,7 @@ EGLBoolean DmaBufServerBufferIntegration::eglExportDMABUFImageMESA(EGLImageKHR i
     if (m_egl_export_dmabuf_image)
         return m_egl_export_dmabuf_image(m_egl_display, image, fds, strides, offsets);
     else
-        qCWarning(qLcWaylandCompositorHardwareIntegration) << "DmaBufServerBufferIntegration: Trying to use unresolved function eglExportDMABUFImageMESA";
+        qCWarning(gLcAuroraCompositorHardwareIntegration) << "DmaBufServerBufferIntegration: Trying to use unresolved function eglExportDMABUFImageMESA";
     return false;
 }
 
@@ -181,7 +181,7 @@ void DmaBufServerBufferIntegration::glEGLImageTargetTexture2DOES(GLenum target, 
     if (m_gl_egl_image_target_texture_2d)
         return m_gl_egl_image_target_texture_2d(target, image);
     else
-        qCWarning(qLcWaylandCompositorHardwareIntegration) << "DmaBufServerBufferIntegration: Trying to use unresolved function glEGLImageTargetTexture2DOES";
+        qCWarning(gLcAuroraCompositorHardwareIntegration) << "DmaBufServerBufferIntegration: Trying to use unresolved function glEGLImageTargetTexture2DOES";
 }
 } // namespace Compositor
 

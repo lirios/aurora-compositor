@@ -407,7 +407,7 @@ void WaylandXdgSurfacePrivate::xdg_surface_get_popup(PrivateServer::xdg_surface:
         //                       "xdg_positioner anchor rect extends beyound its parent's window geometry");
         //return;
         // However, our own clients currently do this, so we'll settle for a gentle warning instead.
-        qCWarning(qLcWaylandCompositor) << "Ignoring client protocol error: xdg_positioner anchor"
+        qCWarning(gLcAuroraCompositor) << "Ignoring client protocol error: xdg_positioner anchor"
                                         << "rect extends beyond its parent's window geometry";
     }
 

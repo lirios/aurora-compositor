@@ -56,7 +56,7 @@
 
 QT_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(qLcEglfsKmsDebug, "qt.qpa.eglfs.kms", QtInfoMsg)
+Q_LOGGING_CATEGORY(qLcEglfsKmsDebug, "aurora.eglfs.kms", QtInfoMsg)
 
 QEglFSKmsIntegration::QEglFSKmsIntegration()
     : m_device(nullptr),

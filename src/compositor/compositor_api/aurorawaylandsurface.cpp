@@ -206,7 +206,7 @@ void WaylandSurfacePrivate::surface_attach(Resource *, struct wl_resource *buffe
 void WaylandSurfacePrivate::surface_damage(Resource *, int32_t x, int32_t y, int32_t width, int32_t height)
 {
     if (Q_UNLIKELY(pending.damageInBufferCoordinates && !pending.damage.isNull()))
-        qCWarning(qLcWaylandCompositor) << "Unsupported: Client is using both wl_surface.damage_buffer and wl_surface.damage.";
+        qCWarning(gLcAuroraCompositor) << "Unsupported: Client is using both wl_surface.damage_buffer and wl_surface.damage.";
     pending.damage = pending.damage.united(QRect(x, y, width, height));
     pending.damageInBufferCoordinates = false;
 }
@@ -214,7 +214,7 @@ void WaylandSurfacePrivate::surface_damage(Resource *, int32_t x, int32_t y, int
 void WaylandSurfacePrivate::surface_damage_buffer(Resource *, int32_t x, int32_t y, int32_t width, int32_t height)
 {
     if (Q_UNLIKELY(!pending.damageInBufferCoordinates && !pending.damage.isNull()))
-        qCWarning(qLcWaylandCompositor) << "Unsupported: Client is using both wl_surface.damage_buffer and wl_surface.damage.";
+        qCWarning(gLcAuroraCompositor) << "Unsupported: Client is using both wl_surface.damage_buffer and wl_surface.damage.";
     pending.damage = pending.damage.united(QRect(x, y, width, height));
     pending.damageInBufferCoordinates = true;
 }

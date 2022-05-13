@@ -35,8 +35,7 @@
 #include <QtGui/QScreen>
 #include <QtGui/qpa/qwindowsysteminterface.h>
 
-#include "logging_p.h"
-#include "libinputhandler.h"
+#include "libinputhandler_p.h"
 #include "libinputtouch.h"
 
 #include <libinput.h>
@@ -151,7 +150,7 @@ void LibInputTouch::handleTouchUp(libinput_event_touch *event)
         if (states == Qt::TouchPointReleased)
             handleTouchFrame(event);
     } else {
-        qCWarning(lcInput) << "Received a touch up without prior touch down for slot" << slot;
+        qCWarning(gLcLibinput) << "Received a touch up without prior touch down for slot" << slot;
     }
 }
 
@@ -165,7 +164,7 @@ void LibInputTouch::handleTouchDown(libinput_event_touch *event)
     QWindowSystemInterface::TouchPoint *touchPoint = state->touchPointAt(slot);
     if (touchPoint) {
         // There shouldn't be already a touch point
-        qCWarning(lcInput) << "Touch point already present for slot" << slot;
+        qCWarning(gLcLibinput) << "Touch point already present for slot" << slot;
     } else {
         QWindowSystemInterface::TouchPoint newTouchPoint;
         newTouchPoint.id = qMax(0, slot);
@@ -195,7 +194,7 @@ void LibInputTouch::handleTouchMotion(libinput_event_touch *event)
             touchPoint->state = Qt::TouchPointStationary;
         }
     } else {
-        qCWarning(lcInput) << "Received a touch motion without prior touch down for slot" << slot;
+        qCWarning(gLcLibinput) << "Received a touch motion without prior touch down for slot" << slot;
     }
 }
 
@@ -211,7 +210,7 @@ void LibInputTouch::handleTouchCancel(libinput_event_touch *event)
         e.modifiers = QGuiApplication::keyboardModifiers();
         Q_EMIT d->handler->touchCancel(e);
     } else {
-        qCWarning(lcInput) << "Received a touch canceled without a device";
+        qCWarning(gLcLibinput) << "Received a touch canceled without a device";
     }
 }
 
@@ -221,7 +220,7 @@ void LibInputTouch::handleTouchFrame(libinput_event_touch *event)
 
     State *state = d->stateFromEvent(event);
     if (!state->touchDevice) {
-        qCWarning(lcInput) << "Received a touch frame without a device";
+        qCWarning(gLcLibinput) << "Received a touch frame without a device";
         return;
     }
 

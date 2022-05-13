@@ -42,7 +42,7 @@ UdevMonitorPrivate::UdevMonitorPrivate(UdevMonitor *qq, Udev *u)
 {
     monitor = udev_monitor_new_from_netlink(UdevPrivate::get(u)->udev, "udev");
     if (!monitor) {
-        qCWarning(lcUdev, "Unable to create an udev monitor: no devices can be detected");
+        qCWarning(gLcUdev, "Unable to create an udev monitor: no devices can be detected");
         return;
     }
 

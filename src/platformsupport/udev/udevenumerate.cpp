@@ -40,7 +40,7 @@ UdevEnumeratePrivate::UdevEnumeratePrivate(UdevDevice::DeviceTypes t, Udev *u)
 {
     enumerate = udev_enumerate_new(UdevPrivate::get(u)->udev);
     if (!enumerate) {
-        qCWarning(lcUdev, "Unable to enumerate connected devices");
+        qCWarning(gLcUdev, "Unable to enumerate connected devices");
         return;
     }
 
@@ -106,7 +106,7 @@ QList<UdevDevice *> UdevEnumerate::scan() const
         return list;
 
     if (udev_enumerate_scan_devices(d->enumerate) != 0) {
-        qCWarning(lcUdev, "Unable to enumerate connected devices");
+        qCWarning(gLcUdev, "Unable to enumerate connected devices");
         return list;
     }
 

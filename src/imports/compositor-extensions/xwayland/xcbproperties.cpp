@@ -62,7 +62,7 @@ void dumpProperty(xcb_atom_t property, xcb_get_property_reply_t *reply)
 
     if (!reply) {
         buffer += QLatin1String("(no reply)");
-        qCDebug(XWAYLAND_TRACE) << qPrintable(buffer);
+        qCDebug(gLcXwaylandTrace) << qPrintable(buffer);
         return;
     }
 
@@ -93,7 +93,7 @@ void dumpProperty(xcb_atom_t property, xcb_get_property_reply_t *reply)
         buffer += QStringLiteral("huh?");
     }
 
-    qCDebug(XWAYLAND_TRACE) << qPrintable(buffer);
+    qCDebug(gLcXwaylandTrace) << qPrintable(buffer);
 }
 
 void readAndDumpProperty(xcb_atom_t atom, xcb_window_t window)

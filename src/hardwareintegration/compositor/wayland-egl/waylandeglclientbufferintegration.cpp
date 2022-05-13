@@ -231,7 +231,7 @@ void WaylandEglClientBufferIntegrationPrivate::initEglTexture(WaylandEglClientBu
         gl_egl_image_target_texture_2d = reinterpret_cast<PFNGLEGLIMAGETARGETTEXTURE2DOESPROC>(eglGetProcAddress("glEGLImageTargetTexture2DOES"));
 
     if (!gl_egl_image_target_texture_2d) {
-        qCWarning(qLcWaylandCompositorHardwareIntegration)
+        qCWarning(gLcAuroraCompositorHardwareIntegration)
                 << "BindTextureToBuffer() failed. Could not find glEGLImageTargetTexture2DOES.";
         return;
     }
@@ -285,7 +285,7 @@ void WaylandEglClientBufferIntegrationPrivate::initEglTexture(WaylandEglClientBu
                                              attribs);
 
         if (image == EGL_NO_IMAGE_KHR) {
-            qCWarning(qLcWaylandCompositorHardwareIntegration)
+            qCWarning(gLcAuroraCompositorHardwareIntegration)
                     << "Failed to create EGL image for plane" << i;
         }
 
@@ -336,13 +336,13 @@ bool WaylandEglClientBufferIntegrationPrivate::initEglStream(WaylandEglClientBuf
     }
 
     if (state.egl_stream == EGL_NO_STREAM_KHR) {
-        qCWarning(qLcWaylandCompositorHardwareIntegration, "%s:%d: eglCreateStreamFromFileDescriptorKHR failed: 0x%x", Q_FUNC_INFO, __LINE__, eglGetError());
+        qCWarning(gLcAuroraCompositorHardwareIntegration, "%s:%d: eglCreateStreamFromFileDescriptorKHR failed: 0x%x", Q_FUNC_INFO, __LINE__, eglGetError());
         return false;
     }
     state.eglMode = BufferState::ModeEGLStream;
 
     if (!QOpenGLContext::currentContext()) {
-        qCWarning(qLcWaylandCompositorHardwareIntegration)
+        qCWarning(gLcAuroraCompositorHardwareIntegration)
                 << "EglClientBufferIntegration: creating texture with no current context";
         return false;
     }
@@ -356,7 +356,7 @@ bool WaylandEglClientBufferIntegrationPrivate::initEglStream(WaylandEglClientBuf
     auto newStream = funcs->stream_consumer_gltexture(egl_display, state.egl_stream);
     if (!newStream) {
         EGLint code = eglGetError();
-        qCWarning(qLcWaylandCompositorHardwareIntegration) << "Could not initialize EGLStream:" << egl_error_string(code) << Qt::hex << (long)code;
+        qCWarning(gLcAuroraCompositorHardwareIntegration) << "Could not initialize EGLStream:" << egl_error_string(code) << Qt::hex << (long)code;
         funcs->destroy_stream(egl_display, state.egl_stream);
         state.egl_stream = EGL_NO_STREAM_KHR;
         return false;
@@ -384,7 +384,7 @@ void WaylandEglClientBufferIntegrationPrivate::handleEglstreamTexture(WaylandEgl
 
     if (stream_state == EGL_STREAM_STATE_NEW_FRAME_AVAILABLE_KHR) {
         if (funcs->stream_consumer_acquire(egl_display, state.egl_stream) != EGL_TRUE)
-            qCWarning(qLcWaylandCompositorHardwareIntegration,
+            qCWarning(gLcAuroraCompositorHardwareIntegration,
                       "%s:%d: eglStreamConsumerAcquireKHR failed: 0x%x", Q_FUNC_INFO, __LINE__,
                       eglGetError());
     }
@@ -412,7 +412,7 @@ WaylandEglClientBufferIntegration::~WaylandEglClientBufferIntegration()
     if (d->egl_unbind_wayland_display && d->display_bound) {
         Q_ASSERT(d->wlDisplay);
         if (!d->egl_unbind_wayland_display(d->egl_display, d->wlDisplay))
-            qCWarning(qLcWaylandCompositorHardwareIntegration) << "eglUnbindWaylandDisplayWL failed";
+            qCWarning(gLcAuroraCompositorHardwareIntegration) << "eglUnbindWaylandDisplayWL failed";
     }
 }
 
@@ -424,21 +424,21 @@ void WaylandEglClientBufferIntegration::initializeHardware(struct wl_display *di
 
     QPlatformNativeInterface *nativeInterface = QGuiApplication::platformNativeInterface();
     if (!nativeInterface) {
-        qCWarning(qLcWaylandCompositorHardwareIntegration)
+        qCWarning(gLcAuroraCompositorHardwareIntegration)
                 << "Failed to initialize EGL display. No native platform interface available.";
         return;
     }
 
     d->egl_display = nativeInterface->nativeResourceForIntegration("EglDisplay");
     if (!d->egl_display) {
-        qCWarning(qLcWaylandCompositorHardwareIntegration)
+        qCWarning(gLcAuroraCompositorHardwareIntegration)
                 << "Failed to initialize EGL display. Could not get EglDisplay for window.";
         return;
     }
 
     const char *extensionString = eglQueryString(d->egl_display, EGL_EXTENSIONS);
     if ((!extensionString || !strstr(extensionString, "EGL_WL_bind_wayland_display")) && !ignoreBindDisplay) {
-        qCWarning(qLcWaylandCompositorHardwareIntegration)
+        qCWarning(gLcAuroraCompositorHardwareIntegration)
                 << "Failed to initialize EGL display. There is no EGL_WL_bind_wayland_display extension.";
         return;
     }
@@ -446,14 +446,14 @@ void WaylandEglClientBufferIntegration::initializeHardware(struct wl_display *di
     d->egl_bind_wayland_display = reinterpret_cast<PFNEGLBINDWAYLANDDISPLAYWL>(eglGetProcAddress("eglBindWaylandDisplayWL"));
     d->egl_unbind_wayland_display = reinterpret_cast<PFNEGLUNBINDWAYLANDDISPLAYWL>(eglGetProcAddress("eglUnbindWaylandDisplayWL"));
     if ((!d->egl_bind_wayland_display || !d->egl_unbind_wayland_display) && !ignoreBindDisplay) {
-        qCWarning(qLcWaylandCompositorHardwareIntegration)
+        qCWarning(gLcAuroraCompositorHardwareIntegration)
                 << "Failed to initialize EGL display. Could not find eglBindWaylandDisplayWL and eglUnbindWaylandDisplayWL.";
         return;
     }
 
     d->egl_query_wayland_buffer = reinterpret_cast<PFNEGLQUERYWAYLANDBUFFERWL_compat>(eglGetProcAddress("eglQueryWaylandBufferWL"));
     if (!d->egl_query_wayland_buffer) {
-        qCWarning(qLcWaylandCompositorHardwareIntegration)
+        qCWarning(gLcAuroraCompositorHardwareIntegration)
                 << "Failed to initialize EGL display. Could not find eglQueryWaylandBufferWL.";
         return;
     }
@@ -461,7 +461,7 @@ void WaylandEglClientBufferIntegration::initializeHardware(struct wl_display *di
     d->egl_create_image = reinterpret_cast<PFNEGLCREATEIMAGEKHRPROC>(eglGetProcAddress("eglCreateImageKHR"));
     d->egl_destroy_image = reinterpret_cast<PFNEGLDESTROYIMAGEKHRPROC>(eglGetProcAddress("eglDestroyImageKHR"));
     if (!d->egl_create_image || !d->egl_destroy_image) {
-        qCWarning(qLcWaylandCompositorHardwareIntegration)
+        qCWarning(gLcAuroraCompositorHardwareIntegration)
                 << "Failed to initialize EGL display. Could not find eglCreateImageKHR and eglDestroyImageKHR.";
         return;
     }
@@ -469,7 +469,7 @@ void WaylandEglClientBufferIntegration::initializeHardware(struct wl_display *di
     if (d->egl_bind_wayland_display && d->egl_unbind_wayland_display) {
         d->display_bound = d->egl_bind_wayland_display(d->egl_display, display);
         if (!d->display_bound)
-            qCDebug(qLcWaylandCompositorHardwareIntegration) << "Wayland display already bound by other client buffer integration.";
+            qCDebug(gLcAuroraCompositorHardwareIntegration) << "Wayland display already bound by other client buffer integration.";
         d->wlDisplay = display;
     }
 

@@ -255,7 +255,7 @@ bool VulkanServerBuffer::bufferInUse()
 
 void VulkanServerBuffer::server_buffer_release(Resource *resource)
 {
-    qCDebug(qLcWaylandCompositorHardwareIntegration) << "server_buffer RELEASE resource" << resource->handle << wl_resource_get_id(resource->handle) << "for client" << resource->client();
+    qCDebug(gLcAuroraCompositorHardwareIntegration) << "server_buffer RELEASE resource" << resource->handle << wl_resource_get_id(resource->handle) << "for client" << resource->client();
     wl_resource_destroy(resource->handle);
 }
 
@@ -311,7 +311,7 @@ VulkanServerBufferIntegration::createServerBufferFromData(QByteArrayView view, c
     if (vImage)
         return new VulkanServerBuffer(this, vImage, glInternalFormat, size);
 
-    qCWarning(qLcWaylandCompositorHardwareIntegration) << "could not load compressed texture";
+    qCWarning(gLcAuroraCompositorHardwareIntegration) << "could not load compressed texture";
     return nullptr;
 }
 

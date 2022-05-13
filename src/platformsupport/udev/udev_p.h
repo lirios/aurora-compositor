@@ -43,7 +43,7 @@ extern "C" {
 #include <libudev.h>
 }
 
-Q_DECLARE_LOGGING_CATEGORY(lcUdev)
+Q_DECLARE_LOGGING_CATEGORY(gLcUdev)
 
 namespace QtUdev {
 

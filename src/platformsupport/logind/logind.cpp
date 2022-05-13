@@ -36,7 +36,7 @@
 
 #include <sys/sysmacros.h>
 
-Q_LOGGING_CATEGORY(lcLogind, "liri.logind")
+Q_LOGGING_CATEGORY(gLcLogind, "aurora.logind")
 
 #define LOGIN1_SERVICE QStringLiteral("org.freedesktop.login1")
 
@@ -84,7 +84,7 @@ void LogindPrivate::_q_serviceRegistered()
     DBusUserSession session;
     if (getUserSession(session)) {
         sessionPath = session.objectPath.path();
-        qCInfo(lcLogind, "Using session %s", qPrintable(session.id));
+        qCInfo(gLcLogind, "Using session %s", qPrintable(session.id));
     } else {
         QDBusObjectPath sessionObjectPath;
 
@@ -100,14 +100,14 @@ void LogindPrivate::_q_serviceRegistered()
 
         if (!sessionPath.isEmpty()) {
             QString sessionId = getSessionId(sessionPath);
-            qCInfo(lcLogind, "Using session %s", qPrintable(sessionId));
+            qCInfo(gLcLogind, "Using session %s", qPrintable(sessionId));
         }
     }
     if (sessionPath.isEmpty()) {
-        qCWarning(lcLogind) << "Unable to find session!";
+        qCWarning(gLcLogind) << "Unable to find session!";
         return;
     }
-    qCDebug(lcLogind) << "Session path:" << sessionPath;
+    qCDebug(gLcLogind) << "Session path:" << sessionPath;
 
     // We are connected now
     isConnected = true;
@@ -226,7 +226,7 @@ bool LogindPrivate::getSessionById(const QString &sessionId, QDBusObjectPath &pa
 
     QDBusReply<QDBusObjectPath> reply = bus.call(message);
     if (!reply.isValid()) {
-        qCWarning(lcLogind, "Failed to get session path for session %s: %s",
+        qCWarning(gLcLogind, "Failed to get session path for session %s: %s",
                   qPrintable(sessionId),
                   qPrintable(reply.error().message()));
         return false;
@@ -250,7 +250,7 @@ bool LogindPrivate::getSessionByPid(QDBusObjectPath &path) const
 
     QDBusReply<QDBusObjectPath> reply = bus.call(message);
     if (!reply.isValid()) {
-        qCWarning(lcLogind, "Failed to get session path by PID: %s",
+        qCWarning(gLcLogind, "Failed to get session path by PID: %s",
                   qPrintable(reply.error().message()));
         return false;
     }
@@ -276,7 +276,7 @@ bool LogindPrivate::getUserSession(DBusUserSession &session) const
 
         QDBusReply<QDBusObjectPath> reply = bus.call(message);
         if (!reply.isValid()) {
-            qCWarning(lcLogind, "Failed to get user path: %s",
+            qCWarning(gLcLogind, "Failed to get user path: %s",
                       qPrintable(reply.error().message()));
             return false;
         }
@@ -298,7 +298,7 @@ bool LogindPrivate::getUserSession(DBusUserSession &session) const
 
         QDBusReply<QVariant> reply = bus.call(message);
         if (!reply.isValid()) {
-            qCWarning(lcLogind, "Failed to list user sessions: %s",
+            qCWarning(gLcLogind, "Failed to list user sessions: %s",
                       qPrintable(reply.error().message()));
             return false;
         }
@@ -353,7 +353,7 @@ QString LogindPrivate::getSessionId(const QString &sessionPath) const
 
     QDBusReply<QVariant> reply = bus.call(message);
     if (!reply.isValid()) {
-        qCWarning(lcLogind, "Failed to get session id: %s",
+        qCWarning(gLcLogind, "Failed to get session id: %s",
                   qPrintable(reply.error().message()));
         return QString();
     }
@@ -376,7 +376,7 @@ QString LogindPrivate::getSessionType(const QString &sessionId, const QString &s
 
     QDBusReply<QVariant> reply = bus.call(message);
     if (!reply.isValid()) {
-        qCWarning(lcLogind, "Failed to get type for session %s: %s",
+        qCWarning(gLcLogind, "Failed to get type for session %s: %s",
                   qPrintable(sessionId), qPrintable(reply.error().message()));
         return QString();
     }
@@ -399,7 +399,7 @@ QString LogindPrivate::getSessionState(const QString &sessionId, const QString &
 
     QDBusReply<QVariant> reply = bus.call(message);
     if (!reply.isValid()) {
-        qCWarning(lcLogind, "Failed to get state for session %s: %s",
+        qCWarning(gLcLogind, "Failed to get state for session %s: %s",
                   qPrintable(sessionId), qPrintable(reply.error().message()));
         return QString();
     }
@@ -426,7 +426,7 @@ void LogindPrivate::getSessionActive()
         w->deleteLater();
 
         if (!reply.isValid()) {
-            qCWarning(lcLogind, "Failed to get \"Active\" property from session: %s",
+            qCWarning(gLcLogind, "Failed to get \"Active\" property from session: %s",
                       qPrintable(reply.error().message()));
             return;
         }
@@ -458,7 +458,7 @@ void LogindPrivate::getVirtualTerminal()
         w->deleteLater();
 
         if (!reply.isValid()) {
-            qCWarning(lcLogind, "Failed to get \"VTNr\" property from session: %s",
+            qCWarning(gLcLogind, "Failed to get \"VTNr\" property from session: %s",
                       qPrintable(reply.error().message()));
             return;
         }
@@ -490,7 +490,7 @@ void LogindPrivate::getSeat()
         w->deleteLater();
 
         if (!reply.isValid()) {
-            qCWarning(lcLogind, "Failed to get \"Seat\" property from session: %s",
+            qCWarning(gLcLogind, "Failed to get \"Seat\" property from session: %s",
                       qPrintable(reply.error().message()));
             return;
         }
@@ -713,12 +713,12 @@ void Logind::inhibit(const QString &who, const QString &why,
         w->deleteLater();
 
         if (!reply.isValid()) {
-            qCWarning(lcLogind, "Unable to acquire inhibition lock: %s",
+            qCWarning(gLcLogind, "Unable to acquire inhibition lock: %s",
                       qPrintable(reply.error().message()));
             return;
         }
 
-        qCDebug(lcLogind) << "Inhibition lock acquired successfully";
+        qCDebug(gLcLogind) << "Inhibition lock acquired successfully";
 
         const int fd = ::dup(reply.value().fileDescriptor());
         d->inhibitFds.append(fd);
@@ -816,14 +816,14 @@ void Logind::takeControl()
         w->deleteLater();
 
         if (!reply.isValid()) {
-            qCWarning(lcLogind, "Unable to take control of the session: %s",
+            qCWarning(gLcLogind, "Unable to take control of the session: %s",
                       qPrintable(reply.error().message()));
             d->hasSessionControl = false;
             Q_EMIT hasSessionControlChanged(d->hasSessionControl);
             return;
         }
 
-        qCDebug(lcLogind) << "Acquired control of the session";
+        qCDebug(gLcLogind) << "Acquired control of the session";
         d->hasSessionControl = true;
         Q_EMIT hasSessionControlChanged(d->hasSessionControl);
 
@@ -857,7 +857,7 @@ void Logind::releaseControl()
                                            QLatin1String("ReleaseControl"));
     d->bus.asyncCall(message);
 
-    qCDebug(lcLogind) << "Released control of the session";
+    qCDebug(gLcLogind) << "Released control of the session";
     d->hasSessionControl = false;
     Q_EMIT hasSessionControlChanged(d->hasSessionControl);
 }
@@ -875,7 +875,7 @@ int Logind::takeDevice(const QString &fileName)
 
     struct stat st;
     if (::stat(qPrintable(fileName), &st) < 0) {
-        qCWarning(lcLogind, "Failed to stat: %s", qPrintable(fileName));
+        qCWarning(gLcLogind, "Failed to stat: %s", qPrintable(fileName));
         return -1;
     }
 
@@ -891,7 +891,7 @@ int Logind::takeDevice(const QString &fileName)
     // Block until the device is taken
     QDBusMessage reply = d->bus.call(message);
     if (reply.type() == QDBusMessage::ErrorMessage) {
-        qCWarning(lcLogind, "Failed to take device \"%s\": %s",
+        qCWarning(gLcLogind, "Failed to take device \"%s\": %s",
                   qPrintable(fileName), qPrintable(reply.errorMessage()));
         return -1;
     }
@@ -911,7 +911,7 @@ void Logind::releaseDevice(int fd)
 
     struct stat st;
     if (::fstat(fd, &st) < 0) {
-        qCWarning(lcLogind, "Failed to stat the file descriptor");
+        qCWarning(gLcLogind, "Failed to stat the file descriptor");
         return;
     }
 

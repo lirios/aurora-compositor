@@ -52,7 +52,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-Q_LOGGING_CATEGORY(lcXkbcommon, "qt.xkbcommon")
+Q_LOGGING_CATEGORY(gLcXkbcommon, "aurora.xkbcommon")
 
 static int keysymToQtKey_internal(xkb_keysym_t keysym, Qt::KeyboardModifiers modifiers,
                                   xkb_state *state, xkb_keycode_t code,
@@ -633,7 +633,7 @@ QList<int> QXkbCommon::possibleKeys(xkb_state *state, const QKeyEvent *event,
     ScopedXKBState scopedXkbQueryState(xkb_state_new(keymap));
     xkb_state *queryState = scopedXkbQueryState.get();
     if (!queryState) {
-        qCWarning(lcXkbcommon) << Q_FUNC_INFO << "failed to compile xkb keymap";
+        qCWarning(gLcXkbcommon) << Q_FUNC_INFO << "failed to compile xkb keymap";
         return result;
     }
     // get kb state from the master state and update the temporary state
@@ -746,7 +746,7 @@ void QXkbCommon::verifyHasLatinLayout(xkb_keymap *keymap)
     // selected layouts is irrelevant. Properly functioning desktop environments
     // handle this behind the scenes, even if no latin key based layout has been
     // explicitly listed in the selected layouts.
-    qCDebug(lcXkbcommon, "no keyboard layouts with latin keys present");
+    qCDebug(gLcXkbcommon, "no keyboard layouts with latin keys present");
 }
 
 xkb_keysym_t QXkbCommon::lookupLatinKeysym(xkb_state *state, xkb_keycode_t keycode)
@@ -818,7 +818,7 @@ void QXkbCommon::setXkbContext(QPlatformInputContext *inputContext, struct xkb_c
         QMetaMethod method = inputContext->metaObject()->method(methodIndex);
         Q_ASSERT(method.isValid());
         if (!method.isValid())
-            qCWarning(lcXkbcommon) << normalizedSignature << "not found on" << inputContextClassName;
+            qCWarning(gLcXkbcommon) << normalizedSignature << "not found on" << inputContextClassName;
         return method;
     }();
 

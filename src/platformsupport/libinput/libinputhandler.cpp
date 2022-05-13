@@ -31,13 +31,14 @@
 #include <LiriAuroraUdev/private/udev_p.h>
 #include <LiriAuroraLogind/Logind>
 
-#include "logging_p.h"
 #include "libinputhandler.h"
 #include "libinputhandler_p.h"
 
 namespace Liri {
 
 namespace Platform {
+
+Q_LOGGING_CATEGORY(gLcLibinput, "aurora.libinput", QtInfoMsg)
 
 /*
  * HandlerPrivate
@@ -87,7 +88,7 @@ void LibInputHandlerPrivate::setup()
 
     // Initialize
     initialize();
-    qCDebug(lcInput) << "Setting up libinput";
+    qCDebug(gLcLibinput) << "Setting up libinput";
 
     // Receive events
     int fd = libinput_get_fd(li);
@@ -115,7 +116,7 @@ void LibInputHandlerPrivate::initialize()
 {
     Q_Q(LibInputHandler);
 
-    qCDebug(lcInput) << "Initializing libinput";
+    qCDebug(gLcLibinput) << "Initializing libinput";
 
     // Create context
     udev = new QtUdev::Udev;
@@ -128,11 +129,11 @@ void LibInputHandlerPrivate::initialize()
 
     // Setup log handler
     libinput_log_set_handler(li, logHandler);
-    if (lcInput().isDebugEnabled())
+    if (gLcLibinput().isDebugEnabled())
         libinput_log_set_priority(li, LIBINPUT_LOG_PRIORITY_DEBUG);
-    else if (lcInput().isInfoEnabled())
+    else if (gLcLibinput().isInfoEnabled())
         libinput_log_set_priority(li, LIBINPUT_LOG_PRIORITY_INFO);
-    else if (lcInput().isWarningEnabled())
+    else if (gLcLibinput().isWarningEnabled())
         libinput_log_set_priority(li, LIBINPUT_LOG_PRIORITY_ERROR);
 
     // Assign current seat, don't use XDG_SEAT directly as it's not
@@ -147,7 +148,7 @@ void LibInputHandlerPrivate::initialize()
             qFatal("Failed to assign seat \"%s\" to libinput", qPrintable(seat));
             return;
         }
-        qCDebug(lcInput, "Assigned seat \"%s\" to libinput", qPrintable(seat));
+        qCDebug(gLcLibinput, "Assigned seat \"%s\" to libinput", qPrintable(seat));
     }
 
     keyboard = new LibInputKeyboard(q);
@@ -174,13 +175,13 @@ void LibInputHandlerPrivate::logHandler(libinput *handle, libinput_log_priority 
         // library can be dinstinguished from ours
         switch (priority) {
         case LIBINPUT_LOG_PRIORITY_DEBUG:
-            qCDebug(lcInput, "%s", buffer);
+            qCDebug(gLcLibinput, "%s", buffer);
             break;
         case LIBINPUT_LOG_PRIORITY_ERROR:
-            qCWarning(lcInput, "%s", buffer);
+            qCWarning(gLcLibinput, "%s", buffer);
             break;
         case LIBINPUT_LOG_PRIORITY_INFO:
-            qCInfo(lcInput, "%s", buffer);
+            qCInfo(gLcLibinput, "%s", buffer);
             break;
         default:
             break;
@@ -261,9 +262,9 @@ LibInputHandler::LibInputHandler(QObject *parent)
     Q_D(LibInputHandler);
 
     if (Logind::instance()->isConnected())
-        qCDebug(lcInput) << "logind connection established";
+        qCDebug(gLcLibinput) << "logind connection established";
     else
-        qCDebug(lcInput) << "logind connection not yet established";
+        qCDebug(gLcLibinput) << "logind connection not yet established";
 
     // Setup libinput if we are already connected to logind or
     // do it when we connect
@@ -354,7 +355,7 @@ void LibInputHandler::suspend()
     if (d->suspended)
         return;
 
-    qCInfo(lcInput, "Suspend monitoring for new devices");
+    qCInfo(gLcLibinput, "Suspend monitoring for new devices");
     libinput_suspend(d->li);
     d->suspended = true;
     Q_EMIT suspendedChanged(true);
@@ -368,11 +369,11 @@ void LibInputHandler::resume()
         return;
 
     if (libinput_resume(d->li) == 0) {
-        qCInfo(lcInput, "Re-enable device monitoring");
+        qCInfo(gLcLibinput, "Re-enable device monitoring");
         d->suspended = false;
         Q_EMIT suspendedChanged(false);
     } else {
-        qCWarning(lcInput, "Failed to re-enable device monitoring");
+        qCWarning(gLcLibinput, "Failed to re-enable device monitoring");
     }
 }
 
@@ -381,7 +382,7 @@ void LibInputHandler::handleEvents()
     Q_D(LibInputHandler);
 
     if (libinput_dispatch(d->li) != 0) {
-        qCWarning(lcInput) << "Failed to dispatch libinput events";
+        qCWarning(gLcLibinput) << "Failed to dispatch libinput events";
         return;
     }
 

@@ -27,12 +27,14 @@
 #ifndef LIRI_LIBINPUTHANDLER_P_H
 #define LIRI_LIBINPUTHANDLER_P_H
 
+#include <QtCore/QLoggingCategory>
 #include <QtCore/private/qobject_p.h>
 
 #include <LiriAuroraLibInput/liriauroralibinputglobal.h>
 
 #include <LiriAuroraUdev/Udev>
 
+#include <LiriAuroraLibInput/LibInputHandler>
 #include <LiriAuroraLibInput/libinputgesture.h>
 #include <LiriAuroraLibInput/libinputkeyboard.h>
 #include <LiriAuroraLibInput/libinputpointer.h>
@@ -54,6 +56,8 @@
 namespace Liri {
 
 namespace Platform {
+
+Q_DECLARE_LOGGING_CATEGORY(gLcLibinput)
 
 class LIRIAURORALIBINPUT_EXPORT LibInputHandlerPrivate
 {

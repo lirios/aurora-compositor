@@ -159,7 +159,7 @@ bool LinuxDmabufParams::handleCreateParams(Resource *resource, int width, int he
         // do not report an error as it might be caused by the kernel not supporting seeking on dmabuf
         off_t size = lseek(plane.fd, 0, SEEK_END);
         if (size == -1) {
-            qCDebug(qLcWaylandCompositorHardwareIntegration) << "Seeking is not supported";
+            qCDebug(gLcAuroraCompositorHardwareIntegration) << "Seeking is not supported";
             continue;
         }
 

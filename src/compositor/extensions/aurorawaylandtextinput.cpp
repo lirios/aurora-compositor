@@ -187,7 +187,7 @@ void WaylandTextInputPrivate::sendInputMethodEvent(QInputMethodEvent *event)
     currentState->anchorPosition = afterCommit.anchorPosition;
 
     if (queries) {
-        qCDebug(qLcWaylandCompositorInputMethods) << "QInputMethod::update() after QInputMethodEvent" << queries;
+        qCDebug(gLcAuroraCompositorInputMethods) << "QInputMethod::update() after QInputMethodEvent" << queries;
 
         emit q->updateInputMethod(queries);
     }
@@ -387,13 +387,13 @@ void WaylandTextInputPrivate::zwp_text_input_v2_update_state(Resource *resource,
 {
     Q_Q(WaylandTextInput);
 
-    qCDebug(qLcWaylandCompositorInputMethods) << "update_state" << serial << flags;
+    qCDebug(gLcAuroraCompositorInputMethods) << "update_state" << serial << flags;
 
     if (resource != focusResource)
         return;
 
     if (flags == update_state_reset || flags == update_state_enter) {
-        qCDebug(qLcWaylandCompositorInputMethods) << "QInputMethod::reset()";
+        qCDebug(gLcAuroraCompositorInputMethods) << "QInputMethod::reset()";
         qApp->inputMethod()->reset();
     }
 
@@ -410,7 +410,7 @@ void WaylandTextInputPrivate::zwp_text_input_v2_update_state(Resource *resource,
     pendingState.reset(new WaylandTextInputClientState);
 
     if (queries) {
-        qCDebug(qLcWaylandCompositorInputMethods) << "QInputMethod::update()" << queries;
+        qCDebug(gLcAuroraCompositorInputMethods) << "QInputMethod::update()" << queries;
 
         emit q->updateInputMethod(queries);
     }

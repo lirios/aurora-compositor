@@ -87,7 +87,7 @@ ClientBuffer *BufferManager::getBuffer(wl_resource *buffer_resource)
     if (newBuffer)
         registerBuffer(buffer_resource, newBuffer);
     else
-        qCWarning(qLcWaylandCompositorHardwareIntegration) << "Could not create buffer for resource.";
+        qCWarning(gLcAuroraCompositorHardwareIntegration) << "Could not create buffer for resource.";
 
     return newBuffer;
 }

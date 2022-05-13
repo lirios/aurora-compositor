@@ -53,7 +53,7 @@
 
 QT_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(qLcKmsDebug, "qt.qpa.eglfs.kms")
+Q_LOGGING_CATEGORY(qLcKmsDebug, "aurora.eglfs.kms")
 
 enum OutputConfiguration {
     OutputConfigOff,

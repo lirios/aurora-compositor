@@ -59,7 +59,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-Q_DECLARE_LOGGING_CATEGORY(qLcWaylandCompositorTextInput)
+Q_DECLARE_LOGGING_CATEGORY(gLcAuroraCompositorTextInput)
 
 WaylandTextInputV4ClientState::WaylandTextInputV4ClientState()
 {
@@ -67,7 +67,7 @@ WaylandTextInputV4ClientState::WaylandTextInputV4ClientState()
 
 Qt::InputMethodQueries WaylandTextInputV4ClientState::updatedQueries(const WaylandTextInputV4ClientState &other) const
 {
-    qCDebug(qLcWaylandCompositorTextInput) << Q_FUNC_INFO;
+    qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
     Qt::InputMethodQueries queries;
 
@@ -127,7 +127,7 @@ WaylandTextInputV4Private::WaylandTextInputV4Private(WaylandCompositor *composit
 void WaylandTextInputV4Private::sendInputMethodEvent(QInputMethodEvent *event)
 {
     Q_Q(WaylandTextInputV4);
-    qCDebug(qLcWaylandCompositorTextInput) << Q_FUNC_INFO;
+    qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
     if (!focusResource || !focusResource->handle)
         return;
@@ -149,7 +149,7 @@ void WaylandTextInputV4Private::sendInputMethodEvent(QInputMethodEvent *event)
             send_delete_surrounding_text(focusResource->handle, before, after);
             needsDone = true;
         } else {
-            qCWarning(qLcWaylandCompositorTextInput) << "Not yet supported case of replacement. Start:" << event->replacementStart() << "length:" << event->replacementLength();
+            qCWarning(gLcAuroraCompositorTextInput) << "Not yet supported case of replacement. Start:" << event->replacementStart() << "length:" << event->replacementLength();
         }
         preeditCursorPos = event->replacementStart() + event->replacementLength();
     }
@@ -171,7 +171,7 @@ void WaylandTextInputV4Private::sendInputMethodEvent(QInputMethodEvent *event)
 
 void WaylandTextInputV4Private::sendKeyEvent(QKeyEvent *event)
 {
-    qCDebug(qLcWaylandCompositorTextInput) << Q_FUNC_INFO;
+    qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
     Q_Q(WaylandTextInputV4);
 
@@ -185,7 +185,7 @@ void WaylandTextInputV4Private::sendKeyEvent(QKeyEvent *event)
 
 QVariant WaylandTextInputV4Private::inputMethodQuery(Qt::InputMethodQuery property, QVariant argument) const
 {
-    qCDebug(qLcWaylandCompositorTextInput) << Q_FUNC_INFO << property;
+    qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO << property;
 
     switch (property) {
     case Qt::ImHints:
@@ -196,10 +196,10 @@ QVariant WaylandTextInputV4Private::inputMethodQuery(Qt::InputMethodQuery proper
         // Not supported
         return QVariant();
     case Qt::ImCursorPosition:
-        qCDebug(qLcWaylandCompositorTextInput) << currentState->cursorPosition;
+        qCDebug(gLcAuroraCompositorTextInput) << currentState->cursorPosition;
         return currentState->cursorPosition;
     case Qt::ImSurroundingText:
-        qCDebug(qLcWaylandCompositorTextInput) << currentState->surroundingText;
+        qCDebug(gLcAuroraCompositorTextInput) << currentState->surroundingText;
         return currentState->surroundingText;
     case Qt::ImCurrentSelection:
         return currentState->surroundingText.mid(qMin(currentState->cursorPosition, currentState->anchorPosition),
@@ -208,7 +208,7 @@ QVariant WaylandTextInputV4Private::inputMethodQuery(Qt::InputMethodQuery proper
         // Not supported
         return QVariant();
     case Qt::ImAnchorPosition:
-        qCDebug(qLcWaylandCompositorTextInput) << currentState->anchorPosition;
+        qCDebug(gLcAuroraCompositorTextInput) << currentState->anchorPosition;
         return currentState->anchorPosition;
     case Qt::ImAbsolutePosition:
         // We assume the surrounding text is our whole document for now
@@ -229,7 +229,7 @@ QVariant WaylandTextInputV4Private::inputMethodQuery(Qt::InputMethodQuery proper
 
 void WaylandTextInputV4Private::setFocus(WaylandSurface *surface)
 {
-    qCDebug(qLcWaylandCompositorTextInput) << Q_FUNC_INFO;
+    qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
     Q_Q(WaylandTextInputV4);
 
     if (focusResource && focus) {
@@ -265,14 +265,14 @@ void WaylandTextInputV4Private::setFocus(WaylandSurface *surface)
 
 void WaylandTextInputV4Private::zwp_text_input_v4_bind_resource(Resource *resource)
 {
-    qCDebug(qLcWaylandCompositorTextInput) << Q_FUNC_INFO;
+    qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
     Q_UNUSED(resource);
 }
 
 void WaylandTextInputV4Private::zwp_text_input_v4_destroy_resource(Resource *resource)
 {
-    qCDebug(qLcWaylandCompositorTextInput) << Q_FUNC_INFO;
+    qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
     if (focusResource == resource)
         focusResource = nullptr;
@@ -280,14 +280,14 @@ void WaylandTextInputV4Private::zwp_text_input_v4_destroy_resource(Resource *res
 
 void WaylandTextInputV4Private::zwp_text_input_v4_destroy(Resource *resource)
 {
-    qCDebug(qLcWaylandCompositorTextInput) << Q_FUNC_INFO;
+    qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
     wl_resource_destroy(resource->handle);
 }
 
 void WaylandTextInputV4Private::zwp_text_input_v4_enable(Resource *resource)
 {
-    qCDebug(qLcWaylandCompositorTextInput) << Q_FUNC_INFO;
+    qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
     Q_Q(WaylandTextInputV4);
 
@@ -303,7 +303,7 @@ void WaylandTextInputV4Private::zwp_text_input_v4_enable(Resource *resource)
 
 void WaylandTextInputV4Private::zwp_text_input_v4_disable(PrivateServer::zwp_text_input_v4::Resource *resource)
 {
-    qCDebug(qLcWaylandCompositorTextInput) << Q_FUNC_INFO;
+    qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
     Q_Q(WaylandTextInputV4);
 
@@ -321,7 +321,7 @@ void WaylandTextInputV4Private::zwp_text_input_v4_disable(PrivateServer::zwp_tex
 
 void WaylandTextInputV4Private::zwp_text_input_v4_set_cursor_rectangle(Resource *resource, int32_t x, int32_t y, int32_t width, int32_t height)
 {
-    qCDebug(qLcWaylandCompositorTextInput) << Q_FUNC_INFO << x << y << width << height;
+    qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO << x << y << width << height;
 
     Q_Q(WaylandTextInputV4);
 
@@ -335,12 +335,12 @@ void WaylandTextInputV4Private::zwp_text_input_v4_set_cursor_rectangle(Resource 
 
 void WaylandTextInputV4Private::zwp_text_input_v4_commit(Resource *resource)
 {
-    qCDebug(qLcWaylandCompositorTextInput) << Q_FUNC_INFO;
+    qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
     Q_Q(WaylandTextInputV4);
 
     if (resource != focusResource) {
-        qCDebug(qLcWaylandCompositorTextInput) << "OBS: Disabled surface!!";
+        qCDebug(gLcAuroraCompositorTextInput) << "OBS: Disabled surface!!";
         return;
     }
 
@@ -348,7 +348,7 @@ void WaylandTextInputV4Private::zwp_text_input_v4_commit(Resource *resource)
 
     // Just increase serials and ignore empty commits
     if (!pendingState->changedState) {
-        qCDebug(qLcWaylandCompositorTextInput) << Q_FUNC_INFO << "pendingState is not changed";
+        qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO << "pendingState is not changed";
         return;
     }
 
@@ -368,7 +368,7 @@ void WaylandTextInputV4Private::zwp_text_input_v4_commit(Resource *resource)
     pendingState.reset(new WaylandTextInputV4ClientState);
 
     if (queries) {
-        qCDebug(qLcWaylandCompositorTextInput) << "QInputMethod::update() after commit with" << queries;
+        qCDebug(gLcAuroraCompositorTextInput) << "QInputMethod::update() after commit with" << queries;
 
         qApp->inputMethod()->update(queries);
     }
@@ -376,7 +376,7 @@ void WaylandTextInputV4Private::zwp_text_input_v4_commit(Resource *resource)
 
 void WaylandTextInputV4Private::zwp_text_input_v4_set_content_type(Resource *resource, uint32_t hint, uint32_t purpose)
 {
-    qCDebug(qLcWaylandCompositorTextInput) << Q_FUNC_INFO << hint << purpose;
+    qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO << hint << purpose;
 
     if (resource != focusResource)
         return;
@@ -438,14 +438,14 @@ void WaylandTextInputV4Private::zwp_text_input_v4_set_content_type(Resource *res
         break;
     }
 
-    qCDebug(qLcWaylandCompositorTextInput) << Q_FUNC_INFO << pendingState->hints;
+    qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO << pendingState->hints;
 
     pendingState->changedState |= Qt::ImHints;
 }
 
 void WaylandTextInputV4Private::zwp_text_input_v4_set_surrounding_text(Resource *resource, const QString &text, int32_t cursor, int32_t anchor)
 {
-    qCDebug(qLcWaylandCompositorTextInput) << Q_FUNC_INFO << text << cursor << anchor;
+    qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO << text << cursor << anchor;
 
     if (resource != focusResource)
         return;
@@ -459,7 +459,7 @@ void WaylandTextInputV4Private::zwp_text_input_v4_set_surrounding_text(Resource 
 
 void WaylandTextInputV4Private::zwp_text_input_v4_set_text_change_cause(Resource *resource, uint32_t cause)
 {
-    qCDebug(qLcWaylandCompositorTextInput) << Q_FUNC_INFO;
+    qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
     Q_UNUSED(resource);
     Q_UNUSED(cause);
@@ -513,7 +513,7 @@ void WaylandTextInputV4::setFocus(WaylandSurface *surface)
 
 void WaylandTextInputV4::focusSurfaceDestroyed(void *)
 {
-    qCDebug(qLcWaylandCompositorTextInput) << Q_FUNC_INFO;
+    qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
     Q_D(WaylandTextInputV4);
 
@@ -525,7 +525,7 @@ void WaylandTextInputV4::focusSurfaceDestroyed(void *)
 
 bool WaylandTextInputV4::isSurfaceEnabled(WaylandSurface *surface) const
 {
-    qCDebug(qLcWaylandCompositorTextInput) << Q_FUNC_INFO;
+    qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
     const Q_D(WaylandTextInputV4);
 
@@ -534,7 +534,7 @@ bool WaylandTextInputV4::isSurfaceEnabled(WaylandSurface *surface) const
 
 void WaylandTextInputV4::add(::wl_client *client, uint32_t id, int version)
 {
-    qCDebug(qLcWaylandCompositorTextInput) << Q_FUNC_INFO;
+    qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
     Q_D(WaylandTextInputV4);
 

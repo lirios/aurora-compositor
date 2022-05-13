@@ -91,27 +91,27 @@ QString XWaylandServer::displayName() const
 bool XWaylandServer::start()
 {
     if (::pipe(m_serverPairFd) < 0) {
-        qCWarning(XWAYLAND, "Failed to create pipe for XWayland server: %s",
+        qCWarning(gLcXwayland, "Failed to create pipe for XWayland server: %s",
                   strerror(errno));
         return false;
     }
 
     if (::socketpair(AF_UNIX, SOCK_STREAM | SOCK_CLOEXEC, 0, m_wmPairFd) < 0) {
-        qCWarning(XWAYLAND, "Failed to create socket pair for window manager: %s",
+        qCWarning(gLcXwayland, "Failed to create socket pair for window manager: %s",
                   strerror(errno));
         return false;
     }
 
     int fd = ::dup(m_wmPairFd[1]);
     if (fd < 0) {
-        qCWarning(XWAYLAND, "Failed to duplicate socket for window manager: %s",
+        qCWarning(gLcXwayland, "Failed to duplicate socket for window manager: %s",
                   strerror(errno));
         return false;
     }
 
     int sx[2];
     if (::socketpair(AF_UNIX, SOCK_STREAM | SOCK_CLOEXEC, 0, sx) < 0) {
-        qCWarning(XWAYLAND, "Failed to create socket pair for XWayland client: %s",
+        qCWarning(gLcXwayland, "Failed to create socket pair for XWayland client: %s",
                   strerror(errno));
         return false;
     }
@@ -125,7 +125,7 @@ bool XWaylandServer::start()
     m_process->setProcessChannelMode(QProcess::ForwardedErrorChannel);
     m_process->setProcessEnvironment(env);
     connect(m_process, (void (QProcess::*)())&QProcess::started, [this] {
-        qCDebug(XWAYLAND) << "Xwayland process started";
+        qCDebug(gLcXwayland) << "Xwayland process started";
 
         QFutureWatcher<void> *watcher = new QFutureWatcher<void>(this);
         connect(watcher, &QFutureWatcher<void>::finished, watcher, &QFutureWatcher<void>::deleteLater, Qt::QueuedConnection);
@@ -136,7 +136,7 @@ bool XWaylandServer::start()
             Q_EMIT failedToStart();
     });
     connect(m_process, (void (QProcess::*)(int))&QProcess::finished, [this](int exitCode) {
-        qCDebug(XWAYLAND) << "Xwayland finished with exit code" << exitCode;
+        qCDebug(gLcXwayland) << "Xwayland finished with exit code" << exitCode;
 
         if (m_process) {
             delete m_process;
@@ -148,7 +148,7 @@ bool XWaylandServer::start()
             << QStringLiteral("-displayfd") << QString::number(m_serverPairFd[1])
             << QStringLiteral("-rootless")
             << QStringLiteral("-wm") << QString::number(fd);
-    qCDebug(XWAYLAND) << "Running:" << "Xwayland" << qPrintable(args.join(QStringLiteral(" ")));
+    qCDebug(gLcXwayland) << "Running:" << "Xwayland" << qPrintable(args.join(QStringLiteral(" ")));
     m_process->start(QStringLiteral("Xwayland"), args);
 
     ::close(m_serverPairFd[1]);
@@ -176,7 +176,7 @@ void XWaylandServer::handleServerStarted()
 {
     QFile readPipe;
     if (!readPipe.open(m_serverPairFd[0], QFile::ReadOnly)) {
-        qCWarning(XWAYLAND, "Failed to open pipe to start Xwayland: %s",
+        qCWarning(gLcXwayland, "Failed to open pipe to start Xwayland: %s",
                   readPipe.errorString().toLatin1().constData());
         return;
     }
@@ -186,7 +186,7 @@ void XWaylandServer::handleServerStarted()
     bool ok = false;
     m_display = displayNumber.toInt(&ok);
     if (!ok) {
-        qCWarning(XWAYLAND, "Xwayland display read from pipe is not a number: %s",
+        qCWarning(gLcXwayland, "Xwayland display read from pipe is not a number: %s",
                   displayNumber.constData());
         return;
     }
@@ -197,7 +197,7 @@ void XWaylandServer::handleServerStarted()
 
     qputenv("DISPLAY", m_displayName.toLatin1());
 
-    qCInfo(XWAYLAND) << "Xwayland started on display" << m_displayName.toLatin1().constData();
+    qCInfo(gLcXwayland) << "Xwayland started on display" << m_displayName.toLatin1().constData();
 
     ::close(m_serverPairFd[0]);
 

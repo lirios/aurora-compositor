@@ -86,11 +86,11 @@ namespace Aurora {
 
 namespace Compositor {
 
-Q_LOGGING_CATEGORY(qLcWaylandCompositor, "qt.waylandcompositor")
-Q_LOGGING_CATEGORY(qLcWaylandCompositorHardwareIntegration, "qt.waylandcompositor.hardwareintegration")
-Q_LOGGING_CATEGORY(qLcWaylandCompositorInputMethods, "qt.waylandcompositor.inputmethods")
+Q_LOGGING_CATEGORY(gLcAuroraCompositor, "aurora.compositor")
+Q_LOGGING_CATEGORY(gLcAuroraCompositorHardwareIntegration, "aurora.compositor.hardwareintegration")
+Q_LOGGING_CATEGORY(gLcAuroraCompositorInputMethods, "aurora.compositor.inputmethods")
 #if QT_WAYLAND_TEXT_INPUT_V4_WIP
-Q_LOGGING_CATEGORY(qLcWaylandCompositorTextInput, "qt.waylandcompositor.textinput")
+Q_LOGGING_CATEGORY(gLcAuroraCompositorTextInput, "aurora.compositor.textinput")
 #endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
 
 namespace Internal {
@@ -467,15 +467,15 @@ void WaylandCompositorPrivate::loadServerBufferIntegration()
     if (!targetKey.isEmpty()) {
         server_buffer_integration.reset(Internal::ServerBufferIntegrationFactory::create(targetKey, QStringList()));
         if (server_buffer_integration) {
-            qCDebug(qLcWaylandCompositorHardwareIntegration)
+            qCDebug(gLcAuroraCompositorHardwareIntegration)
                     << "Loaded server buffer integration:" << targetKey;
             if (!server_buffer_integration->initializeHardware(q)) {
-                qCWarning(qLcWaylandCompositorHardwareIntegration)
+                qCWarning(gLcAuroraCompositorHardwareIntegration)
                         << "Failed to initialize hardware for server buffer integration:" << targetKey;
                 server_buffer_integration.reset();
             }
         } else {
-            qCWarning(qLcWaylandCompositorHardwareIntegration)
+            qCWarning(gLcAuroraCompositorHardwareIntegration)
                     << "Failed to load server buffer integration:" << targetKey;
         }
     }
@@ -1088,7 +1088,7 @@ void WaylandCompositor::setAdditionalShmFormats(const QVector<ShmFormat> &additi
 {
     Q_D(WaylandCompositor);
     if (d->initialized)
-        qCWarning(qLcWaylandCompositorHardwareIntegration) << "Setting WaylandCompositor::additionalShmFormats after initialization has no effect";
+        qCWarning(gLcAuroraCompositorHardwareIntegration) << "Setting WaylandCompositor::additionalShmFormats after initialization has no effect";
 
     d->shmFormats = additionalShmFormats;
     emit additionalShmFormatsChanged();

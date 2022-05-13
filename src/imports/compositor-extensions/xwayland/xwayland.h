@@ -31,8 +31,8 @@
 #include <LiriAuroraCompositor/aurorawaylandquickchildren.h>
 #include <LiriAuroraCompositor/WaylandSurface>
 
-Q_DECLARE_LOGGING_CATEGORY(XWAYLAND)
-Q_DECLARE_LOGGING_CATEGORY(XWAYLAND_TRACE)
+Q_DECLARE_LOGGING_CATEGORY(gLcXwayland)
+Q_DECLARE_LOGGING_CATEGORY(gLcXwaylandTrace)
 
 namespace Aurora {
 

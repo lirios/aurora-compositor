@@ -52,7 +52,7 @@ LogindSeat::LogindSeat()
     if (findActiveSession(userSession))
         m_id = getSeatId(userSession.objectPath.path());
     else
-        qCWarning(lcUdev, "Failed to determine current seat, assuming default seat0");
+        qCWarning(gLcUdev, "Failed to determine current seat, assuming default seat0");
 }
 
 QString LogindSeat::id() const
@@ -79,7 +79,7 @@ bool LogindSeat::findActiveSession(DBusUserSession &userSession) const
 
         QDBusReply<QDBusObjectPath> reply = bus.call(message);
         if (!reply.isValid()) {
-            qCWarning(lcUdev, "Failed to get user path: %s",
+            qCWarning(gLcUdev, "Failed to get user path: %s",
                       qPrintable(reply.error().message()));
             return false;
         }
@@ -101,7 +101,7 @@ bool LogindSeat::findActiveSession(DBusUserSession &userSession) const
 
         QDBusReply<QVariant> reply = bus.call(message);
         if (!reply.isValid()) {
-            qCWarning(lcUdev, "Failed to list user sessions: %s",
+            qCWarning(gLcUdev, "Failed to list user sessions: %s",
                       qPrintable(reply.error().message()));
             return false;
         }
@@ -154,7 +154,7 @@ QString LogindSeat::getSessionType(const QString &sessionId, const QString &sess
 
     QDBusReply<QVariant> reply = bus.call(message);
     if (!reply.isValid()) {
-        qCWarning(lcUdev, "Failed to get type for session %s: %s",
+        qCWarning(gLcUdev, "Failed to get type for session %s: %s",
                   qPrintable(sessionId), qPrintable(reply.error().message()));
         return QString();
     }
@@ -179,7 +179,7 @@ QString LogindSeat::getSessionState(const QString &sessionId, const QString &ses
 
     QDBusReply<QVariant> reply = bus.call(message);
     if (!reply.isValid()) {
-        qCWarning(lcUdev, "Failed to get state for session %s: %s",
+        qCWarning(gLcUdev, "Failed to get state for session %s: %s",
                   qPrintable(sessionId), qPrintable(reply.error().message()));
         return QString();
     }
@@ -204,7 +204,7 @@ QString LogindSeat::getSeatId(const QString &sessionPath) const
 
     QDBusReply<QVariant> reply = bus.call(message);
     if (!reply.isValid()) {
-        qCWarning(lcUdev, "Failed to get seat from session path \"%s\": %s",
+        qCWarning(gLcUdev, "Failed to get seat from session path \"%s\": %s",
                   qPrintable(sessionPath), qPrintable(reply.error().message()));
         return QString();
     }
