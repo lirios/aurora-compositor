@@ -45,7 +45,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandKeymap : public QObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandKeymap)
-    Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandKeymap)
+    AURORA_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandKeymap)
     Q_PROPERTY(QString layout READ layout WRITE setLayout NOTIFY layoutChanged)
     Q_PROPERTY(QString variant READ variant WRITE setVariant NOTIFY variantChanged)
     Q_PROPERTY(QString options READ options WRITE setOptions NOTIFY optionsChanged)

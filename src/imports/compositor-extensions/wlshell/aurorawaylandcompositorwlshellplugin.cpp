@@ -57,7 +57,7 @@ namespace Compositor {
     \endqml
 */
 
-Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(WaylandWlShell)
+AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(WaylandWlShell)
 
 class WaylandCompositorWlShellPlugin : public QQmlExtensionPlugin
 {

@@ -45,7 +45,7 @@ class XWaylandShellSurface;
 class XWayland : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
-    Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(XWayland)
+    AURORA_COMPOSITOR_DECLARE_QUICK_CHILDREN(XWayland)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
     Q_PROPERTY(Aurora::Compositor::WaylandCompositor *compositor READ compositor WRITE setCompositor NOTIFY compositorChanged)
     Q_PROPERTY(Aurora::Compositor::XWaylandManager *manager READ manager WRITE setManager NOTIFY managerChanged)

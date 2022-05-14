@@ -52,7 +52,7 @@ namespace Aurora {
 namespace Compositor {
 
 #if LIRI_FEATURE_aurora_compositor_quick
-#define Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(className) \
+#define AURORA_COMPOSITOR_DECLARE_QUICK_CHILDREN(className) \
         Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false) \
         Q_CLASSINFO("DefaultProperty", "data") \
     public: \
@@ -63,7 +63,7 @@ namespace Compositor {
     private: \
         QList<QObject *> m_children;
 #else
-#define Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(className)
+#define AURORA_COMPOSITOR_DECLARE_QUICK_CHILDREN(className)
 #endif
 
 } // namespace Compositor

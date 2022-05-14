@@ -57,7 +57,7 @@ namespace Compositor {
     \endqml
 */
 
-Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(WaylandIviApplication)
+AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(WaylandIviApplication)
 
 class WaylandCompositorIviApplicationPlugin : public QQmlExtensionPlugin
 {

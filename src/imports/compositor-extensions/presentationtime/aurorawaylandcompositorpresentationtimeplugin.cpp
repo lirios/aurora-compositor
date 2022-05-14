@@ -59,7 +59,7 @@ namespace Compositor {
     \endqml
 */
 
-Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(WaylandPresentationTime)
+AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(WaylandPresentationTime)
 
 class WaylandCompositorPresentationTimePlugin : public QQmlExtensionPlugin
 {

@@ -49,7 +49,7 @@ class XWaylandQuickShellSurfaceItem;
 class XWaylandShellSurface : public QObject
 {
     Q_OBJECT
-    Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(XWaylandShellSurface)
+    AURORA_COMPOSITOR_DECLARE_QUICK_CHILDREN(XWaylandShellSurface)
     Q_PROPERTY(Qt::WindowType windowType READ windowType NOTIFY windowTypeChanged)
     Q_PROPERTY(WmWindowType wmWindowType READ wmWindowType NOTIFY wmWindowTypeChanged)
     Q_PROPERTY(Aurora::Compositor::WaylandSurface *surface READ surface NOTIFY surfaceChanged)

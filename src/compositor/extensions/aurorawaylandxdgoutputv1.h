@@ -65,7 +65,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgOutputV1 : public QObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandXdgOutputV1)
-    Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandXdgOutputV1)
+    AURORA_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandXdgOutputV1)
     Q_PROPERTY(Aurora::Compositor::WaylandXdgOutputManagerV1 *manager READ manager NOTIFY managerChanged)
     Q_PROPERTY(Aurora::Compositor::WaylandOutput *output READ output NOTIFY outputChanged)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)

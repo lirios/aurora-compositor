@@ -49,7 +49,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandIviSurface : public WaylandShellSurface
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandIviSurface)
-    Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandIviSurface)
+    AURORA_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandIviSurface)
     Q_PROPERTY(Aurora::Compositor::WaylandSurface *surface READ surface NOTIFY surfaceChanged)
     Q_PROPERTY(uint iviId READ iviId NOTIFY iviIdChanged)
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)

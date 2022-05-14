@@ -38,7 +38,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-#define Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(className) \
+#define AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(className) \
     class LIRIAURORACOMPOSITOR_EXPORT className##QuickExtension : public className, public QQmlParserStatus \
     { \
 /* qmake ignore Q_OBJECT */ \
@@ -57,7 +57,7 @@ namespace Compositor {
         QList<QObject *> m_objects; \
     };
 
-#define Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_CONTAINER_CLASS(className) \
+#define AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_CONTAINER_CLASS(className) \
     class LIRIAURORACOMPOSITOR_EXPORT className##QuickExtensionContainer : public className \
     { \
 /* qmake ignore Q_OBJECT */ \
@@ -99,7 +99,7 @@ namespace Compositor {
         QList<QObject *> m_objects; \
     };
 
-#define Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(className, QmlType) \
+#define AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(className, QmlType) \
     class LIRIAURORACOMPOSITOR_EXPORT className##QuickExtension : public className, public QQmlParserStatus \
     { \
 /* qmake ignore Q_OBJECT */ \

@@ -110,13 +110,13 @@ private:
 
 
 // Note: These have to be in a header with a Q_OBJECT macro, otherwise we won't run moc on it
-Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(WaylandQtWindowManager, QtWindowManager)
-Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(WaylandIdleInhibitManagerV1, IdleInhibitManagerV1)
-Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(WaylandTextInputManager, TextInputManager)
+AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(WaylandQtWindowManager, QtWindowManager)
+AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(WaylandIdleInhibitManagerV1, IdleInhibitManagerV1)
+AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(WaylandTextInputManager, TextInputManager)
 #if QT_WAYLAND_TEXT_INPUT_V4_WIP
-Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(WaylandTextInputManagerV4, TextInputManagerV4)
+AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(WaylandTextInputManagerV4, TextInputManagerV4)
 #endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
-Q_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(WaylandQtTextInputMethodManager, QtTextInputMethodManager)
+AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(WaylandQtTextInputMethodManager, QtTextInputMethodManager)
 
 } // namespace Compositor
 

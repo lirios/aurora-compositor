@@ -47,7 +47,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickOutput : public WaylandOutput, pub
 {
     Q_INTERFACES(QQmlParserStatus)
     Q_OBJECT
-    Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandQuickOutput)
+    AURORA_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandQuickOutput)
     Q_PROPERTY(bool automaticFrameCallback READ automaticFrameCallback WRITE setAutomaticFrameCallback NOTIFY automaticFrameCallbackChanged)
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QML_NAMED_ELEMENT(WaylandOutput)

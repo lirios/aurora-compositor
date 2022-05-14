@@ -46,7 +46,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickSurface : public WaylandSurface
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandQuickSurface)
-    Q_WAYLAND_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandQuickSurface)
+    AURORA_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandQuickSurface)
     Q_PROPERTY(bool useTextureAlpha READ useTextureAlpha WRITE setUseTextureAlpha NOTIFY useTextureAlphaChanged)
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QML_NAMED_ELEMENT(WaylandSurface)
