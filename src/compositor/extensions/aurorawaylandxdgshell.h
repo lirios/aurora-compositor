@@ -299,6 +299,9 @@ private:
     explicit WaylandXdgPopup(WaylandXdgSurface *xdgSurface, WaylandXdgSurface *parentXdgSurface,
                               WaylandXdgPositioner *positioner, WaylandResource &resource);
     friend class WaylandXdgSurfacePrivate;
+
+private slots:
+    void handleRedraw();
 };
 
 } // namespace Compositor

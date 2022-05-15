@@ -323,7 +323,9 @@ XdgPopupIntegration::XdgPopupIntegration(WaylandQuickShellSurfaceItem *item)
 void XdgPopupIntegration::handleGeometryChanged()
 {
     if (m_item->view()->output()) {
-        const QPoint windowOffset = m_popup->parentXdgSurface()->windowGeometry().topLeft();
+        const QPoint windowOffset = m_popup->parentXdgSurface()
+                ? m_popup->parentXdgSurface()->windowGeometry().topLeft()
+                : QPoint(0, 0);
         const QPoint surfacePosition = m_popup->unconstrainedPosition() + windowOffset;
         const QPoint itemPosition = m_item->mapFromSurface(surfacePosition).toPoint();
         //TODO: positioner size or other size...?

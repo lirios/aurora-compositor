@@ -378,13 +378,6 @@ void WaylandXdgSurfacePrivate::xdg_surface_get_popup(PrivateServer::xdg_surface:
         return;
     }
 
-    WaylandXdgSurface *parent = WaylandXdgSurface::fromResource(parentResource);
-    if (!parent) {
-        wl_resource_post_error(resource->handle, XDG_WM_BASE_ERROR_INVALID_POPUP_PARENT,
-                               "xdg_surface.get_popup with invalid popup parent");
-        return;
-    }
-
     WaylandXdgPositioner *positioner = WaylandXdgPositioner::fromResource(positionerResource);
     if (!positioner) {
         wl_resource_post_error(resource->handle, XDG_WM_BASE_ERROR_INVALID_POSITIONER,
@@ -400,15 +393,18 @@ void WaylandXdgSurfacePrivate::xdg_surface_get_popup(PrivateServer::xdg_surface:
         return;
     }
 
-    QRect anchorBounds(QPoint(0, 0), parent->windowGeometry().size());
-    if (!anchorBounds.contains(positioner->m_data.anchorRect)) {
-        // TODO: this is a protocol error and should ideally be handled like this:
-        //wl_resource_post_error(resource->handle, XDG_WM_BASE_ERROR_INVALID_POSITIONER,
-        //                       "xdg_positioner anchor rect extends beyound its parent's window geometry");
-        //return;
-        // However, our own clients currently do this, so we'll settle for a gentle warning instead.
-        qCWarning(gLcAuroraCompositor) << "Ignoring client protocol error: xdg_positioner anchor"
-                                        << "rect extends beyond its parent's window geometry";
+    WaylandXdgSurface *parent = WaylandXdgSurface::fromResource(parentResource);
+    if (parent) {
+        QRect anchorBounds(QPoint(0, 0), parent->windowGeometry().size());
+        if (!anchorBounds.contains(positioner->m_data.anchorRect)) {
+            // TODO: this is a protocol error and should ideally be handled like this:
+            //wl_resource_post_error(resource->handle, XDG_WM_BASE_ERROR_INVALID_POSITIONER,
+            //                       "xdg_positioner anchor rect extends beyound its parent's window geometry");
+            //return;
+            // However, our own clients currently do this, so we'll settle for a gentle warning instead.
+            qCWarning(gLcAuroraCompositor) << "Ignoring client protocol error: xdg_positioner anchor"
+                                            << "rect extends beyond its parent's window geometry";
+        }
     }
 
     if (!m_surface->setRole(WaylandXdgPopup::role(), resource->handle, XDG_WM_BASE_ERROR_ROLE))
@@ -1614,6 +1610,24 @@ WaylandXdgPopup::WaylandXdgPopup(WaylandXdgSurface *xdgSurface, WaylandXdgSurfac
     : QObject()
     , d_ptr(new WaylandXdgPopupPrivate(this, xdgSurface, parentXdgSurface, positioner, resource))
 {
+    connect(xdgSurface->surface(), &WaylandSurface::redraw, this, &WaylandXdgPopup::handleRedraw);
+}
+
+/*!
+ * \internal
+ */
+void WaylandXdgPopup::handleRedraw()
+{
+    Q_D(WaylandXdgPopup);
+
+    if (!d->m_parentSurface) {
+        auto *resource = WaylandXdgSurfacePrivate::get(d->m_xdgSurface)->resource();
+        wl_resource_post_error(resource->handle, XDG_WM_BASE_ERROR_INVALID_POPUP_PARENT,
+                               "xdg_surface.get_popup with invalid popup parent");
+        return;
+    }
+
+    disconnect(d->m_xdgSurface->surface(), &WaylandSurface::redraw, this, &WaylandXdgPopup::handleRedraw);
 }
 
 WaylandXdgPopup::~WaylandXdgPopup()
