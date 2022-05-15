@@ -6,6 +6,7 @@
 #include "aurorawaylandoutput.h"
 #include "aurorawaylandsurface.h"
 #include "aurorawaylandwlrlayershellv1_p.h"
+#include "aurorawaylandxdgshell_p.h"
 
 namespace Aurora {
 
@@ -181,8 +182,14 @@ void WaylandWlrLayerSurfaceV1Private::zwlr_layer_surface_v1_set_keyboard_interac
 
 void WaylandWlrLayerSurfaceV1Private::zwlr_layer_surface_v1_get_popup(PrivateServer::zwlr_layer_surface_v1::Resource *resource, wl_resource *popup)
 {
-    Q_UNUSED(resource)
-    Q_UNUSED(popup)
+    Q_Q(WaylandWlrLayerSurfaceV1);
+
+    auto *xdgPopup = WaylandXdgPopup::fromResource(popup);
+    if (xdgPopup) {
+        auto *xdgPopupPrivate = WaylandXdgPopupPrivate::get(xdgPopup);
+        xdgPopupPrivate->setParentSurface(surface);
+        emit q->xdgPopupParentChanged(xdgPopup);
+    }
 }
 
 void WaylandWlrLayerSurfaceV1Private::zwlr_layer_surface_v1_ack_configure(PrivateServer::zwlr_layer_surface_v1::Resource *resource, uint32_t serial)

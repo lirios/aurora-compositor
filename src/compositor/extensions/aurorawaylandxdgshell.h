@@ -250,7 +250,8 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgPopup : public QObject
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandXdgPopup)
     Q_PROPERTY(Aurora::Compositor::WaylandXdgSurface *xdgSurface READ xdgSurface CONSTANT)
-    Q_PROPERTY(Aurora::Compositor::WaylandXdgSurface *parentXdgSurface READ parentXdgSurface CONSTANT)
+    Q_PROPERTY(Aurora::Compositor::WaylandXdgSurface *parentXdgSurface READ parentXdgSurface NOTIFY parentSurfaceChanged)
+    Q_PROPERTY(Aurora::Compositor::WaylandSurface *parentSurface READ parentSurface NOTIFY parentSurfaceChanged)
     Q_PROPERTY(QRect configuredGeometry READ configuredGeometry NOTIFY configuredGeometryChanged)
 
     // Positioner properties
@@ -268,6 +269,7 @@ public:
 
     WaylandXdgSurface *xdgSurface() const;
     WaylandXdgSurface *parentXdgSurface() const;
+    WaylandSurface *parentSurface() const;
     QRect configuredGeometry() const;
 
     // Positioner properties
@@ -285,8 +287,10 @@ public:
     Q_INVOKABLE void sendPopupDone();
 
     static WaylandSurfaceRole *role();
+    static WaylandXdgPopup *fromResource(struct ::wl_resource *resource);
 
 Q_SIGNALS:
+    void parentSurfaceChanged();
     void configuredGeometryChanged();
 
 private:

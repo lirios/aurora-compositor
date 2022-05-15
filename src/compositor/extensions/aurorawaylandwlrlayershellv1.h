@@ -21,6 +21,7 @@ class WaylandSurfaceRole;
 class WaylandWlrLayerShellV1Private;
 class WaylandWlrLayerSurfaceV1;
 class WaylandWlrLayerSurfaceV1Private;
+class WaylandXdgPopup;
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrLayerShellV1
         : public WaylandCompositorExtensionTemplate<WaylandWlrLayerShellV1>
@@ -131,6 +132,7 @@ Q_SIGNALS:
     void changed();
     void mappedChanged();
     void configuredChanged();
+    void xdgPopupParentChanged(Aurora::Compositor::WaylandXdgPopup *popup);
 
 private:
     QScopedPointer<WaylandWlrLayerSurfaceV1Private> const d_ptr;

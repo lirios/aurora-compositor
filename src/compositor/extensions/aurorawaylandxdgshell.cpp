@@ -1656,6 +1656,24 @@ WaylandXdgSurface *WaylandXdgPopup::parentXdgSurface() const
 }
 
 /*!
+ * \qmlproperty Surface AuroraCompositor::XdgPopup::parentSurface
+ *
+ * This property holds the Surface associated with the parent of this XdgPopup.
+ */
+
+/*!
+ * \property WaylandXdgPopup::parentSurface
+ *
+ * This property holds the WaylandSurface associated with the parent of this
+ * WaylandXdgPopup.
+ */
+WaylandSurface *WaylandXdgPopup::parentSurface() const
+{
+    Q_D(const WaylandXdgPopup);
+    return d->m_parentSurface;
+}
+
+/*!
  * \qmlproperty rect AuroraCompositor::XdgPopup::configuredGeometry
  *
  * The window geometry the popup received in the configure event. Relative to the
@@ -1940,6 +1958,16 @@ WaylandSurfaceRole *WaylandXdgPopup::role()
     return &WaylandXdgPopupPrivate::s_role;
 }
 
+/*!
+ * Returns the WaylandXdgPopup corresponding to the \a resource.
+ */
+WaylandXdgPopup *WaylandXdgPopup::fromResource(struct ::wl_resource *resource)
+{
+    if (auto p = Internal::fromResource<WaylandXdgPopupPrivate *>(resource))
+        return p->q_func();
+    return nullptr;
+}
+
 WaylandXdgPopupPrivate::WaylandXdgPopupPrivate(WaylandXdgPopup *self,
                                                WaylandXdgSurface *xdgSurface, WaylandXdgSurface *parentXdgSurface,
                                                WaylandXdgPositioner *positioner, const WaylandResource &resource)
@@ -1983,6 +2011,20 @@ void WaylandXdgPopupPrivate::handleAckConfigure(uint serial)
 
     m_geometry = config.geometry;
     emit q->configuredGeometryChanged();
+}
+
+void WaylandXdgPopupPrivate::setParentSurface(WaylandSurface *surface)
+{
+    Q_Q(WaylandXdgPopup);
+
+    if (m_parentXdgSurface || m_parentSurface) {
+        qWarning("Can't set WaylandXdgPopup parentSurface more than once");
+        return;
+    }
+
+    m_parentXdgSurface = nullptr;
+    m_parentSurface = surface;
+    emit q->parentSurfaceChanged();
 }
 
 uint WaylandXdgPopupPrivate::sendConfigure(const QRect &geometry)

@@ -210,6 +210,7 @@ public:
     ~WaylandXdgPopupPrivate();
 
     void handleAckConfigure(uint serial);
+    void setParentSurface(WaylandSurface *surface);
 
     static WaylandXdgPopupPrivate *get(WaylandXdgPopup *popup) { return popup->d_func(); }
 
@@ -226,6 +227,7 @@ private:
     WaylandXdgPopup *q_ptr = nullptr;
     WaylandXdgSurface *m_xdgSurface = nullptr;
     WaylandXdgSurface *m_parentXdgSurface = nullptr;
+    WaylandSurface *m_parentSurface = nullptr;
     WaylandXdgPositionerData m_positionerData;
     QRect m_geometry;
     QList<ConfigureEvent> m_pendingConfigures;
