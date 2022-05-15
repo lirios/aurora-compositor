@@ -5,7 +5,7 @@
 #ifndef AURORA_COMPOSITOR_WAYLANDWLRLAYERSURFACEITEM_H
 #define AURORA_COMPOSITOR_WAYLANDWLRLAYERSURFACEITEM_H
 
-#include <LiriAuroraCompositor/WaylandQuickItem>
+#include <LiriAuroraCompositor/WaylandQuickShellSurfaceItem>
 
 namespace Aurora {
 
@@ -14,7 +14,7 @@ namespace Compositor {
 class WaylandWlrLayerSurfaceV1;
 class WaylandWlrLayerSurfaceItemPrivate;
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrLayerSurfaceItem : public WaylandQuickItem
+class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrLayerSurfaceItem : public WaylandQuickShellSurfaceItem
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandWlrLayerSurfaceItem)

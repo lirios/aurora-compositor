@@ -34,7 +34,7 @@ void WaylandWlrLayerSurfaceItemPrivate::_q_configure()
  */
 
 WaylandWlrLayerSurfaceItem::WaylandWlrLayerSurfaceItem(QQuickItem *parent)
-    : WaylandQuickItem(parent)
+    : WaylandQuickShellSurfaceItem(parent)
     , d_ptr(new WaylandWlrLayerSurfaceItemPrivate(this))
 {
 }
@@ -61,6 +61,7 @@ void WaylandWlrLayerSurfaceItem::setLayerSurface(WaylandWlrLayerSurfaceV1 *layer
             disconnect(this, SLOT(_q_configure()));
 
         setSurface(layerSurface->surface());
+        setShellSurface(layerSurface);
         setOutput(layerSurface->output());
         setFocusOnClick(layerSurface->keyboardInteractivity() > WaylandWlrLayerSurfaceV1::NoKeyboardInteractivity);
 

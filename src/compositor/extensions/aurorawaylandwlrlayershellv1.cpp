@@ -7,6 +7,11 @@
 #include "aurorawaylandsurface.h"
 #include "aurorawaylandwlrlayershellv1_p.h"
 #include "aurorawaylandxdgshell_p.h"
+#include "aurorawaylandutils_p.h"
+
+#if LIRI_FEATURE_aurora_compositor_quick
+#  include "aurorawaylandwlrlayershellintegration_p.h"
+#endif
 
 namespace Aurora {
 
@@ -17,7 +22,7 @@ namespace Compositor {
  */
 
 WaylandWlrLayerShellV1Private::WaylandWlrLayerShellV1Private(WaylandWlrLayerShellV1 *self)
-    : WaylandCompositorExtensionPrivate(self)
+    : WaylandShellPrivate(self)
 {
 }
 
@@ -55,6 +60,8 @@ void WaylandWlrLayerShellV1Private::zwlr_layer_shell_v1_get_layer_surface(
     // Create layer surface
     auto *layerSurface = new WaylandWlrLayerSurfaceV1(surface, output, static_cast<WaylandWlrLayerShellV1::Layer>(layer), nameSpace);
     WaylandWlrLayerSurfaceV1Private::get(layerSurface)->init(resource->client(), id, resource->version());
+    layerSurface->setExtensionContainer(surface);
+    layerSurface->initialize();
     Q_EMIT q->layerSurfaceCreated(layerSurface);
 }
 
@@ -63,13 +70,13 @@ void WaylandWlrLayerShellV1Private::zwlr_layer_shell_v1_get_layer_surface(
  */
 
 WaylandWlrLayerShellV1::WaylandWlrLayerShellV1()
-    : WaylandCompositorExtensionTemplate<WaylandWlrLayerShellV1>()
+    : WaylandShellTemplate<WaylandWlrLayerShellV1>()
     , d_ptr(new WaylandWlrLayerShellV1Private(this))
 {
 }
 
 WaylandWlrLayerShellV1::WaylandWlrLayerShellV1(WaylandCompositor *compositor)
-    : WaylandCompositorExtensionTemplate<WaylandWlrLayerShellV1>(compositor)
+    : WaylandShellTemplate<WaylandWlrLayerShellV1>(compositor)
     , d_ptr(new WaylandWlrLayerShellV1Private(this))
 {
 }
@@ -83,7 +90,7 @@ void WaylandWlrLayerShellV1::initialize()
 {
     Q_D(WaylandWlrLayerShellV1);
 
-    WaylandCompositorExtensionTemplate::initialize();
+    WaylandShellTemplate::initialize();
     WaylandCompositor *compositor = static_cast<WaylandCompositor *>(extensionContainer());
     if (!compositor) {
         qCWarning(gLcAuroraCompositorWlrLayerShellV1) << "Failed to find WaylandCompositor when initializing WaylandWlrLayerShellV1";
@@ -246,9 +253,8 @@ void WaylandWlrLayerSurfaceV1Private::zwlr_layer_surface_v1_set_layer(Resource *
 WaylandWlrLayerSurfaceV1::WaylandWlrLayerSurfaceV1(WaylandSurface *surface,
                                                    WaylandOutput *output,
                                                    WaylandWlrLayerShellV1::Layer layer,
-                                                   const QString &nameSpace,
-                                                   QObject *parent)
-    : QObject(parent)
+                                                   const QString &nameSpace)
+    : WaylandShellSurfaceTemplate<WaylandWlrLayerSurfaceV1>()
     , d_ptr(new WaylandWlrLayerSurfaceV1Private(this))
 {
     Q_D(WaylandWlrLayerSurfaceV1);
@@ -456,6 +462,39 @@ void WaylandWlrLayerSurfaceV1::close()
     d->closed = true;
     d->unmap();
     d->send_closed();
+}
+
+#if LIRI_FEATURE_aurora_compositor_quick
+WaylandQuickShellIntegration *WaylandWlrLayerSurfaceV1::createIntegration(WaylandQuickShellSurfaceItem *item)
+{
+    return new Internal::WlrLayerSurfaceIntegration(item);
+}
+#endif
+
+/*!
+ * Returns the Wayland interface for the WaylandWlrLayerSurfaceV1.
+ */
+const struct ::wl_interface *WaylandWlrLayerSurfaceV1::interface()
+{
+    return WaylandWlrLayerSurfaceV1Private::interface();
+}
+
+/*!
+ * \internal
+ */
+QByteArray WaylandWlrLayerSurfaceV1::interfaceName()
+{
+    return WaylandWlrLayerSurfaceV1Private::interfaceName();
+}
+
+/*!
+ * Returns the WaylandWlrLayerSurfaceV1 corresponding to the \a resource.
+ */
+WaylandWlrLayerSurfaceV1 *WaylandWlrLayerSurfaceV1::fromResource(struct ::wl_resource *resource)
+{
+    if (auto p = Internal::fromResource<WaylandWlrLayerSurfaceV1Private *>(resource))
+        return p->q_func();
+    return nullptr;
 }
 
 WaylandSurfaceRole *WaylandWlrLayerSurfaceV1::role()

@@ -186,6 +186,7 @@ liri_extend_target(AuroraCompositor CONDITION TARGET Qt::Quick
         extensions/aurorawaylandquickxdgoutputv1.cpp extensions/aurorawaylandquickxdgoutputv1.h
         extensions/aurorawaylandwlshellintegration.cpp extensions/aurorawaylandwlshellintegration_p.h
         extensions/aurorawaylandxdgshellintegration.cpp extensions/aurorawaylandxdgshellintegration_p.h
+        extensions/aurorawaylandwlrlayershellintegration.cpp extensions/aurorawaylandwlrlayershellintegration_p.h
         extensions/aurorawaylandwlrlayersurfaceitem.cpp extensions/aurorawaylandwlrlayersurfaceitem.h extensions/aurorawaylandwlrlayersurfaceitem_p.h
         extensions/aurorawaylandsurfacelayout.cpp extensions/aurorawaylandsurfacelayout.h extensions/aurorawaylandsurfacelayout_p.h
         extensions/aurorawaylandpresentationtime.cpp extensions/aurorawaylandpresentationtime_p.h extensions/aurorawaylandpresentationtime_p_p.h

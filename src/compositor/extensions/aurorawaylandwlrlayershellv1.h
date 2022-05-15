@@ -8,7 +8,9 @@
 #include <QMargins>
 #include <QQmlEngine>
 
-#include <LiriAuroraCompositor/WaylandCompositorExtension>
+#include <LiriAuroraCompositor/WaylandResource>
+#include <LiriAuroraCompositor/WaylandShell>
+#include <LiriAuroraCompositor/WaylandShellSurface>
 
 namespace Aurora {
 
@@ -24,7 +26,7 @@ class WaylandWlrLayerSurfaceV1Private;
 class WaylandXdgPopup;
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrLayerShellV1
-        : public WaylandCompositorExtensionTemplate<WaylandWlrLayerShellV1>
+        : public WaylandShellTemplate<WaylandWlrLayerShellV1>
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandWlrLayerShellV1)
@@ -55,7 +57,8 @@ private:
     WaylandWlrLayerShellV1Private *const d_ptr;
 };
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrLayerSurfaceV1 : public QObject
+class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrLayerSurfaceV1
+        : public WaylandShellSurfaceTemplate<WaylandWlrLayerSurfaceV1>
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandWlrLayerSurfaceV1)
@@ -117,6 +120,13 @@ public:
     Q_INVOKABLE quint32 sendConfigure(int width, int height);
     Q_INVOKABLE void close();
 
+#if LIRI_FEATURE_aurora_compositor_quick
+    WaylandQuickShellIntegration *createIntegration(WaylandQuickShellSurfaceItem *item) override;
+#endif
+
+    static const struct ::wl_interface *interface();
+    static QByteArray interfaceName();
+    static WaylandWlrLayerSurfaceV1 *fromResource(struct ::wl_resource *resource);
     static WaylandSurfaceRole *role();
 
 Q_SIGNALS:
@@ -140,8 +150,7 @@ private:
     explicit WaylandWlrLayerSurfaceV1(WaylandSurface *surface,
                                       WaylandOutput *output,
                                       WaylandWlrLayerShellV1::Layer layer,
-                                      const QString &nameSpace,
-                                      QObject *parent = nullptr);
+                                      const QString &nameSpace);
 
     friend class WaylandWlrLayerShellV1Private;
 };

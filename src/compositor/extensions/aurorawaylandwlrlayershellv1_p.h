@@ -9,7 +9,7 @@
 #include <QSize>
 
 #include <LiriAuroraCompositor/WaylandWlrLayerShellV1>
-#include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandshell_p.h>
 #include <LiriAuroraCompositor/private/aurora-server-wlr-layer-shell-unstable-v1.h>
 
 //
@@ -28,7 +28,7 @@ namespace Aurora {
 namespace Compositor {
 
 class WaylandWlrLayerShellV1Private
-        : public WaylandCompositorExtensionPrivate
+        : public WaylandShellPrivate
         , public PrivateServer::zwlr_layer_shell_v1
 {
     Q_DECLARE_PUBLIC(WaylandWlrLayerShellV1)
