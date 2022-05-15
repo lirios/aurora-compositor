@@ -81,14 +81,17 @@ void WaylandSeatPrivate::setCapabilities(WaylandSeat::CapabilityFlags caps)
 
         if (changed & WaylandSeat::Pointer) {
             pointer.reset(pointer.isNull() ? WaylandCompositorPrivate::get(compositor)->callCreatePointerDevice(q) : nullptr);
+            emit q->pointerChanged(pointer.data());
         }
 
         if (changed & WaylandSeat::Keyboard) {
             keyboard.reset(keyboard.isNull() ? WaylandCompositorPrivate::get(compositor)->callCreateKeyboardDevice(q) : nullptr);
+            emit q->keyboardChanged(keyboard.data());
         }
 
         if (changed & WaylandSeat::Touch) {
             touch.reset(touch.isNull() ? WaylandCompositorPrivate::get(compositor)->callCreateTouchDevice(q) : nullptr);
+            emit q->touchChanged(touch.data());
         }
 
         capabilities = caps;

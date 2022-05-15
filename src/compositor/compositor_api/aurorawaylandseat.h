@@ -60,7 +60,9 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandSeat : public WaylandObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandSeat)
-
+    Q_PROPERTY(Aurora::Compositor::WaylandPointer *pointer READ pointer NOTIFY pointerChanged)
+    Q_PROPERTY(Aurora::Compositor::WaylandKeyboard *keyboard READ keyboard NOTIFY keyboardChanged)
+    Q_PROPERTY(Aurora::Compositor::WaylandTouch *touch READ touch NOTIFY touchChanged)
     Q_PROPERTY(Aurora::Compositor::WaylandDrag *drag READ drag CONSTANT)
     Q_PROPERTY(Aurora::Compositor::WaylandKeymap *keymap READ keymap CONSTANT)
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
@@ -132,6 +134,9 @@ public:
     static WaylandSeat *fromSeatResource(struct ::wl_resource *resource);
 
 Q_SIGNALS:
+    void pointerChanged(Aurora::Compositor::WaylandPointer *pointer);
+    void keyboardChanged(Aurora::Compositor::WaylandKeyboard *keyboard);
+    void touchChanged(Aurora::Compositor::WaylandTouch *touch);
     void mouseFocusChanged(Aurora::Compositor::WaylandView *newFocus, Aurora::Compositor::WaylandView *oldFocus);
     void keyboardFocusChanged(Aurora::Compositor::WaylandSurface *newFocus, Aurora::Compositor::WaylandSurface *oldFocus);
     void cursorSurfaceRequested(Aurora::Compositor::WaylandSurface *surface, int hotspotX, int hotspotY, Aurora::Compositor::WaylandClient *client);
