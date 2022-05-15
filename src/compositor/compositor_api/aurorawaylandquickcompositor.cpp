@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+** Copyright (C) 2017-2022 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
 ** Copyright (C) 2017 Jolla Ltd, author: <giulio.camuffo@jollamobile.com>
 ** Contact: https://www.qt.io/licensing/
 **
@@ -174,6 +174,24 @@ void WaylandQuickCompositor::grabSurface(WaylandSurfaceGrabber *grabber, const W
 #else
     emit grabber->failed(WaylandSurfaceGrabber::UnknownBufferType);
 #endif
+}
+
+QQmlListProperty<WaylandOutput> WaylandQuickCompositor::outputsListProperty()
+{
+    return QQmlListProperty<WaylandOutput>(this, this,
+                                           &WaylandQuickCompositor::countFunction,
+                                           &WaylandQuickCompositor::atFunction);
+}
+
+
+int WaylandQuickCompositor::countFunction(QQmlListProperty<WaylandOutput> *list)
+{
+    return static_cast<WaylandCompositor *>(list->data)->outputs().size();
+}
+
+WaylandOutput *WaylandQuickCompositor::atFunction(QQmlListProperty<WaylandOutput> *list, int index)
+{
+    return static_cast<WaylandCompositor *>(list->data)->outputs().at(index);
 }
 
 } // namespace Compositor

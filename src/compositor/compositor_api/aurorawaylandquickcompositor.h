@@ -31,6 +31,7 @@
 #define AURORA_COMPOSITOR_WAYLANDQUICKCOMPOSITOR_H
 
 #include <LiriAuroraCompositor/aurorawaylandcompositor.h>
+#include <QtQml/QQmlListProperty>
 #include <QtQml/QQmlParserStatus>
 
 class QQuickWindow;
@@ -46,6 +47,8 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickCompositor : public WaylandComposi
 {
     Q_INTERFACES(QQmlParserStatus)
     Q_OBJECT
+    Q_PROPERTY(QQmlListProperty<WaylandOutput> outputs READ outputsListProperty DESIGNABLE false CONSTANT)
+    Q_INTERFACES(QQmlParserStatus)
 public:
     WaylandQuickCompositor(QObject *parent = nullptr);
     ~WaylandQuickCompositor();
@@ -53,6 +56,11 @@ public:
     void create() override;
 
     void grabSurface(WaylandSurfaceGrabber *grabber, const WaylandBufferRef &buffer) override;
+
+    QQmlListProperty<WaylandOutput> outputsListProperty();
+
+    static int countFunction(QQmlListProperty<WaylandOutput> *list);
+    static WaylandOutput *atFunction(QQmlListProperty<WaylandOutput> *list, int index);
 
 protected:
     void classBegin() override;
