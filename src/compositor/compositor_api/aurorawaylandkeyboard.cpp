@@ -99,6 +99,9 @@ void WaylandKeyboardPrivate::sendEnter(WaylandSurface *surface, Resource *keyboa
 
 void WaylandKeyboardPrivate::focused(WaylandSurface *surface)
 {
+    if (!seat->isInputAllowed(surface))
+        return;
+
     if (surface && surface->isCursorSurface())
         surface = nullptr;
     if (focus != surface) {

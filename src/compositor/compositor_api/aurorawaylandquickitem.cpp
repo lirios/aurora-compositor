@@ -866,6 +866,11 @@ void WaylandQuickItem::mousePressEvent(QMouseEvent *event)
 
     WaylandSeat *seat = compositor()->seatFor(event);
 
+    if (!seat->isInputAllowed(surface())) {
+        event->ignore();
+        return;
+    }
+
     if (d->focusOnClick)
         takeFocus(seat);
 
@@ -889,6 +894,10 @@ void WaylandQuickItem::mouseMoveEvent(QMouseEvent *event)
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     if (d->shouldSendInputEvents()) {
         WaylandSeat *seat = compositor()->seatFor(event);
+        if (!seat->isInputAllowed(surface())) {
+            event->ignore();
+            return;
+        }
         if (d->isDragging) {
             WaylandQuickOutput *currentOutput = qobject_cast<WaylandQuickOutput *>(view()->output());
             //TODO: also check if dragging onto other outputs
@@ -910,6 +919,10 @@ void WaylandQuickItem::mouseMoveEvent(QMouseEvent *event)
 #else
     if (d->shouldSendInputEvents()) {
         WaylandSeat *seat = compositor()->seatFor(event);
+        if (!seat->isInputAllowed(surface())) {
+            event->ignore();
+            return;
+        }
         if (d->isDragging) {
             WaylandQuickOutput *currentOutput = qobject_cast<WaylandQuickOutput *>(view()->output());
             //TODO: also check if dragging onto other outputs
@@ -939,6 +952,10 @@ void WaylandQuickItem::mouseReleaseEvent(QMouseEvent *event)
     Q_D(WaylandQuickItem);
     if (d->shouldSendInputEvents()) {
         WaylandSeat *seat = compositor()->seatFor(event);
+        if (!seat->isInputAllowed(surface())) {
+            event->ignore();
+            return;
+        }
         if (d->isDragging) {
             d->isDragging = false;
             seat->drag()->drop();
@@ -1053,6 +1070,10 @@ void WaylandQuickItem::wheelEvent(QWheelEvent *event)
         }
 
         WaylandSeat *seat = compositor()->seatFor(event);
+        if (!seat->isInputAllowed(surface())) {
+            event->ignore();
+            return;
+        }
         // TODO: fix this to send a single event, when diagonal scrolling is supported
         if (event->angleDelta().x() != 0)
             seat->sendMouseWheelEvent(Qt::Horizontal, event->angleDelta().x());
@@ -1072,6 +1093,10 @@ void WaylandQuickItem::keyPressEvent(QKeyEvent *event)
     Q_D(WaylandQuickItem);
     if (d->shouldSendInputEvents()) {
         WaylandSeat *seat = compositor()->seatFor(event);
+        if (!seat->isInputAllowed(surface())) {
+            event->ignore();
+            return;
+        }
         if (seat->setKeyboardFocus(d->view->surface()))
             seat->sendFullKeyEvent(event);
         else
@@ -1089,6 +1114,10 @@ void WaylandQuickItem::keyReleaseEvent(QKeyEvent *event)
     Q_D(WaylandQuickItem);
     if (d->shouldSendInputEvents() && hasFocus()) {
         WaylandSeat *seat = compositor()->seatFor(event);
+        if (!seat->isInputAllowed(surface())) {
+            event->ignore();
+            return;
+        }
         seat->sendFullKeyEvent(event);
     } else {
         event->ignore();
@@ -1103,6 +1132,11 @@ void WaylandQuickItem::touchEvent(QTouchEvent *event)
     Q_D(WaylandQuickItem);
     if (d->shouldSendInputEvents() && d->touchEventsEnabled) {
         WaylandSeat *seat = compositor()->seatFor(event);
+
+        if (!seat->isInputAllowed(surface())) {
+            event->ignore();
+            return;
+        }
 
         QPointF pointPos;
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
@@ -1143,9 +1177,13 @@ void WaylandQuickItem::touchUngrabEvent()
 {
     Q_D(WaylandQuickItem);
 
-    if (d->shouldSendInputEvents())
-        for (const auto seat : qAsConst(d->touchingSeats))
+    if (d->shouldSendInputEvents()) {
+        for (const auto seat : qAsConst(d->touchingSeats)) {
+            if (!seat->isInputAllowed(surface()))
+                return;
             seat->sendTouchCancelEvent(surface()->client());
+        }
+    }
 
     d->touchingSeats.clear();
 }
@@ -1158,6 +1196,14 @@ void WaylandQuickItem::touchUngrabEvent()
 void WaylandQuickItem::inputMethodEvent(QInputMethodEvent *event)
 {
     Q_D(WaylandQuickItem);
+
+    WaylandSeat *seat = compositor()->seatFor(event);
+
+    if (!seat->isInputAllowed(surface())) {
+        event->ignore();
+        return;
+    }
+
     if (d->shouldSendInputEvents()) {
         d->oldSurface->inputMethodControl()->inputMethodEvent(event);
     } else {
@@ -1432,10 +1478,15 @@ void WaylandQuickItem::takeFocus(WaylandSeat *device)
     if (!surface() || !surface()->client())
         return;
 
+
     WaylandSeat *target = device;
     if (!target) {
         target = compositor()->defaultSeat();
     }
+
+    if (!target->isInputAllowed(surface()))
+        return;
+
     target->setKeyboardFocus(surface());
 
     qCDebug(gLcAuroraCompositorInputMethods) << Q_FUNC_INFO << " surface:" << surface()

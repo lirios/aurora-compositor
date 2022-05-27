@@ -50,6 +50,9 @@ uint WaylandPointerPrivate::sendButton(Qt::MouseButton button, uint32_t state)
     if (!q->mouseFocus() || !q->mouseFocus()->surface())
         return 0;
 
+    if (!seat->isInputAllowed(q->mouseFocus()->surface()))
+        return 0;
+
     wl_client *client = q->mouseFocus()->surface()->waylandClient();
     uint32_t time = compositor()->currentTimeMsecs();
     uint32_t serial = compositor()->nextSerial();
@@ -270,6 +273,9 @@ void WaylandPointer::sendMouseWheelEvent(Qt::Orientation orientation, int delta)
 {
     Q_D(WaylandPointer);
     if (!d->enteredSurface)
+        return;
+
+    if (!d->seat->isInputAllowed(d->enteredSurface))
         return;
 
     uint32_t time = d->compositor()->currentTimeMsecs();

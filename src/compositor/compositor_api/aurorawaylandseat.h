@@ -110,6 +110,8 @@ public:
 
     void sendFullTouchEvent(WaylandSurface *surface, QTouchEvent *event);
 
+    bool isInputAllowed(WaylandSurface *surface) const;
+
     WaylandPointer *pointer() const;
     //Normally set by the mouse device,
     //But can be set manually for use with touch or can reset unset the current mouse focus;

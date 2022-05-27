@@ -93,6 +93,9 @@ public:
     Internal::DataDevice *dataDevice() const { return data_device.data(); }
 #endif
 
+    struct ::wl_client *exclusiveClient() const;
+    void setExclusiveClient(struct ::wl_client *client);
+
 protected:
     void seat_bind_resource(wl_seat::Resource *resource) override;
 
@@ -123,6 +126,7 @@ private:
 #endif
     QScopedPointer<WaylandKeymap> keymap;
 
+    struct ::wl_client *m_exclusiveClient = nullptr;
 };
 
 } // namespace Compositor

@@ -115,6 +115,16 @@ void WaylandSeatPrivate::clientRequestedDataDevice(Internal::DataDeviceManager *
 }
 #endif
 
+struct ::wl_client *WaylandSeatPrivate::exclusiveClient() const
+{
+    return m_exclusiveClient;
+}
+
+void WaylandSeatPrivate::setExclusiveClient(struct ::wl_client *client)
+{
+    m_exclusiveClient = client;
+}
+
 void WaylandSeatPrivate::seat_destroy_resource(wl_seat::Resource *)
 {
 //    cleanupDataDeviceForClient(resource->client(), true);
@@ -465,6 +475,16 @@ void WaylandSeat::sendFullTouchEvent(WaylandSurface *surface, QTouchEvent *event
 }
 
 /*!
+ * Returns \c true if input is allowed on the \a surface.
+ */
+bool WaylandSeat::isInputAllowed(WaylandSurface *surface) const
+{
+    Q_D(const WaylandSeat);
+    return !d->exclusiveClient() || !surface || !surface->client() ||
+            d->exclusiveClient() == surface->client()->client();
+}
+
+/*!
  * Sends the \a event to the keyboard device.
  */
 void WaylandSeat::sendFullKeyEvent(QKeyEvent *event)
@@ -599,6 +619,9 @@ bool WaylandSeat::setKeyboardFocus(WaylandSurface *surface)
     if (surface && surface->isDestroyed())
         return false;
 
+    if (surface && !isInputAllowed(surface))
+        return false;
+
     WaylandSurface *oldSurface = keyboardFocus();
     if (surface == oldSurface)
         return true;
@@ -659,6 +682,9 @@ void WaylandSeat::setMouseFocus(WaylandView *view)
 {
     Q_D(WaylandSeat);
     if (view == d->mouseFocus)
+        return;
+
+    if (view && !isInputAllowed(view->surface()))
         return;
 
     WaylandView *oldFocus = d->mouseFocus;

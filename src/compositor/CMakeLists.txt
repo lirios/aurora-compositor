@@ -41,6 +41,7 @@ liri_add_module(AuroraCompositor
         compositor_api/aurorawaylandsurfacegrabber.cpp compositor_api/aurorawaylandsurfacegrabber.h
         compositor_api/aurorawaylandtouch.cpp compositor_api/aurorawaylandtouch.h compositor_api/aurorawaylandtouch_p.h
         compositor_api/aurorawaylandview.cpp compositor_api/aurorawaylandview.h compositor_api/aurorawaylandview_p.h
+        extensions/aurorawaylandextsessionlockv1.cpp extensions/aurorawaylandextsessionlockv1.h extensions/aurorawaylandextsessionlockv1_p.h
         extensions/aurorawaylandfluiddecorationv1.cpp extensions/aurorawaylandfluiddecorationv1.h extensions/aurorawaylandfluiddecorationv1_p.h
         extensions/aurorawaylandidleinhibitv1.cpp extensions/aurorawaylandidleinhibitv1.h extensions/aurorawaylandidleinhibitv1_p.h
         extensions/aurorawaylandiviapplication.cpp extensions/aurorawaylandiviapplication.h extensions/aurorawaylandiviapplication_p.h
@@ -112,6 +113,7 @@ liri_extend_target(AuroraCompositor
 include("${CMAKE_CURRENT_SOURCE_DIR}/Liri1AuroraCompositorMacros.cmake")
 liri_generate_wayland_protocol_server_sources(AuroraCompositor
     FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/../3rdparty/protocol/ext-session-lock-v1.xml
         ${CMAKE_CURRENT_SOURCE_DIR}/../3rdparty/protocol/idle-inhibit-unstable-v1.xml
         ${CMAKE_CURRENT_SOURCE_DIR}/../3rdparty/protocol/ivi-application.xml
         ${CMAKE_CURRENT_SOURCE_DIR}/../3rdparty/protocol/presentation-time.xml
@@ -180,6 +182,7 @@ liri_extend_target(AuroraCompositor CONDITION TARGET Qt::Quick
         compositor_api/aurorawaylandquickitem.cpp compositor_api/aurorawaylandquickitem.h compositor_api/aurorawaylandquickitem_p.h
         compositor_api/aurorawaylandquickoutput.cpp compositor_api/aurorawaylandquickoutput.h
         compositor_api/aurorawaylandquicksurface.cpp compositor_api/aurorawaylandquicksurface.h compositor_api/aurorawaylandquicksurface_p.h
+        extensions/aurorawaylandextsessionlockv1integration.cpp extensions/aurorawaylandextsessionlockv1integration_p.h
         extensions/aurorawaylandivisurfaceintegration.cpp extensions/aurorawaylandivisurfaceintegration_p.h
         extensions/aurorawaylandquickshellintegration.cpp extensions/aurorawaylandquickshellintegration.h
         extensions/aurorawaylandquickshellsurfaceitem.cpp extensions/aurorawaylandquickshellsurfaceitem.h extensions/aurorawaylandquickshellsurfaceitem_p.h

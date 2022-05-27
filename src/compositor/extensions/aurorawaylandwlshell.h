@@ -86,7 +86,6 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandWlShellSurface : public WaylandShellSur
     Q_DECLARE_PRIVATE(WaylandWlShellSurface)
     AURORA_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandWlShellSurface)
     Q_PROPERTY(Aurora::Compositor::WaylandSurface *surface READ surface NOTIFY surfaceChanged)
-    Q_PROPERTY(Aurora::Compositor::WaylandWlShell *shell READ shell NOTIFY shellChanged)
     Q_PROPERTY(QString title READ title NOTIFY titleChanged)
     Q_PROPERTY(QString className READ className NOTIFY classNameChanged)
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)

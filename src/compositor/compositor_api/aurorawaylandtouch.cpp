@@ -55,6 +55,10 @@ void WaylandTouchPrivate::touch_release(Resource *resource)
 uint WaylandTouchPrivate::sendDown(WaylandSurface *surface, uint32_t time, int touch_id, const QPointF &position)
 {
     Q_Q(WaylandTouch);
+
+    if (!seat->isInputAllowed(surface))
+        return 0;
+
     auto focusResource = resourceMap().value(surface->client()->client());
     if (!focusResource)
         return 0;
@@ -154,6 +158,10 @@ WaylandCompositor *WaylandTouch::compositor() const
 uint WaylandTouch::sendTouchPointEvent(WaylandSurface *surface, int id, const QPointF &position, Qt::TouchPointState state)
 {
     Q_D(WaylandTouch);
+
+    if (!d->seat->isInputAllowed(surface))
+        return 0;
+
     uint32_t time = compositor()->currentTimeMsecs();
     uint serial = 0;
     switch (state) {
@@ -211,6 +219,10 @@ void WaylandTouch::sendCancelEvent(WaylandClient *client)
 void WaylandTouch::sendFullTouchEvent(WaylandSurface *surface, QTouchEvent *event)
 {
     Q_D(WaylandTouch);
+
+    if (!d->seat->isInputAllowed(surface))
+        return;
+
     if (event->type() == QEvent::TouchCancel) {
         sendCancelEvent(surface->client());
         return;
