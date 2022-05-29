@@ -38,7 +38,11 @@
 #include "wayland_wrapper/aurorawldatadevicemanager_p.h"
 #endif
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if QT_CONFIG(im)
 #include "aurorawaylandinputmethodcontrol_p.h"
+#endif
+#endif
 
 #include <LiriAuroraCompositor/WaylandCompositor>
 #include <LiriAuroraCompositor/WaylandClient>
