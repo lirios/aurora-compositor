@@ -29,7 +29,6 @@
 
 #include "aurorawaylandsurfacegrabber.h"
 
-#include <QtCore/private/qobject_p.h>
 #include <LiriAuroraCompositor/aurorawaylandsurface.h>
 #include <LiriAuroraCompositor/aurorawaylandcompositor.h>
 #include <LiriAuroraCompositor/private/aurorawaylandsurface_p.h>

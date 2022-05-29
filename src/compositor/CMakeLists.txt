@@ -17,7 +17,6 @@ function(read_qt_features header hints)
     endif()
 endfunction()
 read_qt_features("qtgui-config.h" ${Qt5Gui_INCLUDE_DIRS})
-read_qt_features("qtgui-config_p.h" ${Qt5Gui_PRIVATE_INCLUDE_DIRS})
 
 liri_add_module(AuroraCompositor
     DESCRIPTION
@@ -74,6 +73,7 @@ liri_add_module(AuroraCompositor
         wayland_wrapper/aurorawldatasource.cpp wayland_wrapper/aurorawldatasource_p.h
         wayland_wrapper/aurorawlregion.cpp wayland_wrapper/aurorawlregion_p.h
         utils/aurorafactoryloader.cpp utils/aurorafactoryloader_p.h
+        utils/auroraunixutils_p.h
     RESOURCES
         compositor.qrc
     INCLUDE_DIRECTORIES
@@ -87,7 +87,6 @@ liri_add_module(AuroraCompositor
         Qt::Gui
         Wayland::Server
     LIBRARIES
-        Qt::CorePrivate
         Qt::GuiPrivate
     PKGCONFIG_DEPENDENCIES
         Qt${QT_DEFAULT_MAJOR_VERSION}Core
@@ -196,8 +195,6 @@ liri_extend_target(AuroraCompositor CONDITION TARGET Qt::Quick
     PUBLIC_LIBRARIES
         Qt::Qml
         Qt::Quick
-    LIBRARIES
-        Qt::QuickPrivate
     PKGCONFIG_DEPENDENCIES
         Qt${QT_DEFAULT_MAJOR_VERSION}Qml
         Qt${QT_DEFAULT_MAJOR_VERSION}Quick

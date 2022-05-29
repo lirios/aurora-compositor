@@ -41,14 +41,14 @@
 // We mean it.
 //
 
-#include <QtQuick/private/qquickitem_p.h>
+#include <QtCore/QMutex>
 #include <QtQuick/QSGMaterialShader>
 #include <QtQuick/QSGMaterial>
+#include <QtQuick/QQuickWindow>
 
 #include <LiriAuroraCompositor/WaylandQuickItem>
 #include <LiriAuroraCompositor/WaylandOutput>
 
-class QMutex;
 class QOpenGLTexture;
 
 namespace Aurora {

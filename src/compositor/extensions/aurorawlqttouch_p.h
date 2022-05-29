@@ -44,7 +44,6 @@
 #include <LiriAuroraCompositor/private/aurora-server-touch-extension.h>
 #include <LiriAuroraCompositor/WaylandCompositor>
 #include <LiriAuroraCompositor/WaylandCompositorExtensionTemplate>
-#include <QtCore/private/qglobal_p.h>
 
 #include <wayland-util.h>
 

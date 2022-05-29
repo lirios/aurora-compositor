@@ -54,8 +54,6 @@
 #include <LiriAuroraCompositor/private/aurorawaylandseat_p.h>
 #include <LiriAuroraCompositor/private/aurorawaylandutils_p.h>
 
-#include <QtCore/private/qobject_p.h>
-
 #include <QtGui/QGuiApplication>
 #include <QtGui/QScreen>
 

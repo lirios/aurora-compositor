@@ -54,8 +54,6 @@
 #include <QtCore/QList>
 #include <QtCore/QRect>
 
-#include <QtCore/private/qobject_p.h>
-
 namespace Aurora {
 
 namespace Compositor {

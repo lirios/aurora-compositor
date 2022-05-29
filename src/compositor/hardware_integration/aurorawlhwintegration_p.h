@@ -46,7 +46,6 @@
 #include <LiriAuroraCompositor/WaylandCompositorExtension>
 
 #include <QtCore/QString>
-#include <QtCore/private/qglobal_p.h>
 
 namespace Aurora {
 

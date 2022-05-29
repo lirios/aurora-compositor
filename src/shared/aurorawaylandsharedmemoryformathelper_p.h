@@ -40,8 +40,9 @@
 #ifndef AURORA_COMPOSITOR_WAYLANDSHAREDMEMORYFORMATHELPER_H
 #define AURORA_COMPOSITOR_WAYLANDSHAREDMEMORYFORMATHELPER_H
 
+#include <wayland-client.h>
+
 #include <QtGui/QImage>
-#include <QtCore/private/qglobal_p.h>
 
 //the correct protocol header for the wayland server or wayland client has to be
 //included before this file is included

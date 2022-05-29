@@ -1,9 +1,10 @@
 /****************************************************************************
 **
 ** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2016 Intel Corporation.
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the plugins of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial License Usage
@@ -37,25 +38,35 @@
 **
 ****************************************************************************/
 
-#ifndef AURORA_COMPOSITOR_WAYLANDMIMEHELPER_H
-#define AURORA_COMPOSITOR_WAYLANDMIMEHELPER_H
+#ifndef AURORA_COMPOSITOR_UNIXUTILS_P_H
+#define AURORA_COMPOSITOR_UNIXUTILS_P_H
 
-#include <QString>
-#include <QByteArray>
-#include <QMimeData>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of Qt code on Unix. This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
-namespace Aurora {
+#include <QtCore/qglobal.h>
 
-namespace Compositor {
+#include <errno.h>
+#include <unistd.h>
 
-class WaylandMimeHelper
+#define AURORA_EINTR_LOOP(var, cmd)             \
+    do {                                        \
+        var = cmd;                              \
+    } while (var == -1 && errno == EINTR)
+
+static inline qint64 aurora_safe_read(int fd, void *data, qint64 maxlen)
 {
-public:
-    static QByteArray getByteArray(QMimeData *mimeData, const QString &mimeType);
-};
+    qint64 ret = 0;
+    AURORA_EINTR_LOOP(ret, read(fd, data, maxlen));
+    return ret;
+}
 
-} // namespace Compositor
-
-} // namespace Aurora
-
-#endif
+#endif // AURORA_COMPOSITOR_UNIXUTILS_P_H

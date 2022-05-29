@@ -45,7 +45,6 @@
 
 #include <QtCore/qplugin.h>
 #include <QtCore/qfactoryinterface.h>
-#include <QtCore/private/qglobal_p.h>
 
 namespace Aurora {
 

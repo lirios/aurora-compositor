@@ -51,7 +51,6 @@
 
 #include <QtCore/QPoint>
 #include <QtCore/qvarlengtharray.h>
-#include <QtCore/private/qobject_p.h>
 
 #include <LiriAuroraCompositor/private/aurora-server-wayland.h>
 

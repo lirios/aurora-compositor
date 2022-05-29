@@ -32,7 +32,6 @@
 #include <LiriAuroraCompositor/private/aurorawlhardwarelayerintegration_p.h>
 #include <LiriAuroraCompositor/private/aurorawlhardwarelayerintegrationfactory_p.h>
 
-#include <QtCore/private/qobject_p.h>
 #include <QMatrix4x4>
 
 namespace Aurora {

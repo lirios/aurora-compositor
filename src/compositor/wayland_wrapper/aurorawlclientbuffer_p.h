@@ -48,7 +48,6 @@
 
 #include <LiriAuroraCompositor/WaylandSurface>
 #include <LiriAuroraCompositor/WaylandBufferRef>
-#include <QtCore/private/qglobal_p.h>
 
 #include <wayland-server-core.h>
 

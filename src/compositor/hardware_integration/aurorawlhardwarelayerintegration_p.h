@@ -44,7 +44,6 @@
 #include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 
 #include <QObject>
-#include <private/qglobal_p.h>
 
 namespace Aurora {
 

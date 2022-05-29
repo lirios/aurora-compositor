@@ -43,7 +43,6 @@
 //
 
 #include <LiriAuroraCompositor/liriauroracompositorglobal.h>
-#include <private/qobject_p.h>
 
 #include <private/aurorawlclientbuffer_p.h>
 #include <LiriAuroraCompositor/aurorawaylandsurface.h>

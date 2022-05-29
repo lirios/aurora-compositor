@@ -43,10 +43,8 @@
 //
 
 #include <LiriAuroraCompositor/WaylandCompositor>
-#include <QtCore/private/qobject_p.h>
 #include <QtCore/QSet>
 #include <QtCore/QElapsedTimer>
-#include <QtGui/private/qtguiglobal_p.h>
 
 #include <LiriAuroraCompositor/private/aurora-server-wayland.h>
 

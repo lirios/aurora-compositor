@@ -28,7 +28,6 @@
 ****************************************************************************/
 
 #include "aurorawaylandclient.h"
-#include <QtCore/private/qobject_p.h>
 
 #include <LiriAuroraCompositor/WaylandCompositor>
 #include <LiriAuroraCompositor/private/aurorawaylandcompositor_p.h>

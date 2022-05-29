@@ -31,7 +31,6 @@
 #define AURORA_COMPOSITOR_WAYLANDOUTPUTMODE_P_H
 
 #include <LiriAuroraCompositor/WaylandOutput>
-#include <QtCore/private/qglobal_p.h>
 
 //
 //  W A R N I N G

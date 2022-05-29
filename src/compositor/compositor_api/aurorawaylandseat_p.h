@@ -49,7 +49,6 @@
 #include <QtCore/QList>
 #include <QtCore/QPoint>
 #include <QtCore/QScopedPointer>
-#include <QtCore/private/qobject_p.h>
 
 #include <LiriAuroraCompositor/private/aurora-server-wayland.h>
 

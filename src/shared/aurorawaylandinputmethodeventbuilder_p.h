@@ -41,7 +41,6 @@
 #define AURORA_COMPOSITOR_WAYLANDINPUTMETHODEVENTBUILDER_H
 
 #include <QInputMethodEvent>
-#include <private/qglobal_p.h>
 
 namespace Aurora {
 

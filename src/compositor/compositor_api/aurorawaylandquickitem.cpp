@@ -69,10 +69,6 @@
 #include <wayland-server-core.h>
 #include <QThread>
 
-#if QT_CONFIG(opengl)
-#include <QtGui/private/qshaderdescription_p_p.h>
-#endif
-
 #ifndef GL_TEXTURE_EXTERNAL_OES
 #define GL_TEXTURE_EXTERNAL_OES 0x8D65
 #endif

@@ -47,7 +47,6 @@
 #include <LiriAuroraCompositor/aurorawaylandkeyboard.h>
 #include <LiriAuroraCompositor/aurorawaylanddestroylistener.h>
 
-#include <QtCore/private/qobject_p.h>
 #include <LiriAuroraCompositor/private/aurora-server-wayland.h>
 
 #include <QtCore/QList>

@@ -29,8 +29,6 @@
 
 #include "aurorawaylanddrag.h"
 
-#include <private/qobject_p.h>
-
 #include "aurorawaylandview.h"
 #include <LiriAuroraCompositor/private/aurorawaylandseat_p.h>
 

@@ -27,6 +27,8 @@
 **
 ****************************************************************************/
 
+#include <QQmlProperty>
+
 #include "aurorawaylandquickshellsurfaceitem.h"
 #include "aurorawaylandquickshellsurfaceitem_p.h"
 

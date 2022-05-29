@@ -27,6 +27,8 @@
 **
 ****************************************************************************/
 
+#include <QtQuick/QQuickWindow>
+
 #include "aurorawaylandwlshellintegration_p.h"
 
 #include <LiriAuroraCompositor/WaylandCompositor>

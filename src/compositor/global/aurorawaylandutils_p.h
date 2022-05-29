@@ -41,7 +41,7 @@
 // We mean it.
 //
 
-#include <QtCore/private/qglobal_p.h>
+#include <type_traits>
 
 struct wl_resource;
 

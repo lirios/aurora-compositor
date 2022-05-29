@@ -44,7 +44,6 @@
 #include <LiriAuroraCompositor/WaylandCompositorExtensionTemplate>
 #include <LiriAuroraCompositor/WaylandCompositor>
 #include <LiriAuroraCompositor/private/aurora-server-qt-key-unstable-v1.h>
-#include <QtCore/private/qglobal_p.h>
 
 #include <wayland-util.h>
 

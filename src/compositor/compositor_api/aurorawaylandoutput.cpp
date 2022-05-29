@@ -45,7 +45,6 @@
 #include <QtGui/QWindow>
 #include <QtGui/QExposeEvent>
 #include <QtGui/QScreen>
-#include <private/qobject_p.h>
 
 template<typename DPtr, typename Slot>
 auto priv_slot(DPtr &&dptr, Slot &&slot)

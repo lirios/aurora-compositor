@@ -44,7 +44,6 @@
 #include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 
 #include <QRegion>
-#include <private/qglobal_p.h>
 
 #include <wayland-util.h>
 #include <LiriAuroraCompositor/private/aurora-server-wayland.h>

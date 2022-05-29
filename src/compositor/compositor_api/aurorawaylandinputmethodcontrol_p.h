@@ -44,8 +44,6 @@
 #include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 #include <LiriAuroraCompositor/aurorawaylandinputmethodcontrol.h>
 
-#include <QtCore/private/qobject_p.h>
-
 namespace Aurora {
 
 namespace Compositor {
