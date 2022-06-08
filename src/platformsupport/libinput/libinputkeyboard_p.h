@@ -34,7 +34,6 @@
 #ifndef LIRI_LIBINPUTKEYBOARD_P_H
 #define LIRI_LIBINPUTKEYBOARD_P_H
 
-#include "eglfsxkb.h"
 #include "libinputhandler.h"
 #include "libinputkeyboard.h"
 

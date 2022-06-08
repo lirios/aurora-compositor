@@ -37,6 +37,9 @@
 
 #include <LiriAuroraLogind/Logind>
 
+#include <xkbcommon/xkbcommon.h>
+#include <LiriAuroraXkbCommonSupport/private/auroraxkbcommon_p.h>
+
 #include "libinputhandler_p.h"
 #include "libinputkeyboard.h"
 #include "libinputkeyboard_p.h"
@@ -127,30 +130,11 @@ void LibInputKeyboard::handleKey(libinput_event_keyboard *event)
     const quint32 key = libinput_event_keyboard_get_key(event) + 8;
     const xkb_keysym_t keysym = xkb_state_key_get_one_sym(d->state, key);
     const bool isPressed = libinput_event_keyboard_get_key_state(event) == LIBINPUT_KEY_STATE_PRESSED;
-    Qt::KeyboardModifiers modifiers = Qt::NoModifier;
 
-    // Text
-    QVarLengthArray<char, 32> chars(32);
-    const int size = xkb_state_key_get_utf8(d->state, key, chars.data(), chars.size());
-    if (Q_UNLIKELY(size + 1 > chars.size())) { // +1 for NUL
-        chars.resize(size + 1);
-        xkb_state_key_get_utf8(d->state, key, chars.data(), chars.size());
-    }
-    const QString text = QString::fromUtf8(chars.constData(), size);
+    Qt::KeyboardModifiers modifiers = XkbCommon::modifiers(d->state);
 
-    // Map keysym to Qt key
-    const int qtkey = EglFSXkb::keysymToQtKey(keysym, modifiers, text);
-
-    // Modifiers
-    xkb_state_component type = xkb_state_component(XKB_STATE_MODS_DEPRESSED | XKB_STATE_MODS_LATCHED);
-    if (xkb_state_mod_index_is_active(d->state, d->modifiers[0], type) && (qtkey != Qt::Key_Control || !isPressed))
-        modifiers |= Qt::ControlModifier;
-    if (xkb_state_mod_index_is_active(d->state, d->modifiers[1], type) && (qtkey != Qt::Key_Alt || !isPressed))
-        modifiers |= Qt::AltModifier;
-    if (xkb_state_mod_index_is_active(d->state, d->modifiers[2], type) && (qtkey != Qt::Key_Shift || !isPressed))
-        modifiers |= Qt::ShiftModifier;
-    if (xkb_state_mod_index_is_active(d->state, d->modifiers[3], type) && (qtkey != Qt::Key_Meta || !isPressed))
-        modifiers |= Qt::MetaModifier;
+    const QString text = XkbCommon::lookupString(d->state, key);
+    const int qtkey = XkbCommon::keysymToQtKey(keysym, modifiers, d->state, key);
 
     xkb_state_update_key(d->state, key, isPressed ? XKB_KEY_DOWN : XKB_KEY_UP);
 
