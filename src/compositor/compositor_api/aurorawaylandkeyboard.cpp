@@ -191,7 +191,7 @@ void WaylandKeyboardPrivate::maybeUpdateXkbScanCodeTable()
                     continue;
 
                 Qt::KeyboardModifiers mods = {};
-                int qtKey = QXkbCommon::keysymToQtKey(syms[0], mods);
+                int qtKey = XkbCommon::keysymToQtKey(syms[0], mods);
                 if (qtKey != 0)
                     scanCodesByQtKey->insert({layout, qtKey}, keycode);
             }
@@ -412,7 +412,7 @@ void WaylandKeyboardPrivate::createXKBKeymap()
         options.constData()
     };
 
-    QXkbCommon::ScopedXKBKeymap xkbKeymap(xkb_keymap_new_from_names(xkbContext(), &rule_names,
+    XkbCommon::ScopedXKBKeymap xkbKeymap(xkb_keymap_new_from_names(xkbContext(), &rule_names,
                                                                     XKB_KEYMAP_COMPILE_NO_FLAGS));
     if (xkbKeymap) {
         scanCodesByQtKey.clear();

@@ -136,11 +136,11 @@ public:
 
 #if LIRI_FEATURE_aurora_xkbcommon
         xkb_state *xkbState = keyb->xkbState();
-        Qt::KeyboardModifiers modifiers = QXkbCommon::modifiers(xkbState);
+        Qt::KeyboardModifiers modifiers = XkbCommon::modifiers(xkbState);
 
         const xkb_keysym_t sym = xkb_state_key_get_one_sym(xkbState, code);
-        int qtkey = QXkbCommon::keysymToQtKey(sym, modifiers, xkbState, code);
-        QString text = QXkbCommon::lookupString(xkbState, code);
+        int qtkey = XkbCommon::keysymToQtKey(sym, modifiers, xkbState, code);
+        QString text = XkbCommon::lookupString(xkbState, code);
 
         ke->key = qtkey;
         ke->modifiers = modifiers;

@@ -51,7 +51,7 @@
 #include <vector>
 
 #if LIRI_FEATURE_aurora_xkbcommon
-#include <LiriAuroraXkbCommonSupport/private/qxkbcommon_p.h>
+#include <LiriAuroraXkbCommonSupport/private/auroraxkbcommon_p.h>
 #endif
 
 class QWindowSystemEventHandler;
@@ -174,7 +174,7 @@ protected:
     std::vector<QPointer<QObject> > polish_objects;
 
 #if LIRI_FEATURE_aurora_xkbcommon
-    QXkbCommon::ScopedXKBContext mXkbContext;
+    XkbCommon::ScopedXKBContext mXkbContext;
 #endif
 
     Q_DECLARE_PUBLIC(WaylandCompositor)

@@ -42,7 +42,7 @@
 #include <QInputMethodEvent>
 
 #if LIRI_FEATURE_aurora_xkbcommon
-#include <LiriAuroraXkbCommonSupport/private/qxkbcommon_p.h>
+#include <LiriAuroraXkbCommonSupport/private/auroraxkbcommon_p.h>
 #endif
 
 #if LIRI_FEATURE_aurora_xkbcommon
@@ -205,7 +205,7 @@ void WaylandTextInputPrivate::sendKeyEvent(QKeyEvent *event)
     // TODO add support for modifiers
 
 #if LIRI_FEATURE_aurora_xkbcommon
-    for (xkb_keysym_t keysym : QXkbCommon::toKeysym(event)) {
+    for (xkb_keysym_t keysym : XkbCommon::toKeysym(event)) {
         send_keysym(focusResource->handle, event->timestamp(), keysym,
                     event->type() == QEvent::KeyPress ? WL_KEYBOARD_KEY_STATE_PRESSED : WL_KEYBOARD_KEY_STATE_RELEASED,
                     0);

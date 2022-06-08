@@ -37,14 +37,14 @@
 **
 ****************************************************************************/
 
-#ifndef QXKBCOMMON_P_H
-#define QXKBCOMMON_P_H
+#ifndef AURORA_XKBCOMMON_P_H
+#define AURORA_XKBCOMMON_P_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -72,7 +72,7 @@ namespace PlatformSupport {
 
 Q_DECLARE_LOGGING_CATEGORY(gLcXkbcommon)
 
-class LIRIAURORAXKBCOMMONSUPPORT_EXPORT QXkbCommon
+class LIRIAURORAXKBCOMMONSUPPORT_EXPORT XkbCommon
 {
 public:
     static QString lookupString(struct xkb_state *state, xkb_keycode_t code);
@@ -125,4 +125,4 @@ public:
 
 } // namespace Aurora
 
-#endif // QXKBCOMMON_P_H
+#endif // AURORA_XKBCOMMON_P_H

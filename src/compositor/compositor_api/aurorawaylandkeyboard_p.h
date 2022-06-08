@@ -53,7 +53,7 @@
 
 #if LIRI_FEATURE_aurora_xkbcommon
 #include <xkbcommon/xkbcommon.h>
-#include <LiriAuroraXkbCommonSupport/private/qxkbcommon_p.h>
+#include <LiriAuroraXkbCommonSupport/private/auroraxkbcommon_p.h>
 #endif
 
 
@@ -140,7 +140,7 @@ private:
     char *keymap_area = nullptr;
     using ScanCodeKey = std::pair<uint,int>; // group/layout and QtKey
     QMap<ScanCodeKey, uint> scanCodesByQtKey;
-    QXkbCommon::ScopedXKBState mXkbState;
+    XkbCommon::ScopedXKBState mXkbState;
 #endif
 
     quint32 repeatRate = 40;

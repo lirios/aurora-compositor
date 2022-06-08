@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "qxkbcommon_p.h"
+#include "auroraxkbcommon_p.h"
 
 #include <private/qmakearray_p.h>
 
@@ -428,7 +428,7 @@ static constexpr const auto KeyTbl = qMakeArray(
     >::Data{}
 );
 
-xkb_keysym_t QXkbCommon::qxkbcommon_xkb_keysym_to_upper(xkb_keysym_t ks)
+xkb_keysym_t XkbCommon::qxkbcommon_xkb_keysym_to_upper(xkb_keysym_t ks)
 {
     xkb_keysym_t lower, upper;
 
@@ -437,7 +437,7 @@ xkb_keysym_t QXkbCommon::qxkbcommon_xkb_keysym_to_upper(xkb_keysym_t ks)
     return upper;
 }
 
-QString QXkbCommon::lookupString(struct xkb_state *state, xkb_keycode_t code)
+QString XkbCommon::lookupString(struct xkb_state *state, xkb_keycode_t code)
 {
     QVarLengthArray<char, 32> chars(32);
     const int size = xkb_state_key_get_utf8(state, code, chars.data(), chars.size());
@@ -448,7 +448,7 @@ QString QXkbCommon::lookupString(struct xkb_state *state, xkb_keycode_t code)
     return QString::fromUtf8(chars.constData(), size);
 }
 
-QString QXkbCommon::lookupStringNoKeysymTransformations(xkb_keysym_t keysym)
+QString XkbCommon::lookupStringNoKeysymTransformations(xkb_keysym_t keysym)
 {
     QVarLengthArray<char, 32> chars(32);
     const int size = xkb_keysym_to_utf8(keysym, chars.data(), chars.size());
@@ -462,7 +462,7 @@ QString QXkbCommon::lookupStringNoKeysymTransformations(xkb_keysym_t keysym)
     return QString::fromUtf8(chars.constData(), size - 1);
 }
 
-QVector<xkb_keysym_t> QXkbCommon::toKeysym(QKeyEvent *event)
+QVector<xkb_keysym_t> XkbCommon::toKeysym(QKeyEvent *event)
 {
     QVector<xkb_keysym_t> keysyms;
     int qtKey = event->key();
@@ -503,12 +503,12 @@ QVector<xkb_keysym_t> QXkbCommon::toKeysym(QKeyEvent *event)
     return keysyms;
 }
 
-int QXkbCommon::keysymToQtKey(xkb_keysym_t keysym, Qt::KeyboardModifiers modifiers)
+int XkbCommon::keysymToQtKey(xkb_keysym_t keysym, Qt::KeyboardModifiers modifiers)
 {
     return keysymToQtKey(keysym, modifiers, nullptr, 0);
 }
 
-int QXkbCommon::keysymToQtKey(xkb_keysym_t keysym, Qt::KeyboardModifiers modifiers,
+int XkbCommon::keysymToQtKey(xkb_keysym_t keysym, Qt::KeyboardModifiers modifiers,
                               xkb_state *state, xkb_keycode_t code,
                               bool superAsMeta, bool hyperAsMeta)
 {
@@ -524,8 +524,8 @@ int QXkbCommon::keysymToQtKey(xkb_keysym_t keysym, Qt::KeyboardModifiers modifie
         // With standard shortcuts we should prefer a latin character, this is
         // for checks like "some qkeyevent == QKeySequence::Copy" to work even
         // when using for example 'russian' keyboard layout.
-        if (!QXkbCommon::isLatin1(keysym)) {
-            xkb_keysym_t latinKeysym = QXkbCommon::lookupLatinKeysym(state, code);
+        if (!XkbCommon::isLatin1(keysym)) {
+            xkb_keysym_t latinKeysym = XkbCommon::lookupLatinKeysym(state, code);
             if (latinKeysym != XKB_KEY_NoSymbol)
                 keysym = latinKeysym;
         }
@@ -547,8 +547,8 @@ static int keysymToQtKey_internal(xkb_keysym_t keysym, Qt::KeyboardModifiers mod
     } else if (keysym >= XKB_KEY_KP_0 && keysym <= XKB_KEY_KP_9) {
         // numeric keypad keys
         qtKey = Qt::Key_0 + (keysym - XKB_KEY_KP_0);
-    } else if (QXkbCommon::isLatin1(keysym)) {
-        qtKey = QXkbCommon::qxkbcommon_xkb_keysym_to_upper(keysym);
+    } else if (XkbCommon::isLatin1(keysym)) {
+        qtKey = XkbCommon::qxkbcommon_xkb_keysym_to_upper(keysym);
     } else {
         // check if we have a direct mapping
         xkb2qt_t searchKey{keysym, 0};
@@ -567,9 +567,9 @@ static int keysymToQtKey_internal(xkb_keysym_t keysym, Qt::KeyboardModifiers mod
         // can't use this text to map keysym to a qt key. We can use the same keysym
         // (it is not affectd by transformation) to obtain untransformed text. For details
         // see "Appendix A. Default Symbol Transformations" in the XKB specification.
-        text = QXkbCommon::lookupStringNoKeysymTransformations(keysym);
+        text = XkbCommon::lookupStringNoKeysymTransformations(keysym);
     } else {
-        text = QXkbCommon::lookupString(state, code);
+        text = XkbCommon::lookupString(state, code);
     }
     if (!text.isEmpty()) {
          if (text.unicode()->isDigit()) {
@@ -590,7 +590,7 @@ static int keysymToQtKey_internal(xkb_keysym_t keysym, Qt::KeyboardModifiers mod
     return qtKey;
 }
 
-Qt::KeyboardModifiers QXkbCommon::modifiers(struct xkb_state *state)
+Qt::KeyboardModifiers XkbCommon::modifiers(struct xkb_state *state)
 {
     Qt::KeyboardModifiers modifiers = Qt::NoModifier;
 
@@ -619,7 +619,7 @@ static const Qt::KeyboardModifiers ModsTbl[] = {
     Qt::NoModifier                                              // Fall-back to raw Key_*, for non-latin1 kb layouts
 };
 
-QList<int> QXkbCommon::possibleKeys(xkb_state *state, const QKeyEvent *event,
+QList<int> XkbCommon::possibleKeys(xkb_state *state, const QKeyEvent *event,
                                     bool superAsMeta, bool hyperAsMeta)
 {
     QList<int> result;
@@ -721,7 +721,7 @@ QList<int> QXkbCommon::possibleKeys(xkb_state *state, const QKeyEvent *event,
     return result;
 }
 
-void QXkbCommon::verifyHasLatinLayout(xkb_keymap *keymap)
+void XkbCommon::verifyHasLatinLayout(xkb_keymap *keymap)
 {
     const xkb_layout_index_t layoutCount = xkb_keymap_num_layouts(keymap);
     const xkb_keycode_t minKeycode = xkb_keymap_min_keycode(keymap);
@@ -749,7 +749,7 @@ void QXkbCommon::verifyHasLatinLayout(xkb_keymap *keymap)
     qCDebug(gLcXkbcommon, "no keyboard layouts with latin keys present");
 }
 
-xkb_keysym_t QXkbCommon::lookupLatinKeysym(xkb_state *state, xkb_keycode_t keycode)
+xkb_keysym_t XkbCommon::lookupLatinKeysym(xkb_state *state, xkb_keycode_t keycode)
 {
     xkb_layout_index_t layout;
     xkb_keysym_t sym = XKB_KEY_NoSymbol;
@@ -802,7 +802,7 @@ xkb_keysym_t QXkbCommon::lookupLatinKeysym(xkb_state *state, xkb_keycode_t keyco
     return sym;
 }
 
-void QXkbCommon::setXkbContext(QPlatformInputContext *inputContext, struct xkb_context *context)
+void XkbCommon::setXkbContext(QPlatformInputContext *inputContext, struct xkb_context *context)
 {
     if (!inputContext || !context)
         return;

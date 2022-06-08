@@ -97,7 +97,7 @@
  results instead of using the less complete version from keysym.c
 */
 
-#include "qxkbcommon_p.h"
+#include "auroraxkbcommon_p.h"
 
 #include <QtCore/QChar>
 
@@ -111,7 +111,7 @@ namespace Aurora {
 
 namespace PlatformSupport {
 
-void QXkbCommon::xkbcommon_XConvertCase(xkb_keysym_t sym, xkb_keysym_t *lower, xkb_keysym_t *upper)
+void XkbCommon::xkbcommon_XConvertCase(xkb_keysym_t sym, xkb_keysym_t *lower, xkb_keysym_t *upper)
 {
     /* Latin 1 keysym */
     if (sym < 0x100) {
