@@ -46,7 +46,7 @@ class XWaylandShellSurface;
 class XWaylandQuickShellSurfaceItem : public WaylandQuickItem
 {
     Q_OBJECT
-    Q_PROPERTY(XWaylandShellSurface *shellSurface READ shellSurface WRITE setShellSurface NOTIFY shellSurfaceChanged)
+    Q_PROPERTY(Aurora::Compositor::XWaylandShellSurface *shellSurface READ shellSurface WRITE setShellSurface NOTIFY shellSurfaceChanged)
     Q_PROPERTY(QQuickItem *moveItem READ moveItem WRITE setMoveItem NOTIFY moveItemChanged)
 public:
     XWaylandQuickShellSurfaceItem(QQuickItem *parent = nullptr);

@@ -47,7 +47,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickCompositor : public WaylandComposi
 {
     Q_INTERFACES(QQmlParserStatus)
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<WaylandOutput> outputs READ outputsListProperty DESIGNABLE false CONSTANT)
+    Q_PROPERTY(QQmlListProperty<Aurora::Compositor::WaylandOutput> outputs READ outputsListProperty DESIGNABLE false CONSTANT)
     Q_INTERFACES(QQmlParserStatus)
 public:
     WaylandQuickCompositor(QObject *parent = nullptr);

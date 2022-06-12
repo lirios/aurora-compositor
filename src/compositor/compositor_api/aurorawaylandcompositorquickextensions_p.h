@@ -63,7 +63,7 @@ namespace Compositor {
 class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickCompositorQuickExtensionContainer : public WaylandQuickCompositor
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<WaylandCompositorExtension> extensions READ extensions)
+    Q_PROPERTY(QQmlListProperty<Aurora::Compositor::WaylandCompositorExtension> extensions READ extensions)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
     Q_CLASSINFO("DefaultProperty", "data")
     QML_NAMED_ELEMENT(WaylandCompositor)

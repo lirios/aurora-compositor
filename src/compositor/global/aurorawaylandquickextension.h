@@ -62,7 +62,7 @@ namespace Compositor {
     { \
 /* qmake ignore Q_OBJECT */ \
         Q_OBJECT \
-        Q_PROPERTY(QQmlListProperty<WaylandCompositorExtension> extensions READ extensions) \
+        Q_PROPERTY(QQmlListProperty<Aurora::Compositor::WaylandCompositorExtension> extensions READ extensions) \
         Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false) \
         Q_CLASSINFO("DefaultProperty", "data") \
     public: \
