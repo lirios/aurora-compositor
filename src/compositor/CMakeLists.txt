@@ -41,6 +41,7 @@ liri_add_module(AuroraCompositor
         compositor_api/aurorawaylandsurfacegrabber.cpp compositor_api/aurorawaylandsurfacegrabber.h
         compositor_api/aurorawaylandtouch.cpp compositor_api/aurorawaylandtouch.h compositor_api/aurorawaylandtouch_p.h
         compositor_api/aurorawaylandview.cpp compositor_api/aurorawaylandview.h compositor_api/aurorawaylandview_p.h
+        extensions/aurorawaylandfluiddecorationv1.cpp extensions/aurorawaylandfluiddecorationv1.h extensions/aurorawaylandfluiddecorationv1_p.h
         extensions/aurorawaylandidleinhibitv1.cpp extensions/aurorawaylandidleinhibitv1.h extensions/aurorawaylandidleinhibitv1_p.h
         extensions/aurorawaylandiviapplication.cpp extensions/aurorawaylandiviapplication.h extensions/aurorawaylandiviapplication_p.h
         extensions/aurorawaylandivisurface.cpp extensions/aurorawaylandivisurface.h extensions/aurorawaylandivisurface_p.h
@@ -127,6 +128,7 @@ liri_generate_wayland_protocol_server_sources(AuroraCompositor
         ${CMAKE_CURRENT_SOURCE_DIR}/../3rdparty/protocol/xdg-decoration-unstable-v1.xml
         ${CMAKE_CURRENT_SOURCE_DIR}/../3rdparty/protocol/xdg-output-unstable-v1.xml
         ${CMAKE_CURRENT_SOURCE_DIR}/../3rdparty/protocol/xdg-shell.xml
+        ${CMAKE_CURRENT_SOURCE_DIR}/../extensions/fluid-decoration-unstable-v1.xml
         ${CMAKE_CURRENT_SOURCE_DIR}/../extensions/hardware-integration.xml
         ${CMAKE_CURRENT_SOURCE_DIR}/../extensions/qt-key-unstable-v1.xml
         ${CMAKE_CURRENT_SOURCE_DIR}/../extensions/qt-text-input-method-unstable-v1.xml

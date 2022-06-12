@@ -1,0 +1,3 @@
+module Aurora.Compositor.Liri
+plugin auroraliriplugin
+classname AuroraCompositorLiriPlugin
