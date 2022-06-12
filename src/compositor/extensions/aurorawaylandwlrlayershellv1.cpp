@@ -26,6 +26,19 @@ WaylandWlrLayerShellV1Private::WaylandWlrLayerShellV1Private(WaylandWlrLayerShel
 {
 }
 
+void WaylandWlrLayerShellV1Private::unregisterLayerSurface(WaylandWlrLayerSurfaceV1 *layerSurface)
+{
+    if (!m_layerSurfaces.removeOne(layerSurface))
+        qCWarning(gLcAuroraCompositorWlrLayerShellV1,
+                  "Unexpected state. Can't find registered layer surface.");
+}
+
+void WaylandWlrLayerShellV1Private::closeAllLayerSurfaces()
+{
+    for (auto *surface : qAsConst(m_layerSurfaces))
+        surface->close();
+}
+
 void WaylandWlrLayerShellV1Private::zwlr_layer_shell_v1_get_layer_surface(
         PrivateServer::zwlr_layer_shell_v1::Resource *resource,
         uint32_t id, wl_resource *surfaceRes, wl_resource *outputRes,
@@ -58,11 +71,13 @@ void WaylandWlrLayerShellV1Private::zwlr_layer_shell_v1_get_layer_surface(
         output = WaylandOutput::fromResource(outputRes);
 
     // Create layer surface
-    auto *layerSurface = new WaylandWlrLayerSurfaceV1(surface, output, static_cast<WaylandWlrLayerShellV1::Layer>(layer), nameSpace);
-    WaylandWlrLayerSurfaceV1Private::get(layerSurface)->init(resource->client(), id, resource->version());
-    layerSurface->setExtensionContainer(surface);
-    layerSurface->initialize();
-    Q_EMIT q->layerSurfaceCreated(layerSurface);
+    WaylandResource layerSurfaceResource(
+                wl_resource_create(resource->client(), &zwlr_layer_surface_v1_interface,
+                                   wl_resource_get_version(resource->handle), id));
+    auto *layerSurface = new WaylandWlrLayerSurfaceV1(q, surface, output, static_cast<WaylandWlrLayerShellV1::Layer>(layer), nameSpace, layerSurfaceResource);
+
+    m_layerSurfaces.append(layerSurface);
+    emit q->layerSurfaceCreated(layerSurface);
 }
 
 /*
@@ -99,12 +114,10 @@ void WaylandWlrLayerShellV1::initialize()
     d->init(compositor->display(), WaylandWlrLayerShellV1Private::interfaceVersion());
 }
 
-void WaylandWlrLayerShellV1::closeAllSurfaces()
+void WaylandWlrLayerShellV1::closeAllLayerSurfaces()
 {
     Q_D(WaylandWlrLayerShellV1);
-
-    for (auto *surface : qAsConst(d->surfaces))
-        surface->close();
+    d->closeAllLayerSurfaces();
 }
 
 const wl_interface *WaylandWlrLayerShellV1::interface()
@@ -124,8 +137,11 @@ QByteArray WaylandWlrLayerShellV1::interfaceName()
 WaylandSurfaceRole WaylandWlrLayerSurfaceV1Private::s_role("zwlr_layer_surface_v1");
 
 WaylandWlrLayerSurfaceV1Private::WaylandWlrLayerSurfaceV1Private(WaylandWlrLayerSurfaceV1 *self)
-    : PrivateServer::zwlr_layer_surface_v1()
-    , q_ptr(self)
+    : WaylandCompositorExtensionPrivate(self)
+{
+}
+
+WaylandWlrLayerSurfaceV1Private::~WaylandWlrLayerSurfaceV1Private()
 {
 }
 
@@ -250,19 +266,17 @@ void WaylandWlrLayerSurfaceV1Private::zwlr_layer_surface_v1_set_layer(Resource *
  * WaylandWlrLayerSurfaceV1
  */
 
-WaylandWlrLayerSurfaceV1::WaylandWlrLayerSurfaceV1(WaylandSurface *surface,
+WaylandWlrLayerSurfaceV1::WaylandWlrLayerSurfaceV1(WaylandWlrLayerShellV1 *shell,
+                                                   WaylandSurface *surface,
                                                    WaylandOutput *output,
                                                    WaylandWlrLayerShellV1::Layer layer,
-                                                   const QString &nameSpace)
+                                                   const QString &nameSpace,
+                                                   const WaylandResource &resource)
     : WaylandShellSurfaceTemplate<WaylandWlrLayerSurfaceV1>()
     , d_ptr(new WaylandWlrLayerSurfaceV1Private(this))
 {
     Q_D(WaylandWlrLayerSurfaceV1);
-    d->surface = surface;
-    d->output = output;
-    d->current.layer = layer;
-    d->clientPending.layer = layer;
-    d->nameSpace = nameSpace;
+    initialize(shell, surface, output, layer, nameSpace, resource);
 
     connect(surface, &WaylandSurface::redraw, this, [this, d] {
         if (d->closed)
@@ -331,6 +345,44 @@ WaylandWlrLayerSurfaceV1::WaylandWlrLayerSurfaceV1(WaylandSurface *surface,
 
 WaylandWlrLayerSurfaceV1::~WaylandWlrLayerSurfaceV1()
 {
+    Q_D(WaylandWlrLayerSurfaceV1);
+
+    if (d->shell)
+        WaylandWlrLayerShellV1Private::get(d->shell)->unregisterLayerSurface(this);
+}
+
+void WaylandWlrLayerSurfaceV1::initialize(WaylandWlrLayerShellV1 *shell,
+                                          WaylandSurface *surface,
+                                          WaylandOutput *output,
+                                          WaylandWlrLayerShellV1::Layer layer,
+                                          const QString &nameSpace,
+                                          const WaylandResource &resource)
+{
+    Q_D(WaylandWlrLayerSurfaceV1);
+
+    d->shell = shell;
+    d->surface = surface;
+    d->output = output;
+    d->current.layer = layer;
+    d->clientPending.layer = layer;
+    d->nameSpace = nameSpace;
+
+    d->init(resource.resource());
+    setExtensionContainer(surface);
+    emit surfaceChanged();
+    emit shellChanged();
+    WaylandCompositorExtension::initialize();
+}
+
+WaylandWlrLayerShellV1 *WaylandWlrLayerSurfaceV1::shell() const
+{
+    Q_D(const WaylandWlrLayerSurfaceV1);
+    return d->shell;
+}
+
+void WaylandWlrLayerSurfaceV1::initialize()
+{
+    WaylandCompositorExtension::initialize();
 }
 
 WaylandSurface *WaylandWlrLayerSurfaceV1::surface() const

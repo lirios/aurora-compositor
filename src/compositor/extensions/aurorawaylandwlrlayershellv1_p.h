@@ -27,7 +27,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-class WaylandWlrLayerShellV1Private
+class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrLayerShellV1Private
         : public WaylandShellPrivate
         , public PrivateServer::zwlr_layer_shell_v1
 {
@@ -35,22 +35,25 @@ class WaylandWlrLayerShellV1Private
 public:
     explicit WaylandWlrLayerShellV1Private(WaylandWlrLayerShellV1 *self);
 
+    void unregisterLayerSurface(WaylandWlrLayerSurfaceV1 *layerSurface);
+    void closeAllLayerSurfaces();
+
     static WaylandWlrLayerShellV1Private *get(WaylandWlrLayerShellV1 *shell) { return shell->d_func(); }
 
-    QMap<WaylandSurface *, WaylandWlrLayerSurfaceV1 *> surfaces;
-
 protected:
-    WaylandWlrLayerShellV1 *q_ptr;
+    QList<WaylandWlrLayerSurfaceV1 *> m_layerSurfaces;
 
     void zwlr_layer_shell_v1_get_layer_surface(Resource *resource, uint32_t id,
                                                struct ::wl_resource *surfaceRes,
                                                struct ::wl_resource *outputRes,
                                                uint32_t layer,
                                                const QString &nameSpace) override;
+
 };
 
-class WaylandWlrLayerSurfaceV1Private
-        : public PrivateServer::zwlr_layer_surface_v1
+class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrLayerSurfaceV1Private
+        : public WaylandCompositorExtensionPrivate
+        , public PrivateServer::zwlr_layer_surface_v1
 {
     Q_DECLARE_PUBLIC(WaylandWlrLayerSurfaceV1)
 public:
@@ -77,6 +80,7 @@ public:
     };
 
     explicit WaylandWlrLayerSurfaceV1Private(WaylandWlrLayerSurfaceV1 *self);
+    ~WaylandWlrLayerSurfaceV1Private();
 
     ConfigureEvent lastSentConfigure() const;
 
@@ -84,6 +88,7 @@ public:
 
     static WaylandWlrLayerSurfaceV1Private *get(WaylandWlrLayerSurfaceV1 *surface) { return surface->d_func(); }
 
+    WaylandWlrLayerShellV1 *shell = nullptr;
     WaylandSurface *surface = nullptr;
     WaylandOutput *output = nullptr;
     QString nameSpace;
@@ -101,8 +106,6 @@ public:
     static WaylandSurfaceRole s_role;
 
 protected:
-    WaylandWlrLayerSurfaceV1 *q_ptr;
-
     void zwlr_layer_surface_v1_set_size(Resource *resource, uint32_t width,
                                         uint32_t height) override;
     void zwlr_layer_surface_v1_set_anchor(Resource *resource,

@@ -11,6 +11,7 @@
 #include <LiriAuroraCompositor/WaylandResource>
 #include <LiriAuroraCompositor/WaylandShell>
 #include <LiriAuroraCompositor/WaylandShellSurface>
+#include <LiriAuroraCompositor/aurorawaylandquickchildren.h>
 
 namespace Aurora {
 
@@ -40,15 +41,16 @@ public:
     Q_ENUM(Layer)
 
     WaylandWlrLayerShellV1();
-    explicit WaylandWlrLayerShellV1(WaylandCompositor *compositor);
+    WaylandWlrLayerShellV1(WaylandCompositor *compositor);
     ~WaylandWlrLayerShellV1();
 
     void initialize() override;
 
-    Q_INVOKABLE void closeAllSurfaces();
-
     static const wl_interface *interface();
     static QByteArray interfaceName();
+
+public Q_SLOTS:
+    Q_INVOKABLE void closeAllLayerSurfaces();
 
 Q_SIGNALS:
     void layerSurfaceCreated(Aurora::Compositor::WaylandWlrLayerSurfaceV1 *layerSurface);
@@ -62,7 +64,9 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrLayerSurfaceV1
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandWlrLayerSurfaceV1)
-    Q_PROPERTY(Aurora::Compositor::WaylandSurface *surface READ surface CONSTANT)
+    AURORA_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandWlrLayerSurfaceV1)
+    Q_PROPERTY(Aurora::Compositor::WaylandWlrLayerShellV1 *shell READ shell NOTIFY shellChanged)
+    Q_PROPERTY(Aurora::Compositor::WaylandSurface *surface READ surface NOTIFY surfaceChanged)
     Q_PROPERTY(Aurora::Compositor::WaylandOutput *output READ output CONSTANT)
     Q_PROPERTY(Aurora::Compositor::WaylandWlrLayerShellV1::Layer layer READ layer NOTIFY layerChanged)
     Q_PROPERTY(QString nameSpace READ nameSpace CONSTANT)
@@ -77,13 +81,16 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrLayerSurfaceV1
     Q_PROPERTY(Aurora::Compositor::WaylandWlrLayerSurfaceV1::KeyboardInteractivity keyboardInteractivity READ keyboardInteractivity NOTIFY keyboardInteractivityChanged)
     Q_PROPERTY(bool mapped READ isMapped NOTIFY mappedChanged)
     Q_PROPERTY(bool configured READ isConfigured NOTIFY configuredChanged)
-public:
-    enum Anchor {
-        TopAnchor = 1,
-        BottomAnchor = 2,
-        LeftAnchor = 4,
-        RightAnchor = 8
-    };
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    Q_MOC_INCLUDE("aurorawaylandsurface.h")
+#endif
+    public:
+        enum Anchor {
+                 TopAnchor = 1,
+                 BottomAnchor = 2,
+                 LeftAnchor = 4,
+                 RightAnchor = 8
+};
     Q_ENUM(Anchor)
     Q_DECLARE_FLAGS(Anchors, Anchor)
     Q_FLAG(Anchors)
@@ -95,8 +102,23 @@ public:
     };
     Q_ENUM(KeyboardInteractivity)
 
-    ~WaylandWlrLayerSurfaceV1();
+    WaylandWlrLayerSurfaceV1();
+    WaylandWlrLayerSurfaceV1(WaylandWlrLayerShellV1 *shell,
+                             WaylandSurface *surface,
+                             WaylandOutput *output,
+                             WaylandWlrLayerShellV1::Layer layer,
+                             const QString &nameSpace,
+                             const Aurora::Compositor::WaylandResource &resource);
+    ~WaylandWlrLayerSurfaceV1() override;
 
+    Q_INVOKABLE void initialize(Aurora::Compositor::WaylandWlrLayerShellV1 *shell,
+                                Aurora::Compositor::WaylandSurface *surface,
+                                Aurora::Compositor::WaylandOutput *output,
+                                Aurora::Compositor::WaylandWlrLayerShellV1::Layer layer,
+                                const QString &nameSpace,
+                                const Aurora::Compositor::WaylandResource &resource);
+
+    WaylandWlrLayerShellV1 *shell() const;
     WaylandSurface *surface() const;
     WaylandOutput *output() const;
     WaylandWlrLayerShellV1::Layer layer() const;
@@ -130,6 +152,8 @@ public:
     static WaylandSurfaceRole *role();
 
 Q_SIGNALS:
+    void shellChanged();
+    void surfaceChanged();
     void layerChanged();
     void sizeChanged();
     void anchorsChanged();
@@ -147,12 +171,7 @@ Q_SIGNALS:
 private:
     QScopedPointer<WaylandWlrLayerSurfaceV1Private> const d_ptr;
 
-    explicit WaylandWlrLayerSurfaceV1(WaylandSurface *surface,
-                                      WaylandOutput *output,
-                                      WaylandWlrLayerShellV1::Layer layer,
-                                      const QString &nameSpace);
-
-    friend class WaylandWlrLayerShellV1Private;
+    void initialize() override;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(WaylandWlrLayerSurfaceV1::Anchors)
