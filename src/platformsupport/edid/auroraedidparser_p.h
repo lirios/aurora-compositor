@@ -20,18 +20,18 @@
 // We mean it.
 //
 
-#include <QtGui/qtguiglobal.h>
 #include <QtCore/qlist.h>
 #include <QtCore/qpoint.h>
 #include <QtCore/qsize.h>
 #include <QtCore/qstring.h>
-#include <QtCore/private/qglobal_p.h>
+
+#include <LiriAuroraEdidSupport/liriauroraedidsupportglobal.h>
 
 namespace Aurora {
 
 namespace PlatformSupport {
 
-class Q_GUI_EXPORT EdidParser
+class LIRIAURORAEDIDSUPPORT_EXPORT EdidParser
 {
 public:
     bool parse(const QByteArray &blob);

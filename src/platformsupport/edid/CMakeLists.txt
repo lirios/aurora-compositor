@@ -16,7 +16,6 @@ liri_add_module(AuroraEdidSupport
         QT_NO_FOREACH
     LIBRARIES
         Qt::Core
-        Qt::CorePrivate
     NO_CMAKE
     NO_PKGCONFIG
     STATIC

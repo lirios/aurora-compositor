@@ -22,8 +22,6 @@
 // We mean it.
 //
 
-#include <QtCore/private/qglobal_p.h>
-
 namespace Aurora {
 
 namespace PlatformSupport {
