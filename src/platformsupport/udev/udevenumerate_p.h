@@ -41,8 +41,6 @@ extern "C" {
 #include <libudev.h>
 }
 
-class LogindSeat;
-
 namespace Aurora {
 
 namespace PlatformSupport {
@@ -53,7 +51,6 @@ public:
     UdevEnumeratePrivate(UdevDevice::DeviceTypes t, Udev *u);
     ~UdevEnumeratePrivate();
 
-    LogindSeat *logindSeat = nullptr;
     UdevDevice::DeviceTypes types;
     Udev *udev;
     udev_enumerate *enumerate;

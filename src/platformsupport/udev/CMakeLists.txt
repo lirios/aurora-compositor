@@ -6,7 +6,6 @@ liri_add_module(AuroraUdev
     DESCRIPTION
         "Qt style API for udev"
     SOURCES
-        logindseat.cpp logindseat_p.h
         udev.cpp udev.h udev_p.h
         udevdevice.cpp udevdevice.h udevdevice_p.h
         udevenumerate.cpp udevenumerate.h udevenumerate_p.h

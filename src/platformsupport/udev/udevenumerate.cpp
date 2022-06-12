@@ -21,7 +21,8 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#include "logindseat_p.h"
+#include <LiriAuroraLogind/Logind>
+
 #include "udev.h"
 #include "udev_p.h"
 #include "udevenumerate.h"
@@ -36,8 +37,7 @@ namespace PlatformSupport {
  */
 
 UdevEnumeratePrivate::UdevEnumeratePrivate(UdevDevice::DeviceTypes t, Udev *u)
-    : logindSeat(new LogindSeat)
-    , types(t)
+    : types(t)
     , udev(u)
 {
     enumerate = udev_enumerate_new(UdevPrivate::get(u)->udev);
@@ -79,8 +79,6 @@ UdevEnumeratePrivate::~UdevEnumeratePrivate()
 {
     if (enumerate)
         udev_enumerate_unref(enumerate);
-
-    delete logindSeat;
 }
 
 /*
@@ -126,7 +124,7 @@ QList<UdevDevice *> UdevEnumerate::scan() const
         QString seat = QString::fromUtf8(udev_device_get_property_value(dev, "ID_SEAT"));
         if (seat.isEmpty())
             seat = QStringLiteral("seat0");
-        if (seat != d->logindSeat->id()) {
+        if (seat != Logind::instance()->seat()) {
             udev_device_unref(dev);
             continue;
         }
