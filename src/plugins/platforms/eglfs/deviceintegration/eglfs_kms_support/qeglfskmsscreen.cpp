@@ -70,7 +70,7 @@ private:
     QEglFSKmsScreen *m_screen;
 };
 
-QEglFSKmsScreen::QEglFSKmsScreen(QEglFSKmsDevice *device, const QKmsOutput &output, bool headless)
+QEglFSKmsScreen::QEglFSKmsScreen(QEglFSKmsDevice *device, const KmsOutput &output, bool headless)
     : QEglFSScreen(static_cast<QEglFSIntegration *>(QGuiApplicationPrivate::platformIntegration())->display())
     , m_device(device)
     , m_output(output)

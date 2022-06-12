@@ -51,8 +51,8 @@ QT_BEGIN_NAMESPACE
 
 namespace Aurora {
 namespace PlatformSupport {
-class QKmsDevice;
-class QKmsScreenConfig;
+class KmsDevice;
+class KmsScreenConfig;
 }
 }
 
@@ -76,14 +76,14 @@ public:
     void *nativeResourceForIntegration(const QByteArray &name) override;
     void *nativeResourceForScreen(const QByteArray &resource, QScreen *screen) override;
 
-    Aurora::PlatformSupport::QKmsDevice *device() const;
-    Aurora::PlatformSupport::QKmsScreenConfig *screenConfig() const;
+    Aurora::PlatformSupport::KmsDevice *device() const;
+    Aurora::PlatformSupport::KmsScreenConfig *screenConfig() const;
 
 protected:
-    virtual Aurora::PlatformSupport::QKmsDevice *createDevice() = 0;
+    virtual Aurora::PlatformSupport::KmsDevice *createDevice() = 0;
 
-    Aurora::PlatformSupport::QKmsDevice *m_device;
-    Aurora::PlatformSupport::QKmsScreenConfig *m_screenConfig;
+    Aurora::PlatformSupport::KmsDevice *m_device;
+    Aurora::PlatformSupport::KmsScreenConfig *m_screenConfig;
 };
 
 QT_END_NAMESPACE

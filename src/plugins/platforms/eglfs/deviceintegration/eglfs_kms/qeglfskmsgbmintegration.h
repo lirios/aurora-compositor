@@ -78,7 +78,7 @@ public:
     QFunctionPointer platformFunction(const QByteArray &function) const override;
 
 protected:
-    Aurora::PlatformSupport::QKmsDevice *createDevice() override;
+    Aurora::PlatformSupport::KmsDevice *createDevice() override;
 
 private:
     Aurora::PlatformSupport::Udev *m_udev;

@@ -46,7 +46,7 @@
 #include <QtCore/QList>
 #include <QtCore/QMutex>
 
-#include <LiriAuroraKmsSupport/private/qkmsdevice_p.h>
+#include <LiriAuroraKmsSupport/private/aurorakmsdevice_p.h>
 #include <LiriAuroraEdidSupport/private/auroraedidparser_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -59,7 +59,7 @@ class QEglFSKmsInterruptHandler;
 class Q_EGLFS_EXPORT QEglFSKmsScreen : public QEglFSScreen
 {
 public:
-    QEglFSKmsScreen(QEglFSKmsDevice *device, const QKmsOutput &output, bool headless = false);
+    QEglFSKmsScreen(QEglFSKmsDevice *device, const KmsOutput &output, bool headless = false);
     ~QEglFSKmsScreen();
 
     void setVirtualPosition(const QPoint &pos);
@@ -94,7 +94,7 @@ public:
 
     virtual void waitForFlip();
 
-    QKmsOutput &output() { return m_output; }
+    KmsOutput &output() { return m_output; }
     void restoreMode();
 
     SubpixelAntialiasingType subpixelAntialiasingTypeHint() const override;
@@ -110,7 +110,7 @@ public:
 protected:
     QEglFSKmsDevice *m_device;
 
-    QKmsOutput m_output;
+    KmsOutput m_output;
     EdidParser m_edid;
     QPoint m_pos;
     bool m_cursorOutOfRange;

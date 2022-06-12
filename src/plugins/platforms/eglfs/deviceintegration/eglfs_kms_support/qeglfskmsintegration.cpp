@@ -42,7 +42,7 @@
 #include "qeglfskmsintegration.h"
 #include "qeglfskmsscreen.h"
 
-#include <LiriAuroraKmsSupport/private/qkmsdevice_p.h>
+#include <LiriAuroraKmsSupport/private/aurorakmsdevice_p.h>
 
 #include <QtGui/qpa/qplatformwindow.h>
 #include <QtGui/qpa/qwindowsysteminterface.h>
@@ -62,7 +62,7 @@ using namespace Aurora::PlatformSupport;
 
 QEglFSKmsIntegration::QEglFSKmsIntegration()
     : m_device(nullptr),
-      m_screenConfig(new QKmsScreenConfig)
+      m_screenConfig(new KmsScreenConfig)
 {
 }
 
@@ -172,12 +172,12 @@ void *QEglFSKmsIntegration::nativeResourceForScreen(const QByteArray &resource, 
     return nullptr;
 }
 
-QKmsDevice *QEglFSKmsIntegration::device() const
+KmsDevice *QEglFSKmsIntegration::device() const
 {
     return m_device;
 }
 
-QKmsScreenConfig *QEglFSKmsIntegration::screenConfig() const
+KmsScreenConfig *QEglFSKmsIntegration::screenConfig() const
 {
     return m_screenConfig;
 }

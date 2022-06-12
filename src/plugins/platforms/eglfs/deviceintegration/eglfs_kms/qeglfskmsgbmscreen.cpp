@@ -112,7 +112,7 @@ QEglFSKmsGbmScreen::FrameBuffer *QEglFSKmsGbmScreen::framebufferForBufferObject(
     return fb.take();
 }
 
-QEglFSKmsGbmScreen::QEglFSKmsGbmScreen(QEglFSKmsDevice *device, const QKmsOutput &output, bool headless)
+QEglFSKmsGbmScreen::QEglFSKmsGbmScreen(QEglFSKmsDevice *device, const KmsOutput &output, bool headless)
     : QEglFSKmsScreen(device, output, headless)
     , m_gbm_surface(nullptr)
     , m_gbm_bo_current(nullptr)
@@ -133,7 +133,7 @@ QEglFSKmsGbmScreen::~QEglFSKmsGbmScreen()
 
 QPlatformCursor *QEglFSKmsGbmScreen::cursor() const
 {
-    QKmsScreenConfig *config = device()->screenConfig();
+    KmsScreenConfig *config = device()->screenConfig();
     if (config->headless())
         return nullptr;
     if (config->hwCursor()) {
@@ -231,7 +231,7 @@ void QEglFSKmsGbmScreen::initCloning(QPlatformScreen *screenThisScreenClones,
 
 void QEglFSKmsGbmScreen::ensureModeSet(uint32_t fb)
 {
-    QKmsOutput &op(output());
+    KmsOutput &op(output());
     const int fd = device()->fd();
 
     if (!op.mode_set) {
@@ -328,7 +328,7 @@ void QEglFSKmsGbmScreen::flip()
     FrameBuffer *fb = framebufferForBufferObject(m_gbm_bo_next);
     ensureModeSet(fb->fb);
 
-    QKmsOutput &op(output());
+    KmsOutput &op(output());
     const int fd = device()->fd();
     m_flipPending = true;
 

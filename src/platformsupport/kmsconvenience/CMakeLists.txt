@@ -6,10 +6,9 @@ liri_add_module(AuroraKmsSupport
     DESCRIPTION
         "KMS shared code"
     SOURCES
-        qkmsdevice.cpp
-        qkmsdevice_p.h
+        aurorakmsdevice.cpp aurorakmsdevice_p.h
     PRIVATE_HEADERS
-        qkmsdevice_p.h
+        aurorakmsdevice_p.h
     DEFINES
         QT_NO_CAST_FROM_ASCII
         QT_NO_FOREACH

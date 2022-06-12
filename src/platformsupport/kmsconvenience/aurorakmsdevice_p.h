@@ -102,9 +102,9 @@ namespace Aurora {
 
 namespace PlatformSupport {
 
-class QKmsDevice;
+class KmsDevice;
 
-class QKmsScreenConfig
+class KmsScreenConfig
 {
 public:
     enum VirtualDesktopLayout {
@@ -112,7 +112,7 @@ public:
         VirtualDesktopLayoutVertical
     };
 
-    QKmsScreenConfig();
+    KmsScreenConfig();
 
     QString devicePath() const { return m_devicePath; }
 
@@ -142,7 +142,7 @@ private:
 // change object properties. Any such functionality belongs to subclasses since
 // in some cases atomic operations will be desired where a mere
 // drmModeObjectSetProperty would not be acceptable.
-struct QKmsPlane
+struct KmsPlane
 {
     enum Type {
         OverlayPlane = DRM_PLANE_TYPE_OVERLAY,
@@ -186,9 +186,9 @@ struct QKmsPlane
     uint32_t activeCrtcId = 0;
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(QKmsPlane::Rotations)
+Q_DECLARE_OPERATORS_FOR_FLAGS(KmsPlane::Rotations)
 
-struct QKmsOutput
+struct KmsOutput
 {
     QString name;
     uint32_t connector_id = 0;
@@ -209,8 +209,8 @@ struct QKmsOutput
     uint32_t drm_format = DRM_FORMAT_XRGB8888;
     bool drm_format_requested_by_user = false;
     QString clone_source;
-    QVector<QKmsPlane> available_planes;
-    struct QKmsPlane *eglfs_plane = nullptr;
+    QVector<KmsPlane> available_planes;
+    struct KmsPlane *eglfs_plane = nullptr;
     QSize size;
     uint32_t crtcIdPropertyId = 0;
     uint32_t modeIdPropertyId = 0;
@@ -218,24 +218,24 @@ struct QKmsOutput
 
     uint32_t mode_blob_id = 0;
 
-    void restoreMode(QKmsDevice *device);
-    void cleanup(QKmsDevice *device);
+    void restoreMode(KmsDevice *device);
+    void cleanup(KmsDevice *device);
     QPlatformScreen::SubpixelAntialiasingType subpixelAntialiasingTypeHint() const;
-    void setPowerState(QKmsDevice *device, QPlatformScreen::PowerState state);
+    void setPowerState(KmsDevice *device, QPlatformScreen::PowerState state);
 };
 
-class QKmsDevice
+class KmsDevice
 {
 public:
     struct ScreenInfo {
         int virtualIndex = 0;
         QPoint virtualPos;
         bool isPrimary = false;
-        QKmsOutput output;
+        KmsOutput output;
     };
 
-    QKmsDevice(QKmsScreenConfig *screenConfig, const QString &path = QString());
-    virtual ~QKmsDevice();
+    KmsDevice(KmsScreenConfig *screenConfig, const QString &path = QString());
+    virtual ~KmsDevice();
 
     virtual bool open() = 0;
     virtual void close() = 0;
@@ -253,10 +253,10 @@ public:
     int fd() const;
     QString devicePath() const;
 
-    QKmsScreenConfig *screenConfig() const;
+    KmsScreenConfig *screenConfig() const;
 
 protected:
-    virtual QPlatformScreen *createScreen(const QKmsOutput &output) = 0;
+    virtual QPlatformScreen *createScreen(const KmsOutput &output) = 0;
     virtual QPlatformScreen *createHeadlessScreen();
     virtual void registerScreenCloning(QPlatformScreen *screen,
                                        QPlatformScreen *screenThisScreenClones,
@@ -276,10 +276,10 @@ protected:
     typedef std::function<void(drmModePropertyPtr, quint64)> PropCallback;
     void enumerateProperties(drmModeObjectPropertiesPtr objProps, PropCallback callback);
     void discoverPlanes();
-    void parseConnectorProperties(uint32_t connectorId, QKmsOutput *output);
-    void parseCrtcProperties(uint32_t crtcId, QKmsOutput *output);
+    void parseConnectorProperties(uint32_t connectorId, KmsOutput *output);
+    void parseCrtcProperties(uint32_t crtcId, KmsOutput *output);
 
-    QKmsScreenConfig *m_screenConfig;
+    KmsScreenConfig *m_screenConfig;
     QString m_path;
     int m_dri_fd;
 
@@ -294,10 +294,10 @@ protected:
 #endif
     quint32 m_crtc_allocator;
 
-    QVector<QKmsPlane> m_planes;
+    QVector<KmsPlane> m_planes;
 
 private:
-    Q_DISABLE_COPY(QKmsDevice)
+    Q_DISABLE_COPY(KmsDevice)
 };
 
 } // namespace PlatformSupport

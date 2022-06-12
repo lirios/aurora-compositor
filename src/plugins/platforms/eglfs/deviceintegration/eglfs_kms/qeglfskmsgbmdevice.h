@@ -55,7 +55,7 @@ class QEglFSKmsScreen;
 class QEglFSKmsGbmDevice: public QEglFSKmsDevice
 {
 public:
-    QEglFSKmsGbmDevice(QKmsScreenConfig *screenConfig, const QString &path);
+    QEglFSKmsGbmDevice(KmsScreenConfig *screenConfig, const QString &path);
 
     bool open() override;
     void close() override;
@@ -66,7 +66,7 @@ public:
     QPlatformCursor *globalCursor() const;
     void destroyGlobalCursor();
 
-    QPlatformScreen *createScreen(const QKmsOutput &output) override;
+    QPlatformScreen *createScreen(const KmsOutput &output) override;
     QPlatformScreen *createHeadlessScreen() override;
     void registerScreenCloning(QPlatformScreen *screen,
                                QPlatformScreen *screenThisScreenClones,

@@ -41,7 +41,8 @@
 #ifndef QEGLFSKMSDEVICE_H
 #define QEGLFSKMSDEVICE_H
 
-#include <LiriAuroraKmsSupport/private/qkmsdevice_p.h>
+#include <LiriAuroraKmsSupport/private/aurorakmsdevice_p.h>
+
 #include "qeglfsglobal_p.h"
 #include "qeglfskmseventreader.h"
 
@@ -49,10 +50,10 @@ QT_BEGIN_NAMESPACE
 
 using namespace Aurora::PlatformSupport;
 
-class Q_EGLFS_EXPORT QEglFSKmsDevice : public QKmsDevice
+class Q_EGLFS_EXPORT QEglFSKmsDevice : public KmsDevice
 {
 public:
-    QEglFSKmsDevice(QKmsScreenConfig *screenConfig, const QString &path);
+    QEglFSKmsDevice(KmsScreenConfig *screenConfig, const QString &path);
 
     void registerScreen(QPlatformScreen *screen,
                         bool isPrimary,

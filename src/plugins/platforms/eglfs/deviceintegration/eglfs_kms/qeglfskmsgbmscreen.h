@@ -56,7 +56,7 @@ class QEglFSKmsGbmCursor;
 class QEglFSKmsGbmScreen : public QEglFSKmsScreen
 {
 public:
-    QEglFSKmsGbmScreen(QEglFSKmsDevice *device, const QKmsOutput &output, bool headless);
+    QEglFSKmsGbmScreen(QEglFSKmsDevice *device, const KmsOutput &output, bool headless);
     ~QEglFSKmsGbmScreen();
 
     QPlatformCursor *cursor() const override;

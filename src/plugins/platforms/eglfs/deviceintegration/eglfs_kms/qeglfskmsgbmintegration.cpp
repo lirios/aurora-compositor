@@ -182,7 +182,7 @@ QFunctionPointer QEglFSKmsGbmIntegration::platformFunction(const QByteArray &fun
     return nullptr;
 }
 
-QKmsDevice *QEglFSKmsGbmIntegration::createDevice()
+KmsDevice *QEglFSKmsGbmIntegration::createDevice()
 {
     QString path = screenConfig()->devicePath();
     if (!path.isEmpty()) {

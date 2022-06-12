@@ -57,7 +57,7 @@ QT_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(qLcEglfsKmsDebug)
 
-QEglFSKmsGbmDevice::QEglFSKmsGbmDevice(QKmsScreenConfig *screenConfig, const QString &path)
+QEglFSKmsGbmDevice::QEglFSKmsGbmDevice(KmsScreenConfig *screenConfig, const QString &path)
     : QEglFSKmsDevice(screenConfig, path)
     , m_gbm_device(nullptr)
     , m_globalCursor(nullptr)
@@ -148,7 +148,7 @@ void QEglFSKmsGbmDevice::destroyGlobalCursor()
     }
 }
 
-QPlatformScreen *QEglFSKmsGbmDevice::createScreen(const QKmsOutput &output)
+QPlatformScreen *QEglFSKmsGbmDevice::createScreen(const KmsOutput &output)
 {
     QEglFSKmsGbmScreen *screen = new QEglFSKmsGbmScreen(this, output, false);
 
@@ -162,7 +162,7 @@ QPlatformScreen *QEglFSKmsGbmDevice::createScreen(const QKmsOutput &output)
 
 QPlatformScreen *QEglFSKmsGbmDevice::createHeadlessScreen()
 {
-    return new QEglFSKmsGbmScreen(this, QKmsOutput(), true);
+    return new QEglFSKmsGbmScreen(this, KmsOutput(), true);
 }
 
 void QEglFSKmsGbmDevice::registerScreenCloning(QPlatformScreen *screen,

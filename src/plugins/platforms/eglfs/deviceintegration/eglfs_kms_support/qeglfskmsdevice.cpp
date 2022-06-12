@@ -46,8 +46,8 @@
 
 QT_BEGIN_NAMESPACE
 
-QEglFSKmsDevice::QEglFSKmsDevice(QKmsScreenConfig *screenConfig, const QString &path)
-    : QKmsDevice(screenConfig, path)
+QEglFSKmsDevice::QEglFSKmsDevice(KmsScreenConfig *screenConfig, const QString &path)
+    : KmsDevice(screenConfig, path)
 {
 }
 
