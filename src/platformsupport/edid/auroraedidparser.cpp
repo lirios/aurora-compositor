@@ -7,8 +7,8 @@
 #  include <QtCore/QByteArrayView>
 #endif
 
-#include "qedidparser_p.h"
-#include "qedidvendortable_p.h"
+#include "auroraedidparser_p.h"
+#include "auroraedidvendortable_p.h"
 
 #define EDID_DESCRIPTOR_ALPHANUMERIC_STRING 0xfe
 #define EDID_DESCRIPTOR_PRODUCT_NAME 0xfc
@@ -118,7 +118,7 @@ static QString lookupVendorIdInSystemDatabase(const QByteArray &id)
 }
 #endif
 
-bool QEdidParser::parse(const QByteArray &blob)
+bool EdidParser::parse(const QByteArray &blob)
 {
     const quint8 *data = reinterpret_cast<const quint8 *>(blob.constData());
     const size_t length = blob.length();
@@ -178,8 +178,8 @@ bool QEdidParser::parse(const QByteArray &blob)
             return strncmp(vendor.id, str, 3) < 0;
         };
 
-        const auto b = std::begin(q_edidVendorTable);
-        const auto e = std::end(q_edidVendorTable);
+        const auto b = std::begin(s_edidVendorTable);
+        const auto e = std::end(s_edidVendorTable);
         auto it = std::lower_bound(b,
                                    e,
                                    pnpId,
@@ -280,7 +280,7 @@ bool QEdidParser::parse(const QByteArray &blob)
     return true;
 }
 
-QString QEdidParser::parseEdidString(const quint8 *data)
+QString EdidParser::parseEdidString(const quint8 *data)
 {
     QByteArray buffer(reinterpret_cast<const char *>(data), 13);
 

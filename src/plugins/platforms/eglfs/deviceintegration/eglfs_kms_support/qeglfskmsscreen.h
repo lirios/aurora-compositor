@@ -47,7 +47,7 @@
 #include <QtCore/QMutex>
 
 #include <LiriAuroraKmsSupport/private/qkmsdevice_p.h>
-#include <LiriAuroraEdidSupport/private/qedidparser_p.h>
+#include <LiriAuroraEdidSupport/private/auroraedidparser_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -111,7 +111,7 @@ protected:
     QEglFSKmsDevice *m_device;
 
     QKmsOutput m_output;
-    QEdidParser m_edid;
+    EdidParser m_edid;
     QPoint m_pos;
     bool m_cursorOutOfRange;
 

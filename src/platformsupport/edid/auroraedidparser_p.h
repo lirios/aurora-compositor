@@ -2,8 +2,8 @@
 // Copyright (C) 2021 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#ifndef QEDIDPARSER_P_H
-#define QEDIDPARSER_P_H
+#ifndef AURORA_EDIDPARSER_P_H
+#define AURORA_EDIDPARSER_P_H
 
 #include <QtCore/QMap>
 #include <QtCore/QPointF>
@@ -13,7 +13,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the Aurora API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -31,7 +31,7 @@ namespace Aurora {
 
 namespace PlatformSupport {
 
-class Q_GUI_EXPORT QEdidParser
+class Q_GUI_EXPORT EdidParser
 {
 public:
     bool parse(const QByteArray &blob);
@@ -58,4 +58,4 @@ private:
 
 } // namespace Aurora
 
-#endif // QEDIDPARSER_P_H
+#endif // AURORA_EDIDPARSER_P_H

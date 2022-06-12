@@ -6,12 +6,11 @@ liri_add_module(AuroraEdidSupport
     DESCRIPTION
         "EDID parser for EGL device integration"
     SOURCES
-        qedidparser.cpp
-        qedidparser_p.h
-        qedidvendortable_p.h
+        auroraedidparser.cpp auroraedidparser_p.h
+        auroraedidvendortable_p.h
     PRIVATE_HEADERS
-        qedidparser_p.h
-        qedidvendortable_p.h
+        auroraedidparser_p.h
+        auroraedidvendortable_p.h
     DEFINES
         QT_NO_CAST_FROM_ASCII
         QT_NO_FOREACH

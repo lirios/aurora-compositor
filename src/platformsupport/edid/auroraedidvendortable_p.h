@@ -5,17 +5,17 @@
  * This lookup table was generated from https://github.com/vcrhonek/hwdata/raw/master/pnp.ids
  *
  * Do not change this file directly, instead edit the
- * qtbase/util/edid/qedidvendortable.py script and regenerate this file.
+ * src/platformsupport/edid/qedidvendortable.py script and regenerate this file.
  */
 
-#ifndef QEDIDVENDORTABLE_P_H
-#define QEDIDVENDORTABLE_P_H
+#ifndef AURORA_EDIDVENDORTABLE_P_H
+#define AURORA_EDIDVENDORTABLE_P_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the Aurora API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -33,7 +33,7 @@ struct VendorTable {
     const char name[78];
 };
 
-static const VendorTable q_edidVendorTable[] = {
+static const VendorTable s_edidVendorTable[] = {
     { "AAA", "Avolites Ltd" },
     { "AAE", "Anatek Electronics Inc." },
     { "AAM", "Aava Mobile Oy" },
@@ -2508,4 +2508,4 @@ static const VendorTable q_edidVendorTable[] = {
 
 } // namespace Aurora
 
-#endif // QEDIDVENDORTABLE_P_H
+#endif // AURORA_EDIDVENDORTABLE_P_H
