@@ -109,7 +109,7 @@ liri_extend_target(AuroraCompositor
         "${_global_header_features}"
 )
 
-include("${CMAKE_CURRENT_SOURCE_DIR}/LiriAuroraCompositorMacros.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/Liri1AuroraCompositorMacros.cmake")
 liri_generate_wayland_protocol_server_sources(AuroraCompositor
     FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/../3rdparty/protocol/idle-inhibit-unstable-v1.xml

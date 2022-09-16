@@ -51,7 +51,7 @@
 #include <xf86drm.h>
 #include <xf86drmMode.h>
 
-#include <LiriPlatformHeaders/lirieglfsfunctions.h>
+#include <LiriAuroraPlatformHeaders/lirieglfsfunctions.h>
 #include <LiriAuroraLogind/Logind>
 
 QT_BEGIN_NAMESPACE

@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: 2022 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+#
+# SPDX-License-Identifier: CC0-1.0
+
+name: Checks
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+    tags:
+      - v*
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - edited
+
+jobs:
+  checks:
+    uses: lirios/.github/.github/workflows/checks.yml@master
+    with:
+      enable_wip: true
