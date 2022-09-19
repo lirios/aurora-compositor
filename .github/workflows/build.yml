@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: 2022 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+#
+# SPDX-License-Identifier: CC0-1.0
+
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+    tags:
+      - v*
+  pull_request:
+    branches:
+      - master
+      - develop
+
+jobs:
+  build:
+    uses: lirios/.github/.github/workflows/build-linux.yml@master
+    with:
+      build_dependencies: "cmake-shared:aurora-scanner"

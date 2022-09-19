@@ -59,7 +59,7 @@
 #include <qpa/qplatformnativeinterface.h>
 #include <qpa/qplatformscreen.h>
 
-#include <LiriPlatformHeaders/lirieglfsfunctions.h>
+#include <LiriAuroraPlatformHeaders/lirieglfsfunctions.h>
 
 namespace Aurora {
 namespace PlatformSupport {

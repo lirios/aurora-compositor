@@ -13,12 +13,13 @@ liri_add_module(AuroraXkbCommonSupport
     DEFINES
         QT_NO_CAST_FROM_ASCII
         QT_NO_FOREACH
-    LIBRARIES
+    PUBLIC_LIBRARIES
         Qt::Core
-        Qt::CorePrivate
         Qt::Gui
-        Qt::GuiPrivate
         PkgConfig::XkbCommon
+    LIBRARIES
+        Qt::CorePrivate
+        Qt::GuiPrivate
 )
 
 liri_finalize_module(AuroraXkbCommonSupport)
