@@ -4,6 +4,7 @@
 
 #include "aurorawaylandcompositor.h"
 #include "aurorawaylandoutput.h"
+#include "aurorawaylandquickshellsurfaceitem.h"
 #include "aurorawaylandsurfacelayout_p.h"
 #include "aurorawaylandwlrlayershellv1.h"
 #include "aurorawaylandwlrlayersurfaceitem.h"
@@ -175,23 +176,30 @@ void WaylandSurfaceLayoutPrivate::layoutItems()
     for (auto *item : sortedItems)
         item->setZ(zIndex++);
 
-    // Find the topmost keyboard interactive surface layer
-    WaylandWlrLayerSurfaceItem *topmostItem = nullptr;
-    std::vector<WaylandWlrLayerShellV1::Layer> layers = {
-        WaylandWlrLayerShellV1::OverlayLayer,
-        WaylandWlrLayerShellV1::TopLayer
-    };
+    // Give focus automatically when applicable
     sortedItems.reverse();
-    for (auto layer : qAsConst(layers)) {
-        for (auto *item : sortedItems) {
-            auto *l = qobject_cast<WaylandWlrLayerSurfaceItem *>(item);
-            if (!l)
-                continue;
-            if (l->layerSurface()->layer() != layer)
-                continue;
+    WaylandQuickItem *topmostItem = nullptr;
+    for (std::list<QQuickItem *>::iterator it = sortedItems.begin(); it != sortedItems.end(); ++it) {
+        auto *item = qobject_cast<WaylandQuickItem *>(*it);
+        if (!item)
+            continue;
 
-            if (l->layerSurface()->keyboardInteractivity() && l->layerSurface()->isMapped()) {
-                topmostItem = l;
+        if (auto *layerSurfaceItem = qobject_cast<WaylandWlrLayerSurfaceItem *>(item)) {
+            // Find the topmost keyboard interactive surface layer:
+            // we should give focus automatically only to layer surfaces in the overlay
+            // and top layers, and depending on keyboard interactivity and whether the
+            // surface is mapped
+            if (layerSurfaceItem->layerSurface()->isMapped() &&
+                    (layerSurfaceItem->layerSurface()->layer() == WaylandWlrLayerShellV1::OverlayLayer ||
+                     layerSurfaceItem->layerSurface()->layer() == WaylandWlrLayerShellV1::TopLayer) &&
+                    layerSurfaceItem->layerSurface()->keyboardInteractivity()) {
+                topmostItem = item;
+                break;
+            }
+        } else if (auto *shellSurfaceItem = qobject_cast<WaylandQuickShellSurfaceItem *>(item)) {
+            // Give focus only to those surface that actually wants automatic focus
+            if (shellSurfaceItem->shellSurface()->shell()->focusPolicy() == WaylandShell::AutomaticFocus) {
+                topmostItem = item;
                 break;
             }
         }
