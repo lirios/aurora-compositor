@@ -32,6 +32,7 @@
 
 #include <LiriAuroraCompositor/WaylandCompositorExtension>
 #include <LiriAuroraCompositor/WaylandSurface>
+#include <LiriAuroraCompositor/WaylandShell>
 #include <LiriAuroraCompositor/WaylandResource>
 #include <LiriAuroraCompositor/WaylandIviSurface>
 #include <QtCore/QSize>
@@ -42,7 +43,7 @@ namespace Compositor {
 
 class WaylandIviApplicationPrivate;
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandIviApplication : public WaylandCompositorExtensionTemplate<WaylandIviApplication>
+class LIRIAURORACOMPOSITOR_EXPORT WaylandIviApplication : public WaylandShellTemplate<WaylandIviApplication>
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandIviApplication)

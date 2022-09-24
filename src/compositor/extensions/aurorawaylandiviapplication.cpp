@@ -88,7 +88,7 @@ namespace Compositor {
  * Constructs a WaylandIviApplication object.
  */
 WaylandIviApplication::WaylandIviApplication()
-    : WaylandCompositorExtensionTemplate<WaylandIviApplication>()
+    : WaylandShellTemplate<WaylandIviApplication>()
     , d_ptr(new WaylandIviApplicationPrivate(this))
 {
 }
@@ -97,7 +97,7 @@ WaylandIviApplication::WaylandIviApplication()
  * Constructs a WaylandIviApplication object for the provided \a compositor.
  */
 WaylandIviApplication::WaylandIviApplication(WaylandCompositor *compositor)
-    : WaylandCompositorExtensionTemplate<WaylandIviApplication>(compositor)
+    : WaylandShellTemplate<WaylandIviApplication>(compositor)
     , d_ptr(new WaylandIviApplicationPrivate(this))
 {
 }
@@ -112,7 +112,7 @@ WaylandIviApplication::~WaylandIviApplication()
 void WaylandIviApplication::initialize()
 {
     Q_D(WaylandIviApplication);
-    WaylandCompositorExtensionTemplate::initialize();
+    WaylandShellTemplate::initialize();
 
     WaylandCompositor *compositor = static_cast<WaylandCompositor *>(extensionContainer());
     if (!compositor) {
@@ -172,7 +172,7 @@ QByteArray WaylandIviApplication::interfaceName()
  */
 
 WaylandIviApplicationPrivate::WaylandIviApplicationPrivate(WaylandIviApplication *self)
-    : WaylandCompositorExtensionPrivate(self)
+    : WaylandShellPrivate(self)
 {
 }
 

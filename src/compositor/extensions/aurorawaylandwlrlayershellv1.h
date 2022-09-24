@@ -118,7 +118,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrLayerSurfaceV1
                                 const QString &nameSpace,
                                 const Aurora::Compositor::WaylandResource &resource);
 
-    WaylandWlrLayerShellV1 *shell() const;
+    WaylandWlrLayerShellV1 *shell() const override;
     WaylandSurface *surface() const;
     WaylandOutput *output() const;
     WaylandWlrLayerShellV1::Layer layer() const;
@@ -152,7 +152,6 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrLayerSurfaceV1
     static WaylandSurfaceRole *role();
 
 Q_SIGNALS:
-    void shellChanged();
     void surfaceChanged();
     void layerChanged();
     void sizeChanged();

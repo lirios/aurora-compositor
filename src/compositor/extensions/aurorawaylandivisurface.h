@@ -64,6 +64,7 @@ public:
                                 Aurora::Compositor::WaylandSurface *surface,
                                 uint iviId, const Aurora::Compositor::WaylandResource &resource);
 
+    WaylandShell *shell() const override;
     WaylandSurface *surface() const;
     uint iviId() const;
 

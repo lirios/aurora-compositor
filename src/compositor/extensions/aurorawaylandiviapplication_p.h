@@ -30,7 +30,7 @@
 #ifndef AURORA_COMPOSITOR_WAYLANDIVIAPPLICATION_P_H
 #define AURORA_COMPOSITOR_WAYLANDIVIAPPLICATION_P_H
 
-#include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandshell_p.h>
 #include <LiriAuroraCompositor/private/aurora-server-ivi-application.h>
 
 #include <LiriAuroraCompositor/WaylandIviApplication>
@@ -53,7 +53,7 @@ namespace Aurora {
 namespace Compositor {
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandIviApplicationPrivate
-        : public WaylandCompositorExtensionPrivate
+        : public WaylandShellPrivate
         , public PrivateServer::ivi_application
 {
     Q_DECLARE_PUBLIC(WaylandIviApplication)

@@ -111,7 +111,7 @@ public:
 
     Qt::WindowType windowType() const override;
 
-    WaylandXdgShell *shell() const;
+    WaylandXdgShell *shell() const override;
     WaylandSurface *surface() const;
     WaylandXdgToplevel *toplevel() const;
     WaylandXdgPopup *popup() const;
@@ -126,7 +126,6 @@ public:
 #endif
 
 Q_SIGNALS:
-    void shellChanged();
     void surfaceChanged();
     void toplevelCreated();
     void popupCreated();

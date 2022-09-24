@@ -123,6 +123,15 @@ void WaylandIviSurface::initialize(WaylandIviApplication *iviApplication, Waylan
 }
 
 /*!
+ * \internal
+ */
+WaylandShell *WaylandIviSurface::shell() const
+{
+    Q_D(const WaylandIviSurface);
+    return d->m_iviApplication;
+}
+
+/*!
  * \qmlproperty WaylandSurface AuroraCompositor::IviSurface::surface
  *
  * This property holds the surface associated with this IviSurface.

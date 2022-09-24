@@ -39,11 +39,13 @@ namespace Compositor {
 
 class WaylandQuickShellIntegration;
 class WaylandQuickShellSurfaceItem;
+class WaylandShell;
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandShellSurface : public WaylandCompositorExtension
 {
     Q_OBJECT
     Q_PROPERTY(Qt::WindowType windowType READ windowType NOTIFY windowTypeChanged)
+    Q_PROPERTY(Aurora::Compositor::WaylandShell *shell READ shell NOTIFY shellChanged)
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QML_NAMED_ELEMENT(ShellSurface)
     QML_UNCREATABLE("")
@@ -54,9 +56,13 @@ public:
     virtual WaylandQuickShellIntegration *createIntegration(WaylandQuickShellSurfaceItem *item) = 0;
 #endif
     WaylandShellSurface(WaylandObject *waylandObject) : WaylandCompositorExtension(waylandObject) {}
+
+    virtual WaylandShell *shell() const = 0;
+
     virtual Qt::WindowType windowType() const { return Qt::WindowType::Window; }
 
 Q_SIGNALS:
+    void shellChanged();
     void windowTypeChanged();
 };
 

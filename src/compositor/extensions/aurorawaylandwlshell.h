@@ -124,7 +124,7 @@ public:
     QString className() const;
 
     WaylandSurface *surface() const;
-    WaylandWlShell *shell() const;
+    WaylandWlShell *shell() const override;
 
     Qt::WindowType windowType() const override;
 
@@ -147,7 +147,6 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void surfaceChanged();
-    void shellChanged();
     void titleChanged();
     void classNameChanged();
     void pong();
