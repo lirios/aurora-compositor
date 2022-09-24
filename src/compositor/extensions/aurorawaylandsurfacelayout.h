@@ -24,16 +24,6 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandSurfaceLayout : public QQuickItem
     Q_PROPERTY(Aurora::Compositor::WaylandOutput *output READ output WRITE setOutput NOTIFY outputChanged)
     QML_ELEMENT
 public:
-    enum Layer {
-        NoLayer = 0,
-        BackgroundLayer,
-        BottomLayer,
-        WindowsLayer,
-        TopLayer,
-        OverlayLayer
-    };
-    Q_ENUM(Layer);
-
     WaylandSurfaceLayout(QQuickItem *parent = nullptr);
     ~WaylandSurfaceLayout();
 
@@ -51,8 +41,7 @@ protected:
     void updatePolish() override;
     void componentComplete() override;
 
-    virtual WaylandSurfaceLayout::Layer getLayer(QQuickItem *item) const;
-    virtual bool sortItems(QQuickItem *left, QQuickItem *right);
+    virtual bool sortItems(QQuickItem *left, QQuickItem *right) = 0;
 
 private:
     QScopedPointer<WaylandSurfaceLayoutPrivate> const d_ptr;

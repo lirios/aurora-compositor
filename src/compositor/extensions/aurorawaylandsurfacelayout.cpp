@@ -272,25 +272,6 @@ void WaylandSurfaceLayout::componentComplete()
     QQuickItem::componentComplete();
 }
 
-WaylandSurfaceLayout::Layer WaylandSurfaceLayout::getLayer(QQuickItem *item) const
-{
-    static const QHash<WaylandWlrLayerShellV1::Layer, WaylandSurfaceLayout::Layer> layerToIndex {
-        { WaylandWlrLayerShellV1::BackgroundLayer, WaylandSurfaceLayout::BackgroundLayer },
-        { WaylandWlrLayerShellV1::BottomLayer, WaylandSurfaceLayout::BottomLayer },
-        { WaylandWlrLayerShellV1::TopLayer, WaylandSurfaceLayout::TopLayer },
-        { WaylandWlrLayerShellV1::OverlayLayer, WaylandSurfaceLayout::OverlayLayer },
-    };
-
-    if (auto *l = qobject_cast<WaylandWlrLayerSurfaceItem *>(item))
-        return layerToIndex.value(l->layerSurface()->layer(), WaylandSurfaceLayout::NoLayer);
-    return WaylandSurfaceLayout::NoLayer;
-}
-
-bool WaylandSurfaceLayout::sortItems(QQuickItem *left, QQuickItem *right)
-{
-    return getLayer(left) < getLayer(right);
-}
-
 } // namespace Compositor
 
 } // namespace Aurora
