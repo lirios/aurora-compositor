@@ -48,6 +48,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickCompositor : public WaylandComposi
     Q_INTERFACES(QQmlParserStatus)
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Aurora::Compositor::WaylandOutput> outputs READ outputsListProperty DESIGNABLE false CONSTANT)
+    Q_PROPERTY(QQmlListProperty<Aurora::Compositor::WaylandSeat> seats READ seatsListProperty DESIGNABLE false CONSTANT)
     Q_INTERFACES(QQmlParserStatus)
 public:
     WaylandQuickCompositor(QObject *parent = nullptr);
@@ -58,9 +59,13 @@ public:
     void grabSurface(WaylandSurfaceGrabber *grabber, const WaylandBufferRef &buffer) override;
 
     QQmlListProperty<WaylandOutput> outputsListProperty();
+    QQmlListProperty<WaylandSeat> seatsListProperty();
 
-    static int countFunction(QQmlListProperty<WaylandOutput> *list);
-    static WaylandOutput *atFunction(QQmlListProperty<WaylandOutput> *list, int index);
+    static int outputsCountFunction(QQmlListProperty<WaylandOutput> *list);
+    static WaylandOutput *outputsAtFunction(QQmlListProperty<WaylandOutput> *list, int index);
+
+    static int seatsCountFunction(QQmlListProperty<WaylandSeat> *list);
+    static WaylandSeat *seatsAtFunction(QQmlListProperty<WaylandSeat> *list, int index);
 
 protected:
     void classBegin() override;

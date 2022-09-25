@@ -70,6 +70,7 @@ Q_DECLARE_LOGGING_CATEGORY(gLcAuroraCompositorWlrLayerShellV1)
 Q_DECLARE_LOGGING_CATEGORY(gLcAuroraCompositorWlrExportDmabufV1)
 Q_DECLARE_LOGGING_CATEGORY(gLcAuroraCompositorWlrForeignToplevelManagementV1)
 Q_DECLARE_LOGGING_CATEGORY(gLcAuroraCompositorWlrScreencopyV1)
+Q_DECLARE_LOGGING_CATEGORY(gLcAuroraCompositorExtSessionLockV1)
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandCompositor : public WaylandObject
 {
@@ -142,6 +143,7 @@ public:
     void overrideSelection(const QMimeData *data);
 
     WaylandSeat *defaultSeat() const;
+    QList<WaylandSeat *> seats() const;
 
     WaylandSeat *seatFor(QInputEvent *inputEvent);
 

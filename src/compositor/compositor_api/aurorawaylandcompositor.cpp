@@ -96,6 +96,7 @@ Q_LOGGING_CATEGORY(gLcAuroraCompositorWlrLayerShellV1, "aurora.compositor.wlrlay
 Q_LOGGING_CATEGORY(gLcAuroraCompositorWlrExportDmabufV1, "aurora.compositor.wlrexportdmabufv1")
 Q_LOGGING_CATEGORY(gLcAuroraCompositorWlrForeignToplevelManagementV1, "aurora.compositor.wlrforeigntoplevelmanagementv1")
 Q_LOGGING_CATEGORY(gLcAuroraCompositorWlrScreencopyV1, "aurora.compositor.wlrscreencopyv1")
+Q_LOGGING_CATEGORY(gLcAuroraCompositorExtSessionLockV1, "aurora.compositor.extsessionlockv1")
 
 namespace Internal {
 
@@ -959,6 +960,15 @@ WaylandSeat *WaylandCompositor::defaultSeat() const
     if (d->seats.size())
         return d->seats.first();
     return nullptr;
+}
+
+/*!
+ * Returns the list of seats.
+ */
+QList<WaylandSeat *> WaylandCompositor::seats() const
+{
+    Q_D(const WaylandCompositor);
+    return d->seats;
 }
 
 /*!

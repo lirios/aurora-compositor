@@ -46,6 +46,7 @@
 #include "aurorawaylandoutput.h"
 #include <LiriAuroraCompositor/private/aurorawaylandcompositor_p.h>
 #include <LiriAuroraCompositor/WaylandViewporter>
+#include "aurorawaylandseat.h"
 #include "aurorawaylandsurfacegrabber.h"
 
 namespace Aurora {
@@ -179,19 +180,35 @@ void WaylandQuickCompositor::grabSurface(WaylandSurfaceGrabber *grabber, const W
 QQmlListProperty<WaylandOutput> WaylandQuickCompositor::outputsListProperty()
 {
     return QQmlListProperty<WaylandOutput>(this, this,
-                                           &WaylandQuickCompositor::countFunction,
-                                           &WaylandQuickCompositor::atFunction);
+                                           &WaylandQuickCompositor::outputsCountFunction,
+                                           &WaylandQuickCompositor::outputsAtFunction);
 }
 
+QQmlListProperty<WaylandSeat> WaylandQuickCompositor::seatsListProperty()
+{
+    return QQmlListProperty<WaylandSeat>(this, this,
+                                         &WaylandQuickCompositor::seatsCountFunction,
+                                         &WaylandQuickCompositor::seatsAtFunction);
+}
 
-int WaylandQuickCompositor::countFunction(QQmlListProperty<WaylandOutput> *list)
+int WaylandQuickCompositor::outputsCountFunction(QQmlListProperty<WaylandOutput> *list)
 {
     return static_cast<WaylandCompositor *>(list->data)->outputs().size();
 }
 
-WaylandOutput *WaylandQuickCompositor::atFunction(QQmlListProperty<WaylandOutput> *list, int index)
+WaylandOutput *WaylandQuickCompositor::outputsAtFunction(QQmlListProperty<WaylandOutput> *list, int index)
 {
     return static_cast<WaylandCompositor *>(list->data)->outputs().at(index);
+}
+
+int WaylandQuickCompositor::seatsCountFunction(QQmlListProperty<WaylandSeat> *list)
+{
+    return static_cast<WaylandCompositor *>(list->data)->seats().size();
+}
+
+WaylandSeat *WaylandQuickCompositor::seatsAtFunction(QQmlListProperty<WaylandSeat> *list, int index)
+{
+    return static_cast<WaylandCompositor *>(list->data)->seats().at(index);
 }
 
 } // namespace Compositor
