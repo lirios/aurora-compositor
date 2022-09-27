@@ -232,14 +232,14 @@ WaylandInputMethodControlPrivate::WaylandInputMethodControlPrivate(WaylandInputM
 
 WaylandQtTextInputMethod *WaylandInputMethodControlPrivate::textInputMethod() const
 {
-    if (!surface->client()->textInputProtocols().testFlag(WaylandClient::TextInputProtocol::QtTextInputMethodV1))
+    if (!surface->client() || !surface->client()->textInputProtocols().testFlag(WaylandClient::TextInputProtocol::QtTextInputMethodV1))
         return nullptr;
     return WaylandQtTextInputMethod::findIn(seat);
 }
 
 WaylandTextInput *WaylandInputMethodControlPrivate::textInput() const
 {
-    if (!surface->client()->textInputProtocols().testFlag(WaylandClient::TextInputProtocol::TextInputV2))
+    if (!surface->client() || !surface->client()->textInputProtocols().testFlag(WaylandClient::TextInputProtocol::TextInputV2))
         return nullptr;
     return WaylandTextInput::findIn(seat);
 }
