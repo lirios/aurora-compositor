@@ -192,7 +192,7 @@ void WaylandSurfaceLayoutPrivate::layoutItems()
             if (layerSurfaceItem->layerSurface()->isMapped() &&
                     (layerSurfaceItem->layerSurface()->layer() == WaylandWlrLayerShellV1::OverlayLayer ||
                      layerSurfaceItem->layerSurface()->layer() == WaylandWlrLayerShellV1::TopLayer) &&
-                    layerSurfaceItem->layerSurface()->keyboardInteractivity()) {
+                    layerSurfaceItem->layerSurface()->keyboardInteractivity() == WaylandWlrLayerSurfaceV1::ExclusiveKeyboardInteractivity) {
                 topmostItem = item;
                 break;
             }
