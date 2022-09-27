@@ -64,6 +64,9 @@ void WaylandWlrLayerSurfaceItem::setLayerSurface(WaylandWlrLayerSurfaceV1 *layer
         setShellSurface(layerSurface);
         setOutput(layerSurface->output());
         setFocusOnClick(layerSurface->keyboardInteractivity() > WaylandWlrLayerSurfaceV1::NoKeyboardInteractivity);
+        connect(layerSurface, &WaylandWlrLayerSurfaceV1::keyboardInteractivityChanged, this, [this, layerSurface] {
+            setFocusOnClick(layerSurface->keyboardInteractivity() > WaylandWlrLayerSurfaceV1::NoKeyboardInteractivity);
+        });
 
         d->layerSurface = layerSurface;
         connect(d->layerSurface, SIGNAL(changed()), this, SLOT(_q_configure()));
