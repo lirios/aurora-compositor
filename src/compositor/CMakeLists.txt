@@ -141,8 +141,8 @@ liri_generate_wayland_protocol_server_sources(AuroraCompositor
 
 liri_extend_target(AuroraCompositor CONDITION FEATURE_aurora_xkbcommon
     PUBLIC_LIBRARIES
-        AuroraXkbCommonSupport
-        AuroraXkbCommonSupportPrivate
+        Liri::AuroraXkbCommonSupport
+        Liri::AuroraXkbCommonSupportPrivate
 )
 
 liri_extend_target(AuroraCompositor CONDITION TARGET Qt::OpenGL
