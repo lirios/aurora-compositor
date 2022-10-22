@@ -16,8 +16,8 @@ liri_add_module(AuroraXkbCommonSupport
     PUBLIC_LIBRARIES
         Qt::Core
         Qt::Gui
-        PkgConfig::XkbCommon
     LIBRARIES
+        PkgConfig::XkbCommon
         Qt::CorePrivate
         Qt::GuiPrivate
 )
