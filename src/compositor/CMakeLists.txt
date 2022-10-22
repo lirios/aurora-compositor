@@ -143,6 +143,7 @@ liri_extend_target(AuroraCompositor CONDITION FEATURE_aurora_xkbcommon
     PUBLIC_LIBRARIES
         Liri::AuroraXkbCommonSupport
         Liri::AuroraXkbCommonSupportPrivate
+        PkgConfig::XkbCommon
 )
 
 liri_extend_target(AuroraCompositor CONDITION TARGET Qt::OpenGL
