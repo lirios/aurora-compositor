@@ -37,7 +37,6 @@ find_package(WaylandProtocols 1.15 REQUIRED)
 
 ## Find Qt 5:
 set(QT_MIN_VERSION "5.15.0")
-set(QT_MAJOR_VERSION "5")
 find_package(Qt${QT_MAJOR_VERSION} "${QT_MIN_VERSION}"
     CONFIG REQUIRED
     COMPONENTS
