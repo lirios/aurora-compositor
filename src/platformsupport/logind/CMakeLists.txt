@@ -16,8 +16,9 @@ liri_add_module(AuroraLogind
     PUBLIC_LIBRARIES
         Qt::Core
         Qt::DBus
-    NO_CMAKE
-    NO_PKGCONFIG
+    PKGCONFIG_DEPENDENCIES
+        Qt${QT_DEFAULT_MAJOR_VERSION}Core
+        Qt${QT_DEFAULT_MAJOR_VERSION}DBus
 )
 
 liri_finalize_module(AuroraLogind)
