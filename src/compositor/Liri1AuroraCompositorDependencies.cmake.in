@@ -1,0 +1,9 @@
+# SPDX-FileCopyrightText: 2022 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
+include(CMakeFindDependencyMacro)
+
+find_dependency(Qt@QT_MAJOR_VERSION@Gui "@QT_MIN_VERSION@" REQUIRED)
+find_dependency(Wayland "@WAYLAND_MIN_VERSION@" REQUIRED Client)
+find_dependency(Liri1AuroraXkbCommonSupport "@PROJECT_VERSION@" REQUIRED)

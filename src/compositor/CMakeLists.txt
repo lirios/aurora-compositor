@@ -211,3 +211,10 @@ liri_extend_target(AuroraCompositor CONDITION TARGET Qt::OpenGL AND TARGET Qt::Q
 )
 
 liri_finalize_module(AuroraCompositor)
+
+# Install dependencies script
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/Liri1AuroraCompositorDependencies.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/Liri1AuroraCompositorDependencies.cmake"
+    @ONLY
+)
