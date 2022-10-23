@@ -18,6 +18,10 @@ WlrLayerSurfaceIntegration::WlrLayerSurfaceIntegration(WaylandQuickShellSurfaceI
 {
     item->setSurface(m_layerSurface->surface());
 
+    connect(m_layerSurface, &WaylandWlrLayerSurfaceV1::mappedChanged, this, [this, item] {
+        if (m_layerSurface->isMapped() && item->parentItem())
+            item->parentItem()->polish();
+    });
     connect(m_layerSurface, &WaylandWlrLayerSurfaceV1::xdgPopupParentChanged, this, [item](WaylandXdgPopup *popup) {
         if (popup->parentSurface() && item->surface() == popup->parentSurface())
             WaylandQuickShellSurfaceItemPrivate::get(item)->maybeCreateAutoPopup(popup->xdgSurface());
