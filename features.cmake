@@ -306,7 +306,7 @@ if(FEATURE_aurora_libhybris_egl_server_buffer)
     endif()
 endif()
 add_feature_info("Aurora::LibhybrisEgl" FEATURE_aurora_libhybris_egl_server_buffer "Build Wayland compositor with libhybris EGL hardware integration")
-if(LIRI_FEATURE_aurora_libhybris_egl_server_buffer)
+if(FEATURE_aurora_libhybris_egl_server_buffer)
     liri_config_compile_test(libhybris_egl_server
         LABEL
             "libhybris EGL Server"
