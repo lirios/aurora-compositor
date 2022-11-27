@@ -62,141 +62,6 @@ find_package(Qt${QT_MAJOR_VERSION}ServiceSupport QUIET)
 find_package(Qt${QT_MAJOR_VERSION}FbSupport QUIET)
 find_package(Fontconfig QUIET)
 
-#### Tests
-
-# dmabuf-client-buffer
-liri_config_compile_test(dmabuf_client_buffer
-    LABEL
-        "Linux client dma-buf buffer sharing"
-    LIBRARIES
-        PkgConfig::EGL
-        PkgConfig::Libdrm
-    CODE "
-#include <EGL/egl.h>
-#include <EGL/eglext.h>
-#include <drm_mode.h>
-#include <drm_fourcc.h>
-
-int main(void)
-{
-    // Test if DMA BUF is supported
-#ifndef EGL_LINUX_DMA_BUF_EXT
-#  error DMA BUF Extension not available
-#endif
-    // Test if DMA BUF import modifier extension is supported
-#ifndef EGL_EXT_image_dma_buf_import_modifiers
-#  error DMA BUF Import modifier extension not available
-#endif
-    return 0;
-}
-")
-
-# dmabuf-server-buffer
-liri_config_compile_test(dmabuf_server_buffer
-    LABEL
-        "Linux dma-buf Buffer Sharing"
-    LIBRARIES
-        PkgConfig::EGL
-        PkgConfig::Libdrm
-    CODE "
-#include <EGL/egl.h>
-#include <EGL/eglext.h>
-#include <drm_fourcc.h>
-
-int main(void)
-{
-#ifdef EGL_LINUX_DMA_BUF_EXT
-    return 0;
-#else
-#  error Requires EGL_LINUX_DMA_BUF_EXT
-    return 1;
-#endif
-    return 0;
-}
-")
-
-# drm-egl-server
-liri_config_compile_test(drm_egl_server
-    LABEL
-        "DRM EGL Server"
-    LIBRARIES
-        PkgConfig::EGL
-    CODE "
-#include <EGL/egl.h>
-#include <EGL/eglext.h>
-
-int main(void)
-{
-#ifdef EGL_MESA_drm_image
-    return 0;
-#else
-#  error Requires EGL_MESA_drm_image to be defined
-    return 1;
-#endif
-    return 0;
-}
-")
-
-# egl-brcm
-liri_config_compile_test(egl_brcm
-    LABEL
-        "Broadcom EGL (Raspberry Pi)"
-    LIBRARIES
-        PkgConfig::EGL
-    CODE "
-#include <EGL/egl.h>
-#include <bcm_host.h>
-
-int main(void)
-{
-    vc_dispmanx_display_open(0);
-    return 0;
-}
-")
-
-# libhybris-egl-server
-liri_config_compile_test(libhybris_egl_server
-    LABEL
-        "libhybris EGL Server"
-    LIBRARIES
-        PkgConfig::EGL
-    CODE "
-#include <EGL/egl.h>
-#include <EGL/eglext.h>
-#include <hybris/eglplatformcommon/hybris_nativebufferext.h>
-
-int main(void)
-{
-#ifdef EGL_HYBRIS_native_buffer
-    return 0;
-#else
-#  error Requires EGL_HYBRIS_native_buffer to be defined
-    return 1;
-#endif
-    return 0;
-}
-")
-
-# vulkan-server-buffer
-liri_config_compile_test(vulkan_server_buffer
-    LABEL
-        "Vulkan Buffer Sharing"
-    DEFINITIONS
-        -DVK_USE_PLATFORM_WAYLAND_KHR=1
-    LIBRARIES
-        PkgConfig::Vulkan
-    CODE "
-#include <vulkan/vulkan.h>
-
-int main(void)
-{
-    VkExportMemoryAllocateInfoKHR exportAllocInfo = {};
-    exportAllocInfo.sType = VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO_KHR;
-    exportAllocInfo.handleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT_KHR;
-    return 0;
-}
-")
-
 #### Features
 
 # datadevice
@@ -216,19 +81,35 @@ add_feature_info("Aurora::XkbCommon" FEATURE_aurora_xkbcommon "Build support for
 set(LIRI_FEATURE_aurora_xkbcommon "$<IF:${FEATURE_aurora_xkbcommon},1,0>")
 
 # brcm
-option(FEATURE_aurora_brcm "Raspberry Pi" $<BOOL:TEST_egl_brcm>)
+option(FEATURE_aurora_brcm "Raspberry Pi" ON>)
 if(FEATURE_aurora_brcm)
-    if(NOT TARGET PkgConfig::EGL OR NOT TEST_egl_brcm)
-        if(NOT TARGET PkgConfig::EGL)
-            message(WARNING "You need EGL for Aurora::Brcm")
-        endif()
-        if(NOT TEST_egl_brcm)
-            message(WARNING "You need egl-brcm for Aurora::Brcm")
-        endif()
+    if(NOT TARGET PkgConfig::EGL)
+        message(WARNING "You need EGL for Aurora::Brcm")
+    endif()
+    set(FEATURE_aurora_brcm OFF)
+endif()
+add_feature_info("Aurora::Brcm" FEATURE_aurora_brcm "Build Wayland compositor with Raspberry Pi hardware integration")
+if(FEATURE_aurora_brcm)
+    liri_config_compile_test(egl_brcm
+        LABEL
+            "Broadcom EGL (Raspberry Pi)"
+        LIBRARIES
+            PkgConfig::EGL
+        CODE "
+    #include <EGL/egl.h>
+    #include <bcm_host.h>
+
+    int main(void)
+    {
+        vc_dispmanx_display_open(0);
+        return 0;
+    }
+    ")
+    if(NOT TEST_egl_brcm)
+        message(WARNING "You need egl-brcm for Aurora::Brcm")
         set(FEATURE_aurora_brcm OFF)
     endif()
 endif()
-add_feature_info("Aurora::Brcm" FEATURE_aurora_brcm "Build Wayland compositor with Raspberry Pi hardware integration")
 set(LIRI_FEATURE_aurora_brcm "$<IF:${FEATURE_aurora_brcm},1,0>")
 
 # compositor-quick
@@ -263,14 +144,48 @@ if(FEATURE_aurora_dmabuf_client_buffer)
     endif()
 endif()
 add_feature_info("Aurora::DmabufClientBuffer" FEATURE_aurora_dmabuf_client_buffer "Build Linux dma-buf client buffer integration")
+if(FEATURE_aurora_dmabuf_client_buffer)
+    liri_config_compile_test(dmabuf_client_buffer
+        LABEL
+            "Linux client dma-buf buffer sharing"
+        LIBRARIES
+            PkgConfig::EGL
+            PkgConfig::Libdrm
+        CODE "
+    #include <EGL/egl.h>
+    #include <EGL/eglext.h>
+    #include <drm_mode.h>
+    #include <drm_fourcc.h>
+
+    int main(void)
+    {
+        // Test if DMA BUF is supported
+    #ifndef EGL_LINUX_DMA_BUF_EXT
+    #  error DMA BUF Extension not available
+    #endif
+        // Test if DMA BUF import modifier extension is supported
+    #ifndef EGL_EXT_image_dma_buf_import_modifiers
+    #  error DMA BUF Import modifier extension not available
+    #endif
+        return 0;
+    }
+    ")
+    if(NOT TEST_dmabuf_client_buffer)
+        message(WARNING "You need EGL_LINUX_DMA_BUF_EXT for Aurora::DmabufClientBuffer")
+        set(FEATURE_aurora_dmabuf_client_buffer OFF)
+    endif()
+endif()
 set(LIRI_FEATURE_aurora_dmabuf_client_buffer "$<IF:${FEATURE_aurora_dmabuf_client_buffer},1,0>")
 
 # dmabuf-server-buffer
-option(FEATURE_aurora_dmabuf_server_buffer "Linux dma-buf server buffer integration" $<BOOL:TEST_dmabuf_server_buffer>)
+option(FEATURE_aurora_dmabuf_server_buffer "Linux dma-buf server buffer integration" ON)
 if(FEATURE_aurora_dmabuf_server_buffer)
-    if(NOT TARGET PkgConfig::EGL AND NOT TARGET Qt::OpenGL)
+    if(NOT TARGET PkgConfig::EGL OR NOT TARGET PkgConfig::Libdrm OR NOT TARGET Qt::OpenGL)
         if(NOT TARGET PkgConfig::EGL)
             message(WARNING "You need EGL for Aurora::DmabufServerBuffer")
+        endif()
+        if(NOT TARGET PkgConfig::Libdrm)
+            message(WARNING "You need libdrm for Aurora::DmabufServerBuffer")
         endif()
         if(NOT TARGET Qt::OpenGL)
             message(WARNING "You need Qt OpenGL for Aurora::DmabufServerBuffer")
@@ -279,6 +194,34 @@ if(FEATURE_aurora_dmabuf_server_buffer)
     endif()
 endif()
 add_feature_info("Aurora::DmabufServerBuffer" FEATURE_aurora_dmabuf_server_buffer "Build Wayland compositor with Linux dma-buf server buffer integration")
+if(FEATURE_aurora_dmabuf_server_buffer)
+    liri_config_compile_test(dmabuf_server_buffer
+        LABEL
+            "Linux dma-buf Buffer Sharing"
+        LIBRARIES
+            PkgConfig::EGL
+            PkgConfig::Libdrm
+        CODE "
+    #include <EGL/egl.h>
+    #include <EGL/eglext.h>
+    #include <drm_fourcc.h>
+
+    int main(void)
+    {
+    #ifdef EGL_LINUX_DMA_BUF_EXT
+        return 0;
+    #else
+    #  error Requires EGL_LINUX_DMA_BUF_EXT
+        return 1;
+    #endif
+        return 0;
+    }
+    ")
+    if(NOT TEST_dmabuf_server_buffer)
+        message(WARNING "You need EGL_LINUX_DMA_BUF_EXT for Aurora::DmabufServerBuffer")
+        set(FEATURE_aurora_dmabuf_server_buffer OFF)
+    endif()
+endif()
 set(LIRI_FEATURE_aurora_dmabuf_server_buffer "$<IF:${FEATURE_aurora_dmabuf_server_buffer},1,0>")
 
 # drm-atomic
@@ -287,7 +230,7 @@ add_feature_info("Aurora::DrmAtomic" FEATURE_aurora_drm_atomic "Build platform p
 set(LIRI_FEATURE_aurora_drm_atomic "$<IF:${FEATURE_aurora_drm_atomic},1,0>")
 
 # drm-egl-server-buffer
-option(FEATURE_aurora_drm_egl_server_buffer "DRM EGL" $<BOOL:TEST_drm_egl_server>)
+option(FEATURE_aurora_drm_egl_server_buffer "DRM EGL" ON)
 if(FEATURE_aurora_drm_egl_server_buffer)
     if(NOT TARGET PkgConfig::EGL OR NOT TEST_drm_egl_server)
         if(NOT TARGET PkgConfig::EGL)
@@ -300,6 +243,32 @@ if(FEATURE_aurora_drm_egl_server_buffer)
     endif()
 endif()
 add_feature_info("Aurora::DrmEglServerBuffer" FEATURE_aurora_drm_egl_server_buffer "Build Wayland compositor with DRM EGL hardware integration")
+if(FEATURE_aurora_drm_egl_server_buffer)
+    liri_config_compile_test(drm_egl_server
+        LABEL
+            "DRM EGL Server"
+        LIBRARIES
+            PkgConfig::EGL
+        CODE "
+    #include <EGL/egl.h>
+    #include <EGL/eglext.h>
+
+    int main(void)
+    {
+    #ifdef EGL_MESA_drm_image
+        return 0;
+    #else
+    #  error Requires EGL_MESA_drm_image to be defined
+        return 1;
+    #endif
+        return 0;
+    }
+    ")
+    if(NOT TEST_drm_egl_server)
+        message(WARNING "You need EGL_MESA_drm_image for Aurora::DmabufServerBuffer")
+        set(FEATURE_aurora_drm_egl_server_buffer OFF)
+    endif()
+endif()
 set(LIRI_FEATURE_aurora_drm_egl_server_buffer "$<IF:${FEATURE_aurora_drm_egl_server_buffer},1,0>")
 
 # wayland-egl
@@ -327,9 +296,9 @@ add_feature_info("Aurora::WaylandEgl" FEATURE_aurora_wayland_egl "Build Wayland 
 set(LIRI_FEATURE_aurora_wayland_egl "$<IF:${FEATURE_aurora_wayland_egl},1,0>")
 
 # libhybris-egl-server-buffer
-option(FEATURE_aurora_libhybris_egl_server_buffer "libhybris EGL" $<BOOL:TEST_libhybris_egl_server>)
+option(FEATURE_aurora_libhybris_egl_server_buffer "libhybris EGL" ON)
 if(FEATURE_aurora_libhybris_egl_server_buffer)
-    if(NOT TARGET PkgConfig::EGL OR NOT TEST_libhybris_egl_server OR NOT TARGET Qt::OpenGL)
+    if(NOT TARGET PkgConfig::EGL OR NOT TARGET Qt::OpenGL)
         if(NOT TARGET PkgConfig::EGL)
             message(WARNING "You need EGL for Aurora::LibhybrisEgl")
         endif()
@@ -343,6 +312,33 @@ if(FEATURE_aurora_libhybris_egl_server_buffer)
     endif()
 endif()
 add_feature_info("Aurora::LibhybrisEgl" FEATURE_aurora_libhybris_egl_server_buffer "Build Wayland compositor with libhybris EGL hardware integration")
+if(LIRI_FEATURE_aurora_libhybris_egl_server_buffer)
+    liri_config_compile_test(libhybris_egl_server
+        LABEL
+            "libhybris EGL Server"
+        LIBRARIES
+            PkgConfig::EGL
+        CODE "
+    #include <EGL/egl.h>
+    #include <EGL/eglext.h>
+    #include <hybris/eglplatformcommon/hybris_nativebufferext.h>
+
+    int main(void)
+    {
+    #ifdef EGL_HYBRIS_native_buffer
+        return 0;
+    #else
+    #  error Requires EGL_HYBRIS_native_buffer to be defined
+        return 1;
+    #endif
+        return 0;
+    }
+    ")
+    if(NOT TEST_libhybris_egl_server)
+        message(WARNING "You need EGL_HYBRIS_native_buffer for Aurora::LibhybrisEgl")
+        set(FEATURE_aurora_libhybris_egl_server_buffer OFF)
+    endif()
+endif()
 set(LIRI_FEATURE_aurora_libhybris_egl_server_buffer "$<IF:${FEATURE_aurora_libhybris_egl_server_buffer},1,0>")
 
 # qpa
@@ -416,18 +412,38 @@ add_feature_info("Aurora::ShmEmulationServer" FEATURE_aurora_shm_emulation_serve
 set(LIRI_FEATURE_aurora_shm_emulation_server "$<IF:${FEATURE_aurora_shm_emulation_server},1,0>")
 
 # vulkan-server-buffer
-option(FEATURE_aurora_vulkan_server_buffer "Vulkan" $<BOOL:TEST_vulkan_server_buffer>)
+option(FEATURE_aurora_vulkan_server_buffer "Vulkan" ON)
 if(FEATURE_aurora_vulkan_server_buffer)
     if(NOT TARGET Qt::OpenGL)
         message(WARNING "You need Qt OpenGL for Aurora::VulkanServerBuffer")
         set(FEATURE_aurora_vulkan_server_buffer OFF)
     endif()
+endif()
+add_feature_info("Aurora::VulkanServerBuffer" FEATURE_aurora_vulkan_server_buffer "Build Wayland compositor with Vulkan-based server buffer integration")
+if(FEATURE_aurora_vulkan_server_buffer)
+    liri_config_compile_test(vulkan_server_buffer
+        LABEL
+            "Vulkan Buffer Sharing"
+        DEFINITIONS
+            -DVK_USE_PLATFORM_WAYLAND_KHR=1
+        LIBRARIES
+            PkgConfig::Vulkan
+        CODE "
+    #include <vulkan/vulkan.h>
+
+    int main(void)
+    {
+        VkExportMemoryAllocateInfoKHR exportAllocInfo = {};
+        exportAllocInfo.sType = VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO_KHR;
+        exportAllocInfo.handleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT_KHR;
+        return 0;
+    }
+    ")
     if(NOT TEST_vulkan_server_buffer)
         message(WARNING "You need Vulkan for Aurora::VulkanServerBuffer")
         set(FEATURE_aurora_vulkan_server_buffer OFF)
     endif()
 endif()
-add_feature_info("Aurora::VulkanServerBuffer" FEATURE_aurora_vulkan_server_buffer "Build Wayland compositor with Vulkan-based server buffer integration")
 set(LIRI_FEATURE_aurora_vulkan_server_buffer "$<IF:${FEATURE_aurora_vulkan_server_buffer},1,0>")
 
 # xwayland
