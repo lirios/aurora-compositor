@@ -31,7 +31,9 @@ endif()
 
 ## Features:
 include(features.cmake)
-feature_summary(WHAT ENABLED_FEATURES DISABLED_FEATURES)
+if(NOT LIRI_SUPERBUILD)
+    feature_summary(WHAT ENABLED_FEATURES DISABLED_FEATURES)
+endif()
 
 ## Add subdirectories:
 if(FEATURE_aurora_xkbcommon)
