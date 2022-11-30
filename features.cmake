@@ -72,7 +72,7 @@ set(LIRI_FEATURE_aurora_datadevice "$<IF:${FEATURE_aurora_datadevice},1,0>")
 # xkbcommon
 option(FEATURE_aurora_xkbcommon "Handling of keyboard descriptions" ON)
 if(FEATURE_aurora_xkbcommon)
-    if(NOT TARGET PkgConfig::XkbCommon)
+    if(NOT TARGET XkbCommon::XkbCommon)
         message(WARNING "You need xkbcommon for Aurora::XkbCommon")
         set(FEATURE_aurora_xkbcommon OFF)
     endif()

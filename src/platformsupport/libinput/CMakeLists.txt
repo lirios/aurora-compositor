@@ -24,12 +24,11 @@ liri_add_module(AuroraLibInput
         Liri::AuroraLogind
         Liri::AuroraUdev
         Liri::AuroraXkbCommonSupport
+        Liri::AuroraXkbCommonSupportPrivate
     LIBRARIES
         Qt::CorePrivate
         Liri::AuroraUdevPrivate
-        Liri::AuroraXkbCommonSupportPrivate
         PkgConfig::Libinput
-        PkgConfig::XkbCommon
     NO_CMAKE
     NO_PKGCONFIG
 )
