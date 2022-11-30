@@ -81,7 +81,7 @@ add_feature_info("Aurora::XkbCommon" FEATURE_aurora_xkbcommon "Build support for
 set(LIRI_FEATURE_aurora_xkbcommon "$<IF:${FEATURE_aurora_xkbcommon},1,0>")
 
 # brcm
-option(FEATURE_aurora_brcm "Raspberry Pi" ON>)
+option(FEATURE_aurora_brcm "Raspberry Pi" ON)
 if(FEATURE_aurora_brcm)
     if(NOT TARGET PkgConfig::EGL)
         message(WARNING "You need EGL for Aurora::Brcm")
