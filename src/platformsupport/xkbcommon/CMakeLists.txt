@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
+message("XXX: ${XkbCommon_VERSION} ${XkbCommon_INCLUDE_DIRS} ${XkbCommon_LIBRARIES} ${XkbCommon_DEFINITIONS}")
 liri_add_module(AuroraXkbCommonSupport
     DESCRIPTION
         "xkbcommon shared code"
