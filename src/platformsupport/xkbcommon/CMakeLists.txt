@@ -3,6 +3,10 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 message("XXX: ${XkbCommon_VERSION} ${XkbCommon_INCLUDE_DIRS} ${XkbCommon_LIBRARIES} ${XkbCommon_DEFINITIONS}")
+foreach(path IN LISTS XkbCommon_INCLUDE_DIRS)
+    message("XXX: [${path}]")
+execute_process(COMMAND ls -al ${path} COMMAND_ECHO STDOUT ECHO_OUTPUT_VARIABLE)
+endforeach()
 liri_add_module(AuroraXkbCommonSupport
     DESCRIPTION
         "xkbcommon shared code"
