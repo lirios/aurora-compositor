@@ -1,31 +1,5 @@
-/****************************************************************************
-**
-** Copyright (C) 2018 The Qt Company Ltd.
-** Contact: https://www.qt.io/licensing/
-**
-** This file is part of the QtWaylandCompositor module of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:GPL$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see https://www.qt.io/terms-conditions. For further
-** information use the contact form at https://www.qt.io/contact-us.
-**
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3 or (at your option) any later version
-** approved by the KDE Free Qt Foundation. The licenses are as published by
-** the Free Software Foundation and appearing in the file LICENSE.GPL3
-** included in the packaging of this file. Please review the following
-** information to ensure the GNU General Public License requirements will
-** be met: https://www.gnu.org/licenses/gpl-3.0.html.
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
+// Copyright (C) 2018 The Qt Company Ltd.
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
 #ifndef AURORA_COMPOSITOR_WAYLANDXDGSHELL_H
 #define AURORA_COMPOSITOR_WAYLANDXDGSHELL_H
@@ -34,7 +8,9 @@
 #include <LiriAuroraCompositor/WaylandResource>
 #include <LiriAuroraCompositor/WaylandShell>
 #include <LiriAuroraCompositor/WaylandShellSurface>
+#if LIRI_FEATURE_aurora_compositor_quick
 #include <LiriAuroraCompositor/aurorawaylandquickchildren.h>
+#endif
 
 #include <QtCore/QRect>
 
@@ -93,7 +69,9 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgSurface : public WaylandShellSurface
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandXdgSurface)
+#if LIRI_FEATURE_aurora_compositor_quick
     AURORA_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandXdgSurface)
+#endif
     Q_PROPERTY(Aurora::Compositor::WaylandXdgShell *shell READ shell NOTIFY shellChanged)
     Q_PROPERTY(Aurora::Compositor::WaylandSurface *surface READ surface NOTIFY surfaceChanged)
     Q_PROPERTY(Aurora::Compositor::WaylandXdgToplevel *toplevel READ toplevel NOTIFY toplevelCreated)
@@ -157,7 +135,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgToplevel : public QObject
     Q_PROPERTY(bool resizing READ resizing NOTIFY resizingChanged)
     Q_PROPERTY(bool activated READ activated NOTIFY activatedChanged)
 // QDoc fails to parse the property type that includes the keyword 'enum'
-#ifndef Q_CLANG_QDOC
+#ifndef Q_QDOC
     Q_PROPERTY(enum DecorationMode decorationMode READ decorationMode NOTIFY decorationModeChanged)
 #else
     Q_PROPERTY(DecorationMode decorationMode READ decorationMode NOTIFY decorationModeChanged)

@@ -1,41 +1,5 @@
-/****************************************************************************
-**
-** Copyright (C) 2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
-** Contact: http://www.qt-project.org/legal
-**
-** This file is part of the plugins of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:LGPL$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see https://www.qt.io/terms-conditions. For further
-** information use the contact form at https://www.qt.io/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 3 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL3 included in the
-** packaging of this file. Please review the following information to
-** ensure the GNU Lesser General Public License version 3 requirements
-** will be met: https://www.gnu.org/licenses/lgpl-3.0.html.
-**
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 2.0 or (at your option) the GNU General
-** Public license version 3 or any later version approved by the KDE Free
-** Qt Foundation. The licenses are as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL2 and LICENSE.GPL3
-** included in the packaging of this file. Please review the following
-** information to ensure the GNU General Public License requirements will
-** be met: https://www.gnu.org/licenses/gpl-2.0.html and
-** https://www.gnu.org/licenses/gpl-3.0.html.
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
+// Copyright (C) 2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "aurorawaylandinputmethodeventbuilder_p.h"
 
@@ -144,7 +108,7 @@ QInputMethodEvent *WaylandInputMethodEventBuilder::buildCommit(const QString &te
 
         const int absoluteOffset = absoluteCursor - cursor;
 
-        const int cursorAfterCommit = qMin(anchor, cursor) + replacement.first + text.length();
+        const int cursorAfterCommit = qMin(anchor, cursor) + replacement.first + text.size();
         surrounding.replace(qMin(anchor, cursor) + replacement.first,
                             qAbs(anchor - cursor) + replacement.second, text);
 
@@ -170,7 +134,7 @@ QInputMethodEvent *WaylandInputMethodEventBuilder::buildPreedit(const QString &t
         attributes.append(QInputMethodEvent::Attribute(QInputMethodEvent::Cursor, indexFromWayland(text, m_preeditCursor), 1, QVariant()));
     }
 
-    for (const QInputMethodEvent::Attribute &attr : qAsConst(m_preeditStyles)) {
+    for (const QInputMethodEvent::Attribute &attr : std::as_const(m_preeditStyles)) {
         int start = indexFromWayland(text, attr.start);
         int length = indexFromWayland(text, attr.start + attr.length) - start;
         attributes.append(QInputMethodEvent::Attribute(attr.type, start, length, attr.value));
@@ -316,10 +280,10 @@ int WaylandInputMethodEventBuilder::indexFromWayland(const QString &text, int le
 
     if (length < 0) {
         const QByteArray &utf8 = QStringView{text}.left(base).toUtf8();
-        return QString::fromUtf8(utf8.left(qMax(utf8.length() + length, 0))).length();
+        return QString::fromUtf8(utf8.left(qMax(utf8.size() + length, 0))).size();
     } else {
         const QByteArray &utf8 = QStringView{text}.mid(base).toUtf8();
-        return QString::fromUtf8(utf8.left(length)).length() + base;
+        return QString::fromUtf8(utf8.left(length)).size() + base;
     }
 }
 
@@ -342,20 +306,20 @@ int WaylandInputMethodEventBuilder::trimmedIndexFromWayland(const QString &text,
             const unsigned char ch = utf8.at(start + i);
             // check if current character is a utf8's initial character.
             if (ch < 0x80 || ch > 0xbf)
-                return QString::fromUtf8(utf8.left(start + i)).length();
+                return QString::fromUtf8(utf8.left(start + i)).size();
         }
     } else {
         const QByteArray &utf8 = QStringView{text}.mid(base).toUtf8();
         const int len = utf8.size();
         const int start = length;
         if (start >= len)
-            return base + QString::fromUtf8(utf8).length();
+            return base + QString::fromUtf8(utf8).size();
 
         for (int i = 0; i < 4; i++) {
             const unsigned char ch = utf8.at(start - i);
             // check if current character is a utf8's initial character.
             if (ch < 0x80 || ch > 0xbf)
-                return base + QString::fromUtf8(utf8.left(start - i)).length();
+                return base + QString::fromUtf8(utf8.left(start - i)).size();
         }
     }
     return -1;

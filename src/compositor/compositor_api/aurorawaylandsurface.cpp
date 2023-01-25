@@ -1,32 +1,6 @@
-/****************************************************************************
-**
-** Copyright (C) 2017-2015 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-** Copyright (C) 2017 The Qt Company Ltd.
-** Contact: https://www.qt.io/licensing/
-**
-** This file is part of the QtWaylandCompositor module of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:GPL$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see https://www.qt.io/terms-conditions. For further
-** information use the contact form at https://www.qt.io/contact-us.
-**
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3 or (at your option) any later version
-** approved by the KDE Free Qt Foundation. The licenses are as published by
-** the Free Software Foundation and appearing in the file LICENSE.GPL3
-** included in the packaging of this file. Please review the following
-** information to ensure the GNU General Public License requirements will
-** be met: https://www.gnu.org/licenses/gpl-3.0.html.
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
+// Copyright (C) 2017-2015 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+// Copyright (C) 2017 The Qt Company Ltd.
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
 #include "aurorawaylandsurface.h"
 #include "aurorawaylandsurface_p.h"
@@ -131,9 +105,9 @@ WaylandSurfacePrivate::~WaylandSurfacePrivate()
 
     bufferRef = WaylandBufferRef();
 
-    for (Internal::FrameCallback *c : qAsConst(pendingFrameCallbacks))
+    for (Internal::FrameCallback *c : std::as_const(pendingFrameCallbacks))
         c->destroy();
-    for (Internal::FrameCallback *c : qAsConst(frameCallbacks))
+    for (Internal::FrameCallback *c : std::as_const(frameCallbacks))
         c->destroy();
 }
 
@@ -207,18 +181,12 @@ void WaylandSurfacePrivate::surface_attach(Resource *, struct wl_resource *buffe
 
 void WaylandSurfacePrivate::surface_damage(Resource *, int32_t x, int32_t y, int32_t width, int32_t height)
 {
-    if (Q_UNLIKELY(pending.damageInBufferCoordinates && !pending.damage.isNull()))
-        qCWarning(gLcAuroraCompositor) << "Unsupported: Client is using both wl_surface.damage_buffer and wl_surface.damage.";
-    pending.damage = pending.damage.united(QRect(x, y, width, height));
-    pending.damageInBufferCoordinates = false;
+    pending.surfaceDamage = pending.surfaceDamage.united(QRect(x, y, width, height));
 }
 
 void WaylandSurfacePrivate::surface_damage_buffer(Resource *, int32_t x, int32_t y, int32_t width, int32_t height)
 {
-    if (Q_UNLIKELY(!pending.damageInBufferCoordinates && !pending.damage.isNull()))
-        qCWarning(gLcAuroraCompositor) << "Unsupported: Client is using both wl_surface.damage_buffer and wl_surface.damage.";
-    pending.damage = pending.damage.united(QRect(x, y, width, height));
-    pending.damageInBufferCoordinates = true;
+    pending.bufferDamage = pending.bufferDamage.united(QRect(x, y, width, height));
 }
 
 void WaylandSurfacePrivate::surface_frame(Resource *resource, uint32_t callback)
@@ -262,22 +230,23 @@ void WaylandSurfacePrivate::surface_commit(Resource *)
     sourceGeometry = !pending.sourceGeometry.isValid() ? QRect(QPoint(), surfaceSize) : pending.sourceGeometry;
     destinationSize = pending.destinationSize.isEmpty() ? sourceGeometry.size().toSize() : pending.destinationSize;
     QRect destinationRect(QPoint(), destinationSize);
-    if (!pending.damageInBufferCoordinates || pending.bufferScale == 1) {
-        // pending.damage is already in surface coordinates
-        damage = pending.damage.intersected(QRect(QPoint(), destinationSize));
-    } else {
-        // We must transform pending.damage from buffer coordinate system to surface coordinates
-        // TODO(QTBUG-85461): Also support wp_viewport setting more complex transformations
-        auto xform = [](const QRect &r, int scale) -> QRect {
-            QRect res{
-                QPoint{ r.x() / scale, r.y() / scale },
-                QPoint{ (r.right() + scale - 1) / scale, (r.bottom() + scale - 1) / scale }
+    // pending.damage is already in surface coordinates
+    damage = pending.surfaceDamage.intersected(destinationRect);
+    if (!pending.bufferDamage.isNull()) {
+        if (bufferScale == 1) {
+            damage |= pending.bufferDamage.intersected(destinationRect); // Already in surface coordinates
+        } else {
+            // We must transform pending.damage from buffer coordinate system to surface coordinates
+            // TODO(QTBUG-85461): Also support wp_viewport setting more complex transformations
+            auto xform = [](const QRect &r, int scale) -> QRect {
+                QRect res{
+                    QPoint{ r.x() / scale, r.y() / scale },
+                    QPoint{ (r.right() + scale - 1) / scale, (r.bottom() + scale - 1) / scale }
+                };
+                return res;
             };
-            return res;
-        };
-        damage = {};
-        for (const QRect &r : pending.damage) {
-            damage |= xform(r, bufferScale).intersected(destinationRect);
+            for (const QRect &r : pending.bufferDamage)
+                damage |= xform(r, bufferScale).intersected(destinationRect);
         }
     }
     hasContent = bufferRef.hasContent();
@@ -299,14 +268,14 @@ void WaylandSurfacePrivate::surface_commit(Resource *)
     pending.buffer = WaylandBufferRef();
     pending.offset = QPoint();
     pending.newlyAttached = false;
-    pending.damage = QRegion();
-    pending.damageInBufferCoordinates = false;
+    pending.bufferDamage = QRegion();
+    pending.surfaceDamage = QRegion();
     pendingFrameCallbacks.clear();
 
     // Notify buffers and views
     if (auto *buffer = bufferRef.buffer())
         buffer->setCommitted(damage);
-    for (auto *view : qAsConst(views))
+    for (auto *view : std::as_const(views))
         view->bufferCommitted(bufferRef, damage);
 
     // Now all double-buffered state has been applied so it's safe to emit general signals
@@ -731,7 +700,7 @@ WaylandCompositor *WaylandSurface::compositor() const
 void WaylandSurface::frameStarted()
 {
     Q_D(WaylandSurface);
-    for (Internal::FrameCallback *c : qAsConst(d->frameCallbacks))
+    for (Internal::FrameCallback *c : std::as_const(d->frameCallbacks))
         c->canSend = true;
 }
 

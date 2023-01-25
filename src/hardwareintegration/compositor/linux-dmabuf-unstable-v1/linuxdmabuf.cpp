@@ -1,31 +1,5 @@
-/****************************************************************************
-**
-** Copyright (C) 2018 The Qt Company Ltd.
-** Contact: https://www.qt.io/licensing/
-**
-** This file is part of the QtWaylandCompositor module of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:GPL$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see https://www.qt.io/terms-conditions. For further
-** information use the contact form at https://www.qt.io/contact-us.
-**
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3 or (at your option) any later version
-** approved by the KDE Free Qt Foundation. The licenses are as published by
-** the Free Software Foundation and appearing in the file LICENSE.GPL3
-** included in the packaging of this file. Please review the following
-** information to ensure the GNU General Public License requirements will
-** be met: https://www.gnu.org/licenses/gpl-3.0.html.
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
+// Copyright (C) 2018 The Qt Company Ltd.
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
 #include "linuxdmabuf.h"
 #include "linuxdmabufclientbufferintegration.h"
@@ -68,7 +42,7 @@ void LinuxDmabuf::zwp_linux_dmabuf_v1_bind_resource(Resource *resource)
         // send DRM_FORMAT_MOD_INVALID when no modifiers are supported for a format
         if (modifiers.isEmpty())
             modifiers << DRM_FORMAT_MOD_INVALID;
-        for (const auto &modifier : qAsConst(modifiers)) {
+        for (const auto &modifier : std::as_const(modifiers)) {
             if (resource->version() >= ZWP_LINUX_DMABUF_V1_MODIFIER_SINCE_VERSION) {
                 const uint32_t modifier_lo = modifier & 0xFFFFFFFF;
                 const uint32_t modifier_hi = modifier >> 32;
@@ -128,7 +102,7 @@ bool LinuxDmabufParams::handleCreateParams(Resource *resource, int width, int he
     // check for holes in plane sequence
     auto planeIds = m_planes.keys();
     std::sort(planeIds.begin(), planeIds.end());
-    for (int i = 0; i < planeIds.count(); ++i) {
+    for (int i = 0; i < planeIds.size(); ++i) {
         if (uint(i) != planeIds[i]) {
             wl_resource_post_error(resource->handle,
                                    ZWP_LINUX_BUFFER_PARAMS_V1_ERROR_INCOMPLETE,
