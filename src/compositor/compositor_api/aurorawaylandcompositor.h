@@ -157,13 +157,15 @@ Q_SIGNALS:
     void additionalShmFormatsChanged();
 
 protected:
+    WaylandCompositor(WaylandCompositorPrivate &dptr, QObject *parent = nullptr);
+
     virtual void retainedSelectionReceived(QMimeData *mimeData);
     virtual WaylandSeat *createSeat();
     virtual WaylandPointer *createPointerDevice(WaylandSeat *seat);
     virtual WaylandKeyboard *createKeyboardDevice(WaylandSeat *seat);
     virtual WaylandTouch *createTouchDevice(WaylandSeat *seat);
 
-private:
+protected:
     QScopedPointer<WaylandCompositorPrivate> const d_ptr;
 };
 

@@ -101,6 +101,28 @@ WaylandCompositorExtension::WaylandCompositorExtension(WaylandObject *container)
     QCoreApplication::postEvent(this, new QEvent(QEvent::Polish));
 }
 
+/*!
+ * \internal
+ * Constructs a WaylandCompositorExtension with the private object \a dptr.
+ */
+WaylandCompositorExtension::WaylandCompositorExtension(WaylandCompositorExtensionPrivate &dptr)
+    : WaylandObject()
+    , d_ptr(&dptr)
+{
+}
+
+/*!
+ * \internal
+ * Constructs a WaylandCompositorExtension with the private object \a dptr and \a container.
+ */
+WaylandCompositorExtension::WaylandCompositorExtension(WaylandObject *container, WaylandCompositorExtensionPrivate &dptr)
+    : WaylandObject()
+    , d_ptr(&dptr)
+{
+    d_func()->extension_container = container;
+    QCoreApplication::postEvent(this, new QEvent(QEvent::Polish));
+}
+
 WaylandCompositorExtension::~WaylandCompositorExtension()
 {
     Q_D(WaylandCompositorExtension);
@@ -202,10 +224,9 @@ bool WaylandCompositorExtension::event(QEvent *event)
  *  Creates a WaylandObject as a child of \a parent.
  */
 WaylandObject::WaylandObject(QObject *parent)
-    :QObject(parent)
+    : QObject(parent)
 {
 }
-
 
 WaylandObject::~WaylandObject()
 {

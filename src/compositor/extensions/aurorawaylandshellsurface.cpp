@@ -91,3 +91,21 @@
  *
  * This property holds the window type of the WaylandShellSurface.
  */
+
+namespace Aurora {
+
+namespace Compositor {
+
+WaylandShellSurface::WaylandShellSurface(WaylandCompositorExtensionPrivate &dd)
+    : WaylandCompositorExtension(dd)
+{
+}
+
+WaylandShellSurface::WaylandShellSurface(WaylandObject *container, WaylandCompositorExtensionPrivate &dd)
+    : WaylandCompositorExtension(container, dd)
+{
+}
+
+} // namespace Compositor
+
+} // namespace Aurora

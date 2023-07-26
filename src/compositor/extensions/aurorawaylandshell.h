@@ -40,7 +40,7 @@ public:
 Q_SIGNALS:
     void focusPolicyChanged();
 
-private:
+protected:
     QScopedPointer<WaylandShellPrivate> const d_ptr;
 };
 

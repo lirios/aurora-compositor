@@ -412,8 +412,7 @@ Internal::ClientBuffer *WaylandSurfacePrivate::getBuffer(struct ::wl_resource *b
  * Constructs a an uninitialized WaylandSurface.
  */
 WaylandSurface::WaylandSurface()
-    : WaylandObject()
-    , d_ptr(new WaylandSurfacePrivate(this))
+    : WaylandSurface(*new WaylandSurfacePrivate(this))
 {
 }
 
@@ -422,10 +421,19 @@ WaylandSurface::WaylandSurface()
  * and \a version.
  */
 WaylandSurface::WaylandSurface(WaylandCompositor *compositor, WaylandClient *client, uint id, int version)
-    : WaylandObject()
-    , d_ptr(new WaylandSurfacePrivate(this))
+    : WaylandSurface(*new WaylandSurfacePrivate(this))
 {
     initialize(compositor, client, id, version);
+}
+
+/*!
+ * \internal
+ * Constructs a WaylandSurface with the private object \a dptr and \a parent.
+ */
+WaylandSurface::WaylandSurface(WaylandSurfacePrivate &dptr)
+    : WaylandObject()
+    , d_ptr(&dptr)
+{
 }
 
 /*!

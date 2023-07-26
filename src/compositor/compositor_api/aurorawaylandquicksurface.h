@@ -36,9 +36,6 @@ public:
 
 Q_SIGNALS:
     void useTextureAlphaChanged();
-
-private:
-    QScopedPointer<WaylandQuickSurfacePrivate> const d_ptr;
 };
 
 } // namespace Compositor

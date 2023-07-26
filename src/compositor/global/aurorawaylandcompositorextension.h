@@ -30,10 +30,10 @@
 #ifndef AURORA_COMPOSITOR_WAYLANDEXTENSION_H
 #define AURORA_COMPOSITOR_WAYLANDEXTENSION_H
 
+#include <QtCore/QObject>
+
 #include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 #include <LiriAuroraCompositor/aurorawaylandqmlinclude.h>
-
-#include <QtCore/QObject>
 
 struct wl_interface;
 
@@ -44,6 +44,7 @@ namespace Compositor {
 class WaylandCompositor;
 class WaylandCompositorExtension;
 class WaylandCompositorExtensionPrivate;
+class WaylandObjectPrivate;
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandObject : public QObject
 {
@@ -59,6 +60,7 @@ public:
 
 protected:
     WaylandObject(QObject *parent = nullptr);
+
     QList<WaylandCompositorExtension *> extension_vector;
 };
 
@@ -85,9 +87,12 @@ public:
     virtual const struct wl_interface *extensionInterface() const = 0;
 
 protected:
+    WaylandCompositorExtension(WaylandCompositorExtensionPrivate &dptr);
+    WaylandCompositorExtension(WaylandObject *container, WaylandCompositorExtensionPrivate &dptr);
+
     bool event(QEvent *event) override;
 
-private:
+protected:
     QScopedPointer<WaylandCompositorExtensionPrivate> const d_ptr;
 };
 
@@ -113,6 +118,15 @@ public:
         if (!container) return nullptr;
         return qobject_cast<T *>(container->extension(T::interfaceName()));
     }
+
+protected:
+    WaylandCompositorExtensionTemplate(WaylandCompositorExtensionPrivate &dd)
+        : WaylandCompositorExtension(dd)
+    { }
+
+    WaylandCompositorExtensionTemplate(WaylandObject *container, WaylandCompositorExtensionPrivate &dd)
+        : WaylandCompositorExtension(container, dd)
+    { }
 };
 
 } // namespace Compositor

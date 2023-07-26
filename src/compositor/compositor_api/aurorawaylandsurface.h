@@ -154,7 +154,9 @@ Q_SIGNALS:
     void configure(bool hasBuffer);
     void redraw();
 
-private:
+protected:
+    WaylandSurface(WaylandSurfacePrivate &dptr);
+
     QScopedPointer<WaylandSurfacePrivate> const d_ptr;
 };
 

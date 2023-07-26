@@ -32,7 +32,6 @@ class WaylandQuickCompositorPrivate : public WaylandCompositorPrivate
 public:
     explicit WaylandQuickCompositorPrivate(WaylandQuickCompositor *self)
         : WaylandCompositorPrivate(self)
-        , q_ptr(self)
         , m_viewporter(new WaylandViewporter(self))
     {
     }
@@ -42,13 +41,11 @@ protected:
         return new WaylandQuickSurface();
     }
 private:
-    WaylandQuickCompositor *q_ptr = nullptr;
     QScopedPointer<WaylandViewporter> m_viewporter;
 };
 
 WaylandQuickCompositor::WaylandQuickCompositor(QObject *parent)
-    : WaylandCompositor(parent)
-    , d_ptr(new WaylandQuickCompositorPrivate(this))
+    : WaylandCompositor(*new WaylandQuickCompositorPrivate(this), parent)
 {
 }
 

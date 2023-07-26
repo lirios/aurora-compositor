@@ -18,14 +18,12 @@ namespace Aurora {
 namespace Compositor {
 
 WaylandQuickSurface::WaylandQuickSurface()
-    : WaylandSurface()
-    , d_ptr(new WaylandQuickSurfacePrivate(this))
+    : WaylandSurface(*new WaylandQuickSurfacePrivate(this))
 {
 
 }
 WaylandQuickSurface::WaylandQuickSurface(WaylandCompositor *compositor, WaylandClient *client, quint32 id, int version)
-    : WaylandSurface()
-    , d_ptr(new WaylandQuickSurfacePrivate(this))
+    : WaylandSurface(*new WaylandQuickSurfacePrivate(this))
 {
     initialize(compositor, client, id, version);
 }

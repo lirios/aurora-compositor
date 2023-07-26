@@ -16,13 +16,14 @@
 // We mean it.
 //
 
-#include <LiriAuroraCompositor/WaylandCompositor>
+#include <vector>
+
 #include <QtCore/QSet>
 #include <QtCore/QElapsedTimer>
 
+#include <LiriAuroraCompositor/WaylandCompositor>
+#include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
 #include <LiriAuroraCompositor/private/aurora-server-wayland.h>
-
-#include <vector>
 
 #if LIRI_FEATURE_aurora_xkbcommon
 #include <LiriAuroraXkbCommonSupport/private/auroraxkbcommon_p.h>
@@ -48,8 +49,12 @@ namespace Internal {
 
 class WaylandSurface;
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandCompositorPrivate : public PrivateServer::wl_compositor, public PrivateServer::wl_subcompositor
+class LIRIAURORACOMPOSITOR_EXPORT WaylandCompositorPrivate
+        : public PrivateServer::wl_compositor
+        , public PrivateServer::wl_subcompositor
 {
+    Q_DECLARE_PUBLIC(WaylandCompositor)
+    Q_DISABLE_COPY(WaylandCompositorPrivate)
 public:
     static WaylandCompositorPrivate *get(WaylandCompositor *compositor) { return compositor->d_func(); }
 
@@ -103,6 +108,7 @@ protected:
     void subcompositor_get_subsurface(wl_subcompositor::Resource *resource, uint32_t id, struct ::wl_resource *surface, struct ::wl_resource *parent) override;
 
     virtual WaylandSurface *createDefaultSurface();
+
 protected:
     void initializeHardwareIntegration();
     void initializeExtensions();
@@ -151,10 +157,7 @@ protected:
     XkbCommon::ScopedXKBContext mXkbContext;
 #endif
 
-    Q_DECLARE_PUBLIC(WaylandCompositor)
-    Q_DISABLE_COPY(WaylandCompositorPrivate)
-
-private:
+protected:
     WaylandCompositor *q_ptr = nullptr;
 };
 

@@ -25,9 +25,8 @@ namespace Compositor {
 
 class WaylandDestroyListenerPrivate
 {
-public:
     Q_DECLARE_PUBLIC(WaylandDestroyListener)
-
+public:
     WaylandDestroyListenerPrivate(WaylandDestroyListener *self);
 
     static void handler(wl_listener *listener, void *data);

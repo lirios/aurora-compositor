@@ -52,9 +52,8 @@ class InputMethod;
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandSeatPrivate : public PrivateServer::wl_seat
 {
-public:
     Q_DECLARE_PUBLIC(WaylandSeat)
-
+public:
     WaylandSeatPrivate(WaylandSeat *seat);
     ~WaylandSeatPrivate() override;
 
@@ -83,8 +82,6 @@ protected:
     void seat_destroy_resource(wl_seat::Resource *resource) override;
 
 private:
-    WaylandSeat *q_ptr = nullptr;
-
     bool isInitialized = false;
     WaylandCompositor *compositor = nullptr;
     WaylandView *mouseFocus = nullptr;
@@ -101,6 +98,9 @@ private:
     QScopedPointer<WaylandKeymap> keymap;
 
     struct ::wl_client *m_exclusiveClient = nullptr;
+
+protected:
+    WaylandSeat *q_ptr = nullptr;
 };
 
 } // namespace Compositor

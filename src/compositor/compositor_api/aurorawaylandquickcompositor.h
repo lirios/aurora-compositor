@@ -19,7 +19,6 @@ class WaylandView;
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickCompositor : public WaylandCompositor, public QQmlParserStatus
 {
-    Q_INTERFACES(QQmlParserStatus)
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Aurora::Compositor::WaylandOutput> outputs READ outputsListProperty DESIGNABLE false CONSTANT)
     Q_PROPERTY(QQmlListProperty<Aurora::Compositor::WaylandSeat> seats READ seatsListProperty DESIGNABLE false CONSTANT)
@@ -44,9 +43,6 @@ public:
 protected:
     void classBegin() override;
     void componentComplete() override;
-
-private:
-    QScopedPointer<WaylandQuickCompositorPrivate> const d_ptr;
 };
 
 } // namespace Compositor

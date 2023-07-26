@@ -24,7 +24,6 @@ namespace Compositor {
 class LIRIAURORACOMPOSITOR_EXPORT WaylandCompositorExtensionPrivate
 {
     Q_DECLARE_PUBLIC(WaylandCompositorExtension)
-
 public:
     WaylandCompositorExtensionPrivate(WaylandCompositorExtension *self)
         : q_ptr(self)

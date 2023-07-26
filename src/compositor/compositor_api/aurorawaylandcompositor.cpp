@@ -548,8 +548,17 @@ WaylandSeat *WaylandCompositorPrivate::seatFor(QInputEvent *inputEvent)
  * Constructs a WaylandCompositor with the given \a parent.
  */
 WaylandCompositor::WaylandCompositor(QObject *parent)
+    : WaylandCompositor(*new WaylandCompositorPrivate(this), parent)
+{
+}
+
+/*!
+ * \internal
+ * Constructs a WaylandCompositor with the private object \a dptr and \a parent.
+ */
+WaylandCompositor::WaylandCompositor(WaylandCompositorPrivate &dptr, QObject *parent)
     : WaylandObject(parent)
-    , d_ptr(new WaylandCompositorPrivate(this))
+    , d_ptr(&dptr)
 {
 }
 

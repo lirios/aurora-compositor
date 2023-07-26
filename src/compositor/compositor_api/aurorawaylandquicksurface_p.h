@@ -28,15 +28,11 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickSurfacePrivate : public WaylandSur
 public:
     WaylandQuickSurfacePrivate(WaylandQuickSurface *self)
         : WaylandSurfacePrivate(self)
-        , q_ptr(self)
     {
     }
 
     bool useTextureAlpha = true;
     bool clientRenderingEnabled = true;
-
-private:
-    WaylandQuickSurface *q_ptr = nullptr;
 };
 
 } // namespace Compositor
