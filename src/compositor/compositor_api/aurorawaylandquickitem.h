@@ -144,6 +144,7 @@ private Q_SLOTS:
     void updateInputMethod(Qt::InputMethodQueries queries);
 #endif
 #endif
+    void updateFocus();
 
 Q_SIGNALS:
     void surfaceChanged();

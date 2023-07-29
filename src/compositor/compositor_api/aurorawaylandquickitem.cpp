@@ -43,6 +43,10 @@
 #include <wayland-server-core.h>
 #include <QThread>
 
+#if QT_CONFIG(opengl)
+#include <QtGui/private/qshaderdescription_p.h>
+#endif
+
 #ifndef GL_TEXTURE_EXTERNAL_OES
 #define GL_TEXTURE_EXTERNAL_OES 0x8D65
 #endif
@@ -710,6 +714,7 @@ WaylandQuickItem::WaylandQuickItem(QQuickItem *parent)
     , d_ptr(new WaylandQuickItemPrivate(this))
 {
     d_func()->init();
+    connect(this, &QQuickItem::activeFocusChanged, this, &WaylandQuickItem::updateFocus);
 }
 
 /*!
@@ -719,6 +724,7 @@ WaylandQuickItem::~WaylandQuickItem()
 {
     Q_D(WaylandQuickItem);
     disconnect(this, &QQuickItem::windowChanged, this, &WaylandQuickItem::updateWindow);
+    disconnect(this, &QQuickItem::activeFocusChanged, this, &WaylandQuickItem::updateFocus);
     QMutexLocker locker(d->mutex);
     if (d->provider) {
         disconnect(d->texProviderConnection);
@@ -781,6 +787,8 @@ void WaylandQuickItem::setSurface(WaylandSurface *surface)
         emit compositorChanged();
     if (oldSurf != surface)
         emit surfaceChanged();
+
+    updateFocus();
     update();
 }
 
@@ -1252,6 +1260,13 @@ void WaylandQuickItem::handlePlaceBelow(WaylandSurface *referenceSurface)
         qWarning() << "Couldn't find WaylandQuickItem for surface" << referenceSurface
                    << "when handling wl_subsurface.place_below";
     }
+}
+
+void WaylandQuickItem::updateFocus()
+{
+    Q_D(const WaylandQuickItem);
+    if (hasActiveFocus() && compositor())
+        compositor()->defaultSeat()->setKeyboardFocus(d->view->surface());
 }
 
 /*!
@@ -1852,12 +1867,8 @@ QSGNode *WaylandQuickItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData
             d->newTexture = true;
         }
 
-<<<<<<< HEAD:src/compositor/compositor_api/aurorawaylandquickitem.cpp
-        if (!d->provider)
-            d->provider = new WaylandSurfaceTextureProvider();
-=======
         if (!d->provider) {
-            d->provider = new QWaylandSurfaceTextureProvider();
+            d->provider = new WaylandSurfaceTextureProvider();
             if (compositor()) {
                 d->texProviderConnection =
                     QObject::connect(
@@ -1865,7 +1876,7 @@ QSGNode *WaylandQuickItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData
                             &QObject::destroyed,
                             this,
                             [this](QObject*) {
-                                    auto *itemPriv = QWaylandQuickItemPrivate::get(this);
+                                    auto *itemPriv = WaylandQuickItemPrivate::get(this);
                                     if (itemPriv->provider) {
                                         itemPriv->provider->deleteLater();
                                         itemPriv->provider = nullptr;
@@ -1874,7 +1885,6 @@ QSGNode *WaylandQuickItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData
                     );
             }
         }
->>>>>>> qt/dev:src/compositor/compositor_api/qwaylandquickitem.cpp
 
         if (d->newTexture) {
             d->newTexture = false;

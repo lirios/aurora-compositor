@@ -1863,9 +1863,8 @@ QPoint WaylandXdgPopup::offset() const
 /*!
  * \qmlproperty size AuroraCompositor::XdgPopup::positionerSize
  *
- * The size requested for the window geometry by the positioner object.
+ * Returns the size requested for the window geometry by the positioner object.
  */
-
 /*!
  * \property WaylandXdgPopup::positionerSize
  *

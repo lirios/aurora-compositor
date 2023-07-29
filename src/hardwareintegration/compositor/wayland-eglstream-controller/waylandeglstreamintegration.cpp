@@ -13,6 +13,7 @@
 #include <QtGui/QGuiApplication>
 #include <QtGui/QOpenGLContext>
 #include <QtGui/QOffscreenSurface>
+#include <QtCore/QMutexLocker>
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QtGui/private/qeglstreamconvenience_p.h>
@@ -119,7 +120,11 @@ struct BufferState
     BufferState() = default;
 
     EGLint egl_format = EGL_TEXTURE_EXTERNAL_WL;
-    QOpenGLTexture *textures[3] = {};
+    QOpenGLTexture *textures[3] = {nullptr, nullptr, nullptr};
+    QOpenGLContext *texturesContext[3] = {nullptr, nullptr, nullptr};
+    QMetaObject::Connection texturesAboutToBeDestroyedConnection[3] = {QMetaObject::Connection(), QMetaObject::Connection(), QMetaObject::Connection()};
+    QMutex texturesLock;
+
     EGLStreamKHR egl_stream = EGL_NO_STREAM_KHR;
 
     bool isYInverted = false;
@@ -133,16 +138,21 @@ public:
 
     bool ensureContext();
     bool initEglStream(WaylandEglStreamClientBuffer *buffer, struct ::wl_resource *bufferHandle);
+    void setupBufferAndCleanup(BufferState *bs, QOpenGLTexture *texture, int plane);
     void handleEglstreamTexture(WaylandEglStreamClientBuffer *buffer);
-    void deleteGLTextureWhenPossible(QOpenGLTexture *texture) { orphanedTextures << texture; }
+    void deleteGLTextureWhenPossible(QOpenGLTexture *texture, QOpenGLContext *ctx);
     void deleteOrphanedTextures();
+    void deleteSpecificOrphanedTexture(QOpenGLTexture *texture);
 
     EGLDisplay egl_display = EGL_NO_DISPLAY;
     bool display_bound = false;
     ::wl_display *wlDisplay = nullptr;
     QOffscreenSurface *offscreenSurface = nullptr;
     QOpenGLContext *localContext = nullptr;
+
+    QMutex orphanedTexturesLock;
     QList<QOpenGLTexture *> orphanedTextures;
+    QList<QMetaObject::Connection> orphanedTexturesAboutToBeDestroyedConnection;
 
     WaylandEglStreamController *eglStreamController = nullptr;
 
@@ -160,11 +170,69 @@ public:
 
 bool WaylandEglStreamClientBufferIntegrationPrivate::shuttingDown = false;
 
+
+void WaylandEglStreamClientBufferIntegrationPrivate::deleteGLTextureWhenPossible(QOpenGLTexture *texture, QOpenGLContext *ctx) {
+
+    QMutexLocker locker(&orphanedTexturesLock);
+
+    Q_ASSERT(orphanedTextures.size() == orphanedTexturesAboutToBeDestroyedConnection.size());
+
+    orphanedTextures << texture;
+    orphanedTexturesAboutToBeDestroyedConnection << QObject::connect(ctx, &QOpenGLContext::aboutToBeDestroyed,
+                                                                     ctx, [this, texture]() {
+        this->deleteSpecificOrphanedTexture(texture);
+    }, Qt::DirectConnection);
+}
+
 void WaylandEglStreamClientBufferIntegrationPrivate::deleteOrphanedTextures()
 {
     Q_ASSERT(QOpenGLContext::currentContext());
+
+    QMutexLocker locker(&orphanedTexturesLock);
+
+    for (int i=0; i < orphanedTextures.size(); i++) {
+        qCDebug(gLcAuroraCompositorHardwareIntegration)
+                << Q_FUNC_INFO << " about to delete a texture: "
+                << (void*)orphanedTextures[i];
+    }
+
     qDeleteAll(orphanedTextures);
+
+    for (QMetaObject::Connection con : orphanedTexturesAboutToBeDestroyedConnection)
+        QObject::disconnect(con);
+
+    orphanedTexturesAboutToBeDestroyedConnection.clear();
     orphanedTextures.clear();
+}
+
+void WaylandEglStreamClientBufferIntegrationPrivate::deleteSpecificOrphanedTexture(QOpenGLTexture *texture)
+{
+    Q_ASSERT(orphanedTextures.size() == orphanedTexturesAboutToBeDestroyedConnection.size());
+
+    QMutexLocker locker(&orphanedTexturesLock);
+
+    // In this case, deleteOrphanedTextures was called while we entered (see lock!) this function!
+    if (orphanedTextures.length()==0) {
+        qCWarning(gLcAuroraCompositorHardwareIntegration)
+                << Q_FUNC_INFO
+                << "Looks like deleteOrphanedTextures() and this function where called simultaneously!"
+                << "This might cause issues!";
+        return;
+    }
+
+    int i = orphanedTextures.indexOf(texture);
+    Q_ASSERT(i!=-1);  // If it isn't empty (see above if), then it should be guaranteed to still contain this texture
+
+    orphanedTextures.removeAt(i);
+    QMetaObject::Connection con = orphanedTexturesAboutToBeDestroyedConnection.takeAt(i);
+
+    QObject::disconnect(con);
+    delete texture;
+
+    qCDebug(gLcAuroraCompositorHardwareIntegration)
+            << Q_FUNC_INFO
+            << "texture deleted due to QOpenGLContext::aboutToBeDestroyed!"
+            << "Pointer (now dead) was:" << (void*)texture;
 }
 
 bool WaylandEglStreamClientBufferIntegrationPrivate::ensureContext()
@@ -189,6 +257,49 @@ bool WaylandEglStreamClientBufferIntegrationPrivate::ensureContext()
     return localContextNeeded;
 }
 
+
+void WaylandEglStreamClientBufferIntegrationPrivate::setupBufferAndCleanup(BufferState *bs, QOpenGLTexture *texture, int plane)
+{
+    QMutexLocker locker(&bs->texturesLock);
+
+    bs->textures[plane] = texture;
+    bs->texturesContext[plane] = QOpenGLContext::currentContext();
+
+    Q_ASSERT(bs->texturesContext[plane] != nullptr);
+
+    qCDebug(gLcAuroraCompositorHardwareIntegration)
+            << Q_FUNC_INFO
+            << "(eglstream) creating a cleanup-lambda for QOpenGLContext::aboutToBeDestroyed!"
+            << ", texture: " << bs->textures[plane]
+            << ", ctx: " << (void*)bs->texturesContext[plane];
+
+    bs->texturesAboutToBeDestroyedConnection[plane] =
+            QObject::connect(bs->texturesContext[plane], &QOpenGLContext::aboutToBeDestroyed,
+                             bs->texturesContext[plane], [bs, plane]() {
+
+        QMutexLocker locker(&bs->texturesLock);
+
+        // See above lock - there is a chance that this has already been removed from textures[plane]!
+        // Furthermore, we can trust that all the rest (e.g. disconnect) has also been properly executed!
+        if (bs->textures[plane] == nullptr)
+            return;
+
+        delete bs->textures[plane];
+
+        qCDebug(gLcAuroraCompositorHardwareIntegration)
+                << Q_FUNC_INFO
+                << "texture deleted due to QOpenGLContext::aboutToBeDestroyed!"
+                << "Pointer (now dead) was:" << (void*)(bs->textures[plane])
+                << "  Associated context (about to die too) is: " << (void*)(bs->texturesContext[plane]);
+
+        bs->textures[plane] = nullptr;
+        bs->texturesContext[plane] = nullptr;
+
+        QObject::disconnect(bs->texturesAboutToBeDestroyedConnection[plane]);
+        bs->texturesAboutToBeDestroyedConnection[plane] = QMetaObject::Connection();
+
+    }, Qt::DirectConnection);
+}
 
 bool WaylandEglStreamClientBufferIntegrationPrivate::initEglStream(WaylandEglStreamClientBuffer *buffer, wl_resource *bufferHandle)
 {
@@ -220,7 +331,7 @@ bool WaylandEglStreamClientBufferIntegrationPrivate::initEglStream(WaylandEglStr
 
     auto texture = new QOpenGLTexture(static_cast<QOpenGLTexture::Target>(GL_TEXTURE_EXTERNAL_OES));
     texture->create();
-    state.textures[0] = texture; // TODO: support multiple planes
+    setupBufferAndCleanup(buffer->d, texture, 0);
 
     texture->bind();
 
@@ -370,9 +481,25 @@ WaylandEglStreamClientBuffer::~WaylandEglStreamClientBuffer()
         if (d->egl_stream)
             p->funcs->destroy_stream(p->egl_display, d->egl_stream);
 
-        for (auto *texture : d->textures)
-            p->deleteGLTextureWhenPossible(texture);
+        QMutexLocker locker(&d->texturesLock);
+
+        for (int i=0; i<3; i++) {
+            if (d->textures[i] != nullptr) {
+
+                qCDebug(gLcAuroraCompositorHardwareIntegration)
+                        << Q_FUNC_INFO << " handing over texture!"
+                        << (void*)d->textures[i] << "; " << (void*)d->texturesContext[i]
+                        <<  " ... current context might be the same: " << QOpenGLContext::currentContext();
+
+                p->deleteGLTextureWhenPossible(d->textures[i], d->texturesContext[i]);
+                d->textures[i] = nullptr;               // in case the aboutToBeDestroyed lambda is called while we where here
+                d->texturesContext[i] = nullptr;
+                QObject::disconnect(d->texturesAboutToBeDestroyedConnection[i]);
+                d->texturesAboutToBeDestroyedConnection[i] = QMetaObject::Connection();
+            }
+        }
     }
+
     delete d;
 }
 

@@ -39,7 +39,8 @@ ShmServerBuffer::ShmServerBuffer(ShmServerBufferIntegration *integration, const 
     }
 
     QString key = "qt_shm_emulation_" + QString::number(qimage.cacheKey());
-    m_shm = new QSharedMemory(key);
+    // ### Use proper native keys the next time we can break protocol compatibility
+    QT_IGNORE_DEPRECATIONS(m_shm = new QSharedMemory(key);)
     qsizetype shm_size = qimage.sizeInBytes();
     bool ok = m_shm->create(shm_size) && m_shm->lock();
     if (ok) {
@@ -66,7 +67,8 @@ struct ::wl_resource *ShmServerBuffer::resourceForClient(struct ::wl_client *cli
         }
         struct ::wl_resource *shm_integration_resource = integrationResource->handle;
         Resource *resource = add(client, 1);
-        m_integration->send_server_buffer_created(shm_integration_resource, resource->handle, m_shm->key(), m_width, m_height, m_bpl, m_shm_format);
+        QT_IGNORE_DEPRECATIONS(const QString shmKey = m_shm->key();)
+        m_integration->send_server_buffer_created(shm_integration_resource, resource->handle, shmKey, m_width, m_height, m_bpl, m_shm_format);
         return resource->handle;
     }
     return bufferResource->handle;

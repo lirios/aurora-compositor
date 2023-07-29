@@ -100,6 +100,7 @@ public:
 
     void sendFullKeyEvent(QKeyEvent *event);
     Q_INVOKABLE void sendKeyEvent(int qtKey, bool pressed);
+    Q_INVOKABLE void sendUnicodeKeyEvent(uint unicode, bool pressed);
 
     uint sendTouchPointEvent(WaylandSurface *surface, int id, const QPointF &point, Qt::TouchPointState state);
     Q_INVOKABLE uint sendTouchPointPressed(Aurora::Compositor::WaylandSurface *surface, int id, const QPointF &position);

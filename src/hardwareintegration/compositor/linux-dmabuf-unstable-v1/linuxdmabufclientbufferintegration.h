@@ -9,6 +9,7 @@
 #include <LiriAuroraCompositor/private/aurorawlclientbufferintegration_p.h>
 #include <LiriAuroraCompositor/private/aurorawlclientbuffer_p.h>
 #include <LiriAuroraCompositor/private/aurora-server-wayland.h>
+#include <QtCore/QMutex>
 
 #include <drm_fourcc.h>
 
@@ -48,8 +49,9 @@ public:
     bool importBuffer(wl_resource *resource, LinuxDmabufWlBuffer *linuxDmabufBuffer);
     void removeBuffer(wl_resource *resource);
     void deleteOrphanedTextures();
+    void deleteSpecificOrphanedTexture(QOpenGLTexture *texture);
     void deleteImage(EGLImageKHR image);
-    void deleteGLTextureWhenPossible(QOpenGLTexture *texture) { m_orphanedTextures << texture; }
+    void deleteGLTextureWhenPossible(QOpenGLTexture *texture, QOpenGLContext* ctx);
     PFNGLEGLIMAGETARGETTEXTURE2DOESPROC gl_egl_image_target_texture_2d = nullptr;
 
 private:
@@ -75,7 +77,11 @@ private:
     EGLDisplay m_eglDisplay = EGL_NO_DISPLAY;
     ::wl_display *m_wlDisplay = nullptr;
     bool m_displayBound = false;
+
+    QMutex m_orphanedTexturesLock;
     QList<QOpenGLTexture *> m_orphanedTextures;
+    QList<QMetaObject::Connection> m_orphanedTexturesAboutToBeDestroyedConnection;
+
     QHash<EGLint, YuvFormatConversion> m_yuvFormats;
     bool m_supportsDmabufModifiers = false;
     QHash<struct ::wl_resource *, LinuxDmabufWlBuffer *> m_importedBuffers;

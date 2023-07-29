@@ -107,13 +107,15 @@ public:
         ke->nativeScanCode += offset;
 #endif
         uint32_t code = ke->nativeScanCode;
+        if (code == 0)
+            code = seat->keyboard()->keyToScanCode(ke->key);
         bool isDown = ke->keyType == QEvent::KeyPress;
 
 #if LIRI_FEATURE_aurora_xkbcommon
         xkb_state *xkbState = keyb->xkbState();
-        Qt::KeyboardModifiers modifiers = XkbCommon::modifiers(xkbState);
 
         const xkb_keysym_t sym = xkb_state_key_get_one_sym(xkbState, code);
+        Qt::KeyboardModifiers modifiers = XkbCommon::modifiers(xkbState);
         int qtkey = XkbCommon::keysymToQtKey(sym, modifiers, xkbState, code);
         QString text = XkbCommon::lookupString(xkbState, code);
 

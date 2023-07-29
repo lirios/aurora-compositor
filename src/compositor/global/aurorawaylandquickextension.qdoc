@@ -7,13 +7,13 @@
  * \inmodule AuroraCompositor
  * \ingroup funclists
  *
- * \brief The <WaylandQuickExtension> header file includes \l{macros} for creating Qt Quick types
+ * \brief The <WaylandQuickExtension> header file includes macros for creating Qt Quick types
  * that correspond to subclasses of WaylandCompositorExtension and WaylandObject.
  *
  * If you are creating extensions to Qt Wayland Compositor, the macros in the WaylandQuickExtension
  * header may be a useful alternative to manually implementing the required parts for each class.
  *
- * \sa {Qt Wayland Compositor Examples - Custom Shell}
+ * \sa {Custom Shell}
  */
 
 /*!

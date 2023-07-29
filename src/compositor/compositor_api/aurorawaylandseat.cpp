@@ -460,6 +460,11 @@ bool WaylandSeat::isInputAllowed(WaylandSurface *surface) const
 
 /*!
  * Sends the \a event to the keyboard device.
+ *
+ * \note The \a event should correspond to an actual keyboard key in the current mapping.
+ * For example, \c Qt::Key_Exclam is normally not a separate key: with most keyboards the
+ * exclamation mark is produced with Shift + 1. In that case, to send an exclamation mark
+ * key press event, use \c{QKeyEvent(QEvent::KeyPress, Qt::Key_1, Qt::ShiftModifier)}.
  */
 void WaylandSeat::sendFullKeyEvent(QKeyEvent *event)
 {
@@ -541,6 +546,9 @@ void WaylandSeat::sendFullKeyEvent(QKeyEvent *event)
  * Sends a key press (if \a pressed is \c true) or release (if \a pressed is \c false)
  * event of a key \a qtKey to the keyboard device.
  *
+ * \note This function does not support key events that require modifiers, such as \c Qt::Key_Exclam.
+ * Use \l{sendFullKeyEvent} instead.
+ *
  * \since 5.12
  */
 void WaylandSeat::sendKeyEvent(int qtKey, bool pressed)
@@ -559,6 +567,77 @@ void WaylandSeat::sendKeyEvent(int qtKey, bool pressed)
     } else {
         qWarning() << "Can't send Wayland key event: Unable to get scan code for" << Qt::Key(qtKey);
     }
+}
+
+/*!
+ * \qmlmethod void QtWayland.Compositor::WaylandSeat::sendUnicodeKeyEvent(uint unicode, bool pressed)
+ * \since 6.7
+ *
+ * Sends a key press (if \a pressed is \c true) or release (if \a pressed is \c false)
+ * event of a UCS4 unicode through a text-input protocol.
+ *
+ * \note This function will not work properly if the client does not support the
+ * text-input protocol that the compositor supports.
+ */
+
+/*!
+ * Sends a key press (if \a pressed is \c true) or release (if \a pressed is \c false)
+ * event of a UCS4 unicode through a text-input protocol.
+ *
+ * \note This function will not work properly if the client does not support the
+ * text-input protocol that the compositor supports.
+ *
+ * \sa {sendFullKeyEvent} {sendKeyEvent}
+ *
+ * \since 6.7
+ */
+void WaylandSeat::sendUnicodeKeyEvent(uint unicode, bool pressed)
+{
+    if (!keyboardFocus()) {
+        qWarning("Can't send a unicode key event, no keyboard focus, fix the compositor");
+        return;
+    }
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if QT_CONFIG(im)
+    auto eventType = pressed ? QEvent::KeyPress : QEvent::KeyRelease;
+    // make a keysym value for the UCS4
+    const uint keysym = 0x01000000 | unicode;
+    auto text = XkbCommon::lookupStringNoKeysymTransformations(keysym);
+    QKeyEvent event(eventType, Qt::Key_unknown, Qt::KeyboardModifiers{}, text);
+    if (keyboardFocus()->client()->textInputProtocols().testFlag(WaylandClient::TextInputProtocol::TextInputV2)) {
+        WaylandTextInput *textInput = WaylandTextInput::findIn(this);
+        if (textInput) {
+            textInput->sendKeyEvent(&event);
+            return;
+        }
+    }
+
+    if (keyboardFocus()->client()->textInputProtocols().testFlag(WaylandClient::TextInputProtocol::QtTextInputMethodV1)) {
+        WaylandQtTextInputMethod *textInputMethod = WaylandQtTextInputMethod::findIn(this);
+        if (textInputMethod) {
+            textInputMethod->sendKeyEvent(&event);
+            return;
+        }
+    }
+
+#if QT_WAYLAND_TEXT_INPUT_V4_WIP
+    if (keyboardFocus()->client()->textInputProtocols().testFlag(WaylandClient::TextInputProtocol::TextInputV4)) {
+        WaylandTextInputV4 *textInputV4 = WaylandTextInputV4::findIn(this);
+        if (textInputV4 && !text.isEmpty()) {
+            // it will just commit the text for text-input-unstable-v4-wip when keyPress
+            if (eventType == QEvent::KeyPress)
+                textInputV4->sendKeyEvent(&event);
+            return;
+        }
+    }
+#endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
+#else
+    Q_UNUSED(keysym);
+    Q_UNUSED(pressed);
+    qWarning() << "Can't send a unicode key event: Unable to find a text-input protocol.";
+#endif
+#endif
 }
 
 /*!

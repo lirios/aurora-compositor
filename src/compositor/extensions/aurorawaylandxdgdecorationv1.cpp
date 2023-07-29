@@ -45,8 +45,7 @@ namespace Compositor {
     }
     \endqml
 
-    \sa WaylandXdgToplevel::decorationMode,
-        {Qt Wayland Compositor Examples - Server Side Decoration Compositor}
+    \sa WaylandXdgToplevel::decorationMode, {Server Side Decoration Compositor}
 */
 
 /*!
