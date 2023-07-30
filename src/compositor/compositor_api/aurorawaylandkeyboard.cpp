@@ -168,7 +168,7 @@ void WaylandKeyboardPrivate::maybeUpdateXkbScanCodeTable()
                     continue;
 
                 Qt::KeyboardModifiers mods = {};
-                int qtKey = XkbCommon::keysymToQtKey(syms[0], mods);
+                int qtKey = XkbCommon::keysymToQtKey(syms[0], mods, nullptr, 0, false, false);
                 if (qtKey != 0)
                     scanCodesByQtKey->insert({layout, qtKey}, keycode);
             }
