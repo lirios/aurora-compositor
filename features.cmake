@@ -394,6 +394,28 @@ endif()
 add_feature_info("Aurora::QPA" FEATURE_aurora_qpa "Build Qt platform plugin for Wayland compositors")
 set(LIRI_FEATURE_aurora_qpa "$<IF:${FEATURE_aurora_qpa},1,0>")
 
+# x11
+if(FEATURE_aurora_qpa)
+    option(FEATURE_aurora_qpa_x11 "Qt platform plugin for Wayland compositors: X11 support" ON)
+    if(FEATURE_aurora_qpa_x11)
+        find_package(X11)
+        if(NOT X11_FOUND)
+            message(WARNING "You need X11 for Aurora::QPA::X11")
+            set(FEATURE_aurora_qpa_x11 OFF)
+        endif()
+
+        find_package(XCB COMPONENTS XCB)
+        if(NOT XCB_FOUND)
+            message(WARNING "You need XCB for Aurora::QPA::X11")
+            set(FEATURE_aurora_qpa_x11 OFF)
+        endif()
+    endif()
+else()
+    set(FEATURE_aurora_qpa_x11 OFF)
+endif()
+add_feature_info("Aurora::QPA::X11" FEATURE_aurora_qpa "Build X11 support for the Qt platform plugin for Wayland compositors")
+set(LIRI_FEATURE_aurora_qpa_x11 "$<IF:${FEATURE_aurora_qpa_x11},1,0>")
+
 # shm-emulation-server
 option(FEATURE_aurora_shm_emulation_server "Shm emulation server" ON)
 if(FEATURE_aurora_shm_emulation_server)
