@@ -45,7 +45,7 @@ QT_BEGIN_NAMESPACE
 class QEglFSIntegrationPlugin : public QPlatformIntegrationPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID QPlatformIntegrationFactoryInterface_iid FILE "liri.json")
+    Q_PLUGIN_METADATA(IID QPlatformIntegrationFactoryInterface_iid FILE "aurora-eglfs.json")
 public:
     QPlatformIntegration *create(const QString&, const QStringList&) override;
 };
@@ -53,7 +53,7 @@ public:
 QPlatformIntegration* QEglFSIntegrationPlugin::create(const QString& system, const QStringList& paramList)
 {
     Q_UNUSED(paramList);
-    if (!system.compare(QLatin1String("liri"), Qt::CaseInsensitive))
+    if (!system.compare(QLatin1String("aurora-eglfs"), Qt::CaseInsensitive))
         return new QEglFSIntegration;
 
     return 0;

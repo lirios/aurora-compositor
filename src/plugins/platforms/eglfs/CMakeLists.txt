@@ -86,7 +86,7 @@ liri_extend_target(EglFSDeviceIntegration CONDITION FEATURE_aurora_drm_atomic
 
 liri_finalize_module(EglFSDeviceIntegration)
 
-liri_add_plugin(lirieglfs
+liri_add_plugin(aurora-eglfs
     TYPE
         platforms
     SOURCES
@@ -96,4 +96,4 @@ liri_add_plugin(lirieglfs
         Fontconfig::Fontconfig
 )
 
-liri_finalize_plugin(lirieglfs)
+liri_finalize_plugin(aurora-eglfs)
