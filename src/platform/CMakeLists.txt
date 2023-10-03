@@ -27,6 +27,7 @@ liri_add_module(AuroraPlatform
         outputsmodel.cpp outputsmodel.h outputsmodel_p.h
         pointerdevice.cpp pointerdevice.h
         session.cpp session.h
+        session_logind.cpp session_logind_p.h
         session_noop.cpp session_noop_p.h
         touchdevice.cpp touchdevice.h
         window.cpp window.h window_p.h
@@ -38,6 +39,7 @@ liri_add_module(AuroraPlatform
         PkgConfig::LibDisplayInfo
     PUBLIC_LIBRARIES
         Qt6::Core
+        Qt6::DBus
         Qt6::Gui
         Liri::AuroraCore
         Qt6::Qml

@@ -23,6 +23,7 @@ public:
 
     enum class Type {
         Noop,
+        Logind,
     };
     Q_ENUM(Type)
 
@@ -46,6 +47,7 @@ public:
     virtual void switchTo(uint terminal) = 0;
 
     static Session *create(QObject *parent = nullptr);
+    static Session *create(Type type, QObject *parent = nullptr);
 
 Q_SIGNALS:
     void activeChanged(bool active);

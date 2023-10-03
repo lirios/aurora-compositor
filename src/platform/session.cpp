@@ -4,6 +4,7 @@
 
 #include "session.h"
 #include "session_noop_p.h"
+#include "session_logind_p.h"
 
 namespace Aurora {
 
@@ -108,6 +109,7 @@ static const struct
     Session::Type type;
     std::function<Session *(QObject *parent)> createFunc;
 } s_availableSessions[] = {
+    { Session::Type::Logind, &LogindSession::create },
     { Session::Type::Noop, &NoopSession::create },
 };
 
@@ -122,6 +124,16 @@ Session *Session::create(QObject *parent)
         auto *session = sessionInfo.createFunc(parent);
         if (session)
             return session;
+    }
+
+    return nullptr;
+}
+
+Session *Session::create(Type type, QObject *parent)
+{
+    for (const auto &sessionInfo : s_availableSessions) {
+        if (sessionInfo.type == type)
+            return sessionInfo.createFunc(parent);
     }
 
     return nullptr;
