@@ -64,7 +64,6 @@ liri_add_module(AuroraCompositor
         extensions/aurorawlqtkey.cpp extensions/aurorawlqtkey_p.h
         extensions/aurorawlqttouch.cpp extensions/aurorawlqttouch_p.h
         global/aurorawaylandcompositorextension.cpp global/aurorawaylandcompositorextension.h global/aurorawaylandcompositorextension_p.h
-        global/liriauroracompositorfeatures.h.in
         global/aurorawaylandutils_p.h
         global/aurorawaylandqmlinclude.h
         wayland_wrapper/aurorawlbuffermanager.cpp wayland_wrapper/aurorawlbuffermanager_p.h
@@ -90,18 +89,15 @@ liri_add_module(AuroraCompositor
         Wayland::Server
     LIBRARIES
         Qt::GuiPrivate
+        Liri::AuroraGlobalPrivate
     PKGCONFIG_DEPENDENCIES
         Qt${QT_DEFAULT_MAJOR_VERSION}Core
         Qt${QT_DEFAULT_MAJOR_VERSION}Gui
         wayland-server
 )
 
-configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/global/liriauroracompositorfeatures.h.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/liriauroracompositorfeatures.h"
-    @ONLY
-)
-set(_global_header_features "#include <LiriAuroraCompositor/liriauroracompositorfeatures.h>
+set(_global_header_features "#include <LiriAuroraGlobalPrivate/aurorafeatures.h>
+#include <QtGui/qtgui-config.h>
 #include <QtGui/qtguiglobal.h>")
 liri_extend_target(AuroraCompositor
     SOURCES

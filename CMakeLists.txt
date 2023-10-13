@@ -36,6 +36,7 @@ if(NOT LIRI_SUPERBUILD)
 endif()
 
 ## Add subdirectories:
+add_subdirectory(src/global)
 if(FEATURE_aurora_xkbcommon)
     add_subdirectory(src/platformsupport/xkbcommon)
 endif()
