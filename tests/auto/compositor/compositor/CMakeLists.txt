@@ -23,9 +23,6 @@ liri_add_test(tst_compositor
         Wayland::Server
 )
 
-if(NOT TARGET Liri::AuroraClient)
-    find_package(Liri1AuroraClient REQUIRED)
-endif()
 liri_generate_wayland_protocol_client_sources(tst_compositor
     FILES
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../../src/3rdparty/protocol/idle-inhibit-unstable-v1.xml"
