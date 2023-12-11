@@ -1,20 +1,21 @@
 // Copyright (C) 2017 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef BRCMBUFFER_H
-#define BRCMBUFFER_H
+#pragma once
 
-#include <QtWaylandCompositor/private/qwayland-server-wayland.h>
-#include <QtWaylandCompositor/private/qwaylandutils_p.h>
+#include <LiriAuroraCompositor/private/aurora-server-wayland.h>
+#include <LiriAuroraCompositor/private/aurorawaylandutils_p.h>
 
 #include <QtCore/QList>
 #include <QtCore/QSize>
 
 #include <EGL/egl.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class BrcmBuffer : public QtWaylandServer::wl_buffer
+namespace Compositor {
+
+class BrcmBuffer : public PrivateServer::wl_buffer
 {
 public:
     BrcmBuffer(struct ::wl_client *client, uint32_t id, const QSize &size, EGLint *data, size_t count);
@@ -27,7 +28,7 @@ public:
 
     QSize size() { return m_size; }
 
-    static BrcmBuffer *fromResource(struct ::wl_resource *resource) { return QtWayland::fromResource<BrcmBuffer *>(resource); }
+    static BrcmBuffer *fromResource(struct ::wl_resource *resource) { return Internal::fromResource<BrcmBuffer *>(resource); }
 
 protected:
     void buffer_destroy_resource(Resource *resource) override;
@@ -39,6 +40,7 @@ private:
     QSize m_size;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // BRCMBUFFER_H
+} // namespace Aurora
+

@@ -1,11 +1,14 @@
 // Copyright (C) 2017 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
 
-#ifndef MOCKPOINTER_H
-#define MOCKPOINTER_H
+#pragma once
 
 #include <QObject>
 #include "wayland-wayland-client-protocol.h"
+
+namespace Aurora {
+
+namespace Compositor {
 
 class MockPointer : public QObject
 {
@@ -19,4 +22,7 @@ public:
     wl_surface *m_enteredSurface = nullptr;
 };
 
-#endif // MOCKPOINTER_H
+} // namespace Compositor
+
+} // namespace Aurora
+

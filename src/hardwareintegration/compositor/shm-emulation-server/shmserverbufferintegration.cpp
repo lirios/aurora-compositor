@@ -9,10 +9,12 @@
 
 #include <QtCore/QDebug>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-ShmServerBuffer::ShmServerBuffer(ShmServerBufferIntegration *integration, const QImage &qimage, QtWayland::ServerBuffer::Format format)
-    : QtWayland::ServerBuffer(qimage.size(),format)
+namespace Compositor {
+
+ShmServerBuffer::ShmServerBuffer(ShmServerBufferIntegration *integration, const QImage &qimage, Internal::ServerBuffer::Format format)
+    : Internal::ServerBuffer(qimage.size(),format)
     , m_integration(integration)
     , m_width(qimage.width())
     , m_height(qimage.height())
@@ -21,14 +23,14 @@ ShmServerBuffer::ShmServerBuffer(ShmServerBufferIntegration *integration, const 
     m_format = format;
     switch (m_format) {
         case RGBA32:
-            m_shm_format = QtWaylandServer::qt_shm_emulation_server_buffer::format_RGBA32;
+            m_shm_format = PrivateServer::qt_shm_emulation_server_buffer::format_RGBA32;
             break;
         case A8:
-            m_shm_format = QtWaylandServer::qt_shm_emulation_server_buffer::format_A8;
+            m_shm_format = PrivateServer::qt_shm_emulation_server_buffer::format_A8;
             break;
         default:
             qWarning("ShmServerBuffer: unsupported format");
-            m_shm_format = QtWaylandServer::qt_shm_emulation_server_buffer::format_RGBA32;
+            m_shm_format = PrivateServer::qt_shm_emulation_server_buffer::format_RGBA32;
             break;
     }
 
@@ -89,29 +91,31 @@ ShmServerBufferIntegration::~ShmServerBufferIntegration()
 {
 }
 
-bool ShmServerBufferIntegration::initializeHardware(QWaylandCompositor *compositor)
+bool ShmServerBufferIntegration::initializeHardware(WaylandCompositor *compositor)
 {
     Q_ASSERT(QGuiApplication::platformNativeInterface());
 
-    QtWaylandServer::qt_shm_emulation_server_buffer::init(compositor->display(), 1);
+    PrivateServer::qt_shm_emulation_server_buffer::init(compositor->display(), 1);
     return true;
 }
 
-bool ShmServerBufferIntegration::supportsFormat(QtWayland::ServerBuffer::Format format) const
+bool ShmServerBufferIntegration::supportsFormat(Internal::ServerBuffer::Format format) const
 {
     switch (format) {
-        case QtWayland::ServerBuffer::RGBA32:
+        case Internal::ServerBuffer::RGBA32:
             return true;
-        case QtWayland::ServerBuffer::A8:
+        case Internal::ServerBuffer::A8:
             return true;
         default:
             return false;
     }
 }
 
-QtWayland::ServerBuffer *ShmServerBufferIntegration::createServerBufferFromImage(const QImage &qimage, QtWayland::ServerBuffer::Format format)
+Internal::ServerBuffer *ShmServerBufferIntegration::createServerBufferFromImage(const QImage &qimage, Internal::ServerBuffer::Format format)
 {
     return new ShmServerBuffer(this, qimage, format);
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

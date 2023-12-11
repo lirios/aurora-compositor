@@ -1,31 +1,32 @@
 // Copyright (C) 2019 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef VULKANSERVERBUFFERINTEGRATION_H
-#define VULKANSERVERBUFFERINTEGRATION_H
+#pragma once
 
-#include <QtWaylandCompositor/private/qwlserverbufferintegration_p.h>
+#include <LiriAuroraCompositor/private/aurorawlserverbufferintegration_p.h>
 
-#include "qwayland-server-qt-vulkan-server-buffer-unstable-v1.h"
+#include "aurora-server-qt-vulkan-server-buffer-unstable-v1.h"
 
 #include <QtGui/QImage>
 #include <QtGui/QWindow>
 #include <QtGui/qpa/qplatformnativeinterface.h>
 #include <QtGui/QGuiApplication>
 
-#include <QtWaylandCompositor/qwaylandcompositor.h>
-#include <QtWaylandCompositor/private/qwayland-server-server-buffer-extension.h>
+#include <LiriAuroraCompositor/aurorawaylandcompositor.h>
+#include <LiriAuroraCompositor/private/aurora-server-server-buffer-extension.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 class VulkanServerBufferIntegration;
 class VulkanWrapper;
 struct VulkanImageWrapper;
 
-class VulkanServerBuffer : public QtWayland::ServerBuffer, public QtWaylandServer::qt_server_buffer
+class VulkanServerBuffer : public Internal::ServerBuffer, public PrivateServer::qt_server_buffer
 {
 public:
-    VulkanServerBuffer(VulkanServerBufferIntegration *integration, const QImage &qimage, QtWayland::ServerBuffer::Format format);
+    VulkanServerBuffer(VulkanServerBufferIntegration *integration, const QImage &qimage, Internal::ServerBuffer::Format format);
     VulkanServerBuffer(VulkanServerBufferIntegration *integration, VulkanImageWrapper *vImage, uint glInternalFormat, const QSize &size);
     ~VulkanServerBuffer() override;
 
@@ -51,8 +52,8 @@ private:
 };
 
 class VulkanServerBufferIntegration :
-    public QtWayland::ServerBufferIntegration,
-    public QtWaylandServer::zqt_vulkan_server_buffer_v1
+    public Internal::ServerBufferIntegration,
+    public PrivateServer::zqt_vulkan_server_buffer_v1
 {
 public:
     VulkanServerBufferIntegration();
@@ -60,17 +61,18 @@ public:
 
     VulkanWrapper *vulkanWrapper() const { return m_vulkanWrapper; }
 
-    bool initializeHardware(QWaylandCompositor *) override;
+    bool initializeHardware(WaylandCompositor *) override;
 
-    bool supportsFormat(QtWayland::ServerBuffer::Format format) const override;
-    QtWayland::ServerBuffer *createServerBufferFromImage(const QImage &qimage, QtWayland::ServerBuffer::Format format) override;
-    QtWayland::ServerBuffer *createServerBufferFromData(QByteArrayView view, const QSize &size,
+    bool supportsFormat(Internal::ServerBuffer::Format format) const override;
+    Internal::ServerBuffer *createServerBufferFromImage(const QImage &qimage, Internal::ServerBuffer::Format format) override;
+    Internal::ServerBuffer *createServerBufferFromData(QByteArrayView view, const QSize &size,
                                                         uint glInternalFormat) override;
 
 private:
     VulkanWrapper *m_vulkanWrapper = nullptr;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif
+} // namespace Aurora
+

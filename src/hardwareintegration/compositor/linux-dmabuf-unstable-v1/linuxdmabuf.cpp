@@ -4,14 +4,16 @@
 #include "linuxdmabuf.h"
 #include "linuxdmabufclientbufferintegration.h"
 
-#include <QtWaylandCompositor/QWaylandCompositor>
-#include <QtWaylandCompositor/private/qwltextureorphanage_p.h>
+#include <LiriAuroraCompositor/WaylandCompositor>
+#include <LiriAuroraCompositor/private/aurorawltextureorphanage_p.h>
 
 #include <drm_fourcc.h>
 #include <drm_mode.h>
 #include <unistd.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 LinuxDmabuf::LinuxDmabuf(wl_display *display, LinuxDmabufClientBufferIntegration *clientBufferIntegration)
     : zwp_linux_dmabuf_v1(display, 3 /*version*/)
@@ -124,7 +126,7 @@ bool LinuxDmabufParams::handleCreateParams(Resource *resource, int width, int he
         // do not report an error as it might be caused by the kernel not supporting seeking on dmabuf
         off_t size = lseek(plane.fd, 0, SEEK_END);
         if (size == -1) {
-            qCDebug(qLcWaylandCompositorHardwareIntegration) << "Seeking is not supported";
+            qCDebug(gLcAuroraCompositorHardwareIntegration) << "Seeking is not supported";
             continue;
         }
 
@@ -263,7 +265,7 @@ void LinuxDmabufWlBuffer::buffer_destroy(Resource *resource)
 
     for (uint32_t i = 0; i < m_planesNumber; ++i) {
         if (m_textures[i] != nullptr) {
-            QtWayland::QWaylandTextureOrphanage::instance()->admitTexture(m_textures[i],
+            Internal::WaylandTextureOrphanage::instance()->admitTexture(m_textures[i],
                                                                           m_texturesContext[i]);
             m_textures[i] = nullptr;
             m_texturesContext[i] = nullptr;
@@ -311,7 +313,7 @@ void LinuxDmabufWlBuffer::initTexture(uint32_t plane, QOpenGLTexture *texture)
 
         delete this->m_textures[plane];
 
-        qCDebug(qLcWaylandCompositorHardwareIntegration)
+        qCDebug(gLcAuroraCompositorHardwareIntegration)
                 << Q_FUNC_INFO
                 << "texture deleted due to QOpenGLContext::aboutToBeDestroyed!"
                 << "Pointer (now dead) was:" << (void*)(this->m_textures[plane])
@@ -332,4 +334,6 @@ void LinuxDmabufWlBuffer::buffer_destroy_resource(Resource *resource)
     delete this;
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

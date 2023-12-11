@@ -15,6 +15,10 @@
 #include <errno.h>
 #include <sys/mman.h>
 
+namespace Aurora {
+
+namespace Compositor {
+
 const struct wl_registry_listener MockClient::registryListener = {
     MockClient::handleGlobal,
     MockClient::handleGlobalRemove
@@ -75,7 +79,7 @@ void MockClient::outputGeometryEvent(void *data, wl_output *,
 void MockClient::outputModeEvent(void *data, wl_output *, uint32_t flags,
                                  int w, int h, int refreshRate)
 {
-    QWaylandOutputMode mode(QSize(w, h), refreshRate);
+    WaylandOutputMode mode(QSize(w, h), refreshRate);
 
     if (flags & WL_OUTPUT_MODE_CURRENT) {
         resolve(data)->geometry.setSize(QSize(w, h));
@@ -174,7 +178,7 @@ void MockClient::handleGlobal(uint32_t id, const QByteArray &interface)
     } else if (interface == "zwp_idle_inhibit_manager_v1") {
         idleInhibitManager = static_cast<zwp_idle_inhibit_manager_v1 *>(wl_registry_bind(registry, id, &zwp_idle_inhibit_manager_v1_interface, 1));
     } else if (interface == "zxdg_output_manager_v1") {
-        xdgOutputManager = new QtWayland::zxdg_output_manager_v1(registry, id, 2);
+        xdgOutputManager = new Aurora::Client::PrivateClient::zxdg_output_manager_v1(registry, id, 2);
     }
 }
 
@@ -276,3 +280,6 @@ ShmBuffer::~ShmBuffer()
     wl_shm_pool_destroy(shm_pool);
 }
 
+} // namespace Compositor
+
+} // namespace Aurora

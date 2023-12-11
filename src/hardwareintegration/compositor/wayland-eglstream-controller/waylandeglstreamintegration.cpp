@@ -4,7 +4,7 @@
 #include "waylandeglstreamintegration.h"
 #include "waylandeglstreamcontroller.h"
 
-#include <QtWaylandCompositor/QWaylandCompositor>
+#include <LiriAuroraCompositor/WaylandCompositor>
 #include <QtOpenGL/QOpenGLTexture>
 #include <QtGui/QGuiApplication>
 #include <QtGui/QOpenGLContext>
@@ -14,9 +14,9 @@
 #include <QtGui/private/qeglstreamconvenience_p.h>
 #include <qpa/qplatformnativeinterface.h>
 
-#include <QtWaylandCompositor/private/qwaylandcompositor_p.h>
-#include <QtWaylandCompositor/private/qwlbuffermanager_p.h>
-#include <QtWaylandCompositor/private/qwltextureorphanage_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandcompositor_p.h>
+#include <LiriAuroraCompositor/private/aurorawlbuffermanager_p.h>
+#include <LiriAuroraCompositor/private/aurorawltextureorphanage_p.h>
 
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
@@ -70,7 +70,9 @@
 #define EGL_PLATFORM_X11_KHR        0x31D5
 #endif
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 /* Needed for compatibility with Mesa older than 10.0. */
 typedef EGLBoolean (EGLAPIENTRYP PFNEGLQUERYWAYLANDBUFFERWL_compat) (EGLDisplay dpy, struct wl_resource *buffer, EGLint attribute, EGLint *value);
@@ -186,7 +188,7 @@ void WaylandEglStreamClientBufferIntegrationPrivate::setupBufferAndCleanup(Buffe
 
     Q_ASSERT(bs->texturesContext[plane] != nullptr);
 
-    qCDebug(qLcWaylandCompositorHardwareIntegration)
+    qCDebug(gLcAuroraCompositorHardwareIntegration)
             << Q_FUNC_INFO
             << "(eglstream) creating a cleanup-lambda for QOpenGLContext::aboutToBeDestroyed!"
             << ", texture: " << bs->textures[plane]
@@ -205,7 +207,7 @@ void WaylandEglStreamClientBufferIntegrationPrivate::setupBufferAndCleanup(Buffe
 
         delete bs->textures[plane];
 
-        qCDebug(qLcWaylandCompositorHardwareIntegration)
+        qCDebug(gLcAuroraCompositorHardwareIntegration)
                 << Q_FUNC_INFO
                 << "texture deleted due to QOpenGLContext::aboutToBeDestroyed!"
                 << "Pointer (now dead) was:" << (void*)(bs->textures[plane])
@@ -302,7 +304,7 @@ WaylandEglStreamClientBufferIntegration::~WaylandEglStreamClientBufferIntegratio
     if (d->egl_unbind_wayland_display != nullptr && d->display_bound) {
         Q_ASSERT(d->wlDisplay != nullptr);
         if (!d->egl_unbind_wayland_display(d->egl_display, d->wlDisplay))
-            qCWarning(qLcWaylandCompositorHardwareIntegration) << "eglUnbindWaylandDisplayWL failed";
+            qCWarning(gLcAuroraCompositorHardwareIntegration) << "eglUnbindWaylandDisplayWL failed";
     }
 }
 
@@ -312,7 +314,7 @@ void WaylandEglStreamClientBufferIntegration::attachEglStreamConsumer(struct ::w
     Q_UNUSED(wl_surface);
 
     auto *clientBuffer = new WaylandEglStreamClientBuffer(this, wl_buffer);
-    auto *bufferManager = QWaylandCompositorPrivate::get(m_compositor)->bufferManager();
+    auto *bufferManager = WaylandCompositorPrivate::get(m_compositor)->bufferManager();
     bufferManager->registerBuffer(wl_buffer, clientBuffer);
 
     d->initEglStream(clientBuffer, wl_buffer);
@@ -358,7 +360,7 @@ void WaylandEglStreamClientBufferIntegration::initializeHardware(struct wl_displ
     if (d->egl_bind_wayland_display && d->egl_unbind_wayland_display) {
         d->display_bound = d->egl_bind_wayland_display(d->egl_display, display);
         if (!d->display_bound)
-            qCDebug(qLcWaylandCompositorHardwareIntegration) << "Wayland display already bound by other client buffer integration.";
+            qCDebug(gLcAuroraCompositorHardwareIntegration) << "Wayland display already bound by other client buffer integration.";
 
         d->wlDisplay = display;
     }
@@ -369,7 +371,7 @@ void WaylandEglStreamClientBufferIntegration::initializeHardware(struct wl_displ
     d->funcs->initialize(d->egl_display);
 }
 
-QtWayland::ClientBuffer *WaylandEglStreamClientBufferIntegration::createBufferFor(wl_resource *buffer)
+Internal::ClientBuffer *WaylandEglStreamClientBufferIntegration::createBufferFor(wl_resource *buffer)
 {
     if (wl_shm_buffer_get(buffer))
         return nullptr;
@@ -405,12 +407,12 @@ WaylandEglStreamClientBuffer::~WaylandEglStreamClientBuffer()
         for (int i=0; i<3; i++) {
             if (d->textures[i] != nullptr) {
 
-                qCDebug(qLcWaylandCompositorHardwareIntegration)
+                qCDebug(gLcAuroraCompositorHardwareIntegration)
                         << Q_FUNC_INFO << " handing over texture!"
                         << (void*)d->textures[i] << "; " << (void*)d->texturesContext[i]
                         <<  " ... current context might be the same: " << QOpenGLContext::currentContext();
 
-                QtWayland::QWaylandTextureOrphanage::instance()->admitTexture(
+                Internal::WaylandTextureOrphanage::instance()->admitTexture(
                         d->textures[i], d->texturesContext[i]);
                 d->textures[i] = nullptr;               // in case the aboutToBeDestroyed lambda is called while we where here
                 d->texturesContext[i] = nullptr;
@@ -424,9 +426,9 @@ WaylandEglStreamClientBuffer::~WaylandEglStreamClientBuffer()
 }
 
 
-QWaylandBufferRef::BufferFormatEgl WaylandEglStreamClientBuffer::bufferFormatEgl() const
+WaylandBufferRef::BufferFormatEgl WaylandEglStreamClientBuffer::bufferFormatEgl() const
 {
-    return QWaylandBufferRef::BufferFormatEgl_EXTERNAL_OES;
+    return WaylandBufferRef::BufferFormatEgl_EXTERNAL_OES;
 }
 
 
@@ -435,15 +437,15 @@ QSize WaylandEglStreamClientBuffer::size() const
     return d->size;
 }
 
-QWaylandSurface::Origin WaylandEglStreamClientBuffer::origin() const
+WaylandSurface::Origin WaylandEglStreamClientBuffer::origin() const
 {
-    return d->isYInverted ? QWaylandSurface::OriginTopLeft : QWaylandSurface::OriginBottomLeft;
+    return d->isYInverted ? WaylandSurface::OriginTopLeft : WaylandSurface::OriginBottomLeft;
 }
 
 QOpenGLTexture *WaylandEglStreamClientBuffer::toOpenGlTexture(int plane)
 {
     // At this point we should have a valid OpenGL context, so it's safe to destroy textures
-    QtWayland::QWaylandTextureOrphanage::instance()->deleteTextures();
+    Internal::WaylandTextureOrphanage::instance()->deleteTextures();
 
     if (!m_buffer)
         return nullptr;
@@ -458,4 +460,6 @@ void WaylandEglStreamClientBuffer::setCommitted(QRegion &damage)
     p->handleEglstreamTexture(this);
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

@@ -1,20 +1,19 @@
 // Copyright (C) 2018 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef DMABUFSERVERBUFFERINTEGRATION_H
-#define DMABUFSERVERBUFFERINTEGRATION_H
+#pragma once
 
 #include <QtCore/QVariant>
-#include <QtWaylandCompositor/private/qwlserverbufferintegration_p.h>
+#include <LiriAuroraCompositor/private/aurorawlserverbufferintegration_p.h>
 
-#include "qwayland-server-qt-dmabuf-server-buffer.h"
+#include "aurora-server-qt-dmabuf-server-buffer.h"
 
 #include <QtGui/QWindow>
 #include <QtGui/qpa/qplatformnativeinterface.h>
 #include <QtGui/QGuiApplication>
 
-#include <QtWaylandCompositor/qwaylandcompositor.h>
-#include <QtWaylandCompositor/private/qwayland-server-server-buffer-extension.h>
+#include <LiriAuroraCompositor/aurorawaylandcompositor.h>
+#include <LiriAuroraCompositor/private/aurora-server-server-buffer-extension.h>
 
 #include <QtCore/QDebug>
 #include <EGL/egl.h>
@@ -35,15 +34,17 @@ typedef EGLBoolean (EGLAPIENTRYP PFNEGLEXPORTDMABUFIMAGEQUERYMESAPROC) (EGLDispl
 typedef EGLBoolean (EGLAPIENTRYP PFNEGLEXPORTDMABUFIMAGEMESAPROC) (EGLDisplay dpy, EGLImageKHR image, int *fds, EGLint *strides, EGLint *offsets);
 #endif
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 class DmaBufServerBufferIntegration;
 class QImage;
 
-class DmaBufServerBuffer : public QtWayland::ServerBuffer, public QtWaylandServer::qt_server_buffer
+class DmaBufServerBuffer : public Internal::ServerBuffer, public PrivateServer::qt_server_buffer
 {
 public:
-    DmaBufServerBuffer(DmaBufServerBufferIntegration *integration, const QImage &qimage, QtWayland::ServerBuffer::Format format);
+    DmaBufServerBuffer(DmaBufServerBufferIntegration *integration, const QImage &qimage, Internal::ServerBuffer::Format format);
     ~DmaBufServerBuffer() override;
 
     struct ::wl_resource *resourceForClient(struct ::wl_client *) override;
@@ -66,17 +67,17 @@ private:
 };
 
 class DmaBufServerBufferIntegration :
-    public QtWayland::ServerBufferIntegration,
-    public QtWaylandServer::qt_dmabuf_server_buffer
+    public Internal::ServerBufferIntegration,
+    public PrivateServer::qt_dmabuf_server_buffer
 {
 public:
     DmaBufServerBufferIntegration();
     ~DmaBufServerBufferIntegration() override;
 
-    bool initializeHardware(QWaylandCompositor *) override;
+    bool initializeHardware(WaylandCompositor *) override;
 
-    bool supportsFormat(QtWayland::ServerBuffer::Format format) const override;
-    QtWayland::ServerBuffer *createServerBufferFromImage(const QImage &qimage, QtWayland::ServerBuffer::Format format) override;
+    bool supportsFormat(Internal::ServerBuffer::Format format) const override;
+    Internal::ServerBuffer *createServerBufferFromImage(const QImage &qimage, Internal::ServerBuffer::Format format) override;
 
     EGLDisplay display() const { return m_egl_display; }
 
@@ -109,7 +110,7 @@ private:
 EGLImageKHR DmaBufServerBufferIntegration::eglCreateImageKHR(EGLContext ctx, EGLenum target, EGLClientBuffer buffer, const EGLint *attrib_list)
 {
     if (!m_egl_create_image) {
-        qCWarning(qLcWaylandCompositorHardwareIntegration) << "DmaBufServerBufferIntegration: Trying to use unresolved function eglCreateImageKHR";
+        qCWarning(gLcAuroraCompositorHardwareIntegration) << "DmaBufServerBufferIntegration: Trying to use unresolved function eglCreateImageKHR";
         return EGL_NO_IMAGE_KHR;
     }
     return m_egl_create_image(m_egl_display, ctx, target, buffer, attrib_list);
@@ -118,7 +119,7 @@ EGLImageKHR DmaBufServerBufferIntegration::eglCreateImageKHR(EGLContext ctx, EGL
 EGLBoolean DmaBufServerBufferIntegration::eglDestroyImageKHR(EGLImageKHR image)
 {
     if (!m_egl_destroy_image) {
-        qCWarning(qLcWaylandCompositorHardwareIntegration) << "DmaBufServerBufferIntegration: Trying to use unresolved function eglDestroyImageKHR";
+        qCWarning(gLcAuroraCompositorHardwareIntegration) << "DmaBufServerBufferIntegration: Trying to use unresolved function eglDestroyImageKHR";
         return false;
     }
     return m_egl_destroy_image(m_egl_display, image);
@@ -132,7 +133,7 @@ EGLBoolean DmaBufServerBufferIntegration::eglExportDMABUFImageQueryMESA(EGLImage
     if (m_egl_export_dmabuf_image_query)
         return m_egl_export_dmabuf_image_query(m_egl_display, image, fourcc, num_planes, modifiers);
     else
-        qCWarning(qLcWaylandCompositorHardwareIntegration) << "DmaBufServerBufferIntegration: Trying to use unresolved function eglExportDMABUFImageQueryMESA";
+        qCWarning(gLcAuroraCompositorHardwareIntegration) << "DmaBufServerBufferIntegration: Trying to use unresolved function eglExportDMABUFImageQueryMESA";
     return false;
 }
 
@@ -144,7 +145,7 @@ EGLBoolean DmaBufServerBufferIntegration::eglExportDMABUFImageMESA(EGLImageKHR i
     if (m_egl_export_dmabuf_image)
         return m_egl_export_dmabuf_image(m_egl_display, image, fds, strides, offsets);
     else
-        qCWarning(qLcWaylandCompositorHardwareIntegration) << "DmaBufServerBufferIntegration: Trying to use unresolved function eglExportDMABUFImageMESA";
+        qCWarning(gLcAuroraCompositorHardwareIntegration) << "DmaBufServerBufferIntegration: Trying to use unresolved function eglExportDMABUFImageMESA";
     return false;
 }
 
@@ -153,8 +154,9 @@ void DmaBufServerBufferIntegration::glEGLImageTargetTexture2DOES(GLenum target, 
     if (m_gl_egl_image_target_texture_2d)
         return m_gl_egl_image_target_texture_2d(target, image);
     else
-        qCWarning(qLcWaylandCompositorHardwareIntegration) << "DmaBufServerBufferIntegration: Trying to use unresolved function glEGLImageTargetTexture2DOES";
+        qCWarning(gLcAuroraCompositorHardwareIntegration) << "DmaBufServerBufferIntegration: Trying to use unresolved function glEGLImageTargetTexture2DOES";
 }
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif
+} // namespace Aurora
+

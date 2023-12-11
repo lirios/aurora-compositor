@@ -1,16 +1,19 @@
 // Copyright (C) 2019 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
 
-#ifndef MOCKXDGOUTPUTV1_H
-#define MOCKXDGOUTPUTV1_H
+#pragma once
 
 #include <QPoint>
 #include <QSize>
 #include <QString>
 
-#include "qwayland-xdg-output-unstable-v1.h"
+#include "aurora-client-xdg-output-unstable-v1.h"
 
-class MockXdgOutputV1 : public QtWayland::zxdg_output_v1
+namespace Aurora {
+
+namespace Compositor {
+
+class MockXdgOutputV1 : public Aurora::Client::PrivateClient::zxdg_output_v1
 {
 public:
     explicit MockXdgOutputV1(struct ::zxdg_output_v1 *object);
@@ -36,4 +39,7 @@ protected:
     void zxdg_output_v1_description(const QString &description) override;
 };
 
-#endif // MOCKXDGOUTPUTV1_H
+} // namespace Compositor
+
+} // namespace Aurora
+

@@ -1,17 +1,18 @@
 // Copyright (C) 2019 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
-#ifndef WAYLANDEGLSTREAMINTEGRATION_H
-#define WAYLANDEGLSTREAMINTEGRATION_H
+#pragma once
 
-#include <QtWaylandCompositor/private/qwlclientbufferintegration_p.h>
+#include <LiriAuroraCompositor/private/aurorawlclientbufferintegration_p.h>
 #include <QtCore/QScopedPointer>
-#include <QtWaylandCompositor/private/qwlclientbuffer_p.h>
+#include <LiriAuroraCompositor/private/aurorawlclientbuffer_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 class WaylandEglStreamClientBufferIntegrationPrivate;
 
-class WaylandEglStreamClientBufferIntegration : public QtWayland::ClientBufferIntegration
+class WaylandEglStreamClientBufferIntegration : public Internal::ClientBufferIntegration
 {
     Q_DECLARE_PRIVATE(WaylandEglStreamClientBufferIntegration)
 public:
@@ -20,7 +21,7 @@ public:
 
     void initializeHardware(struct ::wl_display *display) override;
 
-    QtWayland::ClientBuffer *createBufferFor(wl_resource *buffer) override;
+    Internal::ClientBuffer *createBufferFor(wl_resource *buffer) override;
 
     void attachEglStreamConsumer(struct ::wl_resource *wl_surface, struct ::wl_resource *wl_buffer);
 
@@ -31,14 +32,14 @@ private:
 
 struct BufferState;
 
-class WaylandEglStreamClientBuffer : public QtWayland::ClientBuffer
+class WaylandEglStreamClientBuffer : public Internal::ClientBuffer
 {
 public:
     ~WaylandEglStreamClientBuffer() override;
 
-    QWaylandBufferRef::BufferFormatEgl bufferFormatEgl() const override;
+    WaylandBufferRef::BufferFormatEgl bufferFormatEgl() const override;
     QSize size() const override;
-    QWaylandSurface::Origin origin() const override;
+    WaylandSurface::Origin origin() const override;
     QOpenGLTexture *toOpenGlTexture(int plane) override;
     void setCommitted(QRegion &damage) override;
 
@@ -52,6 +53,7 @@ private:
     WaylandEglStreamClientBufferIntegration *m_integration = nullptr;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // WAYLANDEGLSTREAMINTEGRATION_H
+} // namespace Aurora
+

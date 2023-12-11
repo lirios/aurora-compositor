@@ -1,5 +1,30 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+/****************************************************************************
+**
+** Copyright (C) 2016 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of the test suite of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:GPL-EXCEPT$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-3.0.html.
+**
+** $QT_END_LICENSE$
+**
+****************************************************************************/
 
 #include "mockclient.h"
 #include "mockseat.h"
@@ -9,27 +34,30 @@
 #include "testkeyboardgrabber.h"
 #include "testseat.h"
 
-#include "qwaylandview.h"
-#include "qwaylandbufferref.h"
-#include "qwaylandseat.h"
-
 #include <QtGui/QScreen>
-#include <QtWaylandCompositor/QWaylandXdgShell>
-#include <QtWaylandCompositor/private/qwaylandkeyboard_p.h>
-#include <QtWaylandCompositor/QWaylandIviApplication>
-#include <QtWaylandCompositor/QWaylandIviSurface>
-#include <QtWaylandCompositor/QWaylandSurface>
-#include <QtWaylandCompositor/QWaylandResource>
-#include <QtWaylandCompositor/QWaylandKeymap>
-#include <QtWaylandCompositor/QWaylandViewporter>
-#include <QtWaylandCompositor/QWaylandIdleInhibitManagerV1>
-#include <QtWaylandCompositor/QWaylandXdgOutputManagerV1>
-#include <qwayland-xdg-shell.h>
-#include <qwayland-ivi-application.h>
-#include <QtWaylandCompositor/private/qwaylandoutput_p.h>
-#include <QtWaylandCompositor/private/qwaylandsurface_p.h>
+#include <LiriAuroraCompositor/WaylandBufferRef>
+#include <LiriAuroraCompositor/WaylandXdgShell>
+#include <LiriAuroraCompositor/private/aurorawaylandkeyboard_p.h>
+#include <LiriAuroraCompositor/WaylandIviApplication>
+#include <LiriAuroraCompositor/WaylandIviSurface>
+#include <LiriAuroraCompositor/WaylandSeat>
+#include <LiriAuroraCompositor/WaylandSurface>
+#include <LiriAuroraCompositor/WaylandResource>
+#include <LiriAuroraCompositor/WaylandKeymap>
+#include <LiriAuroraCompositor/WaylandView>
+#include <LiriAuroraCompositor/WaylandViewporter>
+#include <LiriAuroraCompositor/WaylandIdleInhibitManagerV1>
+#include <LiriAuroraCompositor/WaylandXdgOutputManagerV1>
+#include <aurora-client-xdg-shell.h>
+#include <aurora-client-ivi-application.h>
+#include <LiriAuroraCompositor/private/aurorawaylandoutput_p.h>
+#include <LiriAuroraCompositor/private/aurorawaylandsurface_p.h>
 
 #include <QtTest/QtTest>
+
+namespace Aurora {
+
+namespace Compositor {
 
 class tst_WaylandCompositor : public QObject
 {
@@ -38,7 +66,7 @@ class tst_WaylandCompositor : public QObject
 private slots:
     void init();
     void seatCapabilities();
-#if QT_CONFIG(xkbcommon)
+#if LIRI_FEATURE_aurora_xkbcommon
     void simpleKeyboard();
     void keyboardKeymaps();
     void keyboardLayoutSwitching();
@@ -116,13 +144,13 @@ void tst_WaylandCompositor::singleClient()
     wl_surface *sb = client.createSurface();
     QTRY_COMPARE(compositor.surfaces.size(), 2);
 
-    QWaylandClient *ca = compositor.surfaces.at(0)->client();
-    QWaylandClient *cb = compositor.surfaces.at(1)->client();
+    WaylandClient *ca = compositor.surfaces.at(0)->client();
+    WaylandClient *cb = compositor.surfaces.at(1)->client();
 
     QCOMPARE(ca, cb);
     QVERIFY(ca != nullptr);
 
-    QList<QWaylandSurface *> surfaces = compositor.surfacesForClient(ca);
+    QList<WaylandSurface *> surfaces = compositor.surfacesForClient(ca);
     QCOMPARE(surfaces.size(), 2);
     QVERIFY((surfaces.at(0) == compositor.surfaces.at(0) && surfaces.at(1) == compositor.surfaces.at(1))
             || (surfaces.at(0) == compositor.surfaces.at(1) && surfaces.at(1) == compositor.surfaces.at(0)));
@@ -149,9 +177,9 @@ void tst_WaylandCompositor::multipleClients()
 
     QTRY_COMPARE(compositor.surfaces.size(), 3);
 
-    QWaylandClient *ca = compositor.surfaces.at(0)->client();
-    QWaylandClient *cb = compositor.surfaces.at(1)->client();
-    QWaylandClient *cc = compositor.surfaces.at(2)->client();
+    WaylandClient *ca = compositor.surfaces.at(0)->client();
+    WaylandClient *cb = compositor.surfaces.at(1)->client();
+    WaylandClient *cc = compositor.surfaces.at(2)->client();
 
     QVERIFY(ca != cb);
     QVERIFY(ca != cc);
@@ -174,14 +202,14 @@ void tst_WaylandCompositor::multipleClients()
     QTRY_COMPARE(compositor.surfaces.size(), 0);
 }
 
-#if QT_CONFIG(xkbcommon)
+#if LIRI_FEATURE_aurora_xkbcommon
 
 void tst_WaylandCompositor::simpleKeyboard()
 {
     TestCompositor compositor;
     compositor.create();
 
-    QWaylandSeat* seat = compositor.defaultSeat();
+    WaylandSeat* seat = compositor.defaultSeat();
     seat->keymap()->setLayout("us");
 
     MockClient client;
@@ -216,7 +244,7 @@ void tst_WaylandCompositor::keyboardKeymaps()
 {
     TestCompositor compositor;
     compositor.create();
-    QWaylandSeat* seat = compositor.defaultSeat();
+    WaylandSeat* seat = compositor.defaultSeat();
     MockClient client;
     QTRY_COMPARE(client.m_seats.size(), 1);
     MockKeyboard *mockKeyboard = client.m_seats.at(0)->keyboard();
@@ -253,7 +281,7 @@ void tst_WaylandCompositor::keyboardLayoutSwitching()
 {
     TestCompositor compositor;
     compositor.create();
-    QWaylandSeat* seat = compositor.defaultSeat();
+    WaylandSeat* seat = compositor.defaultSeat();
     MockClient client;
     QTRY_COMPARE(client.m_seats.size(), 1);
     MockKeyboard *mockKeyboard = client.m_seats.at(0)->keyboard();
@@ -274,7 +302,7 @@ void tst_WaylandCompositor::keyboardLayoutSwitching()
 
     // It's not currently possible to switch layouts programmatically with the public APIs
     // We will just fake it with the private APIs here.
-    auto keyboardPrivate = QWaylandKeyboardPrivate::get(seat->keyboard());
+    auto keyboardPrivate = WaylandKeyboardPrivate::get(seat->keyboard());
     const uint leftAltCode = 64;
     keyboardPrivate->updateModifierState(leftAltCode, WL_KEYBOARD_KEY_STATE_PRESSED);
     keyboardPrivate->updateModifierState(leftAltCode, WL_KEYBOARD_KEY_STATE_RELEASED);
@@ -287,7 +315,7 @@ void tst_WaylandCompositor::keyboardLayoutSwitching()
     QTRY_COMPARE(mockKeyboard->m_lastKeyCode, 44u);
 }
 
-#endif // QT_CONFIG(xkbcommon)
+#endif // LIRI_FEATURE_aurora_xkbcommon
 
 void tst_WaylandCompositor::keyboardGrab()
 {
@@ -301,8 +329,8 @@ void tst_WaylandCompositor::keyboardGrab()
     QTRY_COMPARE(compositor.surfaces.size(), 1);
 
     // Set the focused surface so that key event will flow through
-    QWaylandSurface *waylandSurface = compositor.surfaces.at(0);
-    QWaylandSeat* seat = compositor.defaultSeat();
+    WaylandSurface *waylandSurface = compositor.surfaces.at(0);
+    WaylandSeat* seat = compositor.defaultSeat();
 
     TestKeyboardGrabber* grab = static_cast<TestKeyboardGrabber *>(seat->keyboard());
     QTRY_COMPARE(grab, seat->keyboard());
@@ -312,14 +340,14 @@ void tst_WaylandCompositor::keyboardGrab()
     //QSignalSpy grabModifierSpy(grab, SIGNAL(modifiersCalled()));
 
     seat->setKeyboardFocus(waylandSurface);
-    QTRY_COMPARE(grabFocusSpy.size(), 1);
+    QTRY_COMPARE(grabFocusSpy.count(), 1);
 
     QKeyEvent ke(QEvent::KeyPress, Qt::Key_A, Qt::NoModifier, 30, 0, 0);
     QKeyEvent ke1(QEvent::KeyRelease, Qt::Key_A, Qt::NoModifier, 30, 0, 0);
     seat->sendFullKeyEvent(&ke);
     seat->sendFullKeyEvent(&ke1);
-    QTRY_COMPARE(grabKeyPressSpy.size(), 1);
-    QTRY_COMPARE(grabKeyReleaseSpy.size(), 1);
+    QTRY_COMPARE(grabKeyPressSpy.count(), 1);
+    QTRY_COMPARE(grabKeyReleaseSpy.count(), 1);
 
     QKeyEvent ke2(QEvent::KeyPress, Qt::Key_Shift, Qt::NoModifier, 50, 0, 0);
     QKeyEvent ke3(QEvent::KeyRelease, Qt::Key_Shift, Qt::NoModifier, 50, 0, 0);
@@ -327,14 +355,14 @@ void tst_WaylandCompositor::keyboardGrab()
     seat->sendFullKeyEvent(&ke3);
     //QTRY_COMPARE(grabModifierSpy.count(), 2);
     // Modifiers are also keys
-    QTRY_COMPARE(grabKeyPressSpy.size(), 2);
-    QTRY_COMPARE(grabKeyReleaseSpy.size(), 2);
+    QTRY_COMPARE(grabKeyPressSpy.count(), 2);
+    QTRY_COMPARE(grabKeyReleaseSpy.count(), 2);
 
     // Stop grabbing
     seat->setKeyboardFocus(nullptr);
     seat->sendFullKeyEvent(&ke);
     seat->sendFullKeyEvent(&ke1);
-    QTRY_COMPARE(grabKeyPressSpy.size(), 2);
+    QTRY_COMPARE(grabKeyPressSpy.count(), 2);
 }
 
 void tst_WaylandCompositor::geometry()
@@ -342,7 +370,7 @@ void tst_WaylandCompositor::geometry()
     TestCompositor compositor;
     compositor.create();
 
-    QWaylandOutputMode mode(QSize(4096, 3072), 60000);
+    WaylandOutputMode mode(QSize(4096, 3072), 60000);
     compositor.defaultOutput()->setPosition(QPoint(1024, 0));
     compositor.defaultOutput()->addMode(mode, true);
     compositor.defaultOutput()->setCurrentMode(mode);
@@ -359,7 +387,7 @@ void tst_WaylandCompositor::availableGeometry()
     TestCompositor compositor;
     compositor.create();
 
-    QWaylandOutputMode mode(QSize(1024, 768), 60000);
+    WaylandOutputMode mode(QSize(1024, 768), 60000);
     compositor.defaultOutput()->addMode(mode, true);
     compositor.defaultOutput()->setCurrentMode(mode);
 
@@ -376,10 +404,10 @@ void tst_WaylandCompositor::modes()
     compositor.create();
 
     // mode3 is current, mode4 is preferred
-    QWaylandOutputMode mode1(QSize(800, 600), 120000);
-    QWaylandOutputMode mode2(QSize(1024, 768), 100000);
-    QWaylandOutputMode mode3(QSize(1920, 1080), 60000);
-    QWaylandOutputMode mode4(QSize(2560, 1440), 59000);
+    WaylandOutputMode mode1(QSize(800, 600), 120000);
+    WaylandOutputMode mode2(QSize(1024, 768), 100000);
+    WaylandOutputMode mode3(QSize(1920, 1080), 60000);
+    WaylandOutputMode mode4(QSize(2560, 1440), 59000);
     compositor.defaultOutput()->addMode(mode1);
     compositor.defaultOutput()->addMode(mode2, true);
     compositor.defaultOutput()->addMode(mode3);
@@ -396,10 +424,10 @@ void tst_WaylandCompositor::modes()
 
 void tst_WaylandCompositor::comparingModes()
 {
-    QWaylandOutputMode mode1(QSize(800, 600), 120000);
-    QWaylandOutputMode mode2(QSize(1024, 768), 100000);
-    QWaylandOutputMode mode3(QSize(1024, 768), 120000);
-    QWaylandOutputMode mode4(QSize(800, 600), 100000);
+    WaylandOutputMode mode1(QSize(800, 600), 120000);
+    WaylandOutputMode mode2(QSize(1024, 768), 100000);
+    WaylandOutputMode mode3(QSize(1024, 768), 120000);
+    WaylandOutputMode mode4(QSize(800, 600), 100000);
 
     QCOMPARE(mode1, mode1);
     QCOMPARE(mode2, mode2);
@@ -423,14 +451,14 @@ void tst_WaylandCompositor::sizeFollowsWindow()
     QWindow window;
     window.resize(800, 600);
 
-    auto output = new QWaylandOutput(&compositor, &window);
+    auto output = new WaylandOutput(&compositor, &window);
     output->setSizeFollowsWindow(true);
 
     compositor.create();
 
     // window.size() is not in pixels
     auto pixelSize = window.size() * window.devicePixelRatio();
-    QWaylandOutputMode mode(pixelSize, qFloor(window.screen()->refreshRate() * 1000));
+    WaylandOutputMode mode(pixelSize, qFloor(window.screen()->refreshRate() * 1000));
 
     MockClient client;
 
@@ -449,7 +477,7 @@ void tst_WaylandCompositor::mapSurface()
     wl_surface *surface = client.createSurface();
     QTRY_COMPARE(compositor.surfaces.size(), 1);
 
-    QWaylandSurface *waylandSurface = compositor.surfaces.at(0);
+    WaylandSurface *waylandSurface = compositor.surfaces.at(0);
 
     QSignalSpy hasContentSpy(waylandSurface, SIGNAL(hasContentChanged()));
 
@@ -466,7 +494,7 @@ void tst_WaylandCompositor::mapSurface()
     wl_surface_damage(surface, 0, 0, size.width(), size.height());
     wl_surface_commit(surface);
 
-    QTRY_COMPARE(hasContentSpy.size(), 1);
+    QTRY_COMPARE(hasContentSpy.count(), 1);
     QCOMPARE(waylandSurface->hasContent(), true);
     QCOMPARE(waylandSurface->bufferSize(), size);
     QCOMPARE(waylandSurface->destinationSize(), size);
@@ -484,7 +512,7 @@ void tst_WaylandCompositor::mapSurfaceHiDpi()
     wl_surface *surface = client.createSurface();
     QTRY_COMPARE(compositor.surfaces.size(), 1);
 
-    QWaylandSurface *waylandSurface = compositor.surfaces.at(0);
+    WaylandSurface *waylandSurface = compositor.surfaces.at(0);
 
     constexpr int bufferScale = 2;
     const QSize surfaceSize(128, 128);
@@ -505,25 +533,25 @@ void tst_WaylandCompositor::mapSurfaceHiDpi()
         QCOMPARE(waylandSurface->hasContent(), true);
     };
 
-    QObject::connect(waylandSurface, &QWaylandSurface::damaged, [=] (const QRegion &damage) {
+    QObject::connect(waylandSurface, &WaylandSurface::damaged, [=] (const QRegion &damage) {
         QCOMPARE(damage, QRect(QPoint(), surfaceSize));
         verifyComittedState();
     });
     QSignalSpy damagedSpy(waylandSurface, SIGNAL(damaged(const QRegion &)));
 
-    QObject::connect(waylandSurface, &QWaylandSurface::hasContentChanged, verifyComittedState);
+    QObject::connect(waylandSurface, &WaylandSurface::hasContentChanged, verifyComittedState);
     QSignalSpy hasContentSpy(waylandSurface, SIGNAL(hasContentChanged()));
 
-    QObject::connect(waylandSurface, &QWaylandSurface::bufferSizeChanged, verifyComittedState);
+    QObject::connect(waylandSurface, &WaylandSurface::bufferSizeChanged, verifyComittedState);
     QSignalSpy bufferSizeSpy(waylandSurface, SIGNAL(bufferSizeChanged()));
 
-    QObject::connect(waylandSurface, &QWaylandSurface::destinationSizeChanged, verifyComittedState);
+    QObject::connect(waylandSurface, &WaylandSurface::destinationSizeChanged, verifyComittedState);
     QSignalSpy destinationSizeSpy(waylandSurface, SIGNAL(destinationSizeChanged()));
 
-    QObject::connect(waylandSurface, &QWaylandSurface::bufferScaleChanged, verifyComittedState);
+    QObject::connect(waylandSurface, &WaylandSurface::bufferScaleChanged, verifyComittedState);
     QSignalSpy bufferScaleSpy(waylandSurface, SIGNAL(bufferScaleChanged()));
 
-    QObject::connect(waylandSurface, &QWaylandSurface::offsetForNextFrame, [=](const QPoint &offset) {
+    QObject::connect(waylandSurface, &WaylandSurface::offsetForNextFrame, [=](const QPoint &offset) {
         QCOMPARE(offset, attachOffset);
         verifyComittedState();
     });
@@ -534,21 +562,21 @@ void tst_WaylandCompositor::mapSurfaceHiDpi()
     QCOMPARE(waylandSurface->destinationSize(), QSize());
     QCOMPARE(waylandSurface->hasContent(), false);
     QCOMPARE(waylandSurface->bufferScale(), 1);
-    QCOMPARE(offsetSpy.size(), 0);
+    QCOMPARE(offsetSpy.count(), 0);
 
     wl_surface_commit(surface);
 
-    QTRY_COMPARE(hasContentSpy.size(), 1);
-    QTRY_COMPARE(bufferSizeSpy.size(), 1);
-    QTRY_COMPARE(destinationSizeSpy.size(), 1);
-    QTRY_COMPARE(bufferScaleSpy.size(), 1);
-    QTRY_COMPARE(offsetSpy.size(), 1);
-    QTRY_COMPARE(damagedSpy.size(), 1);
+    QTRY_COMPARE(hasContentSpy.count(), 1);
+    QTRY_COMPARE(bufferSizeSpy.count(), 1);
+    QTRY_COMPARE(destinationSizeSpy.count(), 1);
+    QTRY_COMPARE(bufferScaleSpy.count(), 1);
+    QTRY_COMPARE(offsetSpy.count(), 1);
+    QTRY_COMPARE(damagedSpy.count(), 1);
 
     // Now verify that wl_surface_damage_buffer gets mapped properly
     wl_surface_damage_buffer(surface, 0, 0, bufferSize.width(), bufferSize.height());
     wl_surface_commit(surface);
-    QTRY_COMPARE(damagedSpy.size(), 2);
+    QTRY_COMPARE(damagedSpy.count(), 2);
 
     wl_surface_destroy(surface);
 }
@@ -568,10 +596,10 @@ static void registerFrameCallback(wl_surface *surface, int *counter)
     wl_callback_add_listener(wl_surface_frame(surface), &frameCallbackListener, counter);
 }
 
-class BufferView : public QWaylandView
+class BufferView : public WaylandView
 {
 public:
-    void bufferCommitted(const QWaylandBufferRef &ref, const QRegion &damage) override
+    void bufferCommitted(const WaylandBufferRef &ref, const QRegion &damage) override
     {
         Q_UNUSED(damage);
         bufferRef = ref;
@@ -584,7 +612,7 @@ public:
         return bufferRef.image();
     }
 
-    QWaylandBufferRef bufferRef;
+    WaylandBufferRef bufferRef;
 };
 
 void tst_WaylandCompositor::frameCallback()
@@ -599,7 +627,7 @@ void tst_WaylandCompositor::frameCallback()
     int frameCounter = 0;
 
     QTRY_COMPARE(compositor.surfaces.size(), 1);
-    QWaylandSurface *waylandSurface = compositor.surfaces.at(0);
+    WaylandSurface *waylandSurface = compositor.surfaces.at(0);
     BufferView* view = new BufferView;
     view->setSurface(waylandSurface);
     view->setOutput(compositor.defaultOutput());
@@ -617,7 +645,7 @@ void tst_WaylandCompositor::frameCallback()
         wl_surface_commit(surface);
 
         QTRY_COMPARE(waylandSurface->hasContent(), true);
-        QTRY_COMPARE(damagedSpy.size(), i + 1);
+        QTRY_COMPARE(damagedSpy.count(), i + 1);
 
         QCOMPARE(static_cast<BufferView*>(waylandSurface->views().first())->image(), buffer.image);
         compositor.defaultOutput()->frameStarted();
@@ -638,7 +666,7 @@ void tst_WaylandCompositor::pixelFormats()
 
     wl_surface *surface = client.createSurface();
     QTRY_COMPARE(compositor.surfaces.size(), 1);
-    QWaylandSurface *waylandSurface = compositor.surfaces.at(0);
+    WaylandSurface *waylandSurface = compositor.surfaces.at(0);
     BufferView* view = new BufferView;
     view->setSurface(waylandSurface);
     view->setOutput(compositor.defaultOutput());
@@ -666,30 +694,30 @@ void tst_WaylandCompositor::outputs()
 
     compositor.create();
 
-    QSignalSpy outputAddedSpy(&compositor, SIGNAL(outputAdded(QWaylandOutput*)));
-    QSignalSpy outputRemovedSpy(&compositor, SIGNAL(outputRemoved(QWaylandOutput*)));
+    QSignalSpy outputAddedSpy(&compositor, SIGNAL(outputAdded(WaylandOutput*)));
+    QSignalSpy outputRemovedSpy(&compositor, SIGNAL(outputRemoved(WaylandOutput*)));
 
     QWindow window;
     window.resize(800, 600);
 
-    auto output = new QWaylandOutput(&compositor, &window);
-    QTRY_COMPARE(outputAddedSpy.size(), 1);
+    auto output = new WaylandOutput(&compositor, &window);
+    QTRY_COMPARE(outputAddedSpy.count(), 1);
 
     compositor.setDefaultOutput(output);
-    QTRY_COMPARE(defaultOutputSpy.size(), 2);
+    QTRY_COMPARE(defaultOutputSpy.count(), 2);
 
     MockClient client;
     QTRY_COMPARE(client.m_outputs.size(), 2);
 
     delete output;
-    QTRY_COMPARE(outputRemovedSpy.size(), 1);
+    QTRY_COMPARE(outputRemovedSpy.count(), 1);
     QEXPECT_FAIL("", "FIXME: defaultOutputChanged() is not emitted when the default output is removed", Continue);
-    QTRY_COMPARE(defaultOutputSpy.size(), 3);
+    QTRY_COMPARE(defaultOutputSpy.count(), 3);
     compositor.flushClients();
     QTRY_COMPARE(client.m_outputs.size(), 1);
 }
 
-class CustomSurface : public QWaylandSurface {
+class CustomSurface : public WaylandSurface {
     Q_OBJECT
 public:
     explicit CustomSurface() = default;
@@ -698,13 +726,13 @@ public:
 void tst_WaylandCompositor::customSurface()
 {
     TestCompositor compositor;
-    QObject::connect(&compositor, &TestCompositor::surfaceRequested, this, [&compositor] (QWaylandClient *client, uint id, int version) {
+    QObject::connect(&compositor, &TestCompositor::surfaceRequested, this, [&compositor] (WaylandClient *client, uint id, int version) {
         auto *s = new CustomSurface();
         QCOMPARE(s->waylandClient(), nullptr);
         s->initialize(&compositor, client, id, version);
         QCOMPARE(s->waylandClient(), client->client());
     });
-    QObject::connect(&compositor, &TestCompositor::surfaceCreated, this, [] (QWaylandSurface *surface) {
+    QObject::connect(&compositor, &TestCompositor::surfaceCreated, this, [] (WaylandSurface *surface) {
         auto *custom = qobject_cast<CustomSurface *>(surface);
         QVERIFY(custom != nullptr);
     });
@@ -725,13 +753,13 @@ void tst_WaylandCompositor::seatCapabilities()
     MockClient client;
     Q_UNUSED(client);
 
-    QWaylandSeat dev(&compositor, QWaylandSeat::Pointer);
+    WaylandSeat dev(&compositor, WaylandSeat::Pointer);
 
     QTRY_VERIFY(dev.pointer());
     QTRY_VERIFY(!dev.keyboard());
     QTRY_VERIFY(!dev.touch());
 
-    QWaylandSeat dev2(&compositor, QWaylandSeat::Keyboard | QWaylandSeat::Touch);
+    WaylandSeat dev2(&compositor, WaylandSeat::Keyboard | WaylandSeat::Touch);
     QTRY_VERIFY(!dev2.pointer());
     QTRY_VERIFY(dev2.keyboard());
     QTRY_VERIFY(dev2.touch());
@@ -778,8 +806,8 @@ void tst_WaylandCompositor::seatKeyboardFocus()
     wl_surface *surface = client.createSurface();
     QTRY_COMPARE(compositor.surfaces.size(), 1);
 
-    QWaylandSurface *waylandSurface = compositor.surfaces.at(0);
-    QWaylandSeat* seat = compositor.defaultSeat();
+    WaylandSurface *waylandSurface = compositor.surfaces.at(0);
+    WaylandSeat* seat = compositor.defaultSeat();
     QVERIFY(seat->setKeyboardFocus(waylandSurface));
     QCOMPARE(compositor.defaultSeat()->keyboardFocus(), waylandSurface);
 
@@ -805,11 +833,11 @@ void tst_WaylandCompositor::seatMouseFocus()
     wl_surface *surface = client.createSurface();
     QTRY_COMPARE(compositor.surfaces.size(), 1);
 
-    QWaylandSurface *waylandSurface = compositor.surfaces.at(0);
-    auto view = new QWaylandView;
+    WaylandSurface *waylandSurface = compositor.surfaces.at(0);
+    auto view = new WaylandView;
     view->setSurface(waylandSurface);
 
-    QWaylandSeat* seat = compositor.defaultSeat();
+    WaylandSeat* seat = compositor.defaultSeat();
     seat->setMouseFocus(view);
     seat->sendMouseMoveEvent(view, QPointF(10, 10), QPointF(100, 100));
 
@@ -831,7 +859,7 @@ void tst_WaylandCompositor::seatMouseFocus()
     QTRY_COMPARE(mockPointer->m_enteredSurface, nullptr);
     QTRY_VERIFY(!compositor.defaultSeat()->mouseFocus());
 
-    view = new QWaylandView;
+    view = new WaylandView;
     view->setSurface(waylandSurface);
     seat->sendMouseMoveEvent(view, QPointF(10, 10), QPointF(100, 100));
     QTRY_COMPARE(compositor.defaultSeat()->mouseFocus(), view);
@@ -857,7 +885,7 @@ void tst_WaylandCompositor::inputRegion()
     MockClient client;
     wl_surface *surface = client.createSurface();
 
-    // We need to attach a buffer, since QWaylandSurface::inputRegionContains will will return
+    // We need to attach a buffer, since WaylandSurface::inputRegionContains will will return
     // false for coordinates outside the buffer (so don't let it be 0x0).
     QSize size(16, 16);
     ShmBuffer buffer(size, client.shm);
@@ -873,7 +901,7 @@ void tst_WaylandCompositor::inputRegion()
     wl_surface_commit(surface);
 
     QTRY_COMPARE(compositor.surfaces.size(), 1);
-    QWaylandSurface *waylandSurface = compositor.surfaces.at(0);
+    WaylandSurface *waylandSurface = compositor.surfaces.at(0);
 
     QVERIFY(waylandSurface->inputRegionContains(QPoint(1, 2)));
     QVERIFY(waylandSurface->inputRegionContains(QPoint(3, 5)));
@@ -925,7 +953,7 @@ void tst_WaylandCompositor::defaultInputRegionHiDpi()
     wl_surface_commit(surface);
 
     QTRY_COMPARE(compositor.surfaces.size(), 1);
-    QWaylandSurface *waylandSurface = compositor.surfaces.at(0);
+    WaylandSurface *waylandSurface = compositor.surfaces.at(0);
 
     QCOMPARE(waylandSurface->bufferScale(), bufferScale);
     QVERIFY(waylandSurface->inputRegionContains(QPoint(0, 0)));
@@ -938,7 +966,7 @@ class XdgTestCompositor: public TestCompositor {
     Q_OBJECT
 public:
     XdgTestCompositor() : xdgShell(this) {}
-    QWaylandXdgShell xdgShell;
+    WaylandXdgShell xdgShell;
 };
 
 void tst_WaylandCompositor::advertisesXdgShellSupport()
@@ -958,15 +986,15 @@ void tst_WaylandCompositor::createsXdgSurfaces()
     MockClient client;
     QTRY_VERIFY(client.xdgWmBase);
 
-    QSignalSpy xdgSurfaceCreatedSpy(&compositor.xdgShell, &QWaylandXdgShell::xdgSurfaceCreated);
-    QWaylandXdgSurface *xdgSurface = nullptr;
-    QObject::connect(&compositor.xdgShell, &QWaylandXdgShell::xdgSurfaceCreated, [&](QWaylandXdgSurface *s) {
+    QSignalSpy xdgSurfaceCreatedSpy(&compositor.xdgShell, &WaylandXdgShell::xdgSurfaceCreated);
+    WaylandXdgSurface *xdgSurface = nullptr;
+    QObject::connect(&compositor.xdgShell, &WaylandXdgShell::xdgSurfaceCreated, [&](WaylandXdgSurface *s) {
         xdgSurface = s;
     });
 
     wl_surface *surface = client.createSurface();
     xdg_surface *clientXdgSurface = client.createXdgSurface(surface);
-    QTRY_COMPARE(xdgSurfaceCreatedSpy.size(), 1);
+    QTRY_COMPARE(xdgSurfaceCreatedSpy.count(), 1);
     QTRY_VERIFY(xdgSurface);
     QTRY_VERIFY(xdgSurface->surface());
 
@@ -979,8 +1007,8 @@ void tst_WaylandCompositor::reportsXdgSurfaceWindowGeometry()
     XdgTestCompositor compositor;
     compositor.create();
 
-    QWaylandXdgSurface *xdgSurface = nullptr;
-    QObject::connect(&compositor.xdgShell, &QWaylandXdgShell::xdgSurfaceCreated, [&](QWaylandXdgSurface *s) {
+    WaylandXdgSurface *xdgSurface = nullptr;
+    QObject::connect(&compositor.xdgShell, &WaylandXdgShell::xdgSurfaceCreated, [&](WaylandXdgSurface *s) {
         xdgSurface = s;
     });
 
@@ -1016,8 +1044,8 @@ void tst_WaylandCompositor::setsXdgAppId()
     XdgTestCompositor compositor;
     compositor.create();
 
-    QWaylandXdgToplevel *toplevel = nullptr;
-    QObject::connect(&compositor.xdgShell, &QWaylandXdgShell::toplevelCreated, [&](QWaylandXdgToplevel *t) {
+    WaylandXdgToplevel *toplevel = nullptr;
+    QObject::connect(&compositor.xdgShell, &WaylandXdgShell::toplevelCreated, [&](WaylandXdgToplevel *t) {
         toplevel = t;
     });
 
@@ -1034,18 +1062,18 @@ void tst_WaylandCompositor::setsXdgAppId()
 
 void tst_WaylandCompositor::sendsXdgConfigure()
 {
-    class MockXdgSurface : public QtWayland::xdg_surface
+    class MockXdgSurface : public Aurora::Client::PrivateClient::xdg_surface
     {
     public:
-        explicit MockXdgSurface(::xdg_surface *xdgSurface) : QtWayland::xdg_surface(xdgSurface) {}
+        explicit MockXdgSurface(::xdg_surface *xdgSurface) : Aurora::Client::PrivateClient::xdg_surface(xdgSurface) {}
         void xdg_surface_configure(uint32_t serial) override { configureSerial = serial; }
         uint configureSerial = 0;
     };
 
-    class MockXdgToplevel : public QtWayland::xdg_toplevel
+    class MockXdgToplevel : public Aurora::Client::PrivateClient::xdg_toplevel
     {
     public:
-        explicit MockXdgToplevel(::xdg_toplevel *toplevel) : QtWayland::xdg_toplevel(toplevel) {}
+        explicit MockXdgToplevel(::xdg_toplevel *toplevel) : Aurora::Client::PrivateClient::xdg_toplevel(toplevel) {}
         void xdg_toplevel_configure(int32_t width, int32_t height, wl_array *rawStates) override
         {
             configureSize = QSize(width, height);
@@ -1062,8 +1090,8 @@ void tst_WaylandCompositor::sendsXdgConfigure()
     XdgTestCompositor compositor;
     compositor.create();
 
-    QWaylandXdgToplevel *toplevel = nullptr;
-    QObject::connect(&compositor.xdgShell, &QWaylandXdgShell::toplevelCreated, [&](QWaylandXdgToplevel *t) {
+    WaylandXdgToplevel *toplevel = nullptr;
+    QObject::connect(&compositor.xdgShell, &WaylandXdgShell::toplevelCreated, [&](WaylandXdgToplevel *t) {
         toplevel = t;
     });
 
@@ -1082,15 +1110,19 @@ void tst_WaylandCompositor::sendsXdgConfigure()
     QTRY_VERIFY(!toplevel->fullscreen());
     QTRY_VERIFY(!toplevel->resizing());
 
-    toplevel->sendConfigure(QSize(10, 20), QList<QWaylandXdgToplevel::State>{QWaylandXdgToplevel::State::ActivatedState});
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    toplevel->sendConfigure(QSize(10, 20), QList<WaylandXdgToplevel::State>{WaylandXdgToplevel::State::ActivatedState});
+#else
+    toplevel->sendConfigure(QSize(10, 20), QVector<WaylandXdgToplevel::State>{WaylandXdgToplevel::State::ActivatedState});
+#endif
     compositor.flushClients();
-    QTRY_COMPARE(mockToplevel.configureStates, QList<uint>{QWaylandXdgToplevel::State::ActivatedState});
+    QTRY_COMPARE(mockToplevel.configureStates, QList<uint>{WaylandXdgToplevel::State::ActivatedState});
     QTRY_COMPARE(mockToplevel.configureSize, QSize(10, 20));
 
     toplevel->sendMaximized(QSize(800, 600));
     compositor.flushClients();
-    QTRY_VERIFY(mockToplevel.configureStates.contains(QWaylandXdgToplevel::State::MaximizedState));
-    QTRY_VERIFY(mockToplevel.configureStates.contains(QWaylandXdgToplevel::State::ActivatedState));
+    QTRY_VERIFY(mockToplevel.configureStates.contains(WaylandXdgToplevel::State::MaximizedState));
+    QTRY_VERIFY(mockToplevel.configureStates.contains(WaylandXdgToplevel::State::ActivatedState));
     QTRY_COMPARE(mockToplevel.configureSize, QSize(800, 600));
 
     // There hasn't been any ack_configures, so state should still be unchanged
@@ -1104,8 +1136,8 @@ void tst_WaylandCompositor::sendsXdgConfigure()
 
     toplevel->sendUnmaximized();
     compositor.flushClients();
-    QTRY_VERIFY(!mockToplevel.configureStates.contains(QWaylandXdgToplevel::State::MaximizedState));
-    QTRY_VERIFY(mockToplevel.configureStates.contains(QWaylandXdgToplevel::State::ActivatedState));
+    QTRY_VERIFY(!mockToplevel.configureStates.contains(WaylandXdgToplevel::State::MaximizedState));
+    QTRY_VERIFY(mockToplevel.configureStates.contains(WaylandXdgToplevel::State::ActivatedState));
     QTRY_COMPARE(mockToplevel.configureSize, QSize(0, 0));
 
     // The unmaximized configure hasn't been acked, so maximized should still be true
@@ -1114,32 +1146,36 @@ void tst_WaylandCompositor::sendsXdgConfigure()
 
     toplevel->sendResizing(QSize(800, 600));
     compositor.flushClients();
-    QTRY_VERIFY(mockToplevel.configureStates.contains(QWaylandXdgToplevel::State::ResizingState));
+    QTRY_VERIFY(mockToplevel.configureStates.contains(WaylandXdgToplevel::State::ResizingState));
     QTRY_COMPARE(mockToplevel.configureSize, QSize(800, 600));
 
     toplevel->sendFullscreen(QSize(1024, 768));
     compositor.flushClients();
-    QTRY_VERIFY(mockToplevel.configureStates.contains(QWaylandXdgToplevel::State::ActivatedState));
-    QTRY_VERIFY(mockToplevel.configureStates.contains(QWaylandXdgToplevel::State::FullscreenState));
+    QTRY_VERIFY(mockToplevel.configureStates.contains(WaylandXdgToplevel::State::ActivatedState));
+    QTRY_VERIFY(mockToplevel.configureStates.contains(WaylandXdgToplevel::State::FullscreenState));
     QTRY_COMPARE(mockToplevel.configureSize, QSize(1024, 768));
     uint fullscreenSerial = mockXdgSurface.configureSerial;
 
     toplevel->sendUnmaximized();
     compositor.flushClients();
-    QTRY_VERIFY(mockToplevel.configureStates.contains(QWaylandXdgToplevel::State::ActivatedState));
-    QTRY_VERIFY(!mockToplevel.configureStates.contains(QWaylandXdgToplevel::State::FullscreenState));
+    QTRY_VERIFY(mockToplevel.configureStates.contains(WaylandXdgToplevel::State::ActivatedState));
+    QTRY_VERIFY(!mockToplevel.configureStates.contains(WaylandXdgToplevel::State::FullscreenState));
 
-    toplevel->sendConfigure(QSize(0, 0), QList<QWaylandXdgToplevel::State>{});
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    toplevel->sendConfigure(QSize(0, 0), QList<WaylandXdgToplevel::State>{});
+#else
+    toplevel->sendConfigure(QSize(0, 0), QVector<WaylandXdgToplevel::State>{});
+#endif
     compositor.flushClients();
-    QTRY_VERIFY(!mockToplevel.configureStates.contains(QWaylandXdgToplevel::State::ActivatedState));
+    QTRY_VERIFY(!mockToplevel.configureStates.contains(WaylandXdgToplevel::State::ActivatedState));
 
     toplevel->sendMaximized(QSize(800, 600));
     compositor.flushClients();
-    QTRY_VERIFY(!mockToplevel.configureStates.contains(QWaylandXdgToplevel::State::ActivatedState));
+    QTRY_VERIFY(!mockToplevel.configureStates.contains(WaylandXdgToplevel::State::ActivatedState));
 
     toplevel->sendFullscreen(QSize(800, 600));
     compositor.flushClients();
-    QTRY_VERIFY(!mockToplevel.configureStates.contains(QWaylandXdgToplevel::State::MaximizedState));
+    QTRY_VERIFY(!mockToplevel.configureStates.contains(WaylandXdgToplevel::State::MaximizedState));
 
     // Verify that acking a configure that's not the most recently sent works
     xdg_surface_ack_configure(clientXdgSurface, fullscreenSerial);
@@ -1155,7 +1191,7 @@ class IviTestCompositor: public TestCompositor {
     Q_OBJECT
 public:
     IviTestCompositor() : iviApplication(this) {}
-    QWaylandIviApplication iviApplication;
+    WaylandIviApplication iviApplication;
 };
 
 void tst_WaylandCompositor::advertisesIviApplicationSupport()
@@ -1175,15 +1211,15 @@ void tst_WaylandCompositor::createsIviSurfaces()
     MockClient client;
     QTRY_VERIFY(client.iviApplication);
 
-    QSignalSpy iviSurfaceCreatedSpy(&compositor.iviApplication, &QWaylandIviApplication::iviSurfaceRequested);
-    QWaylandIviSurface *iviSurface = nullptr;
-    QObject::connect(&compositor.iviApplication, &QWaylandIviApplication::iviSurfaceCreated, [&](QWaylandIviSurface *s) {
+    QSignalSpy iviSurfaceCreatedSpy(&compositor.iviApplication, &WaylandIviApplication::iviSurfaceRequested);
+    WaylandIviSurface *iviSurface = nullptr;
+    QObject::connect(&compositor.iviApplication, &WaylandIviApplication::iviSurfaceCreated, [&](WaylandIviSurface *s) {
         iviSurface = s;
     });
 
     wl_surface *surface = client.createSurface();
     client.createIviSurface(surface, 123);
-    QTRY_COMPARE(iviSurfaceCreatedSpy.size(), 1);
+    QTRY_COMPARE(iviSurfaceCreatedSpy.count(), 1);
     QTRY_VERIFY(iviSurface);
     QTRY_VERIFY(iviSurface->surface());
     QTRY_COMPARE(iviSurface->iviId(), 123u);
@@ -1198,10 +1234,10 @@ void tst_WaylandCompositor::emitsErrorOnSameIviId()
         MockClient firstClient;
         QTRY_VERIFY(&firstClient.iviApplication);
 
-        QWaylandIviSurface *firstIviSurface = nullptr;
-        auto connection = QObject::connect(&compositor.iviApplication,
-                                           &QWaylandIviApplication::iviSurfaceCreated,
-                                           [&](QWaylandIviSurface *s) { firstIviSurface = s; });
+        WaylandIviSurface *firstIviSurface = nullptr;
+        QObject::connect(&compositor.iviApplication, &WaylandIviApplication::iviSurfaceCreated, [&](WaylandIviSurface *s) {
+            firstIviSurface = s;
+        });
 
         firstClient.createIviSurface(firstClient.createSurface(), 123);
         QTRY_VERIFY(firstIviSurface);
@@ -1210,7 +1246,7 @@ void tst_WaylandCompositor::emitsErrorOnSameIviId()
         {
             MockClient secondClient;
             QTRY_VERIFY(&secondClient.iviApplication);
-            QTRY_COMPARE(compositor.clients().size(), 2);
+            QTRY_COMPARE(compositor.clients().count(), 2);
 
             secondClient.createIviSurface(secondClient.createSurface(), 123);
             compositor.flushClients();
@@ -1218,9 +1254,8 @@ void tst_WaylandCompositor::emitsErrorOnSameIviId()
             QTRY_COMPARE(secondClient.error, EPROTO);
             QTRY_COMPARE(secondClient.protocolError.interface, &ivi_application_interface);
             QTRY_COMPARE(static_cast<ivi_application_error>(secondClient.protocolError.code), IVI_APPLICATION_ERROR_IVI_ID);
-            QTRY_COMPARE(compositor.clients().size(), 1);
+            QTRY_COMPARE(compositor.clients().count(), 1);
         }
-        QObject::disconnect(connection);
     }
 
     // The other clients have passed out of scope and have been destroyed,
@@ -1228,8 +1263,8 @@ void tst_WaylandCompositor::emitsErrorOnSameIviId()
     MockClient thirdClient;
     QTRY_VERIFY(&thirdClient.iviApplication);
 
-    QWaylandIviSurface *thirdIviSurface = nullptr;
-    QObject::connect(&compositor.iviApplication, &QWaylandIviApplication::iviSurfaceCreated, [&](QWaylandIviSurface *s) {
+    WaylandIviSurface *thirdIviSurface = nullptr;
+    QObject::connect(&compositor.iviApplication, &WaylandIviApplication::iviSurfaceCreated, [&](WaylandIviSurface *s) {
         thirdIviSurface = s;
     });
     thirdClient.createIviSurface(thirdClient.createSurface(), 123);
@@ -1242,10 +1277,10 @@ void tst_WaylandCompositor::emitsErrorOnSameIviId()
 
 void tst_WaylandCompositor::sendsIviConfigure()
 {
-    class MockIviSurface : public QtWayland::ivi_surface
+    class MockIviSurface : public Aurora::Client::PrivateClient::ivi_surface
     {
     public:
-        MockIviSurface(::ivi_surface *iviSurface) : QtWayland::ivi_surface(iviSurface) {}
+        MockIviSurface(::ivi_surface *iviSurface) : Aurora::Client::PrivateClient::ivi_surface(iviSurface) {}
         void ivi_surface_configure(int32_t width, int32_t height) override
         {
             configureSize = QSize(width, height);
@@ -1259,8 +1294,8 @@ void tst_WaylandCompositor::sendsIviConfigure()
     MockClient client;
     QTRY_VERIFY(client.iviApplication);
 
-    QWaylandIviSurface *iviSurface = nullptr;
-    QObject::connect(&compositor.iviApplication, &QWaylandIviApplication::iviSurfaceCreated, [&](QWaylandIviSurface *s) {
+    WaylandIviSurface *iviSurface = nullptr;
+    QObject::connect(&compositor.iviApplication, &WaylandIviApplication::iviSurfaceCreated, [&](WaylandIviSurface *s) {
         iviSurface = s;
     });
 
@@ -1283,24 +1318,24 @@ void tst_WaylandCompositor::destroysIviSurfaces()
     MockClient client;
     QTRY_VERIFY(client.iviApplication);
 
-    QWaylandIviSurface *iviSurface = nullptr;
-    QObject::connect(&compositor.iviApplication, &QWaylandIviApplication::iviSurfaceCreated, [&](QWaylandIviSurface *s) {
+    WaylandIviSurface *iviSurface = nullptr;
+    QObject::connect(&compositor.iviApplication, &WaylandIviApplication::iviSurfaceCreated, [&](WaylandIviSurface *s) {
         iviSurface = s;
     });
 
-    QtWayland::ivi_surface mockIviSurface(client.createIviSurface(client.createSurface(), 123));
+    Aurora::Client::PrivateClient::ivi_surface mockIviSurface(client.createIviSurface(client.createSurface(), 123));
     QTRY_VERIFY(iviSurface);
 
     QSignalSpy destroySpy(iviSurface, SIGNAL(destroyed()));
     mockIviSurface.destroy();
-    QTRY_VERIFY(destroySpy.size() == 1);
+    QTRY_VERIFY(destroySpy.count() == 1);
 }
 
 class ViewporterTestCompositor: public TestCompositor {
     Q_OBJECT
 public:
     ViewporterTestCompositor() : viewporter(this) {}
-    QWaylandViewporter viewporter;
+    WaylandViewporter viewporter;
 };
 
 void tst_WaylandCompositor::viewporterGlobal()
@@ -1320,7 +1355,7 @@ void tst_WaylandCompositor::viewportDestination()
 
     wl_surface *surface = client.createSurface();
     QTRY_COMPARE(compositor.surfaces.size(), 1);
-    QWaylandSurface *waylandSurface = compositor.surfaces.at(0);
+    WaylandSurface *waylandSurface = compositor.surfaces.at(0);
 
     QCOMPARE(waylandSurface->destinationSize(), QSize());
     QCOMPARE(waylandSurface->sourceGeometry(), QRect());
@@ -1352,7 +1387,7 @@ void tst_WaylandCompositor::viewportSource()
 
     wl_surface *surface = client.createSurface();
     QTRY_COMPARE(compositor.surfaces.size(), 1);
-    QWaylandSurface *waylandSurface = compositor.surfaces.at(0);
+    WaylandSurface *waylandSurface = compositor.surfaces.at(0);
 
     QCOMPARE(waylandSurface->destinationSize(), QSize());
     QCOMPARE(waylandSurface->sourceGeometry(), QRect());
@@ -1388,7 +1423,7 @@ void tst_WaylandCompositor::viewportSourceAndDestination()
 
     wl_surface *surface = client.createSurface();
     QTRY_COMPARE(compositor.surfaces.size(), 1);
-    QWaylandSurface *waylandSurface = compositor.surfaces.at(0);
+    WaylandSurface *waylandSurface = compositor.surfaces.at(0);
 
     QCOMPARE(waylandSurface->destinationSize(), QSize());
     QCOMPARE(waylandSurface->sourceGeometry(), QRect());
@@ -1430,7 +1465,7 @@ void tst_WaylandCompositor::viewportDestruction()
 
     wl_surface *surface = client.createSurface();
     QTRY_COMPARE(compositor.surfaces.size(), 1);
-    QWaylandSurface *waylandSurface = compositor.surfaces.at(0);
+    WaylandSurface *waylandSurface = compositor.surfaces.at(0);
 
     QCOMPARE(waylandSurface->destinationSize(), QSize());
     QCOMPARE(waylandSurface->sourceGeometry(), QRect());
@@ -1521,7 +1556,7 @@ void tst_WaylandCompositor::viewportClearDestination()
 
     wl_surface *surface = client.createSurface();
     QTRY_COMPARE(compositor.surfaces.size(), 1);
-    QWaylandSurface *waylandSurface = compositor.surfaces.at(0);
+    WaylandSurface *waylandSurface = compositor.surfaces.at(0);
 
     QCOMPARE(waylandSurface->destinationSize(), QSize());
     QCOMPARE(waylandSurface->sourceGeometry(), QRect());
@@ -1560,7 +1595,7 @@ void tst_WaylandCompositor::viewportClearSource()
 
     wl_surface *surface = client.createSurface();
     QTRY_COMPARE(compositor.surfaces.size(), 1);
-    QWaylandSurface *waylandSurface = compositor.surfaces.at(0);
+    WaylandSurface *waylandSurface = compositor.surfaces.at(0);
 
     QCOMPARE(waylandSurface->destinationSize(), QSize());
     QCOMPARE(waylandSurface->sourceGeometry(), QRect());
@@ -1658,7 +1693,7 @@ void tst_WaylandCompositor::viewportHiDpi()
 
     wl_surface *surface = client.createSurface();
     QTRY_COMPARE(compositor.surfaces.size(), 1);
-    QWaylandSurface *waylandSurface = compositor.surfaces.at(0);
+    WaylandSurface *waylandSurface = compositor.surfaces.at(0);
 
     const QSize bufferSize(128, 128);
     ShmBuffer buffer(bufferSize, client.shm);
@@ -1702,7 +1737,7 @@ class IdleInhibitCompositor : public TestCompositor
     Q_OBJECT
 public:
     IdleInhibitCompositor() : idleInhibitManager(this) {}
-    QWaylandIdleInhibitManagerV1 idleInhibitManager;
+    WaylandIdleInhibitManagerV1 idleInhibitManager;
 };
 
 void tst_WaylandCompositor::idleInhibit()
@@ -1716,9 +1751,9 @@ void tst_WaylandCompositor::idleInhibit()
     QVERIFY(surface);
     QTRY_COMPARE(compositor.surfaces.size(), 1);
 
-    QWaylandSurface *waylandSurface = compositor.surfaces.at(0);
+    WaylandSurface *waylandSurface = compositor.surfaces.at(0);
     auto *waylandSurfacePrivate =
-            QWaylandSurfacePrivate::get(waylandSurface);
+            WaylandSurfacePrivate::get(waylandSurface);
     QVERIFY(waylandSurfacePrivate);
 
     QSignalSpy changedSpy(waylandSurface, SIGNAL(inhibitsIdleChanged()));
@@ -1729,7 +1764,7 @@ void tst_WaylandCompositor::idleInhibit()
     QVERIFY(idleInhibitor);
     QTRY_COMPARE(waylandSurfacePrivate->idleInhibitors.size(), 1);
     QCOMPARE(waylandSurface->inhibitsIdle(), true);
-    QTRY_COMPARE(changedSpy.size(), 1);
+    QTRY_COMPARE(changedSpy.count(), 1);
 }
 
 class XdgOutputCompositor : public TestCompositor
@@ -1737,7 +1772,7 @@ class XdgOutputCompositor : public TestCompositor
     Q_OBJECT
 public:
     XdgOutputCompositor() : xdgOutputManager(this) {}
-    QWaylandXdgOutputManagerV1 xdgOutputManager;
+    WaylandXdgOutputManagerV1 xdgOutputManager;
 };
 
 void tst_WaylandCompositor::xdgOutput()
@@ -1745,7 +1780,7 @@ void tst_WaylandCompositor::xdgOutput()
     XdgOutputCompositor compositor;
     compositor.create();
 
-    QWaylandOutputMode mode(QSize(1024, 768), 60000);
+    WaylandOutputMode mode(QSize(1024, 768), 60000);
     compositor.defaultOutput()->addMode(mode, true);
     compositor.defaultOutput()->setCurrentMode(mode);
 
@@ -1757,10 +1792,10 @@ void tst_WaylandCompositor::xdgOutput()
     QVERIFY(wlOutput);
 
     // Output is not associated yet
-    QCOMPARE(QWaylandOutputPrivate::get(compositor.defaultOutput())->xdgOutput.isNull(), true);
+    QCOMPARE(WaylandOutputPrivate::get(compositor.defaultOutput())->xdgOutput.isNull(), true);
 
     // Create xdg-output on the server
-    auto *xdgOutputServer = new QWaylandXdgOutputV1(compositor.defaultOutput(), &compositor.xdgOutputManager);
+    auto *xdgOutputServer = new WaylandXdgOutputV1(compositor.defaultOutput(), &compositor.xdgOutputManager);
     QVERIFY(xdgOutputServer);
     xdgOutputServer->setName(QStringLiteral("OUTPUT1"));
     xdgOutputServer->setDescription(QStringLiteral("This is a test output"));
@@ -1771,7 +1806,7 @@ void tst_WaylandCompositor::xdgOutput()
     QVERIFY(client.m_xdgOutputs.contains(wlOutput));
 
     // Now it should be associated
-    QCOMPARE(QWaylandOutputPrivate::get(compositor.defaultOutput())->xdgOutput.isNull(), false);
+    QCOMPARE(WaylandOutputPrivate::get(compositor.defaultOutput())->xdgOutput.isNull(), false);
 
     // Verify initial values
     QTRY_COMPARE(xdgOutput->name, "OUTPUT1");
@@ -1795,5 +1830,9 @@ void tst_WaylandCompositor::xdgOutput()
     QTRY_COMPARE(xdgOutput->logicalSize, QSize(1000, 1000));
 }
 
+} // namespace Compositor
+
+} // namespace Aurora
+
 #include <tst_compositor.moc>
-QTEST_MAIN(tst_WaylandCompositor);
+QTEST_MAIN(Aurora::Compositor::tst_WaylandCompositor);

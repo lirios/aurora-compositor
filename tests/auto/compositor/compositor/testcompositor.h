@@ -1,11 +1,17 @@
 // Copyright (C) 2016 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
 
-#include "qwaylandcompositor.h"
-#include "qwaylandsurface.h"
-#include "qwaylandwlshell.h"
+#pragma once
 
-class TestCompositor : public QWaylandCompositor
+#include <LiriAuroraCompositor/WaylandCompositor>
+#include <LiriAuroraCompositor/WaylandSurface>
+#include <LiriAuroraCompositor/WaylandWlShell>
+
+namespace Aurora {
+
+namespace Compositor {
+
+class TestCompositor : public WaylandCompositor
 {
     Q_OBJECT
 public:
@@ -14,16 +20,20 @@ public:
     void flushClients();
 
 public slots:
-    void onSurfaceCreated(QWaylandSurface *surface);
-    void onSurfaceAboutToBeDestroyed(QWaylandSurface *surface);
+    void onSurfaceCreated(Aurora::Compositor::WaylandSurface *surface);
+    void onSurfaceAboutToBeDestroyed(Aurora::Compositor::WaylandSurface *surface);
 
 protected:
-    QWaylandSeat *createSeat() override;
-    QWaylandKeyboard *createKeyboardDevice(QWaylandSeat *seat) override;
+    WaylandSeat *createSeat() override;
+    WaylandKeyboard *createKeyboardDevice(WaylandSeat *seat) override;
 
 public:
-    QList<QWaylandSurface *> surfaces;
-    QWaylandWlShell* shell;
+    QList<WaylandSurface *> surfaces;
+    WaylandWlShell* shell;
     bool m_createSeat;
 };
+
+} // namespace Compositor
+
+} // namespace Aurora
 

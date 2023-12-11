@@ -1,38 +1,22 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# SPDX-FileCopyrightText: 2022-2024 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
 # SPDX-License-Identifier: BSD-3-Clause
 
-# Generated from subsurface.pro.
-
-#####################################################################
-## subsurface Binary:
-#####################################################################
-
-qt_internal_add_manual_test(subsurface
-    GUI
-    SOURCES
-        main.cpp
-        shmwindow.cpp shmwindow.h
-    LIBRARIES
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::GuiPrivate
-        Qt::Quick
-        Qt::WaylandClient
+add_executable(aurora-test-subsurface
+    main.cpp
+    shmwindow.cpp shmwindow.h
+    qml.qrc
 )
 
-# Resources:
-set(qml_resource_files
-    "child.qml"
-    "main.qml"
+set_target_properties(aurora-test-subsurface
+    PROPERTIES OUTPUT_NAME subsurface
 )
 
-qt_internal_add_resource(subsurface "qml"
-    PREFIX
-        "/"
-    FILES
-        ${qml_resource_files}
+target_link_libraries(aurora-test-subsurface
+    PRIVATE
+        Qt6::Core
+        Qt6::CorePrivate
+        Qt6::Gui
+        Qt6::GuiPrivate
+	Qt6::Qml
+	Qt6::Quick
 )
-
-
-#### Keys ignored in scope 1:.:.:subsurface.pro:<TRUE>:
-# TEMPLATE = "app"

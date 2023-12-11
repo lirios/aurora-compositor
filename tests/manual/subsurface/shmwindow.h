@@ -1,8 +1,7 @@
 // Copyright (C) 2015 LG Electronics Ltd, author: <mikko.levonmaa@lge.com>
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
 
-#ifndef SHMWINDOW_H
-#define SHMWINDOW_H
+#pragma once
 
 #include <QtGui>
 
@@ -20,4 +19,3 @@ private:
     int m_rotation;
     int m_timer;
 };
-#endif // SHMWINDOW_H

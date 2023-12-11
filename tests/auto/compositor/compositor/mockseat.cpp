@@ -3,6 +3,10 @@
 
 #include "mockseat.h"
 
+namespace Aurora {
+
+namespace Compositor {
+
 MockSeat::MockSeat(wl_seat *seat)
     : m_seat(seat)
     , m_pointer(new MockPointer(seat))
@@ -14,3 +18,7 @@ MockSeat::~MockSeat()
 {
     wl_seat_destroy(m_seat);
 }
+
+} // namespace Compositor
+
+} // namespace Aurora

@@ -1,11 +1,14 @@
 // Copyright (C) 2018 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
 
-#ifndef MOCKKEYBOARD_H
-#define MOCKKEYBOARD_H
+#pragma once
 
 #include <QObject>
 #include "wayland-wayland-client-protocol.h"
+
+namespace Aurora {
+
+namespace Compositor {
 
 class MockKeyboard : public QObject
 {
@@ -22,4 +25,7 @@ public:
     uint m_group = 0;
 };
 
-#endif // MOCKKEYBOARD_H
+} // namespace Compositor
+
+} // namespace Aurora
+

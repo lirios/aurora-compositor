@@ -1,36 +1,19 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# SPDX-FileCopyrightText: 2022-2024 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
 # SPDX-License-Identifier: BSD-3-Clause
 
-# Generated from qmlclient.pro.
-
-#####################################################################
-## qmlclient Binary:
-#####################################################################
-
-qt_internal_add_manual_test(qmlclient
-    GUI
-    SOURCES
-        main.cpp
-    LIBRARIES
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::GuiPrivate
-        Qt::Quick
-        Qt::WaylandClient
+add_executable(aurora-test-qmlclient
+    main.cpp
+    qml.qrc
 )
 
-# Resources:
-set(qml_resource_files
-    "main.qml"
+set_target_properties(aurora-test-qmlclient
+    PROPERTIES OUTPUT_NAME qmlclient
 )
 
-qt_internal_add_resource(qmlclient "qml"
-    PREFIX
-        "/"
-    FILES
-        ${qml_resource_files}
+target_link_libraries(aurora-test-qmlclient
+    PRIVATE
+        Qt6::CorePrivate
+        Qt6::Gui
+        Qt6::GuiPrivate
+        Qt6::Quick
 )
-
-
-#### Keys ignored in scope 1:.:.:qmlclient.pro:<TRUE>:
-# TEMPLATE = "app"

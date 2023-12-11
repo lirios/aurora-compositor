@@ -1,26 +1,30 @@
 // Copyright (C) 2017 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#include <QtWaylandCompositor/private/qwlserverbufferintegrationplugin_p.h>
+#include <LiriAuroraCompositor/private/aurorawlserverbufferintegrationplugin_p.h>
 #include "shmserverbufferintegration.h"
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class ShmServerBufferIntegrationPlugin : public QtWayland::ServerBufferIntegrationPlugin
+namespace Compositor {
+
+class ShmServerBufferIntegrationPlugin : public Internal::ServerBufferIntegrationPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID QtWaylandServerBufferIntegrationFactoryInterface_iid FILE "shm-emulation-server.json")
+    Q_PLUGIN_METADATA(IID AuroraServerBufferIntegrationFactoryInterface_iid FILE "shm-emulation-server.json")
 public:
-    QtWayland::ServerBufferIntegration *create(const QString&, const QStringList&) override;
+    Internal::ServerBufferIntegration *create(const QString&, const QStringList&) override;
 };
 
-QtWayland::ServerBufferIntegration *ShmServerBufferIntegrationPlugin::create(const QString& system, const QStringList& paramList)
+Internal::ServerBufferIntegration *ShmServerBufferIntegrationPlugin::create(const QString& system, const QStringList& paramList)
 {
     Q_UNUSED(paramList);
     Q_UNUSED(system);
     return new ShmServerBufferIntegration();
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #include "main.moc"

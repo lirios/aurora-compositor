@@ -12,14 +12,16 @@ extern "C" {
 #include <private/qwaylandquickhardwarelayer_p.h>
 #include <private/qwaylandquickitem_p.h>
 #include <private/qwaylandview_p.h>
-#include <QWaylandQuickOutput>
+#include <WaylandQuickOutput>
 #include <QQuickWindow>
 
 #include <qpa/qlatformscreen_p.h>
 
 using namespace QNativeInterface::Private;
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 Vsp2Buffer::Vsp2Buffer(wl_kms_buffer *kmsBuffer)
     : dmabufFd(kmsBuffer->fd)
@@ -29,21 +31,21 @@ Vsp2Buffer::Vsp2Buffer(wl_kms_buffer *kmsBuffer)
 {
 }
 
-Vsp2Layer::Vsp2Layer(QWaylandQuickHardwareLayer *hwLayer, Vsp2HardwareLayerIntegration *integration)
+Vsp2Layer::Vsp2Layer(WaylandQuickHardwareLayer *hwLayer, Vsp2HardwareLayerIntegration *integration)
     : m_hwLayer(hwLayer)
 {
     auto *wlItem = m_hwLayer->waylandItem();
     m_screen = dynamic_cast<QVsp2Screen*>(wlItem->window()->screen()->handle());
     Q_ASSERT(m_screen);
 
-    connect(hwLayer, &QWaylandQuickHardwareLayer::stackingLevelChanged, this, [integration](){
+    connect(hwLayer, &WaylandQuickHardwareLayer::stackingLevelChanged, this, [integration](){
         integration->recreateVspLayers();
     });
-    connect(hwLayer->waylandItem(), &QWaylandQuickItem::surfaceChanged, this, &Vsp2Layer::handleSurfaceChanged);
+    connect(hwLayer->waylandItem(), &WaylandQuickItem::surfaceChanged, this, &Vsp2Layer::handleSurfaceChanged);
     connect(hwLayer->waylandItem(), &QQuickItem::opacityChanged, this, &Vsp2Layer::updateOpacity);
     connect(hwLayer->waylandItem()->window(), &QQuickWindow::afterSynchronizing, this, &Vsp2Layer::updatePosition);
     hwLayer->setSceneGraphPainting(false);
-    QWaylandViewPrivate::get(hwLayer->waylandItem()->view())->independentFrameCallback = true;
+    WaylandViewPrivate::get(hwLayer->waylandItem()->view())->independentFrameCallback = true;
     handleSurfaceChanged();
 }
 
@@ -107,18 +109,18 @@ void Vsp2Layer::handleSurfaceChanged()
         return;
 
     if (this->m_surface)
-        disconnect(this->m_surface, &QWaylandSurface::redraw, this, &Vsp2Layer::handleBufferCommitted);
+        disconnect(this->m_surface, &WaylandSurface::redraw, this, &Vsp2Layer::handleBufferCommitted);
     if (newSurface)
-        connect(newSurface, &QWaylandSurface::redraw, this, &Vsp2Layer::handleBufferCommitted, Qt::DirectConnection);
+        connect(newSurface, &WaylandSurface::redraw, this, &Vsp2Layer::handleBufferCommitted, Qt::DirectConnection);
 
     this->m_surface = newSurface;
 }
 
 void Vsp2Layer::updatePosition()
 {
-    QWaylandQuickItem *wlItem = m_hwLayer->waylandItem();
+    WaylandQuickItem *wlItem = m_hwLayer->waylandItem();
     QRectF localGeometry(0, 0, wlItem->width(), wlItem->height());
-    auto lastMatrix = QWaylandQuickItemPrivate::get(wlItem)->lastMatrix;
+    auto lastMatrix = WaylandQuickItemPrivate::get(wlItem)->lastMatrix;
     auto globalGeometry = lastMatrix.mapRect(localGeometry);
 
     if (m_buffer.size != globalGeometry.size().toSize()) {
@@ -142,7 +144,7 @@ void Vsp2Layer::updateOpacity()
 wl_kms_buffer *Vsp2Layer::nextKmsBuffer()
 {
     Q_ASSERT(m_hwLayer && m_hwLayer->waylandItem());
-    QWaylandQuickItem *wlItem = m_hwLayer->waylandItem();
+    WaylandQuickItem *wlItem = m_hwLayer->waylandItem();
     auto view = wlItem->view();
     Q_ASSERT(view);
 
@@ -203,7 +205,7 @@ Vsp2HardwareLayerIntegration::Vsp2HardwareLayerIntegration()
     });
 }
 
-void Vsp2HardwareLayerIntegration::add(QWaylandQuickHardwareLayer *hwLayer)
+void Vsp2HardwareLayerIntegration::add(WaylandQuickHardwareLayer *hwLayer)
 {
     disableVspLayers();
     m_layers.append(QSharedPointer<Vsp2Layer>(new Vsp2Layer(hwLayer, this)));
@@ -211,7 +213,7 @@ void Vsp2HardwareLayerIntegration::add(QWaylandQuickHardwareLayer *hwLayer)
     enableVspLayers();
 }
 
-void Vsp2HardwareLayerIntegration::remove(QWaylandQuickHardwareLayer *hwLayer)
+void Vsp2HardwareLayerIntegration::remove(WaylandQuickHardwareLayer *hwLayer)
 {
     disableVspLayers();
     for (auto it = m_layers.begin(); it != m_layers.end(); ++it) {
@@ -231,4 +233,6 @@ void Vsp2HardwareLayerIntegration::sendFrameCallbacks()
     }
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

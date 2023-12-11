@@ -1,19 +1,20 @@
 // Copyright (C) 2018 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef LINUXDMABUFCLIENTBUFFERINTEGRATION_H
-#define LINUXDMABUFCLIENTBUFFERINTEGRATION_H
+#pragma once
 
 #include "linuxdmabuf.h"
 
-#include <QtWaylandCompositor/private/qwlclientbufferintegration_p.h>
-#include <QtWaylandCompositor/private/qwlclientbuffer_p.h>
-#include <QtWaylandCompositor/private/qwayland-server-wayland.h>
+#include <LiriAuroraCompositor/private/aurorawlclientbufferintegration_p.h>
+#include <LiriAuroraCompositor/private/aurorawlclientbuffer_p.h>
+#include <LiriAuroraCompositor/private/aurora-server-wayland.h>
 #include <QtCore/QMutex>
 
 #include <drm_fourcc.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 typedef EGLBoolean (EGLAPIENTRYP PFNEGLQUERYWAYLANDBUFFERWL_compat) (EGLDisplay dpy, struct wl_resource *buffer, EGLint attribute, EGLint *value);
 typedef EGLBoolean (EGLAPIENTRYP PFNEGLQUERYDMABUFFORMATSEXTPROC) (EGLDisplay dpy, EGLint max_formats, EGLint *formats, EGLint *num_formats);
@@ -36,14 +37,14 @@ struct YuvFormatConversion {
     struct YuvPlaneConversion plane[LinuxDmabufWlBuffer::MaxDmabufPlanes];
 };
 
-class LinuxDmabufClientBufferIntegration : public QtWayland::ClientBufferIntegration
+class LinuxDmabufClientBufferIntegration : public Internal::ClientBufferIntegration
 {
 public:
     LinuxDmabufClientBufferIntegration();
     ~LinuxDmabufClientBufferIntegration() override;
 
     void initializeHardware(struct ::wl_display *display) override;
-    QtWayland::ClientBuffer *createBufferFor(wl_resource *resource) override;
+    Internal::ClientBuffer *createBufferFor(wl_resource *resource) override;
     bool importBuffer(wl_resource *resource, LinuxDmabufWlBuffer *linuxDmabufBuffer);
     void removeBuffer(wl_resource *resource);
     void deleteImage(EGLImageKHR image);
@@ -74,14 +75,14 @@ private:
     QScopedPointer<LinuxDmabuf> m_linuxDmabuf;
 };
 
-class LinuxDmabufClientBuffer : public QtWayland::ClientBuffer
+class LinuxDmabufClientBuffer : public Internal::ClientBuffer
 {
 public:
     ~LinuxDmabufClientBuffer() override;
 
-    QWaylandBufferRef::BufferFormatEgl bufferFormatEgl() const override;
+    WaylandBufferRef::BufferFormatEgl bufferFormatEgl() const override;
     QSize size() const override;
-    QWaylandSurface::Origin origin() const override;
+    WaylandSurface::Origin origin() const override;
     QOpenGLTexture *toOpenGlTexture(int plane) override;
 
 protected:
@@ -97,6 +98,7 @@ private:
     LinuxDmabufClientBufferIntegration *m_integration = nullptr;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // LINUXDMABUFCLIENTBUFFERINTEGRATION_H
+} // namespace Aurora
+

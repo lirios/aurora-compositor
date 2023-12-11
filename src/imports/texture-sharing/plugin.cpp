@@ -39,14 +39,16 @@
     The shared texture module does not provide any directly usable QML types.
 */
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandTextureSharingPlugin : public QQmlExtensionPlugin
+namespace Compositor {
+
+class WaylandTextureSharingPlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
 public:
-    QWaylandTextureSharingPlugin(QObject *parent = nullptr) : QQmlExtensionPlugin(parent) {}
+    WaylandTextureSharingPlugin(QObject *parent = nullptr) : QQmlExtensionPlugin(parent) {}
 
     void registerTypes(const char *uri) override
     {
@@ -61,6 +63,8 @@ public:
     }
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #include "plugin.moc"

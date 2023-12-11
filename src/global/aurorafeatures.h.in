@@ -1,0 +1,17 @@
+// SPDX-FileCopyrightText: 2023 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+// SPDX-License-Identifier: LGPL-3.0-or-later
+
+#pragma once
+
+#cmakedefine01 LIRI_FEATURE_aurora_datadevice
+#cmakedefine01 LIRI_FEATURE_aurora_xkbcommon
+#cmakedefine01 LIRI_FEATURE_aurora_brcm
+#cmakedefine01 LIRI_FEATURE_aurora_compositor_quick
+#cmakedefine01 LIRI_FEATURE_aurora_dmabuf_client_buffer
+#cmakedefine01 LIRI_FEATURE_aurora_dmabuf_server_buffer
+#cmakedefine01 LIRI_FEATURE_aurora_drm_egl_server_buffer
+#cmakedefine01 LIRI_FEATURE_aurora_wayland_egl
+#cmakedefine01 LIRI_FEATURE_aurora_libhybris_egl_server_buffer
+#cmakedefine01 LIRI_FEATURE_aurora_vulkan_server_buffer
+#cmakedefine01 LIRI_FEATURE_aurora_shm_emulation_server
+#cmakedefine01 LIRI_FEATURE_aurora_xwayland

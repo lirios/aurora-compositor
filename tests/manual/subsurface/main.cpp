@@ -59,15 +59,15 @@ int main(int argc, char* argv[])
     view.setResizeMode(QQuickView::SizeRootObjectToView);
 
     Filter f;
-    view.rootContext()->setContextProperty("syncStatus", &f);
+    view.rootContext()->setContextProperty(QStringLiteral("syncStatus"), &f);
     view.installEventFilter(&f);
 
-    view.setSource(QUrl("qrc:/main.qml"));
+    view.setSource(QUrl(QStringLiteral("qrc:/main.qml")));
     view.show();
 
     QQuickView child(&view);
     child.connect(child.engine(), SIGNAL(quit()), &app, SLOT(quit()));
-    child.setSource(QUrl("qrc:/child.qml"));
+    child.setSource(QUrl(QStringLiteral("qrc:/child.qml")));
     child.setResizeMode(QQuickView::SizeRootObjectToView);
     child.setGeometry(QRect(150, 70, 100, 100));
     child.show();

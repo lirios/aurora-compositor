@@ -12,12 +12,14 @@
 #include <QtGui/qpa/qplatformnativeinterface.h>
 #include <QDebug>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 TextureSharingExtension::TextureSharingExtension()
-    : QWaylandClientExtensionTemplate(/* Supported protocol version */ 1 )
+    : WaylandClientExtensionTemplate(/* Supported protocol version */ 1 )
 {
-        auto *wayland_integration = static_cast<QtWaylandClient::QWaylandIntegration *>(QGuiApplicationPrivate::platformIntegration());
+        auto *wayland_integration = static_cast<QtWaylandClient::WaylandIntegration *>(QGuiApplicationPrivate::platformIntegration());
         m_server_buffer_integration = wayland_integration->serverBufferIntegration();
         if (!m_server_buffer_integration) {
             qCritical() << "This application requires a working serverBufferIntegration";
@@ -27,7 +29,7 @@ TextureSharingExtension::TextureSharingExtension()
 
 void TextureSharingExtension::zqt_texture_sharing_v1_provide_buffer(struct ::qt_server_buffer *buffer, const QString &key)
 {
-    QtWaylandClient::QWaylandServerBuffer *serverBuffer = m_server_buffer_integration->serverBuffer(buffer);
+    QtWaylandClient::WaylandServerBuffer *serverBuffer = m_server_buffer_integration->serverBuffer(buffer);
     emit bufferReceived(serverBuffer, key);
 }
 
@@ -46,6 +48,8 @@ void TextureSharingExtension::abandonImage(const QString &key)
     abandon_image(key);
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #include "moc_texturesharingextension_p.cpp"

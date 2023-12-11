@@ -5,15 +5,14 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the Aurora API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#ifndef SHAREDTEXTUREPROVIDER_H
-#define SHAREDTEXTUREPROVIDER_H
+#pragma once
 
 #include <QOpenGLFunctions>
 #include <QQuickImageProvider>
@@ -23,7 +22,9 @@
 
 #include <QtWaylandClient/private/qwaylandserverbufferintegration_p.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 class TextureSharingExtension;
 
@@ -34,14 +35,14 @@ public:
     SharedTextureRegistry();
     ~SharedTextureRegistry() override;
 
-    const QtWaylandClient::QWaylandServerBuffer *bufferForId(const QString &id) const;
+    const QtWaylandClient::WaylandServerBuffer *bufferForId(const QString &id) const;
     void requestBuffer(const QString &id);
     void abandonBuffer(const QString &id);
 
     static bool preinitialize();
 
 public Q_SLOTS:
-    void receiveBuffer(QtWaylandClient::QWaylandServerBuffer *buffer, const QString &id);
+    void receiveBuffer(QtWaylandClient::WaylandServerBuffer *buffer, const QString &id);
 
 Q_SIGNALS:
     void replyReceived(const QString &id);
@@ -51,7 +52,7 @@ private Q_SLOTS:
 
 private:
     TextureSharingExtension *m_extension = nullptr;
-    QHash<QString, QtWaylandClient::QWaylandServerBuffer *> m_buffers;
+    QHash<QString, QtWaylandClient::WaylandServerBuffer *> m_buffers;
     QStringList m_pendingBuffers;
 };
 
@@ -68,6 +69,7 @@ private:
     bool m_sharingAvailable = false;
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // SHAREDTEXTUREPROVIDER_H
+} // namespace Aurora
+

@@ -24,12 +24,14 @@
 
 #include "texturesharingextension_p.h"
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 class SharedTextureFactory : public QQuickTextureFactory
 {
 public:
-    SharedTextureFactory(const QtWaylandClient::QWaylandServerBuffer *buffer, const QString &id, SharedTextureRegistry *registry)
+    SharedTextureFactory(const QtWaylandClient::WaylandServerBuffer *buffer, const QString &id, SharedTextureRegistry *registry)
         : m_buffer(buffer), m_id(id), m_registry(registry)
     {
     }
@@ -56,7 +58,7 @@ public:
     QSGTexture *createTexture(QQuickWindow *window) const override
     {
         if (m_buffer != nullptr) {
-            QOpenGLTexture *texture = const_cast<QtWaylandClient::QWaylandServerBuffer *>(m_buffer)->toOpenGlTexture();
+            QOpenGLTexture *texture = const_cast<QtWaylandClient::WaylandServerBuffer *>(m_buffer)->toOpenGlTexture();
             return QNativeInterface::QSGOpenGLTexture::fromNative(texture->textureId(),
                                                                   window,
                                                                   m_buffer->size(),
@@ -66,7 +68,7 @@ public:
     }
 
 private:
-    const QtWaylandClient::QWaylandServerBuffer *m_buffer = nullptr;
+    const QtWaylandClient::WaylandServerBuffer *m_buffer = nullptr;
     QString m_id;
     QPointer<SharedTextureRegistry> m_registry;
 };
@@ -84,7 +86,7 @@ SharedTextureRegistry::~SharedTextureRegistry()
     delete m_extension;
 }
 
-const QtWaylandClient::QWaylandServerBuffer *SharedTextureRegistry::bufferForId(const QString &id) const
+const QtWaylandClient::WaylandServerBuffer *SharedTextureRegistry::bufferForId(const QString &id) const
 {
     return m_buffers.value(id);
 }
@@ -131,7 +133,7 @@ bool SharedTextureRegistry::preinitialize()
     return true;
 }
 
-void SharedTextureRegistry::receiveBuffer(QtWaylandClient::QWaylandServerBuffer *buffer, const QString& id)
+void SharedTextureRegistry::receiveBuffer(QtWaylandClient::WaylandServerBuffer *buffer, const QString& id)
 {
     //qDebug() << "ReceiveBuffer for id" << id;
     if (buffer)
@@ -160,7 +162,7 @@ public:
     QQuickTextureFactory *textureFactory() const override
     {
         if (m_registry) {
-            const QtWaylandClient::QWaylandServerBuffer *buffer = m_registry->bufferForId(m_id);
+            const QtWaylandClient::WaylandServerBuffer *buffer = m_registry->bufferForId(m_id);
             if (buffer) {
                 //qDebug() << "Creating shared buffer texture for" << m_id;
                 return new SharedTextureFactory(buffer, m_id, m_registry);
@@ -254,7 +256,9 @@ QQuickImageResponse *SharedTextureProvider::requestImageResponse(const QString &
     return new SharedTextureImageResponse(m_registry, id);
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #include "moc_sharedtextureprovider_p.cpp"
 

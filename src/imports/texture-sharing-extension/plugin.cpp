@@ -26,7 +26,7 @@
     This module is imported like this:
 
     \code
-    import QtWayland.Compositor.TextureSharingExtension 1.0
+    import Aurora.Compositor.TextureSharingExtension 1.0
     \endcode
 
     To use this module in a compositor, instantiate the extension object as a child of the compositor object, like this:
@@ -50,28 +50,32 @@
 
 */
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandTextureSharingExtensionPlugin : public QQmlExtensionPlugin
+namespace Compositor {
+
+class WaylandTextureSharingExtensionPlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
 public:
-    QWaylandTextureSharingExtensionPlugin(QObject *parent = nullptr) : QQmlExtensionPlugin(parent) {}
+    WaylandTextureSharingExtensionPlugin(QObject *parent = nullptr) : QQmlExtensionPlugin(parent) {}
 
     void registerTypes(const char *uri) override
     {
         Q_ASSERT(uri == QStringLiteral("QtWayland.Compositor.TextureSharingExtension"));
-        qmlRegisterType<QWaylandTextureSharingExtensionQuickExtension>("QtWayland.Compositor.TextureSharingExtension", 1, 0, "TextureSharingExtension");
+        qmlRegisterType<WaylandTextureSharingExtensionQuickExtension>("QtWayland.Compositor.TextureSharingExtension", 1, 0, "TextureSharingExtension");
     }
 
     void initializeEngine(QQmlEngine *engine, const char *uri) override
     {
         Q_UNUSED(uri);
-        engine->addImageProvider("wlshared", new QWaylandSharedTextureProvider);
+        engine->addImageProvider("wlshared", new WaylandSharedTextureProvider);
     }
 };
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #include "plugin.moc"

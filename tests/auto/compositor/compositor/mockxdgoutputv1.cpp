@@ -3,8 +3,12 @@
 
 #include "mockxdgoutputv1.h"
 
+namespace Aurora {
+
+namespace Compositor {
+
 MockXdgOutputV1::MockXdgOutputV1(struct ::zxdg_output_v1 *object)
-    : QtWayland::zxdg_output_v1(object)
+    : Aurora::Client::PrivateClient::zxdg_output_v1(object)
 {
 }
 
@@ -41,3 +45,7 @@ void MockXdgOutputV1::zxdg_output_v1_description(const QString &description)
 {
     pending.description = description;
 }
+
+} // namespace Compositor
+
+} // namespace Aurora

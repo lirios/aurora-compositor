@@ -1,27 +1,31 @@
 // Copyright (C) 2018 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#include <QtWaylandCompositor/private/qwlclientbufferintegrationfactory_p.h>
-#include <QtWaylandCompositor/private/qwlclientbufferintegrationplugin_p.h>
+#include <LiriAuroraCompositor/private/aurorawlclientbufferintegrationfactory_p.h>
+#include <LiriAuroraCompositor/private/aurorawlclientbufferintegrationplugin_p.h>
 #include "linuxdmabufclientbufferintegration.h"
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandDmabufClientBufferIntegrationPlugin : public QtWayland::ClientBufferIntegrationPlugin
+namespace Compositor {
+
+class WaylandDmabufClientBufferIntegrationPlugin : public Internal::ClientBufferIntegrationPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID QtWaylandClientBufferIntegrationFactoryInterface_iid FILE "linux-dmabuf-unstable-v1.json")
+    Q_PLUGIN_METADATA(IID AuroraClientBufferIntegrationFactoryInterface_iid FILE "linux-dmabuf-unstable-v1.json")
 public:
-    QtWayland::ClientBufferIntegration *create(const QString& key, const QStringList& paramList) override;
+    Internal::ClientBufferIntegration *create(const QString& key, const QStringList& paramList) override;
 };
 
-QtWayland::ClientBufferIntegration *QWaylandDmabufClientBufferIntegrationPlugin::create(const QString& key, const QStringList& paramList)
+Internal::ClientBufferIntegration *WaylandDmabufClientBufferIntegrationPlugin::create(const QString& key, const QStringList& paramList)
 {
     Q_UNUSED(paramList);
     Q_UNUSED(key);
     return new LinuxDmabufClientBufferIntegration();
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
 
 #include "main.moc"

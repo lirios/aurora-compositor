@@ -1,33 +1,17 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# SPDX-FileCopyrightText: 2022-2024 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
 # SPDX-License-Identifier: BSD-3-Clause
 
-# Generated from scaling-compositor.pro.
-
-#####################################################################
-## scaling-compositor Binary:
-#####################################################################
-
-qt_internal_add_manual_test(scaling-compositor
-    GUI
-    SOURCES
-        main.cpp
-    LIBRARIES
-        Qt::Gui
-        Qt::Qml
+add_executable(aurora-test-scaling-compositor
+    main.cpp
+    qml.qrc
 )
 
-# Resources:
-set(qml_resource_files
-    "main.qml"
+set_target_properties(aurora-test-scaling-compositor
+    PROPERTIES OUTPUT_NAME scaling-compositor
 )
 
-qt_internal_add_resource(scaling-compositor "qml"
-    PREFIX
-        "/"
-    FILES
-        ${qml_resource_files}
+target_link_libraries(aurora-test-scaling-compositor
+    PRIVATE
+        Qt6::Gui
+	Qt6::Qml
 )
-
-
-#### Keys ignored in scope 1:.:.:scaling-compositor.pro:<TRUE>:
-# TEMPLATE = "app"

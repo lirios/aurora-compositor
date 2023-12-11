@@ -1,13 +1,12 @@
 // Copyright (C) 2019 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef WAYLANDEGLSTREAMCONTROLLER_H
-#define WAYLANDEGLSTREAMCONTROLLER_H
+#pragma once
 
-#include "qwayland-server-wl-eglstream-controller.h"
+#include "aurora-server-wl-eglstream-controller.h"
 
-#include <QtWaylandCompositor/private/qwayland-server-wayland.h>
-#include <QtWaylandCompositor/private/qwlclientbufferintegration_p.h>
+#include <LiriAuroraCompositor/private/aurora-server-wayland.h>
+#include <LiriAuroraCompositor/private/aurorawlclientbufferintegration_p.h>
 
 #include <QtOpenGL/QOpenGLTexture>
 #include <QtCore/QObject>
@@ -19,13 +18,15 @@
 #include <EGL/eglext.h>
 
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
 
-class QWaylandCompositor;
-class QWaylandResource;
+namespace Compositor {
+
+class WaylandCompositor;
+class WaylandResource;
 class WaylandEglStreamClientBufferIntegration;
 
-class WaylandEglStreamController : public QtWaylandServer::wl_eglstream_controller
+class WaylandEglStreamController : public PrivateServer::wl_eglstream_controller
 {
 public:
     explicit WaylandEglStreamController(wl_display *display, WaylandEglStreamClientBufferIntegration *clientBufferIntegration);
@@ -38,6 +39,7 @@ private:
 };
 
 
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif // WAYLANDEGLSTREAMCONTROLLER_H
+} // namespace Aurora
+

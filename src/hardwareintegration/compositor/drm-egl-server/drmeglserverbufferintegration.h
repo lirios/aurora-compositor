@@ -1,20 +1,19 @@
 // Copyright (C) 2017 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef DRMEGLSERVERBUFFERINTEGRATION_H
-#define DRMEGLSERVERBUFFERINTEGRATION_H
+#pragma once
 
 #include <QtCore/QVariant>
-#include <QtWaylandCompositor/private/qwlserverbufferintegration_p.h>
+#include <LiriAuroraCompositor/private/aurorawlserverbufferintegration_p.h>
 
-#include "qwayland-server-drm-egl-server-buffer.h"
+#include "aurora-server-drm-egl-server-buffer.h"
 
 #include <QtGui/QWindow>
 #include <QtGui/qpa/qplatformnativeinterface.h>
 #include <QtGui/QGuiApplication>
 
-#include <QtWaylandCompositor/qwaylandcompositor.h>
-#include <QtWaylandCompositor/private/qwayland-server-server-buffer-extension.h>
+#include <LiriAuroraCompositor/aurorawaylandcompositor.h>
+#include <LiriAuroraCompositor/private/aurora-server-server-buffer-extension.h>
 
 #include <QtCore/QDebug>
 #include <EGL/egl.h>
@@ -34,15 +33,18 @@ typedef EGLImageKHR (EGLAPIENTRYP PFNEGLCREATEDRMIMAGEMESAPROC) (EGLDisplay dpy,
 typedef EGLBoolean (EGLAPIENTRYP PFNEGLEXPORTDRMIMAGEMESAPROC) (EGLDisplay dpy, EGLImageKHR image, EGLint *name, EGLint *handle, EGLint *stride);
 #endif
 
-QT_BEGIN_NAMESPACE
-
-class DrmEglServerBufferIntegration;
 class QImage;
 
-class DrmEglServerBuffer : public QtWayland::ServerBuffer, public QtWaylandServer::qt_server_buffer
+namespace Aurora {
+
+namespace Compositor {
+
+class DrmEglServerBufferIntegration;
+
+class DrmEglServerBuffer : public Internal::ServerBuffer, public PrivateServer::qt_server_buffer
 {
 public:
-    DrmEglServerBuffer(DrmEglServerBufferIntegration *integration, const QImage &qimage, QtWayland::ServerBuffer::Format format);
+    DrmEglServerBuffer(DrmEglServerBufferIntegration *integration, const QImage &qimage, Internal::ServerBuffer::Format format);
 
     struct ::wl_resource *resourceForClient(struct ::wl_client *) override;
     bool bufferInUse() override;
@@ -56,21 +58,21 @@ private:
     int32_t m_name;
     int32_t m_stride;
     QOpenGLTexture *m_texture = nullptr;
-    QtWaylandServer::qt_drm_egl_server_buffer::format m_drm_format;
+    PrivateServer::qt_drm_egl_server_buffer::format m_drm_format;
 };
 
 class DrmEglServerBufferIntegration :
-    public QtWayland::ServerBufferIntegration,
-    public QtWaylandServer::qt_drm_egl_server_buffer
+    public Internal::ServerBufferIntegration,
+    public PrivateServer::qt_drm_egl_server_buffer
 {
 public:
     DrmEglServerBufferIntegration();
     ~DrmEglServerBufferIntegration() override;
 
-    bool initializeHardware(QWaylandCompositor *) override;
+    bool initializeHardware(WaylandCompositor *) override;
 
-    bool supportsFormat(QtWayland::ServerBuffer::Format format) const override;
-    QtWayland::ServerBuffer *createServerBufferFromImage(const QImage &qimage, QtWayland::ServerBuffer::Format format) override;
+    bool supportsFormat(Internal::ServerBuffer::Format format) const override;
+    Internal::ServerBuffer *createServerBufferFromImage(const QImage &qimage, Internal::ServerBuffer::Format format) override;
 
     EGLDisplay display() const { return m_egl_display; }
 
@@ -134,6 +136,7 @@ void DrmEglServerBufferIntegration::glEGLImageTargetTexture2DOES (GLenum target,
     else
         qWarning("DrmEglServerBufferIntegration: Trying to use unresolved function glEGLImageTargetTexture2DOES");
 }
-QT_END_NAMESPACE
+} // namespace Compositor
 
-#endif
+} // namespace Aurora
+

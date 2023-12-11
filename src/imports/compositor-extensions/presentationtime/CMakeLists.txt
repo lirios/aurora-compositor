@@ -1,25 +1,29 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# SPDX-FileCopyrightText: 2024 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
 # SPDX-License-Identifier: BSD-3-Clause
 
-#####################################################################
-## qwaylandcompositorpresentationtimeplugin Plugin:
-#####################################################################
-
-qt_internal_add_qml_module(WaylandCompositorPresentationTime
-    URI "QtWayland.Compositor.PresentationTime"
-    VERSION "${PROJECT_VERSION}"
-    CLASS_NAME QWaylandCompositorPresentationTimePlugin
-    PLUGIN_TARGET WaylandCompositorPresentationTime
-    NO_PLUGIN_OPTIONAL
+ecm_add_qml_module(AuroraCompositorPresentationTimeQmlModule
+    URI Aurora.Compositor.PresentationTime
+    CLASS_NAME WaylandCompositorPresentationTimePlugin
+    TYPEINFO aurorawaylandcompositorpresentationtimeplugin.qmltypes
     NO_GENERATE_PLUGIN_SOURCE
-    NO_GENERATE_QMLTYPES
-    SOURCES
-        qwaylandcompositorpresentationtimeplugin.cpp
-    LIBRARIES
-        Qt::Core
-        Qt::Gui
-        Qt::WaylandCompositorPrivate
+    DEPENDENCIES QtQuick
 )
 
-qt_internal_add_autogen_sync_header_dependencies(WaylandCompositorPresentationTime
-    WaylandCompositor)
+target_sources(AuroraCompositorPresentationTimeQmlModule
+    PRIVATE aurorawaylandcompositorpresentationtimeplugin.cpp
+)
+
+set_target_properties(AuroraCompositorPresentationTimeQmlModule
+    PROPERTIES
+        OUTPUT_NAME aurorawaylandcompositorpresentationtimeplugin
+)
+
+target_link_libraries(AuroraCompositorPresentationTimeQmlModule
+    PRIVATE
+        Qt6::Qml
+        Qt6::Quick
+        Liri::AuroraCompositor
+        Liri::AuroraCompositorPrivate
+)
+
+ecm_finalize_qml_module(AuroraCompositorPresentationTimeQmlModule)

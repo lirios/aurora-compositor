@@ -4,11 +4,13 @@
 #include "waylandeglstreamcontroller.h"
 #include "waylandeglstreamintegration.h"
 
-#include <QtWaylandCompositor/QWaylandCompositor>
+#include <LiriAuroraCompositor/WaylandCompositor>
 
 #include <unistd.h>
 
-QT_BEGIN_NAMESPACE
+namespace Aurora {
+
+namespace Compositor {
 
 
 
@@ -24,4 +26,6 @@ void WaylandEglStreamController::eglstream_controller_attach_eglstream_consumer(
     m_clientBufferIntegration->attachEglStreamConsumer(wl_surface, wl_buffer);
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora

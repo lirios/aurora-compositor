@@ -1,16 +1,20 @@
 // Copyright (C) 2016 LG Electronics, Inc., author: <mikko.levonmaa@lge.com>
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
 
-#include "qwaylandkeyboard.h"
+#include <LiriAuroraCompositor/WaylandKeyboard>
 
-class TestKeyboardGrabber : public QWaylandKeyboard
+namespace Aurora {
+
+namespace Compositor {
+
+class TestKeyboardGrabber : public WaylandKeyboard
 {
     Q_OBJECT
 public:
-    TestKeyboardGrabber(QWaylandSeat *seat);
+    TestKeyboardGrabber(WaylandSeat *seat);
 
-    void setFocus(QWaylandSurface *surface) override;
-    void sendKeyModifiers(QWaylandClient *client, uint32_t serial) override;
+    void setFocus(WaylandSurface *surface) override;
+    void sendKeyModifiers(WaylandClient *client, uint32_t serial) override;
     void sendKeyPressEvent(uint code) override;
     void sendKeyReleaseEvent(uint code) override;
 
@@ -21,4 +25,6 @@ signals:
     void modifiersCalled();
 };
 
+} // namespace Compositor
 
+} // namespace Aurora

@@ -3,9 +3,9 @@
 
 import QtQuick 2.15
 import QtQuick.Window 2.2
-import QtWayland.Compositor 1.3
-import QtWayland.Compositor.WlShell
-import QtWayland.Compositor.XdgShell
+import Aurora.Compositor 1.0
+import Aurora.Compositor.WlShell 1.0
+import Aurora.Compositor.XdgShell 1.0
 
 WaylandCompositor {
     id: comp

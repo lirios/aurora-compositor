@@ -28,7 +28,7 @@
   \section2 QML import
 
   \qml
-    import QtWayland.Compositor
+    import Aurora.Compositor
   \endqml
 
   For more information about using these types in your application,

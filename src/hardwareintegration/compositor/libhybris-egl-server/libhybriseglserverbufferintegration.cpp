@@ -8,9 +8,11 @@
 #include <hybris/eglplatformcommon/hybris_nativebufferext.h>
 #include <wayland-server-core.h>
 
-QT_BEGIN_NAMESPACE
-LibHybrisEglServerBuffer::LibHybrisEglServerBuffer(LibHybrisEglServerBufferIntegration *integration, const QImage &qimage, QtWayland::ServerBuffer::Format format)
-    : QtWayland::ServerBuffer(qimage.size(),format)
+namespace Aurora {
+
+namespace Compositor {
+LibHybrisEglServerBuffer::LibHybrisEglServerBuffer(LibHybrisEglServerBufferIntegration *integration, const QImage &qimage, Internal::ServerBuffer::Format format)
+    : Internal::ServerBuffer(qimage.size(),format)
     , m_integration(integration)
 {
     m_format = format;
@@ -18,12 +20,12 @@ LibHybrisEglServerBuffer::LibHybrisEglServerBuffer(LibHybrisEglServerBufferInteg
     EGLint egl_format;
     switch (m_format) {
         case RGBA32:
-            m_hybris_format = QtWaylandServer::qt_libhybris_egl_server_buffer::format_RGBA32;
+            m_hybris_format = PrivateServer::qt_libhybris_egl_server_buffer::format_RGBA32;
             egl_format = HYBRIS_PIXEL_FORMAT_RGBA_8888;
             break;
         default:
             qWarning("LibHybrisEglServerBuffer: unsupported format");
-            m_hybris_format = QtWaylandServer::qt_libhybris_egl_server_buffer::format_RGBA32;
+            m_hybris_format = PrivateServer::qt_libhybris_egl_server_buffer::format_RGBA32;
             egl_format = HYBRIS_PIXEL_FORMAT_RGBA_8888;
             break;
     }
@@ -98,7 +100,7 @@ LibHybrisEglServerBufferIntegration::~LibHybrisEglServerBufferIntegration()
 {
 }
 
-bool LibHybrisEglServerBufferIntegration::initializeHardware(QWaylandCompositor *compositor)
+bool LibHybrisEglServerBufferIntegration::initializeHardware(WaylandCompositor *compositor)
 {
     Q_ASSERT(QGuiApplication::platformNativeInterface());
 
@@ -142,25 +144,27 @@ bool LibHybrisEglServerBufferIntegration::initializeHardware(QWaylandCompositor 
         return false;
     }
 
-    QtWaylandServer::qt_libhybris_egl_server_buffer::init(compositor->display(), 1);
+    PrivateServer::qt_libhybris_egl_server_buffer::init(compositor->display(), 1);
     return true;
 }
 
-bool LibHybrisEglServerBufferIntegration::supportsFormat(QtWayland::ServerBuffer::Format format) const
+bool LibHybrisEglServerBufferIntegration::supportsFormat(Internal::ServerBuffer::Format format) const
 {
     switch (format) {
-        case QtWayland::ServerBuffer::RGBA32:
+        case Internal::ServerBuffer::RGBA32:
             return true;
-        case QtWayland::ServerBuffer::A8:
+        case Internal::ServerBuffer::A8:
             return false;
         default:
             return false;
     }
 }
 
-QtWayland::ServerBuffer *LibHybrisEglServerBufferIntegration::createServerBufferFromImage(const QImage &qimage, QtWayland::ServerBuffer::Format format)
+Internal::ServerBuffer *LibHybrisEglServerBufferIntegration::createServerBufferFromImage(const QImage &qimage, Internal::ServerBuffer::Format format)
 {
     return new LibHybrisEglServerBuffer(this, qimage, format);
 }
 
-QT_END_NAMESPACE
+} // namespace Compositor
+
+} // namespace Aurora
