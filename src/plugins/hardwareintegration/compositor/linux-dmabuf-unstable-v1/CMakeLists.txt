@@ -26,7 +26,7 @@ liri_add_plugin(AuroraDmabufClientBufferIntegrationPlugin
         Liri::AuroraCompositorPrivate
 )
 
-liri_generate_wayland_protocol_server_sources(AuroraDmabufClientBufferIntegrationPlugin
+aurora_generate_wayland_protocol_server_sources(AuroraDmabufClientBufferIntegrationPlugin
     FILES
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../../hardwareintegration/compositor/linux-dmabuf-unstable-v1/../../../3rdparty/protocol/linux-dmabuf-unstable-v1.xml"
 )

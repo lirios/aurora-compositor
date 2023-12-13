@@ -23,7 +23,7 @@ liri_add_plugin(AuroraDmaBufServerBufferIntegrationPlugin
         Liri::AuroraCompositorPrivate
 )
 
-liri_generate_wayland_protocol_server_sources(AuroraDmaBufServerBufferIntegrationPlugin
+aurora_generate_wayland_protocol_server_sources(AuroraDmaBufServerBufferIntegrationPlugin
     FILES
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../../hardwareintegration/compositor/dmabuf-server/../../../extensions/qt-dmabuf-server-buffer.xml"
 )

@@ -27,7 +27,7 @@ liri_add_plugin(AuroraWaylandEglStreamClientBufferIntegrationPlugin
         Liri::AuroraCompositorPrivate
 )
 
-liri_generate_wayland_protocol_server_sources(AuroraWaylandEglStreamClientBufferIntegrationPlugin
+aurora_generate_wayland_protocol_server_sources(AuroraWaylandEglStreamClientBufferIntegrationPlugin
     FILES
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../../hardwareintegration/compositor/wayland-eglstream-controller/../../../3rdparty/protocol/wl-eglstream-controller.xml"
 )

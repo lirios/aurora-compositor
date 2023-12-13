@@ -22,7 +22,7 @@ liri_add_plugin(AuroraDrmEglServerBufferIntegrationPlugin
         Liri::AuroraCompositorPrivate
 )
 
-liri_generate_wayland_protocol_server_sources(AuroraDrmEglServerBufferIntegrationPlugin
+aurora_generate_wayland_protocol_server_sources(AuroraDrmEglServerBufferIntegrationPlugin
     FILES
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../../hardwareintegration/compositor/drm-egl-server/../../../extensions/drm-egl-server-buffer.xml"
 )

@@ -35,6 +35,9 @@ find_package(Wayland "${WAYLAND_MIN_VERSION}" COMPONENTS Client Egl QUIET)
 ## Find wayland-protocols:
 find_package(WaylandProtocols 1.15 REQUIRED)
 
+## Find Aurora Scanner:
+find_package(AuroraScanner REQUIRED)
+
 ## Find Qt 5:
 set(QT_MIN_VERSION "5.15.0")
 find_package(Qt${QT_MAJOR_VERSION} "${QT_MIN_VERSION}"

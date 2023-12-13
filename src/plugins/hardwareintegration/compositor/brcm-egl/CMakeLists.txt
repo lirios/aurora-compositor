@@ -23,7 +23,7 @@ liri_add_plugin(AuroraBrcmEglClientBufferIntegrationPlugin
         Liri::AuroraCompositorPrivate
 )
 
-liri_generate_wayland_protocol_server_sources(AuroraBrcmEglClientBufferIntegrationPlugin
+aurora_generate_wayland_protocol_server_sources(AuroraBrcmEglClientBufferIntegrationPlugin
     FILES
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../../hardwareintegration/compositor/brcm-egl/../../../extensions/brcm.xml"
 )

@@ -23,7 +23,7 @@ liri_add_test(tst_compositor
         Wayland::Server
 )
 
-liri_generate_wayland_protocol_client_sources(tst_compositor
+aurora_generate_wayland_protocol_client_sources(tst_compositor
     FILES
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../../src/3rdparty/protocol/idle-inhibit-unstable-v1.xml"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../../src/3rdparty/protocol/ivi-application.xml"

@@ -23,7 +23,7 @@ liri_add_plugin(AuroraVulkanServerBufferIntegrationPlugin
         Liri::AuroraCompositorPrivate
 )
 
-liri_generate_wayland_protocol_server_sources(AuroraVulkanServerBufferIntegrationPlugin
+aurora_generate_wayland_protocol_server_sources(AuroraVulkanServerBufferIntegrationPlugin
     FILES
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../../hardwareintegration/compositor/vulkan-server/../../../extensions/qt-vulkan-server-buffer-unstable-v1.xml"
 )

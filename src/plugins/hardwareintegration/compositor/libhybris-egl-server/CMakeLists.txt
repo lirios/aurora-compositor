@@ -23,7 +23,7 @@ liri_add_plugin(AuroraLibHybrisEglServerBufferIntegrationPlugin
         Liri::AuroraCompositorPrivate
 )
 
-liri_generate_wayland_protocol_server_sources(AuroraLibHybrisEglServerBufferIntegrationPlugin
+aurora_generate_wayland_protocol_server_sources(AuroraLibHybrisEglServerBufferIntegrationPlugin
     FILES
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../../hardwareintegration/compositor/libhybris-egl-server/../../../extensions/libhybris-egl-server-buffer.xml"
 )

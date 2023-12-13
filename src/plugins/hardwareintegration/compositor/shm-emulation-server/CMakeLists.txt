@@ -21,7 +21,7 @@ liri_add_plugin(AuroraShmServerBufferIntegrationPlugin
         Liri::AuroraCompositorPrivate
 )
 
-liri_generate_wayland_protocol_server_sources(AuroraShmServerBufferIntegrationPlugin
+aurora_generate_wayland_protocol_server_sources(AuroraShmServerBufferIntegrationPlugin
     FILES
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../../hardwareintegration/compositor/shm-emulation-server/../../../extensions/shm-emulation-server-buffer.xml"
 )
