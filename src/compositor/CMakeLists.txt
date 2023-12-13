@@ -100,8 +100,6 @@ set(_global_header_features "#include <LiriAuroraGlobalPrivate/aurorafeatures.h>
 #include <QtGui/qtgui-config.h>
 #include <QtGui/qtguiglobal.h>")
 liri_extend_target(AuroraCompositor
-    SOURCES
-        "${CMAKE_CURRENT_BINARY_DIR}/liriauroracompositorfeatures.h"
     GLOBAL_HEADER_CONTENT
         "${_global_header_features}"
 )

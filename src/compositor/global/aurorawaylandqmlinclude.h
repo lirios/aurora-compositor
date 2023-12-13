@@ -16,7 +16,7 @@
 //
 
 #include <QtCore/qglobal.h>
-#include <LiriAuroraCompositor/liriauroracompositorfeatures.h>
+#include <LiriAuroraGlobalPrivate/aurorafeatures.h>
 
 #if LIRI_FEATURE_aurora_compositor_quick
 #include <QtQml/qqml.h>
