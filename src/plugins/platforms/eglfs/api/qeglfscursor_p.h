@@ -37,8 +37,7 @@
 **
 ****************************************************************************/
 
-#ifndef QEGLFSCURSOR_H
-#define QEGLFSCURSOR_H
+#pragma once
 
 //
 //  W A R N I N G
@@ -164,4 +163,3 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QEGLFSCURSOR_H

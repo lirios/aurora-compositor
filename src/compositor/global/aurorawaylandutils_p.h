@@ -1,8 +1,7 @@
 // Copyright (C) 2018 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef AURORA_COMPOSITOR_WAYLANDUTILS_P_H
-#define AURORA_COMPOSITOR_WAYLANDUTILS_P_H
+#pragma once
 
 //
 //  W A R N I N G
@@ -38,4 +37,3 @@ return_type fromResource(struct ::wl_resource *resource) {
 
 } // namespace Aurora
 
-#endif // AURORA_COMPOSITOR_WAYLANDUTILS_P_H

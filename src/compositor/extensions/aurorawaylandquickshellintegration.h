@@ -1,8 +1,7 @@
 // Copyright (C) 2017 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef AURORA_COMPOSITOR_WAYLANDQUICKSHELLINTEGRATION_H
-#define AURORA_COMPOSITOR_WAYLANDQUICKSHELLINTEGRATION_H
+#pragma once
 
 #include <QtCore/QObject>
 #include <LiriAuroraCompositor/liriauroracompositorglobal.h>
@@ -23,4 +22,3 @@ public:
 
 } // namespace Aurora
 
-#endif // AURORA_COMPOSITOR_WAYLANDQUICKSHELLINTEGRATION_H

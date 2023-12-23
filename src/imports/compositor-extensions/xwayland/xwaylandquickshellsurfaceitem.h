@@ -31,8 +31,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef XWAYLANDQUICKSHELLSURFACEITEM_H
-#define XWAYLANDQUICKSHELLSURFACEITEM_H
+#pragma once
 
 #include <LiriAuroraCompositor/WaylandQuickItem>
 
@@ -77,4 +76,3 @@ private:
 } // namespace Aurora
 
 
-#endif // XWAYLANDQUICKSHELLSURFACEITEM_H

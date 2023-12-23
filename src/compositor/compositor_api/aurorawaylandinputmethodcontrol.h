@@ -1,8 +1,7 @@
 // Copyright (C) 2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef AURORA_COMPOSITOR_WAYLANDINPUTMETHODCONTROL_H
-#define AURORA_COMPOSITOR_WAYLANDINPUTMETHODCONTROL_H
+#pragma once
 
 #include <QtGui/qtguiglobal.h>
 #include <QtCore/QObject>
@@ -55,4 +54,3 @@ private:
 
 } // namespace Aurora
 
-#endif // AURORA_COMPOSITOR_WAYLANDINPUTMETHODCONTROL_H

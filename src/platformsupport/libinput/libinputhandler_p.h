@@ -24,8 +24,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef LIRI_LIBINPUTHANDLER_P_H
-#define LIRI_LIBINPUTHANDLER_P_H
+#pragma once
 
 #include <QtCore/QLoggingCategory>
 #include <QtCore/private/qobject_p.h>
@@ -109,4 +108,3 @@ private:
 
 } // namespace Aurora
 
-#endif // LIRI_LIBINPUTHANDLER_P_H

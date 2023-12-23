@@ -1,8 +1,7 @@
 // Copyright (C) 2017 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef BRCMBUFFER_H
-#define BRCMBUFFER_H
+#pragma once
 
 #include <LiriAuroraCompositor/private/aurora-server-wayland.h>
 #include <LiriAuroraCompositor/private/aurorawaylandutils_p.h>
@@ -45,4 +44,3 @@ private:
 
 } // namespace Aurora
 
-#endif // BRCMBUFFER_H

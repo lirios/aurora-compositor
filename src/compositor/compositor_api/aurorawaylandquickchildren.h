@@ -1,8 +1,7 @@
 // Copyright (C) 2016 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef AURORA_COMPOSITOR_WAYLANDQUICKCHILDREN_H
-#define AURORA_COMPOSITOR_WAYLANDQUICKCHILDREN_H
+#pragma once
 
 //
 //  W A R N I N G
@@ -44,4 +43,3 @@ namespace Compositor {
 
 } // namespace Aurora
 
-#endif // AURORA_COMPOSITOR_WAYLANDQUICKCHILDREN_H

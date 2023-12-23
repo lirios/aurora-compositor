@@ -39,8 +39,7 @@
 **
 ****************************************************************************/
 
-#ifndef QEGLFSKMSGBMWINDOW_H
-#define QEGLFSKMSGBMWINDOW_H
+#pragma once
 
 #include "private/qeglfswindow_p.h"
 
@@ -68,4 +67,3 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QEGLFSKMSGBMWINDOW_H

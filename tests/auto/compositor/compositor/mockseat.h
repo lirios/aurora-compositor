@@ -26,8 +26,7 @@
 **
 ****************************************************************************/
 
-#ifndef MOCKSEAT
-#define MOCKSEAT
+#pragma once
 
 #include "mockpointer.h"
 #include "mockkeyboard.h"
@@ -60,4 +59,3 @@ private:
 
 } // namespace Aurora
 
-#endif // MOCKSEAT_H

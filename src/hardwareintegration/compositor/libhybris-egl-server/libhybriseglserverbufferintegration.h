@@ -1,8 +1,7 @@
 // Copyright (C) 2017 Jolla Ltd, author: <giulio.camuffo@jollamobile.com>
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef LIBHYBRISEGLSERVERBUFFERINTEGRATION_H
-#define LIBHYBRISEGLSERVERBUFFERINTEGRATION_H
+#pragma once
 
 #include <LiriAuroraCompositor/private/aurorawlserverbufferintegration_p.h>
 
@@ -153,4 +152,3 @@ void LibHybrisEglServerBufferIntegration::eglHybrisSerializeNativeBuffer(EGLClie
 
 } // namespace Aurora
 
-#endif

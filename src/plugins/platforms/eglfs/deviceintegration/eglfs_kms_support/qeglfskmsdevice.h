@@ -38,8 +38,7 @@
 **
 ****************************************************************************/
 
-#ifndef QEGLFSKMSDEVICE_H
-#define QEGLFSKMSDEVICE_H
+#pragma once
 
 #include <LiriAuroraKmsSupport/private/aurorakmsdevice_p.h>
 
@@ -68,4 +67,3 @@ protected:
 
 QT_END_NAMESPACE
 
-#endif // QEGLFSKMSDEVICE_H

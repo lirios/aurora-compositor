@@ -37,8 +37,7 @@
 **
 ****************************************************************************/
 
-#ifndef QEGLFSKMSGBMCURSOR_H
-#define QEGLFSKMSGBMCURSOR_H
+#pragma once
 
 #include <qpa/qplatformcursor.h>
 #include <QtCore/QVector>
@@ -123,4 +122,3 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QEGLFSKMSGBMCURSOR_H

@@ -21,8 +21,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef LIRI_LIBINPUTMANAGER_P_H
-#define LIRI_LIBINPUTMANAGER_P_H
+#pragma once
 
 #include <QObject>
 
@@ -59,4 +58,3 @@ private:
 
 } // namespace Aurora
 
-#endif // LIRI_LIBINPUTMANAGER_P_H

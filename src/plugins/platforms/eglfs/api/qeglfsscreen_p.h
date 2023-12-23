@@ -37,8 +37,7 @@
 **
 ****************************************************************************/
 
-#ifndef QEGLFSSCREEN_H
-#define QEGLFSSCREEN_H
+#pragma once
 
 //
 //  W A R N I N G
@@ -118,4 +117,3 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QEGLFSSCREEN_H

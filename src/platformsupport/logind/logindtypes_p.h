@@ -21,8 +21,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef LOGINDTYPES_P_H
-#define LOGINDTYPES_P_H
+#pragma once
 
 #include <QDBusArgument>
 #include <QDBusMetaType>
@@ -64,4 +63,3 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, DBusUserSession &
 QDBusArgument &operator<<(QDBusArgument &argument, const DBusSeat &seat);
 const QDBusArgument &operator>>(const QDBusArgument &argument, DBusSeat &seat);
 
-#endif // LOGINDTYPES_P_H

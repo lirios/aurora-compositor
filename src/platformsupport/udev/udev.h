@@ -21,8 +21,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef QTUDEV_H
-#define QTUDEV_H
+#pragma once
 
 #include <QtCore/QString>
 
@@ -56,4 +55,3 @@ private:
 
 } // namespace Aurora
 
-#endif // QTUDEV_H

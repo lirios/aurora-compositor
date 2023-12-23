@@ -39,8 +39,7 @@
 **
 ****************************************************************************/
 
-#ifndef QEGLFSKMSGBMDEVICE_H
-#define QEGLFSKMSGBMDEVICE_H
+#pragma once
 
 #include <LiriEglFSKmsSupport/qeglfskmsdevice.h>
 
@@ -86,4 +85,3 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QEGLFSKMSGBMDEVICE_H

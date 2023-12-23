@@ -1,8 +1,7 @@
 // Copyright (C) 2017 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef WLDATADEVICE_H
-#define WLDATADEVICE_H
+#pragma once
 
 //
 //  W A R N I N G
@@ -74,4 +73,3 @@ private:
 
 } // namespace Aurora
 
-#endif // WLDATADEVICE_H

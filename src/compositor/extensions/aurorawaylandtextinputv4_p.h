@@ -1,8 +1,7 @@
 // Copyright (C) 2021 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#ifndef AURORA_COMPOSITOR_WAYLANDTEXTINPUTV4_P_H
-#define AURORA_COMPOSITOR_WAYLANDTEXTINPUTV4_P_H
+#pragma once
 
 #include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
 #include <LiriAuroraCompositor/private/aurora-server-text-input-unstable-v4-wip.h>
@@ -98,4 +97,3 @@ protected:
 
 } // namespace Aurora
 
-#endif // AURORA_COMPOSITOR_WAYLANDTEXTINPUTV4_P_H

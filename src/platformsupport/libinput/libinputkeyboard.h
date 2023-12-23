@@ -30,8 +30,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef LIRI_LIBINPUTKEYBOARD_H
-#define LIRI_LIBINPUTKEYBOARD_H
+#pragma once
 
 #include <QtCore/QObject>
 
@@ -67,4 +66,3 @@ private:
 
 } // namespace Aurora
 
-#endif // LIRI_LIBINPUTKEYBOARD_H

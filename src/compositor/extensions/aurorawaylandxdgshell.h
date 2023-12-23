@@ -1,8 +1,7 @@
 // Copyright (C) 2018 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef AURORA_COMPOSITOR_WAYLANDXDGSHELL_H
-#define AURORA_COMPOSITOR_WAYLANDXDGSHELL_H
+#pragma once
 
 #include <LiriAuroraCompositor/WaylandCompositorExtension>
 #include <LiriAuroraCompositor/WaylandResource>
@@ -285,4 +284,3 @@ private slots:
 
 } // namespace Aurora
 
-#endif // AURORA_COMPOSITOR_WAYLANDXDGSHELL_H

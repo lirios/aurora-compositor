@@ -1,8 +1,7 @@
 // Copyright (C) 2020 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#ifndef AURORA_COMPOSITOR_WAYLANDSHAREDMEMORYFORMATHELPER_H
-#define AURORA_COMPOSITOR_WAYLANDSHAREDMEMORYFORMATHELPER_H
+#pragma once
 
 #include <wayland-client.h>
 
@@ -105,4 +104,3 @@ wl_shm_format WaylandSharedMemoryFormatHelper::fromQImageFormat(QImage::Format f
 
 } // namespace Aurora
 
-#endif //QWAYLANDSHAREDMEMORYFORMATHELPER_H

@@ -1,8 +1,7 @@
 // Copyright (C) 2016 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
 
-#ifndef MOCKCLIENT_H
-#define MOCKCLIENT_H
+#pragma once
 
 #include "wayland-wayland-client-protocol.h"
 #include <aurora-client-xdg-shell.h>
@@ -123,4 +122,3 @@ private:
 
 } // namespace Aurora
 
-#endif // MOCKCLIENT_H

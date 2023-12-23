@@ -12,8 +12,7 @@
 // We mean it.
 //
 
-#ifndef WAYLANDEGLINTEGRATION_H
-#define WAYLANDEGLINTEGRATION_H
+#pragma once
 
 #include <LiriAuroraCompositor/private/aurorawlclientbufferintegration_p.h>
 #include <QtCore/QScopedPointer>
@@ -70,4 +69,3 @@ private:
 
 } // namespace Aurora
 
-#endif // WAYLANDEGLINTEGRATION_H

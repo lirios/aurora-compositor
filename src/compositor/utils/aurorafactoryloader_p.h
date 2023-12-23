@@ -39,8 +39,7 @@
 **
 ****************************************************************************/
 
-#ifndef AURORA_COMPOSITOR_FACTORYLOADER_P_H
-#define AURORA_COMPOSITOR_FACTORYLOADER_P_H
+#pragma once
 
 #include <QtCore/QObject>
 #include <QtCore/QJsonObject>
@@ -101,4 +100,3 @@ PluginInterface *auroraLoadPlugin(const FactoryLoader *loader, const QString &ke
 
 } // namespace Aurora
 
-#endif // AURORA_COMPOSITOR_FACTORYLOADER_P_H

@@ -39,8 +39,7 @@
 **
 ****************************************************************************/
 
-#ifndef QEGLFSKMSSCREEN_H
-#define QEGLFSKMSSCREEN_H
+#pragma once
 
 #include "private/qeglfsscreen_p.h"
 #include <QtCore/QList>
@@ -126,4 +125,3 @@ protected:
 
 QT_END_NAMESPACE
 
-#endif

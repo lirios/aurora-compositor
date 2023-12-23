@@ -37,8 +37,7 @@
 **
 ****************************************************************************/
 
-#ifndef QEGLFSDEVICEINTEGRATION_H
-#define QEGLFSDEVICEINTEGRATION_H
+#pragma once
 
 //
 //  W A R N I N G
@@ -136,4 +135,3 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QEGLDEVICEINTEGRATION_H

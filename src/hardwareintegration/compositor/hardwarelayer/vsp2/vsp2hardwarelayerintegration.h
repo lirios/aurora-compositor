@@ -1,8 +1,7 @@
 // Copyright (C) 2018 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef VSP2HARDWARELAYERINTEGRATION_H
-#define VSP2HARDWARELAYERINTEGRATION_H
+#pragma once
 
 #include <LiriAuroraCompositor/private/aurorawlhardwarelayerintegration_p.h>
 #include <private/qobject_p.h>
@@ -87,4 +86,3 @@ private:
 
 } // namespace Aurora
 
-#endif // VSP2HARDWARELAYERINTEGRATION_H

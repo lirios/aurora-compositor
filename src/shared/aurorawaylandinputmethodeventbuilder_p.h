@@ -1,8 +1,7 @@
 // Copyright (C) 2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#ifndef AURORA_COMPOSITOR_WAYLANDINPUTMETHODEVENTBUILDER_H
-#define AURORA_COMPOSITOR_WAYLANDINPUTMETHODEVENTBUILDER_H
+#pragma once
 
 #include <QInputMethodEvent>
 
@@ -56,4 +55,3 @@ struct WaylandInputMethodContentType {
 
 } // namespace Aurora
 
-#endif // AURORA_COMPOSITOR_WAYLANDINPUTMETHODEVENTBUILDER_H

@@ -25,8 +25,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef XCB_WINDOW_H
-#define XCB_WINDOW_H
+#pragma once
 
 #include <QtCore/QRect>
 
@@ -172,4 +171,3 @@ private:
 
 } // namespace Xcb
 
-#endif // XCB_WINDOW_H

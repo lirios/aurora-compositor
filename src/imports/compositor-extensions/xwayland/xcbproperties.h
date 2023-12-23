@@ -21,8 +21,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef XCB_PROPERTIES_H
-#define XCB_PROPERTIES_H
+#pragma once
 
 #include <xcb/xcb.h>
 
@@ -40,4 +39,3 @@ void readAndDumpProperty(xcb_atom_t atom, xcb_window_t window);
 
 } // namespace Xcb
 
-#endif // XCB_PROPERTIES_H

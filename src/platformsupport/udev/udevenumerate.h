@@ -21,8 +21,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef QTUDEVENUMERATE_H
-#define QTUDEVENUMERATE_H
+#pragma once
 
 #include <LiriAuroraUdev/UdevDevice>
 
@@ -49,4 +48,3 @@ private:
 
 } // namespace Aurora
 
-#endif // QTUDEVENUMERATE_H

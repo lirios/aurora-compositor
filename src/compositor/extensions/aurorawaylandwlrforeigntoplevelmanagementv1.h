@@ -2,8 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef AURORA_COMPOSITOR_WAYLANDWLRFOREIGNTOPLEVELMANAGEMENTV1_H
-#define AURORA_COMPOSITOR_WAYLANDWLRFOREIGNTOPLEVELMANAGEMENTV1_H
+#pragma once
 
 #include <LiriAuroraCompositor/WaylandCompositorExtension>
 #include <LiriAuroraCompositor/aurorawaylandquickchildren.h>
@@ -137,4 +136,3 @@ private:
 
 } // namespace Aurora
 
-#endif // AURORA_COMPOSITOR_WAYLANDWLRFOREIGNTOPLEVELMANAGEMENTV1_H

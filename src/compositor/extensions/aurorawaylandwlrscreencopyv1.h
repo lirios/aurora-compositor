@@ -2,8 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef AURORA_COMPOSITOR_WAYLANDWLRSCREENCOPYV1_H
-#define AURORA_COMPOSITOR_WAYLANDWLRSCREENCOPYV1_H
+#pragma once
 
 #include <LiriAuroraCompositor/WaylandCompositorExtension>
 
@@ -84,4 +83,3 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Aurora::Compositor::WaylandWlrScreencopyFrameV1::Flags)
 
-#endif // AURORA_COMPOSITOR_WAYLANDWLRSCREENCOPYV1_H

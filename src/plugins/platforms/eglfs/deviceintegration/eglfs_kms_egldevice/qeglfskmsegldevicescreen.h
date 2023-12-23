@@ -37,8 +37,7 @@
 **
 ****************************************************************************/
 
-#ifndef QEGLFSKMSEGLDEVICESCREEN_H
-#define QEGLFSKMSEGLDEVICESCREEN_H
+#pragma once
 
 #include <LiriEglFSKmsSupport/qeglfskmsscreen.h>
 
@@ -57,4 +56,3 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QEGLFSKMSEGLDEVICESCREEN_H

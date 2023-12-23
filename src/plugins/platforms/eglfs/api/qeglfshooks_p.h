@@ -37,8 +37,7 @@
 **
 ****************************************************************************/
 
-#ifndef QEGLFSHOOKS_H
-#define QEGLFSHOOKS_H
+#pragma once
 
 //
 //  W A R N I N G
@@ -67,4 +66,3 @@ Q_EGLFS_EXPORT QEglFSDeviceIntegration *qt_egl_device_integration();
 
 QT_END_NAMESPACE
 
-#endif // QEGLFSHOOKS_H

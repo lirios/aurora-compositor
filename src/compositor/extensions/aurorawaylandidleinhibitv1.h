@@ -1,8 +1,7 @@
 // Copyright (C) 2019 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef AURORA_COMPOSITOR_WAYLANDIDLEINHIBITV1_H
-#define AURORA_COMPOSITOR_WAYLANDIDLEINHIBITV1_H
+#pragma once
 
 #include <LiriAuroraCompositor/WaylandCompositorExtension>
 
@@ -33,4 +32,3 @@ private:
 
 } // namespace Aurora
 
-#endif // AURORA_COMPOSITOR_WAYLANDIDLEINHIBITV1_H

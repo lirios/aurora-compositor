@@ -2,8 +2,7 @@
 // Copyright (C) 2017 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef AURORA_COMPOSITOR_WAYLANDSURFACE_H
-#define AURORA_COMPOSITOR_WAYLANDSURFACE_H
+#pragma once
 
 #include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 #include <LiriAuroraCompositor/aurorawaylandcompositor.h>
@@ -164,4 +163,3 @@ protected:
 
 } // namespace Aurora
 
-#endif // AURORA_COMPOSITOR_WAYLANDSURFACE_H

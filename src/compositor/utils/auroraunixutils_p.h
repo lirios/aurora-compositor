@@ -38,8 +38,7 @@
 **
 ****************************************************************************/
 
-#ifndef AURORA_COMPOSITOR_UNIXUTILS_P_H
-#define AURORA_COMPOSITOR_UNIXUTILS_P_H
+#pragma once
 
 //
 //  W A R N I N G
@@ -69,4 +68,3 @@ static inline qint64 aurora_safe_read(int fd, void *data, qint64 maxlen)
     return ret;
 }
 
-#endif // AURORA_COMPOSITOR_UNIXUTILS_P_H

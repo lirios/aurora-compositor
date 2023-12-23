@@ -2,8 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef AURORA_COMPOSITOR_WAYLANDQUICKWLROUTPUTMANAGEMENT_H
-#define AURORA_COMPOSITOR_WAYLANDQUICKWLROUTPUTMANAGEMENT_H
+#pragma once
 
 #include <QQmlComponent>
 #include <QQmlParserStatus>
@@ -53,4 +52,3 @@ QML_DECLARE_TYPE(Aurora::Compositor::WaylandWlrOutputConfigurationHeadV1)
 QML_DECLARE_TYPE(Aurora::Compositor::WaylandQuickWlrOutputHeadV1)
 QML_DECLARE_TYPE(Aurora::Compositor::WaylandWlrOutputModeV1)
 
-#endif // AURORA_COMPOSITOR_WAYLANDQUICKWLROUTPUTMANAGEMENT_H

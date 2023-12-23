@@ -1,8 +1,7 @@
 // Copyright (C) 2017 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef AURORA_COMPOSITOR_WAYLANDSHELL_P_H
-#define AURORA_COMPOSITOR_WAYLANDSHELL_P_H
+#pragma once
 
 #include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
 #include <LiriAuroraCompositor/WaylandShell>
@@ -38,4 +37,3 @@ protected:
 
 } // namespace Aurora
 
-#endif // AURORA_COMPOSITOR_WAYLANDSHELL_P_H

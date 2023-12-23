@@ -21,8 +21,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef XCB_ATOMS_H
-#define XCB_ATOMS_H
+#pragma once
 
 #include "xcbatom.h"
 
@@ -100,4 +99,3 @@ public:
 
 } // namespace Xcb
 
-#endif // XCB_ATOMS_H

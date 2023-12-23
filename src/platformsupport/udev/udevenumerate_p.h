@@ -21,8 +21,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef QTUDEVENUMERATE_P_H
-#define QTUDEVENUMERATE_P_H
+#pragma once
 
 //
 //  W A R N I N G
@@ -60,4 +59,3 @@ public:
 
 } // namespace Aurora
 
-#endif // UDEVENUMERATE_P_H

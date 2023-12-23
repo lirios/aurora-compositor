@@ -1,8 +1,7 @@
 // Copyright (C) 2016 LG Electronics, Inc., author: <mikko.levonmaa@lge.com>
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
 
-#ifndef TESTSEAT_H
-#define TESTSEAT_H
+#pragma once
 
 #include <LiriAuroraCompositor/WaylandSeat>
 #include <QList>
@@ -37,4 +36,3 @@ private:
 
 } // namespace Aurora
 
-#endif // TESTSEAT_H

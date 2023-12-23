@@ -21,8 +21,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef LIRIPLATFORMHEADERSGLOBAL_H
-#define LIRIPLATFORMHEADERSGLOBAL_H
+#pragma once
 
 #include <QtCore/qglobal.h>
 
@@ -33,4 +32,3 @@
 #endif
 #define LIRIPLATFORMHEADERS_NO_EXPORT Q_DECL_HIDDEN
 
-#endif // LIRIPLATFORMHEADERSGLOBAL_H

@@ -1,8 +1,7 @@
 // Copyright (C) 2017 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef AURORA_COMPOSITOR_WAYLANDIVISURFACE_H
-#define AURORA_COMPOSITOR_WAYLANDIVISURFACE_H
+#pragma once
 
 #include <LiriAuroraCompositor/WaylandShellSurface>
 #if LIRI_FEATURE_aurora_compositor_quick
@@ -71,4 +70,3 @@ private:
 
 } // namespace Aurora
 
-#endif // AURORA_COMPOSITOR_WAYLANDIVISURFACE_H

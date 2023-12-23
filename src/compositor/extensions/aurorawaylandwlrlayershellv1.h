@@ -2,8 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef AURORA_COMPOSITOR_WAYLANDWLRLAYERSHELLV1_H
-#define AURORA_COMPOSITOR_WAYLANDWLRLAYERSHELLV1_H
+#pragma once
 
 #include <QMargins>
 #include <QQmlEngine>
@@ -179,4 +178,3 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(WaylandWlrLayerSurfaceV1::Anchors)
 
 } // namespace Aurora
 
-#endif // AURORA_COMPOSITOR_WAYLANDWLRLAYERSHELLV1_H

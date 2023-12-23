@@ -24,8 +24,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef LIRI_LIBINPUTHANDLER_H
-#define LIRI_LIBINPUTHANDLER_H
+#pragma once
 
 #include <QtCore/QObject>
 #include <QtGui/qpa/qwindowsysteminterface.h>
@@ -144,4 +143,3 @@ Q_DECLARE_METATYPE(Aurora::PlatformSupport::LibInputKeyEvent)
 Q_DECLARE_METATYPE(Aurora::PlatformSupport::LibInputMouseEvent)
 Q_DECLARE_METATYPE(Aurora::PlatformSupport::LibInputTouchEvent)
 
-#endif // LIRI_LIBINPUTHANDLER_H

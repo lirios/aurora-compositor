@@ -31,8 +31,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef XWAYLANDQUICKSHELLINTEGRATION_H
-#define XWAYLANDQUICKSHELLINTEGRATION_H
+#pragma once
 
 #include <QtCore/QObject>
 #include <QtGui/QMouseEvent>
@@ -89,4 +88,3 @@ private:
 
 } // namespace Aurora
 
-#endif // XWAYLANDQUICKSHELLINTEGRATION_H

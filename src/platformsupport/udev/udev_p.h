@@ -21,8 +21,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef QTUDEV_P_H
-#define QTUDEV_P_H
+#pragma once
 
 //
 //  W A R N I N G
@@ -66,5 +65,4 @@ public:
 
 } // namespace Aurora
 
-#endif // QTUDEV_P_H
 

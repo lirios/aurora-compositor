@@ -1,8 +1,7 @@
 // Copyright (C) 2017 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef BRCMEGLINTEGRATION_H
-#define BRCMEGLINTEGRATION_H
+#pragma once
 
 #include <LiriAuroraCompositor/private/aurorawlclientbufferintegration_p.h>
 #include "aurora-server-brcm.h"
@@ -54,5 +53,4 @@ private:
 
 } // namespace Aurora
 
-#endif // BRCMEGLINTEGRATION_H
 

@@ -23,8 +23,7 @@
  * SOFTWARE.
  */
 
-#ifndef XCURSOR_H
-#define XCURSOR_H
+#pragma once
 
 #include <stdint.h>
 
@@ -64,4 +63,3 @@ void
 xcursor_load_theme(const char *theme, int size,
 		    void (*load_callback)(XcursorImages *, void *),
 		    void *user_data);
-#endif

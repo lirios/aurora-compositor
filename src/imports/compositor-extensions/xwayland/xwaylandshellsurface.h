@@ -21,8 +21,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef XWAYLANDWINDOW_H
-#define XWAYLANDWINDOW_H
+#pragma once
 
 #include <QtCore/QRect>
 #include <QtCore/QPointer>
@@ -247,4 +246,3 @@ private Q_SLOTS:
 
 } // namespace Aurora
 
-#endif // XWAYLANDWINDOW_H

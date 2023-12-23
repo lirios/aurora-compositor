@@ -27,8 +27,7 @@
 **
 ****************************************************************************/
 
-#ifndef AURORA_COMPOSITOR_WAYLANDSEAT_H
-#define AURORA_COMPOSITOR_WAYLANDSEAT_H
+#pragma once
 
 #include <QtCore/qnamespace.h>
 #include <QtCore/QPoint>
@@ -155,4 +154,3 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(WaylandSeat::CapabilityFlags)
 
 } // namespace Aurora
 
-#endif // AURORA_COMPOSITOR_WAYLANDSEAT_H

@@ -21,8 +21,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef XWAYLAND_H
-#define XWAYLAND_H
+#pragma once
 
 #include <QtCore/QObject>
 #include <QtCore/QLoggingCategory>
@@ -98,4 +97,3 @@ private:
 
 } // namespace Aurora
 
-#endif // XWAYLAND_H

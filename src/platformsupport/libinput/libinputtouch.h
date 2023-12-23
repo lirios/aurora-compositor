@@ -30,8 +30,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef LIRI_LIBINPUTTOUCH_H
-#define LIRI_LIBINPUTTOUCH_H
+#pragma once
 
 #include <LiriAuroraLibInput/liriauroralibinputglobal.h>
 #include <QtGlobal>
@@ -72,4 +71,3 @@ private:
 
 } // namespace Aurora
 
-#endif // LIRI_LIBINPUTTOUCH_H

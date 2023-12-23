@@ -39,8 +39,7 @@
 **
 ****************************************************************************/
 
-#ifndef QEGLFSKMSGBMSCREEN_H
-#define QEGLFSKMSGBMSCREEN_H
+#pragma once
 
 #include <QtCore/QMutex>
 #include <QtCore/QWaitCondition>
@@ -111,4 +110,3 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QEGLFSKMSGBMSCREEN_H

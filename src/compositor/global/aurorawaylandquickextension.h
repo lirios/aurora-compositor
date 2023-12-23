@@ -1,8 +1,7 @@
 // Copyright (C) 2017 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef AURORA_COMPOSITOR_WAYLANDQUICKEXTENSION_H
-#define AURORA_COMPOSITOR_WAYLANDQUICKEXTENSION_H
+#pragma once
 
 #include <LiriAuroraCompositor/WaylandCompositorExtension>
 #include <QtQml/QQmlParserStatus>
@@ -98,4 +97,3 @@ namespace Compositor {
 
 } // namespace Aurora
 
-#endif  /*QWAYLANDQUICKEXTENSION_H*/

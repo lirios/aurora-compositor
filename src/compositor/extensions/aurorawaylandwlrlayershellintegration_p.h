@@ -2,8 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef AURORA_COMPOSITOR_WAYLANDWLRLAYERSHELLINTEGRATION_P_H
-#define AURORA_COMPOSITOR_WAYLANDWLRLAYERSHELLINTEGRATION_P_H
+#pragma once
 
 #include <LiriAuroraCompositor/WaylandQuickShellIntegration>
 #include <LiriAuroraCompositor/WaylandQuickShellSurfaceItem>
@@ -42,4 +41,3 @@ private:
 
 } // namespace Aurora
 
-#endif // AURORA_COMPOSITOR_WAYLANDWLRLAYERSHELLINTEGRATION_P_H

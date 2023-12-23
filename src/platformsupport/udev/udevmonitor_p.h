@@ -21,8 +21,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef QTUDEVMONITOR_P_H
-#define QTUDEVMONITOR_P_H
+#pragma once
 
 //
 //  W A R N I N G
@@ -61,4 +60,3 @@ protected:
 
 } // namespace Aurora
 
-#endif // QTUDEVMONITOR_P_H

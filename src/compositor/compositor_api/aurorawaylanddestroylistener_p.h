@@ -1,8 +1,7 @@
 // Copyright (C) 2017 Jolla Ltd, author: <giulio.camuffo@jollamobile.com>
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef AURORA_WAYLAND_DESTROYLISTENER_P_H
-#define AURORA_WAYLAND_DESTROYLISTENER_P_H
+#pragma once
 
 //
 //  W A R N I N G
@@ -45,4 +44,3 @@ private:
 
 } // namespace Aurora
 
-#endif // AURORA_WAYLAND_DESTROYLISTENER_P_H

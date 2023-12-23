@@ -21,8 +21,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef LIRI_LIBINPUTGLOBAL_H
-#define LIRI_LIBINPUTGLOBAL_H
+#pragma once
 
 #include <QtCore/qglobal.h>
 
@@ -37,4 +36,3 @@
 #  define LIRILIBINPUT_NO_EXPORT Q_DECL_HIDDEN
 #endif
 
-#endif // LIRI_LIBINPUTGLOBAL_H

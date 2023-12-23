@@ -27,8 +27,7 @@
 **
 ****************************************************************************/
 
-#ifndef AURORA_COMPOSITOR_WAYLANDEXTENSION_H
-#define AURORA_COMPOSITOR_WAYLANDEXTENSION_H
+#pragma once
 
 #include <QtCore/QObject>
 
@@ -133,4 +132,3 @@ protected:
 
 } // namespace Aurora
 
-#endif

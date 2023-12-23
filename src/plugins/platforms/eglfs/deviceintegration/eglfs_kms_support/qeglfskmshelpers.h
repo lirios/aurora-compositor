@@ -37,8 +37,7 @@
 **
 ****************************************************************************/
 
-#ifndef QEGLFSKMSHELPERS_H
-#define QEGLFSKMSHELPERS_H
+#pragma once
 
 #include <QString>
 
@@ -57,4 +56,3 @@ inline QString q_fourccToString(uint code)
 
 QT_END_NAMESPACE
 
-#endif // QEGLFSKMSHELPERS_H

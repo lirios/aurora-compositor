@@ -2,8 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef AURORA_COMPOSITOR_WAYLANDWLREXPORTDMABUFV1_H
-#define AURORA_COMPOSITOR_WAYLANDWLREXPORTDMABUFV1_H
+#pragma once
 
 #include <LiriAuroraCompositor/WaylandCompositorExtension>
 
@@ -104,4 +103,3 @@ private:
 Q_DECLARE_OPERATORS_FOR_FLAGS(Aurora::Compositor::WaylandWlrExportDmabufFrameV1::BufferFlags)
 Q_DECLARE_OPERATORS_FOR_FLAGS(Aurora::Compositor::WaylandWlrExportDmabufFrameV1::FrameFlags)
 
-#endif // AURORA_COMPOSITOR_WAYLANDWLREXPORTDMABUFV1_H

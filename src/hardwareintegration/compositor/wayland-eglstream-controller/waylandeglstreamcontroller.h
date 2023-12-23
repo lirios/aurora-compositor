@@ -1,8 +1,7 @@
 // Copyright (C) 2019 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef WAYLANDEGLSTREAMCONTROLLER_H
-#define WAYLANDEGLSTREAMCONTROLLER_H
+#pragma once
 
 #include "aurora-server-wl-eglstream-controller.h"
 
@@ -48,4 +47,3 @@ private:
 
 } // namespace Aurora
 
-#endif // WAYLANDEGLSTREAMCONTROLLER_H

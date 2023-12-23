@@ -21,8 +21,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef XCB_RESOURCES_H
-#define XCB_RESOURCES_H
+#pragma once
 
 #include "xcbatoms.h"
 
@@ -44,4 +43,3 @@ public:
 
 } // namespace Xcb
 
-#endif // XCB_RESOURCES_H

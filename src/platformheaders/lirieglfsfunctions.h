@@ -21,8 +21,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef LIRIELGFSFUNCTIONS_H
-#define LIRIELGFSFUNCTIONS_H
+#pragma once
 
 #include <QEvent>
 #include <QGuiApplication>
@@ -138,4 +137,3 @@ public:
 
 } // namespace Aurora
 
-#endif // LIRIEGLFSFUNCTIONS_H

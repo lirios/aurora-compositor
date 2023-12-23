@@ -24,8 +24,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef LIRI_LIBINPUTGESTURE_H
-#define LIRI_LIBINPUTGESTURE_H
+#pragma once
 
 #include <LiriAuroraLibInput/liriauroralibinputglobal.h>
 
@@ -55,4 +54,3 @@ public:
 
 } // namespace Aurora
 
-#endif // LIRI_LIBINPUTGESTURE_H

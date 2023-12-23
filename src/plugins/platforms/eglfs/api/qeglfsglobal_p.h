@@ -37,8 +37,7 @@
 **
 ****************************************************************************/
 
-#ifndef QEGLFSGLOBAL_H
-#define QEGLFSGLOBAL_H
+#pragma once
 
 //
 //  W A R N I N G
@@ -77,4 +76,3 @@ QT_BEGIN_NAMESPACE
 
 QT_END_NAMESPACE
 
-#endif

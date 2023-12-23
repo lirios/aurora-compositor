@@ -37,8 +37,7 @@
 **
 ****************************************************************************/
 
-#ifndef QEGLFSWINDOW_H
-#define QEGLFSWINDOW_H
+#pragma once
 
 //
 //  W A R N I N G
@@ -141,4 +140,3 @@ protected:
 
 QT_END_NAMESPACE
 
-#endif // QEGLFSWINDOW_H

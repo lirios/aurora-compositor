@@ -1,8 +1,7 @@
 // Copyright (C) 2020 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef AURORA_COMPOSITOR_WAYLANDQMLINCLUDE_H
-#define AURORA_COMPOSITOR_WAYLANDQMLINCLUDE_H
+#pragma once
 
 //
 //  W A R N I N G
@@ -26,4 +25,3 @@
 #define QML_ADDED_IN_VERSION(x, y)
 #endif
 
-#endif // AURORA_COMPOSITOR_WAYLANDQMLINCLUDE_H

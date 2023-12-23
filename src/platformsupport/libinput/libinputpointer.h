@@ -30,8 +30,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef LIRI_LIBINPUTPOINTER_H
-#define LIRI_LIBINPUTPOINTER_H
+#pragma once
 
 #include <QtCore/QPoint>
 
@@ -69,4 +68,3 @@ private:
 
 } // namespace Aurora
 
-#endif // LIRI_LIBINPUTPOINTER_H

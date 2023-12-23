@@ -27,8 +27,7 @@
 **
 ****************************************************************************/
 
-#ifndef AURORA_COMPOSITOR_WAYLANDCOMPOSITORQUICKEXTENSIONS_P_H
-#define AURORA_COMPOSITOR_WAYLANDCOMPOSITORQUICKEXTENSIONS_P_H
+#pragma once
 
 //
 //  W A R N I N G
@@ -122,4 +121,3 @@ AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(WaylandQtTextInputMethodMa
 
 } // namespace Aurora
 
-#endif // AURORA_COMPOSITOR_WAYLANDCOMPOSITORQUICKEXTENSIONS_P_H

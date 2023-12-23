@@ -21,8 +21,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef XCB_ATOM_H
-#define XCB_ATOM_H
+#pragma once
 
 #include <QtCore/QByteArray>
 
@@ -59,4 +58,3 @@ private:
 
 } // namespace Xcb
 
-#endif // XCB_ATOM_H

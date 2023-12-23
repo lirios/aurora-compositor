@@ -2,8 +2,7 @@
 //
 // SPDX-License-Identifier: LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#ifndef AURORA_COMPOSITOR_WAYLANDEXTSESSIONLOCKV1INTEGRATION_H
-#define AURORA_COMPOSITOR_WAYLANDEXTSESSIONLOCKV1INTEGRATION_H
+#pragma once
 
 #include <LiriAuroraCompositor/WaylandQuickShellSurfaceItem>
 #include <LiriAuroraCompositor/private/aurorawaylandquickshellsurfaceitem_p.h>
@@ -43,4 +42,3 @@ private:
 
 } // namespace Aurora
 
-#endif // AURORA_COMPOSITOR_WAYLANDEXTSESSIONLOCKV1INTEGRATION_H

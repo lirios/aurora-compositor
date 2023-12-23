@@ -2,8 +2,7 @@
 // Copyright (C) 2021 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#ifndef AURORA_EDIDPARSER_P_H
-#define AURORA_EDIDPARSER_P_H
+#pragma once
 
 #include <QtCore/QMap>
 #include <QtCore/QPointF>
@@ -58,4 +57,3 @@ private:
 
 } // namespace Aurora
 
-#endif // AURORA_EDIDPARSER_P_H

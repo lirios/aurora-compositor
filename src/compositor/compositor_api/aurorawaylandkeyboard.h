@@ -2,8 +2,7 @@
 // Copyright (C) 2017 Klarälvdalens Datakonsult AB (KDAB).
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef AURORA_COMPOSITOR_WAYLANDKEYBOARD_H
-#define AURORA_COMPOSITOR_WAYLANDKEYBOARD_H
+#pragma once
 
 #include <QtCore/QObject>
 
@@ -69,4 +68,3 @@ private Q_SLOTS:
 
 } // namespace Aurora
 
-#endif //QWAYLANDKEYBOARD_H

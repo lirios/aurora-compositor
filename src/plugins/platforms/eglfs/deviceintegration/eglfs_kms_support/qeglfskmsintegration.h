@@ -39,8 +39,7 @@
 **
 ****************************************************************************/
 
-#ifndef QEGLFSKMSINTEGRATION_H
-#define QEGLFSKMSINTEGRATION_H
+#pragma once
 
 #include "private/qeglfsdeviceintegration_p.h"
 #include <QtCore/QMap>
@@ -88,4 +87,3 @@ protected:
 
 QT_END_NAMESPACE
 
-#endif

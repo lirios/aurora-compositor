@@ -2,8 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef AURORA_COMPOSITOR_WAYLANDWLRLAYERSURFACEITEM_H
-#define AURORA_COMPOSITOR_WAYLANDWLRLAYERSURFACEITEM_H
+#pragma once
 
 #include <LiriAuroraCompositor/WaylandQuickShellSurfaceItem>
 
@@ -40,4 +39,3 @@ private:
 
 } // namespace Aurora
 
-#endif // AURORA_COMPOSITOR_WAYLANDWLRLAYERSURFACEITEM_H

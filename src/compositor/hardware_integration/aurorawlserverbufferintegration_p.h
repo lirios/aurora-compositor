@@ -1,8 +1,7 @@
 // Copyright (C) 2021 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef AURORA_COMPOSITOR_WAYLANDSERVERBUFFERINTEGRATION_H
-#define AURORA_COMPOSITOR_WAYLANDSERVERBUFFERINTEGRATION_H
+#pragma once
 
 //
 //  W A R N I N G
@@ -100,4 +99,3 @@ public:
 
 } // namespace Aurora
 
-#endif //QWAYLANDSERVERBUFFERINTEGRATION_H

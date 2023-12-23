@@ -1,8 +1,7 @@
 // Copyright (C) 2017 Jolla Ltd, author: <giulio.camuffo@jollamobile.com>
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef AURORA_COMPOSITOR_WAYLANDSURFACEVIEW_H
-#define AURORA_COMPOSITOR_WAYLANDSURFACEVIEW_H
+#pragma once
 
 #include <LiriAuroraCompositor/WaylandBufferRef>
 #include <LiriAuroraCompositor/liriauroracompositorglobal.h>
@@ -74,4 +73,3 @@ private:
 
 } // namespace Aurora
 
-#endif

@@ -1,8 +1,7 @@
 // Copyright (C) 2017 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef AURORA_COMPOSITOR_WAYLANDOUTPUTMODE_H
-#define AURORA_COMPOSITOR_WAYLANDOUTPUTMODE_H
+#pragma once
 
 #include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 #include <QtCore/QSize>
@@ -41,4 +40,3 @@ private:
 
 Q_DECLARE_TYPEINFO(Aurora::Compositor::WaylandOutputMode, Q_MOVABLE_TYPE);
 
-#endif // AURORA_COMPOSITOR_WAYLANDOUTPUTMODE_H

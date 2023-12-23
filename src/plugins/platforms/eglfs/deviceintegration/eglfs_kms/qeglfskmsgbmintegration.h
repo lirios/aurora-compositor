@@ -39,8 +39,7 @@
 **
 ****************************************************************************/
 
-#ifndef QEGLFSKMSGBMINTEGRATION_H
-#define QEGLFSKMSGBMINTEGRATION_H
+#pragma once
 
 #include <QtCore/QMap>
 #include <QtCore/QVariant>
@@ -89,4 +88,3 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QEGLFSKMSGBMINTEGRATION_H

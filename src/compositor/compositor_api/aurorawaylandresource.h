@@ -1,8 +1,7 @@
 // Copyright (C) 2017 Klarälvdalens Datakonsult AB (KDAB).
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef AURORA_COMPOSITOR_WAYLANDRESOURCE_H
-#define AURORA_COMPOSITOR_WAYLANDRESOURCE_H
+#pragma once
 
 #include <QtCore/QObject>
 #include <LiriAuroraCompositor/liriauroracompositorglobal.h>
@@ -38,4 +37,3 @@ private:
 
 Q_DECLARE_METATYPE(Aurora::Compositor::WaylandResource)
 
-#endif  /*QWAYLANDRESOURCE_H*/

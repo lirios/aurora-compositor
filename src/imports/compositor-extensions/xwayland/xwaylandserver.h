@@ -21,8 +21,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef XWAYLANDSERVER_H
-#define XWAYLANDSERVER_H
+#pragma once
 
 #include <QtCore/QString>
 #include <QtCore/QProcess>
@@ -85,4 +84,3 @@ private Q_SLOTS:
 
 } // namespace Aurora
 
-#endif // XWAYLANDSERVER_H

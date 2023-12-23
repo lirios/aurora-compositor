@@ -46,8 +46,7 @@
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef XWAYLAND_SIZEHINTS_H
-#define XWAYLAND_SIZEHINTS_H
+#pragma once
 
 /*
  * WmSizeHints
@@ -132,5 +131,4 @@ struct MotifWmHints {
 #define _NET_WM_MOVERESIZE_MOVE_KEYBOARD    10   /* move via keyboard */
 #define _NET_WM_MOVERESIZE_CANCEL           11   /* cancel operation */
 
-#endif // XWAYLAND_SIZEHINTS_H
 

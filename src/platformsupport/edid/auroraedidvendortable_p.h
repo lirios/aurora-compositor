@@ -8,8 +8,7 @@
  * src/platformsupport/edid/qedidvendortable.py script and regenerate this file.
  */
 
-#ifndef AURORA_EDIDVENDORTABLE_P_H
-#define AURORA_EDIDVENDORTABLE_P_H
+#pragma once
 
 //
 //  W A R N I N G
@@ -2506,4 +2505,3 @@ static const VendorTable s_edidVendorTable[] = {
 
 } // namespace Aurora
 
-#endif // AURORA_EDIDVENDORTABLE_P_H

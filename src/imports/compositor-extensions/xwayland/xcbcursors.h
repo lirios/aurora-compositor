@@ -21,8 +21,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef XCB_CURSORS_H
-#define XCB_CURSORS_H
+#pragma once
 
 #include <xcb/xcb.h>
 
@@ -37,4 +36,3 @@ void destroyCursors(xcb_cursor_t *c);
 
 } // namespace Xcb
 
-#endif // XCB_CURSORS_H

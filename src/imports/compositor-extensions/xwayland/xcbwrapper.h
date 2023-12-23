@@ -21,8 +21,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef XCB_WRAPPER_H
-#define XCB_WRAPPER_H
+#pragma once
 
 #include <QtCore/qglobal.h>
 
@@ -45,4 +44,3 @@ bool isOurResource(quint32 id);
 
 } // namespace Xcb
 
-#endif // XCB_WRAPPER_H

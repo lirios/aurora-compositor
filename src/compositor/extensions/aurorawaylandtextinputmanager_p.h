@@ -1,8 +1,7 @@
 // Copyright (C) 2017-2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef AURORA_COMPOSITOR_WAYLANDTEXTINPUTMANAGER_P_H
-#define AURORA_COMPOSITOR_WAYLANDTEXTINPUTMANAGER_P_H
+#pragma once
 
 #include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
 
@@ -37,4 +36,3 @@ protected:
 
 } // namespace Aurora
 
-#endif // AURORA_COMPOSITOR_WAYLANDTEXTINPUTMANAGER_P_H

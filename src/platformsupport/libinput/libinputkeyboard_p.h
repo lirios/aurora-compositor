@@ -31,8 +31,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef LIRI_LIBINPUTKEYBOARD_P_H
-#define LIRI_LIBINPUTKEYBOARD_P_H
+#pragma once
 
 #include "libinputhandler.h"
 #include "libinputkeyboard.h"
@@ -89,4 +88,3 @@ private:
 
 } // namespace Aurora
 
-#endif // LIRI_LIBINPUTKEYBOARD_P_H

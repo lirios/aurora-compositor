@@ -2,8 +2,7 @@
 // Copyright (C) 2017 Klarälvdalens Datakonsult AB (KDAB).
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef AURORA_COMPOSITOR_WAYLANDPOINTER_P_H
-#define AURORA_COMPOSITOR_WAYLANDPOINTER_P_H
+#pragma once
 
 //
 //  W A R N I N G
@@ -77,4 +76,3 @@ private:
 
 } // namespace Aurora
 
-#endif // AURORA_COMPOSITOR_WAYLANDPOINTER_P_H

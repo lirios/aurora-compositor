@@ -1,8 +1,7 @@
 // Copyright (C) 2017 Klarälvdalens Datakonsult AB (KDAB).
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef AURORA_COMPOSITOR_WAYLANDSURFACEGRABBER_H
-#define AURORA_COMPOSITOR_WAYLANDSURFACEGRABBER_H
+#pragma once
 
 #include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 #include <QtCore/QObject>
@@ -45,4 +44,3 @@ private:
 
 } // namespace Aurora
 
-#endif // AURORA_COMPOSITOR_WAYLANDSURFACEGRABBER_H

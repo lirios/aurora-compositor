@@ -21,8 +21,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef QTUDEVDEVICE_H
-#define QTUDEVDEVICE_H
+#pragma once
 
 #include <QtCore/QObject>
 
@@ -104,4 +103,3 @@ QDebug operator<<(QDebug, const UdevDevice &);
 
 Q_DECLARE_METATYPE(Aurora::PlatformSupport::UdevDevice)
 
-#endif // QTUDEVDEVICE_H

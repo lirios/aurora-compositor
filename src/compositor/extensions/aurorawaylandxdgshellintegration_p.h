@@ -1,8 +1,7 @@
 // Copyright (C) 2018 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef AURORA_COMPOSITOR_WAYLANDXDGSHELLINTEGRATION_H
-#define AURORA_COMPOSITOR_WAYLANDXDGSHELLINTEGRATION_H
+#pragma once
 
 #include <LiriAuroraCompositor/private/aurorawaylandquickshellsurfaceitem_p.h>
 #include <LiriAuroraCompositor/WaylandQuickShellSurfaceItem>
@@ -120,4 +119,3 @@ private:
 
 } // namespace Aurora
 
-#endif // AURORA_COMPOSITOR_WAYLANDXDGSHELLINTEGRATION_H

@@ -37,8 +37,7 @@
 **
 ****************************************************************************/
 
-#ifndef QEGLFSLOGINDHANDLER_P_H
-#define QEGLFSLOGINDHANDLER_P_H
+#pragma once
 
 //
 //  W A R N I N G
@@ -79,4 +78,3 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QEGLFSLOGINDHANDLER_P_H

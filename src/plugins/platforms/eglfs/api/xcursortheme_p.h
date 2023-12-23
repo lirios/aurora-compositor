@@ -2,8 +2,7 @@
 //
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
-#ifndef XCURSORTHEME_H
-#define XCURSORTHEME_H
+#pragma once
 
 #include <QImage>
 #include <QMap>
@@ -50,4 +49,3 @@ private:
 
 } // namespace Liri
 
-#endif // XCURSORTHEME_H

@@ -21,8 +21,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef XWAYLANDMANAGER_H
-#define XWAYLANDMANAGER_H
+#pragma once
 
 #include <QtCore/QObject>
 #include <QtCore/QMap>
@@ -151,4 +150,3 @@ private Q_SLOTS:
 
 } // namespace Aurora
 
-#endif // XWAYLANDMANAGER_H

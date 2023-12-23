@@ -27,8 +27,7 @@
 **
 ****************************************************************************/
 
-#ifndef AURORA_COMPOSITOR_WAYLANDWLSHELL_H
-#define AURORA_COMPOSITOR_WAYLANDWLSHELL_H
+#pragma once
 
 #include <LiriAuroraCompositor/WaylandCompositorExtension>
 #include <LiriAuroraCompositor/WaylandResource>
@@ -168,4 +167,3 @@ private:
 
 } // namespace Aurora
 
-#endif  /*QWAYLANDWLSHELL_H*/

@@ -21,8 +21,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef QTUDEVMONITOR_H
-#define QTUDEVMONITOR_H
+#pragma once
 
 #include <QtCore/QObject>
 
@@ -66,4 +65,3 @@ private:
 
 } // namespace Aurora
 
-#endif // QTUDEVMONITOR_H

@@ -37,8 +37,7 @@
 **
 ****************************************************************************/
 
-#ifndef QEGLFSKKMSEVENTREADER_H
-#define QEGLFSKKMSEVENTREADER_H
+#pragma once
 
 #include "qeglfsglobal_p.h"
 #include <QObject>
@@ -96,4 +95,3 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QEGLFSKKMSEVENTREADER_H

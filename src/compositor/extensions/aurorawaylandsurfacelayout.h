@@ -2,8 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef AURORA_COMPOSITOR_WAYLANDSURFACELAYOUT_H
-#define AURORA_COMPOSITOR_WAYLANDSURFACELAYOUT_H
+#pragma once
 
 #include <QQuickItem>
 
@@ -51,4 +50,3 @@ private:
 
 } // namespace Aurora
 
-#endif // AURORA_COMPOSITOR_WAYLANDSURFACELAYOUT_H

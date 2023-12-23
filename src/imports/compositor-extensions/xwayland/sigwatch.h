@@ -22,8 +22,7 @@
  * SOFTWARE.
  */
 
-#ifndef SIGWATCH_H
-#define SIGWATCH_H
+#pragma once
 
 #include <QObject>
 #include <signal.h>
@@ -56,4 +55,3 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_onNotify(int))
 };
 
-#endif // SIGWATCH_H

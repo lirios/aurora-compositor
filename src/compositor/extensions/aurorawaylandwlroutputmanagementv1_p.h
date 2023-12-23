@@ -2,8 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef AURORA_COMPOSITOR_WAYLANDWLROUTPUTMANAGEMENTV1_P_H
-#define AURORA_COMPOSITOR_WAYLANDWLROUTPUTMANAGEMENTV1_P_H
+#pragma once
 
 #include <QPoint>
 #include <QPointer>
@@ -169,4 +168,3 @@ protected:
 
 } // namespace Aurora
 
-#endif // AURORA_COMPOSITOR_WAYLANDWLROUTPUTMANAGEMENTV1_P_H

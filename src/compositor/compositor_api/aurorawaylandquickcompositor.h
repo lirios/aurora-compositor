@@ -1,8 +1,7 @@
 // Copyright (C) 2017 Jolla Ltd, author: <giulio.camuffo@jollamobile.com>
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#ifndef AURORA_COMPOSITOR_WAYLANDQUICKCOMPOSITOR_H
-#define AURORA_COMPOSITOR_WAYLANDQUICKCOMPOSITOR_H
+#pragma once
 
 #include <LiriAuroraCompositor/aurorawaylandcompositor.h>
 #include <QtQml/QQmlListProperty>
@@ -49,4 +48,3 @@ protected:
 
 } // namespace Aurora
 
-#endif
