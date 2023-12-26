@@ -32,7 +32,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrLayerShellV1Private
 {
     Q_DECLARE_PUBLIC(WaylandWlrLayerShellV1)
 public:
-    explicit WaylandWlrLayerShellV1Private(WaylandWlrLayerShellV1 *self);
+    WaylandWlrLayerShellV1Private();
 
     void unregisterLayerSurface(WaylandWlrLayerSurfaceV1 *layerSurface);
     void closeAllLayerSurfaces();
@@ -78,8 +78,8 @@ public:
         QSize size = QSize(0, 0);
     };
 
-    explicit WaylandWlrLayerSurfaceV1Private(WaylandWlrLayerSurfaceV1 *self);
-    ~WaylandWlrLayerSurfaceV1Private();
+    WaylandWlrLayerSurfaceV1Private();
+    ~WaylandWlrLayerSurfaceV1Private() override;
 
     ConfigureEvent lastSentConfigure() const;
 

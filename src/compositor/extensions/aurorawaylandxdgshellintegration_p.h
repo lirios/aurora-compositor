@@ -93,9 +93,7 @@ private:
     bool filterPointerMoveEvent(const QPointF &scenePosition);
     bool filterMouseMoveEvent(QMouseEvent *event);
     bool filterPointerReleaseEvent();
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     bool filterTouchUpdateEvent(QTouchEvent *event);
-#endif
 };
 
 class XdgPopupIntegration : public WaylandQuickShellIntegration

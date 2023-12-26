@@ -22,11 +22,14 @@
 #include <QtCore/QList>
 #include <QtCore/QPoint>
 #include <QtCore/QObject>
+#include <QtCore/private/qobject_p.h>
 
 #include <LiriAuroraCompositor/private/aurora-server-wayland.h>
 #include <LiriAuroraCompositor/WaylandView>
 #include <LiriAuroraCompositor/WaylandSurface>
 #include <LiriAuroraCompositor/WaylandSeat>
+
+#include <QtCore/qpointer.h>
 
 #include <stdint.h>
 
@@ -36,7 +39,8 @@ namespace Compositor {
 
 class WaylandView;
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandPointerPrivate : public PrivateServer::wl_pointer
+class LIRIAURORACOMPOSITOR_EXPORT WaylandPointerPrivate : public QObjectPrivate
+                                                 , public PrivateServer::wl_pointer
 {
     Q_DECLARE_PUBLIC(WaylandPointer)
 public:
@@ -55,7 +59,6 @@ private:
     void sendLeave();
     void ensureEntered(WaylandSurface *surface);
 
-    WaylandPointer *q_ptr = nullptr;
     WaylandSeat *seat = nullptr;
     WaylandOutput *output = nullptr;
     QPointer<WaylandSurface> enteredSurface;

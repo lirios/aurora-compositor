@@ -1,31 +1,5 @@
-/****************************************************************************
-**
-** Copyright (C) 2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
-** Contact: https://www.qt.io/licensing/
-**
-** This file is part of the QtWaylandCompositor module of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:GPL$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see https://www.qt.io/terms-conditions. For further
-** information use the contact form at https://www.qt.io/contact-us.
-**
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3 or (at your option) any later version
-** approved by the KDE Free Qt Foundation. The licenses are as published by
-** the Free Software Foundation and appearing in the file LICENSE.GPL3
-** included in the packaging of this file. Please review the following
-** information to ensure the GNU General Public License requirements will
-** be met: https://www.gnu.org/licenses/gpl-3.0.html.
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
+// Copyright (C) 2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
 #include "aurorawaylandinputmethodcontrol.h"
 #include "aurorawaylandinputmethodcontrol_p.h"
@@ -35,9 +9,7 @@
 #include "aurorawaylandsurface.h"
 #include "aurorawaylandview.h"
 #include "aurorawaylandtextinput.h"
-#if QT_WAYLAND_TEXT_INPUT_V4_WIP
-#include "aurorawaylandtextinputv4.h"
-#endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
+#include "aurorawaylandtextinputv3.h"
 #include "aurorawaylandqttextinputmethod.h"
 
 #include <QtGui/QInputMethodEvent>
@@ -47,22 +19,19 @@ namespace Aurora {
 namespace Compositor {
 
 WaylandInputMethodControl::WaylandInputMethodControl(WaylandSurface *surface)
-    : QObject(surface)
-    , d_ptr(new WaylandInputMethodControlPrivate(this, surface))
+    : QObject(*new WaylandInputMethodControlPrivate(surface), surface)
 {
     connect(d_func()->compositor, &WaylandCompositor::defaultSeatChanged,
             this, &WaylandInputMethodControl::defaultSeatChanged);
 
     updateTextInput();
 
-#if QT_WAYLAND_TEXT_INPUT_V4_WIP
-    WaylandTextInputV4 *textInputV4 = d_func()->textInputV4();
-    if (textInputV4) {
-        connect(textInputV4, &WaylandTextInputV4::surfaceEnabled, this, &WaylandInputMethodControl::surfaceEnabled);
-        connect(textInputV4, &WaylandTextInputV4::surfaceDisabled, this, &WaylandInputMethodControl::surfaceDisabled);
-        connect(textInputV4, &WaylandTextInputV4::updateInputMethod, this, &WaylandInputMethodControl::updateInputMethod);
+    WaylandTextInputV3 *textInputV3 = d_func()->textInputV3();
+    if (textInputV3) {
+        connect(textInputV3, &WaylandTextInputV3::surfaceEnabled, this, &WaylandInputMethodControl::surfaceEnabled);
+        connect(textInputV3, &WaylandTextInputV3::surfaceDisabled, this, &WaylandInputMethodControl::surfaceDisabled);
+        connect(textInputV3, &WaylandTextInputV3::updateInputMethod, this, &WaylandInputMethodControl::updateInputMethod);
     }
-#endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
 
     WaylandQtTextInputMethod *textInputMethod = d_func()->textInputMethod();
     if (textInputMethod) {
@@ -70,10 +39,6 @@ WaylandInputMethodControl::WaylandInputMethodControl(WaylandSurface *surface)
         connect(textInputMethod, &WaylandQtTextInputMethod::surfaceDisabled, this, &WaylandInputMethodControl::surfaceDisabled);
         connect(textInputMethod, &WaylandQtTextInputMethod::updateInputMethod, this, &WaylandInputMethodControl::updateInputMethod);
     }
-}
-
-WaylandInputMethodControl::~WaylandInputMethodControl()
-{
 }
 
 QVariant WaylandInputMethodControl::inputMethodQuery(Qt::InputMethodQuery query, QVariant argument) const
@@ -84,11 +49,9 @@ QVariant WaylandInputMethodControl::inputMethodQuery(Qt::InputMethodQuery query,
     if (textInput != nullptr && textInput->focus() == d->surface)
         return textInput->inputMethodQuery(query, argument);
 
-#if QT_WAYLAND_TEXT_INPUT_V4_WIP
-    WaylandTextInputV4 *textInputV4 = d->textInputV4();
-    if (textInputV4 != nullptr && textInputV4->focus() == d->surface)
-        return textInputV4->inputMethodQuery(query, argument);
-#endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
+    WaylandTextInputV3 *textInputV3 = d->textInputV3();
+    if (textInputV3 != nullptr && textInputV3->focus() == d->surface)
+        return textInputV3->inputMethodQuery(query, argument);
 
     WaylandQtTextInputMethod *textInputMethod = d_func()->textInputMethod();
     if (textInputMethod && textInputMethod->focusedSurface() == d->surface)
@@ -103,10 +66,8 @@ void WaylandInputMethodControl::inputMethodEvent(QInputMethodEvent *event)
 
     if (WaylandTextInput *textInput = d->textInput()) {
         textInput->sendInputMethodEvent(event);
-#if QT_WAYLAND_TEXT_INPUT_V4_WIP
-    } else if (WaylandTextInputV4 *textInputV4 = d->textInputV4()) {
-        textInputV4->sendInputMethodEvent(event);
-#endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
+    } else if (WaylandTextInputV3 *textInputV3 = d->textInputV3()) {
+        textInputV3->sendInputMethodEvent(event);
     } else if (WaylandQtTextInputMethod *textInputMethod = d->textInputMethod()) {
         textInputMethod->sendInputMethodEvent(event);
     } else {
@@ -159,14 +120,10 @@ void WaylandInputMethodControl::setSurface(WaylandSurface *surface)
     d->surface = surface;
 
     WaylandTextInput *textInput = d->textInput();
-#if QT_WAYLAND_TEXT_INPUT_V4_WIP
-    WaylandTextInputV4 *textInputV4 = d->textInputV4();
-#endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
+    WaylandTextInputV3 *textInputV3 = d->textInputV3();
     WaylandQtTextInputMethod *textInputMethod = d->textInputMethod();
     setEnabled((textInput && textInput->isSurfaceEnabled(d->surface))
-#if QT_WAYLAND_TEXT_INPUT_V4_WIP
-               || (textInputV4 && textInputV4->isSurfaceEnabled(d->surface))
-#endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
+               || (textInputV3 && textInputV3->isSurfaceEnabled(d->surface))
                || (textInputMethod && textInputMethod->isSurfaceEnabled(d->surface)));
 }
 
@@ -186,16 +143,12 @@ void WaylandInputMethodControl::defaultSeatChanged()
     Q_D(WaylandInputMethodControl);
 
     disconnect(d->textInput(), nullptr, this, nullptr);
-#if QT_WAYLAND_TEXT_INPUT_V4_WIP
-    disconnect(d->textInputV4(), nullptr, this, nullptr);
-#endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
+    disconnect(d->textInputV3(), nullptr, this, nullptr);
     disconnect(d->textInputMethod(), nullptr, this, nullptr);
 
     d->seat = d->compositor->defaultSeat();
     WaylandTextInput *textInput = d->textInput();
-#if QT_WAYLAND_TEXT_INPUT_V4_WIP
-    WaylandTextInputV4 *textInputV4 = d->textInputV4();
-#endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
+    WaylandTextInputV3 *textInputV3 = d->textInputV3();
     WaylandQtTextInputMethod *textInputMethod = d->textInputMethod();
 
     if (textInput) {
@@ -203,12 +156,10 @@ void WaylandInputMethodControl::defaultSeatChanged()
         connect(textInput, &WaylandTextInput::surfaceDisabled, this, &WaylandInputMethodControl::surfaceDisabled);
     }
 
-#if QT_WAYLAND_TEXT_INPUT_V4_WIP
-    if (textInputV4) {
-        connect(textInputV4, &WaylandTextInputV4::surfaceEnabled, this, &WaylandInputMethodControl::surfaceEnabled);
-        connect(textInputV4, &WaylandTextInputV4::surfaceDisabled, this, &WaylandInputMethodControl::surfaceDisabled);
+    if (textInputV3) {
+        connect(textInputV3, &WaylandTextInputV3::surfaceEnabled, this, &WaylandInputMethodControl::surfaceEnabled);
+        connect(textInputV3, &WaylandTextInputV3::surfaceDisabled, this, &WaylandInputMethodControl::surfaceDisabled);
     }
-#endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
 
     if (textInputMethod) {
         connect(textInputMethod, &WaylandQtTextInputMethod::surfaceEnabled, this, &WaylandInputMethodControl::surfaceEnabled);
@@ -216,15 +167,12 @@ void WaylandInputMethodControl::defaultSeatChanged()
     }
 
     setEnabled((textInput && textInput->isSurfaceEnabled(d->surface))
-#if QT_WAYLAND_TEXT_INPUT_V4_WIP
-               || (textInputV4 && textInputV4->isSurfaceEnabled(d->surface))
-#endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
+               || (textInputV3 && textInputV3->isSurfaceEnabled(d->surface))
                || (textInputMethod && textInputMethod->isSurfaceEnabled(d->surface)));
 }
 
-WaylandInputMethodControlPrivate::WaylandInputMethodControlPrivate(WaylandInputMethodControl *self, WaylandSurface *surface)
-    : q_ptr(self)
-    , compositor(surface->compositor())
+WaylandInputMethodControlPrivate::WaylandInputMethodControlPrivate(WaylandSurface *surface)
+    : compositor(surface->compositor())
     , seat(compositor->defaultSeat())
     , surface(surface)
 {
@@ -244,12 +192,10 @@ WaylandTextInput *WaylandInputMethodControlPrivate::textInput() const
     return WaylandTextInput::findIn(seat);
 }
 
-#if QT_WAYLAND_TEXT_INPUT_V4_WIP
-WaylandTextInputV4 *WaylandInputMethodControlPrivate::textInputV4() const
+WaylandTextInputV3 *WaylandInputMethodControlPrivate::textInputV3() const
 {
-    return WaylandTextInputV4::findIn(seat);
+    return WaylandTextInputV3::findIn(seat);
 }
-#endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
 
 } // namespace Compositor
 

@@ -7,6 +7,8 @@
 
 #include <LiriAuroraCompositor/WaylandWlShellSurface>
 
+#include <QtCore/qpointer.h>
+
 namespace Aurora {
 
 namespace Compositor {

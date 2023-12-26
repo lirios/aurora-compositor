@@ -1,3 +1,0 @@
-module Aurora.Compositor.WlrLayerShell
-plugin auroracompositorwlrlayershellplugin
-classname AuroraCompositorWlrLayerShellPlugin

@@ -13,6 +13,30 @@ namespace Aurora {
 
 namespace Compositor {
 
+#define CHECK1(l, r, op) \
+    static_assert(std::is_same_v< \
+        bool, \
+        decltype(std::declval<WaylandBufferRef l >() op \
+                 std::declval<WaylandBufferRef r >()) \
+    >)
+#define CHECK2(l, r) \
+    CHECK1(l, r, ==); \
+    CHECK1(l, r, !=)
+#define CHECK(l, r) \
+    CHECK2(l, r); \
+    CHECK2(l &, r); \
+    CHECK2(l &, r &); \
+    CHECK2(l, r &)
+
+CHECK(, );
+CHECK(const, );
+CHECK(const, const);
+CHECK(, const);
+
+#undef CHECK
+#undef CHECK2
+#undef CHECK1
+
 class WaylandBufferRefPrivate
 {
 public:

@@ -21,7 +21,7 @@ public:
     TestSeat(WaylandCompositor *compositor, WaylandSeat::CapabilityFlags caps);
     ~TestSeat() override;
 
-    bool isOwner(QInputEvent *inputEvent) const override;
+    bool isOwner(QEvent *inputEvent) const override;
 
     QList<QMouseEvent *> createMouseEvents(int count);
 

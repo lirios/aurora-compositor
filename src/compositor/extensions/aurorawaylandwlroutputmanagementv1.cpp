@@ -17,8 +17,7 @@ Q_LOGGING_CATEGORY(gLcWaylandWlrOutputManagementV1, "aurora.compositor.wlroutput
  * WaylandWlrOutputManagerV1Private
  */
 
-WaylandWlrOutputManagerV1Private::WaylandWlrOutputManagerV1Private(WaylandWlrOutputManagerV1 *self)
-    : WaylandCompositorExtensionPrivate(self)
+WaylandWlrOutputManagerV1Private::WaylandWlrOutputManagerV1Private()
 {
 }
 
@@ -96,14 +95,12 @@ void WaylandWlrOutputManagerV1Private::zwlr_output_manager_v1_stop(Resource *res
  */
 
 WaylandWlrOutputManagerV1::WaylandWlrOutputManagerV1()
-    : WaylandCompositorExtensionTemplate<WaylandWlrOutputManagerV1>()
-    , d_ptr(new WaylandWlrOutputManagerV1Private(this))
+    : WaylandCompositorExtensionTemplate<WaylandWlrOutputManagerV1>(*new WaylandWlrOutputManagerV1Private)
 {
 }
 
 WaylandWlrOutputManagerV1::WaylandWlrOutputManagerV1(WaylandCompositor *compositor)
-    : WaylandCompositorExtensionTemplate<WaylandWlrOutputManagerV1>(compositor)
-    , d_ptr(new WaylandWlrOutputManagerV1Private(this))
+    : WaylandCompositorExtensionTemplate<WaylandWlrOutputManagerV1>(compositor, *new WaylandWlrOutputManagerV1Private)
 {
     Q_D(WaylandWlrOutputManagerV1);
     d->compositor = compositor;
@@ -189,9 +186,7 @@ QByteArray WaylandWlrOutputManagerV1::interfaceName()
  * WaylandWlrOutputHeadV1Private
  */
 
-WaylandWlrOutputHeadV1Private::WaylandWlrOutputHeadV1Private(WaylandWlrOutputHeadV1 *self)
-    : PrivateServer::zwlr_output_head_v1()
-    , q_ptr(self)
+WaylandWlrOutputHeadV1Private::WaylandWlrOutputHeadV1Private()
 {
 }
 
@@ -207,8 +202,6 @@ WaylandWlrOutputHeadV1Private::~WaylandWlrOutputHeadV1Private()
 
 void WaylandWlrOutputHeadV1Private::sendInfo(Resource *resource)
 {
-    Q_Q(WaylandWlrOutputHeadV1);
-
     modesSent = true;
 
     send_name(resource->handle, name);
@@ -248,8 +241,7 @@ WaylandWlrOutputHeadV1 *WaylandWlrOutputHeadV1Private::fromResource(wl_resource 
 
 
 WaylandWlrOutputHeadV1::WaylandWlrOutputHeadV1(QObject *parent)
-    : QObject(parent)
-    , d_ptr(new WaylandWlrOutputHeadV1Private(this))
+    : QObject(*new WaylandWlrOutputHeadV1Private, parent)
 {
 }
 
@@ -573,9 +565,7 @@ void WaylandWlrOutputHeadV1::setScale(qreal scale)
  * WaylandWlrOutputModeV1Private
  */
 
-WaylandWlrOutputModeV1Private::WaylandWlrOutputModeV1Private(WaylandWlrOutputModeV1 *self)
-    : PrivateServer::zwlr_output_mode_v1()
-    , q_ptr(self)
+WaylandWlrOutputModeV1Private::WaylandWlrOutputModeV1Private()
 {
 }
 
@@ -593,8 +583,7 @@ WaylandWlrOutputModeV1 *WaylandWlrOutputModeV1Private::fromResource(wl_resource 
 
 
 WaylandWlrOutputModeV1::WaylandWlrOutputModeV1(QObject *parent)
-    : QObject(parent)
-    , d_ptr(new WaylandWlrOutputModeV1Private(this))
+    : QObject(*new WaylandWlrOutputModeV1Private, parent)
 {
 }
 
@@ -656,9 +645,7 @@ void WaylandWlrOutputModeV1::setRefresh(qint32 refreshRate)
  * WaylandWlrOutputConfigurationHeadV1Private
  */
 
-WaylandWlrOutputConfigurationHeadV1Private::WaylandWlrOutputConfigurationHeadV1Private(WaylandWlrOutputConfigurationHeadV1 *self)
-    : PrivateServer::zwlr_output_configuration_head_v1()
-    , q_ptr(self)
+WaylandWlrOutputConfigurationHeadV1Private::WaylandWlrOutputConfigurationHeadV1Private()
 {
 }
 
@@ -778,10 +765,10 @@ void WaylandWlrOutputConfigurationHeadV1Private::zwlr_output_configuration_head_
 
 
 WaylandWlrOutputConfigurationHeadV1::WaylandWlrOutputConfigurationHeadV1(WaylandWlrOutputHeadV1 *head, QObject *parent)
-    : QObject(parent)
-    , d_ptr(new WaylandWlrOutputConfigurationHeadV1Private(this))
+    : QObject(*new WaylandWlrOutputConfigurationHeadV1Private, parent)
 {
-    d_ptr->head = head;
+    Q_D(WaylandWlrOutputConfigurationHeadV1);
+    d->head = head;
 }
 
 WaylandWlrOutputConfigurationHeadV1::~WaylandWlrOutputConfigurationHeadV1()
@@ -834,9 +821,8 @@ qreal WaylandWlrOutputConfigurationHeadV1::scale() const
  * WaylandWlrOutputConfigurationV1Private
  */
 
-WaylandWlrOutputConfigurationV1Private::WaylandWlrOutputConfigurationV1Private(WaylandWlrOutputConfigurationV1 *self)
+WaylandWlrOutputConfigurationV1Private::WaylandWlrOutputConfigurationV1Private()
     : PrivateServer::zwlr_output_configuration_v1()
-    , q_ptr(self)
 {
 }
 
@@ -937,14 +923,12 @@ void WaylandWlrOutputConfigurationV1Private::zwlr_output_configuration_v1_destro
  */
 
 WaylandWlrOutputConfigurationV1::WaylandWlrOutputConfigurationV1(QObject *parent)
-    : QObject(parent)
-    , d_ptr(new WaylandWlrOutputConfigurationV1Private(this))
+    : QObject(*new WaylandWlrOutputConfigurationV1Private, parent)
 {
 }
 
 WaylandWlrOutputConfigurationV1::WaylandWlrOutputConfigurationV1(WaylandWlrOutputManagerV1 *manager, const WaylandResource &resource)
-    : QObject(manager)
-    , d_ptr(new WaylandWlrOutputConfigurationV1Private(this))
+    : QObject(*new WaylandWlrOutputConfigurationV1Private, manager)
 {
     initialize(manager, resource);
 }

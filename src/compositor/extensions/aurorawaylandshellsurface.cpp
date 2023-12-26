@@ -1,7 +1,7 @@
 // Copyright (C) 2021 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#include <LiriAuroraCompositor/WaylandShellSurface>
+#include "aurorawaylandshellsurface.h"
 
 /*!
  * \class WaylandShellSurfaceTemplate
@@ -91,21 +91,3 @@
  *
  * This property holds the window type of the WaylandShellSurface.
  */
-
-namespace Aurora {
-
-namespace Compositor {
-
-WaylandShellSurface::WaylandShellSurface(WaylandCompositorExtensionPrivate &dd)
-    : WaylandCompositorExtension(dd)
-{
-}
-
-WaylandShellSurface::WaylandShellSurface(WaylandObject *container, WaylandCompositorExtensionPrivate &dd)
-    : WaylandCompositorExtension(container, dd)
-{
-}
-
-} // namespace Compositor
-
-} // namespace Aurora

@@ -88,8 +88,7 @@ namespace Compositor {
  * Constructs a WaylandXdgOutputManagerV1 object.
  */
 WaylandXdgOutputManagerV1::WaylandXdgOutputManagerV1()
-    : WaylandCompositorExtensionTemplate<WaylandXdgOutputManagerV1>()
-    , d_ptr(new WaylandXdgOutputManagerV1Private(this))
+    : WaylandCompositorExtensionTemplate<WaylandXdgOutputManagerV1>(*new WaylandXdgOutputManagerV1Private())
 {
 }
 
@@ -97,12 +96,7 @@ WaylandXdgOutputManagerV1::WaylandXdgOutputManagerV1()
  * Constructs a WaylandXdgOutputManagerV1 object for the provided \a compositor.
  */
 WaylandXdgOutputManagerV1::WaylandXdgOutputManagerV1(WaylandCompositor *compositor)
-    : WaylandCompositorExtensionTemplate<WaylandXdgOutputManagerV1>(compositor)
-    , d_ptr(new WaylandXdgOutputManagerV1Private(this))
-{
-}
-
-WaylandXdgOutputManagerV1::~WaylandXdgOutputManagerV1()
+    : WaylandCompositorExtensionTemplate<WaylandXdgOutputManagerV1>(compositor, *new WaylandXdgOutputManagerV1Private())
 {
 }
 
@@ -133,11 +127,6 @@ const wl_interface *WaylandXdgOutputManagerV1::interface()
 }
 
 // WaylandXdgOutputManagerV1Private
-
-WaylandXdgOutputManagerV1Private::WaylandXdgOutputManagerV1Private(WaylandXdgOutputManagerV1 *self)
-    : WaylandCompositorExtensionPrivate(self)
-{
-}
 
 void WaylandXdgOutputManagerV1Private::registerXdgOutput(WaylandOutput *output, WaylandXdgOutputV1 *xdgOutput)
 {
@@ -190,14 +179,12 @@ void WaylandXdgOutputManagerV1Private::zxdg_output_manager_v1_get_xdg_output(Res
 // WaylandXdgOutputV1
 
 WaylandXdgOutputV1::WaylandXdgOutputV1()
-    : QObject()
-    , d_ptr(new WaylandXdgOutputV1Private(this))
+    : QObject(*new WaylandXdgOutputV1Private)
 {
 }
 
 WaylandXdgOutputV1::WaylandXdgOutputV1(WaylandOutput *output, WaylandXdgOutputManagerV1 *manager)
-    : QObject()
-    , d_ptr(new WaylandXdgOutputV1Private(this))
+    : QObject(*new WaylandXdgOutputV1Private)
 {
     Q_D(WaylandXdgOutputV1);
 
@@ -221,7 +208,7 @@ WaylandXdgOutputV1::~WaylandXdgOutputV1()
 }
 
 /*!
- * \qmlproperty XdgOutputManagerV1 AuroraCompositor::XdgOutputV1::manager
+ * \qmlproperty XdgOutputManagerV1 XdgOutputV1::manager
  * \readonly
  *
  * This property holds the object that manages this XdgOutputV1.
@@ -239,7 +226,7 @@ WaylandXdgOutputManagerV1 *WaylandXdgOutputV1::manager() const
 }
 
 /*!
- * \qmlproperty WaylandOutput AuroraCompositor::XdgOutputV1::output
+ * \qmlproperty WaylandOutput XdgOutputV1::output
  * \readonly
  *
  * This property holds the WaylandOutput associated with this XdgOutputV1.
@@ -257,7 +244,7 @@ WaylandOutput *WaylandXdgOutputV1::output() const
 }
 
 /*!
- * \qmlproperty string AuroraCompositor::XdgOutputV1::name
+ * \qmlproperty string XdgOutputV1::name
  *
  * This property holds the name of this output.
  *
@@ -308,7 +295,7 @@ void WaylandXdgOutputV1::setName(const QString &name)
 }
 
 /*!
- *  \qmlproperty string AuroraCompositor::XdgOutputV1::description
+ *  \qmlproperty string XdgOutputV1::description
  *
  *  This property holds the description of this output.
  *
@@ -349,7 +336,7 @@ void WaylandXdgOutputV1::setDescription(const QString &description)
 }
 
 /*!
- * \qmlproperty point AuroraCompositor::XdgOutputV1::logicalPosition
+ * \qmlproperty point XdgOutputV1::logicalPosition
  *
  * This property holds the coordinates of the output within the global compositor space.
  *
@@ -385,7 +372,7 @@ void WaylandXdgOutputV1::setLogicalPosition(const QPoint &position)
 }
 
 /*!
- * \qmlproperty size AuroraCompositor::XdgOutputV1::logicalSize
+ * \qmlproperty size XdgOutputV1::logicalSize
  *
  * This property holds the size of the output in the global compositor space.
  *
@@ -437,7 +424,7 @@ void WaylandXdgOutputV1::setLogicalSize(const QSize &size)
 }
 
 /*!
- * \qmlproperty rect AuroraCompositor::XdgOutputV1::logicalGeometry
+ * \qmlproperty rect XdgOutputV1::logicalGeometry
  * \readonly
  *
  * This property holds the position and size of the output in the global compositor space.
@@ -463,12 +450,6 @@ QRect WaylandXdgOutputV1::logicalGeometry() const
 }
 
 // WaylandXdgOutputV1Private
-
-WaylandXdgOutputV1Private::WaylandXdgOutputV1Private(WaylandXdgOutputV1 *self)
-    : PrivateServer::zxdg_output_v1()
-    , q_ptr(self)
-{
-}
 
 void WaylandXdgOutputV1Private::sendLogicalPosition(const QPoint &position)
 {
@@ -584,3 +565,5 @@ void WaylandXdgOutputV1Private::zxdg_output_v1_destroy(Resource *resource)
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawaylandxdgoutputv1.cpp"

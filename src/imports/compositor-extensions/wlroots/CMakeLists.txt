@@ -1,25 +1,23 @@
-# SPDX-FileCopyrightText: 2022 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-#
+# SPDX-FileCopyrightText: 2024 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
 # SPDX-License-Identifier: BSD-3-Clause
 
-liri_add_qml_plugin(AuroraCompositorWlrootsQmlPlugin
-    MODULE_PATH
-        "Aurora/Compositor/Wlroots"
-    VERSION
-        "1.0"
-    OUTPUT_NAME
-        auroracompositorwlrootsplugin
-    SOURCES
-        auroracompositorwlrootsplugin.cpp
-    QML_FILES
-        qmldir
-    DEFINES
-        QT_NO_CAST_FROM_ASCII
-        QT_NO_FOREACH
-    LIBRARIES
-        Qt::Core
-        Qt::Gui
+ecm_add_qml_module(AuroraCompositorWlrootsQmlPlugin
+    URI Aurora.Compositor.Wlroots
+    VERSION 1.0
+    CLASS_NAME AuroraCompositorWlrootsPlugin
+    NO_GENERATE_PLUGIN_SOURCE
+    DEPENDENCIES QtQuick
+)
+
+target_sources(AuroraCompositorWlrootsQmlPlugin
+    PRIVATE auroracompositorwlrootsplugin.cpp
+)
+
+target_link_libraries(AuroraCompositorWlrootsQmlPlugin
+    PRIVATE
+        Qt6::Qml
+        Qt6::Quick
         Liri::AuroraCompositor
 )
 
-liri_finalize_qml_plugin(AuroraCompositorWlrootsQmlPlugin)
+ecm_finalize_qml_module(AuroraCompositorWlrootsQmlPlugin)

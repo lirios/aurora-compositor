@@ -46,3 +46,5 @@ void WaylandQuickXdgOutputV1::componentComplete()
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawaylandquickxdgoutputv1.cpp"

@@ -27,6 +27,9 @@
 #include <QtCore/QList>
 #include <QtCore/QRect>
 
+#include <QtCore/private/qobject_p.h>
+#include <QtCore/qpointer.h>
+
 namespace Aurora {
 
 namespace Compositor {
@@ -51,19 +54,16 @@ struct WaylandSurfaceViewMapper
     }
 
     WaylandSurface *surface = nullptr;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QList<WaylandView *> views;
-#else
-    QVector<WaylandView *> views;
-#endif
     bool has_entered = false;
 };
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandOutputPrivate : public PrivateServer::wl_output
+class LIRIAURORACOMPOSITOR_EXPORT WaylandOutputPrivate : public QObjectPrivate, public PrivateServer::wl_output
 {
-    Q_DECLARE_PUBLIC(WaylandOutput)
 public:
-    WaylandOutputPrivate(WaylandOutput *self);
+    Q_DECLARE_PUBLIC(WaylandOutput)
+
+    WaylandOutputPrivate();
 
     ~WaylandOutputPrivate() override;
     static WaylandOutputPrivate *get(WaylandOutput *output) { return output->d_func(); }
@@ -88,25 +88,16 @@ private:
     void _q_handleMaybeWindowPixelSizeChanged();
     void _q_handleWindowDestroyed();
 
-    WaylandOutput *q_ptr = nullptr;
     WaylandCompositor *compositor = nullptr;
     QWindow *window = nullptr;
     QString manufacturer;
     QString model;
     QPoint position;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QList<WaylandOutputMode> modes;
-#else
-    QVector<WaylandOutputMode> modes;
-#endif
     int currentMode = -1;
     int preferredMode = -1;
     QRect availableGeometry;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QList<WaylandSurfaceViewMapper> surfaceViews;
-#else
-    QVector<WaylandSurfaceViewMapper> surfaceViews;
-#endif
     QSize physicalSize;
     WaylandOutput::Subpixel subpixel = WaylandOutput::SubpixelUnknown;
     WaylandOutput::Transform transform = WaylandOutput::TransformNormal;

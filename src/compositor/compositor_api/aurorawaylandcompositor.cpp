@@ -63,9 +63,7 @@ namespace Compositor {
 Q_LOGGING_CATEGORY(gLcAuroraCompositor, "aurora.compositor")
 Q_LOGGING_CATEGORY(gLcAuroraCompositorHardwareIntegration, "aurora.compositor.hardwareintegration")
 Q_LOGGING_CATEGORY(gLcAuroraCompositorInputMethods, "aurora.compositor.inputmethods")
-#if QT_WAYLAND_TEXT_INPUT_V4_WIP
 Q_LOGGING_CATEGORY(gLcAuroraCompositorTextInput, "aurora.compositor.textinput")
-#endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
 Q_LOGGING_CATEGORY(gLcAuroraCompositorWlrLayerShellV1, "aurora.compositor.wlrlayershellv1")
 Q_LOGGING_CATEGORY(gLcAuroraCompositorWlrExportDmabufV1, "aurora.compositor.wlrexportdmabufv1")
 Q_LOGGING_CATEGORY(gLcAuroraCompositorWlrForeignToplevelManagementV1, "aurora.compositor.wlrforeigntoplevelmanagementv1")
@@ -115,7 +113,7 @@ public:
         xkb_state *xkbState = keyb->xkbState();
 
         const xkb_keysym_t sym = xkb_state_key_get_one_sym(xkbState, code);
-        Qt::KeyboardModifiers modifiers = XkbCommon::modifiers(xkbState);
+        Qt::KeyboardModifiers modifiers = XkbCommon::modifiers(xkbState, sym);
         int qtkey = XkbCommon::keysymToQtKey(sym, modifiers, xkbState, code);
         QString text = XkbCommon::lookupString(xkbState, code);
 
@@ -142,7 +140,6 @@ public:
 } // namespace
 
 WaylandCompositorPrivate::WaylandCompositorPrivate(WaylandCompositor *compositor)
-    : q_ptr(compositor)
 {
     if (QGuiApplication::platformNativeInterface())
         display = static_cast<wl_display*>(QGuiApplication::platformNativeInterface()->nativeResourceForIntegration("server_wl_display"));
@@ -466,7 +463,7 @@ void WaylandCompositorPrivate::loadServerBufferIntegration()
 #endif
 }
 
-WaylandSeat *WaylandCompositorPrivate::seatFor(QInputEvent *inputEvent)
+WaylandSeat *WaylandCompositorPrivate::seatFor(QEvent *inputEvent)
 {
     WaylandSeat *dev = nullptr;
     for (int i = 0; i < seats.size(); i++) {
@@ -550,7 +547,7 @@ WaylandSeat *WaylandCompositorPrivate::seatFor(QInputEvent *inputEvent)
  * Constructs a WaylandCompositor with the given \a parent.
  */
 WaylandCompositor::WaylandCompositor(QObject *parent)
-    : WaylandCompositor(*new WaylandCompositorPrivate(this), parent)
+    : WaylandObject(*new WaylandCompositorPrivate(this), parent)
 {
 }
 
@@ -559,8 +556,7 @@ WaylandCompositor::WaylandCompositor(QObject *parent)
  * Constructs a WaylandCompositor with the private object \a dptr and \a parent.
  */
 WaylandCompositor::WaylandCompositor(WaylandCompositorPrivate &dptr, QObject *parent)
-    : WaylandObject(parent)
-    , d_ptr(&dptr)
+    : WaylandObject(dptr, parent)
 {
 }
 
@@ -958,10 +954,9 @@ QList<WaylandSeat *> WaylandCompositor::seats() const
 
 /*!
  * Select the seat for a given input event \a inputEvent.
- * Currently, Qt only supports a single seat, but you can reimplement
- * WaylandCompositorPrivate::seatFor for a custom seat selection.
+ * Currently, Qt only supports a single seat.
  */
-WaylandSeat *WaylandCompositor::seatFor(QInputEvent *inputEvent)
+WaylandSeat *WaylandCompositor::seatFor(QEvent *inputEvent)
 {
     Q_D(WaylandCompositor);
     return d->seatFor(inputEvent);

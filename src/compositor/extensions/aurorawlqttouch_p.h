@@ -17,6 +17,7 @@
 #include <LiriAuroraCompositor/private/aurora-server-touch-extension.h>
 #include <LiriAuroraCompositor/WaylandCompositor>
 #include <LiriAuroraCompositor/WaylandCompositorExtensionTemplate>
+#include <QtCore/private/qglobal_p.h>
 
 #include <wayland-util.h>
 
@@ -62,11 +63,7 @@ private:
     WaylandCompositor *m_compositor = nullptr;
     BehaviorFlags m_flags = BehaviorFlag::None;
     QList<Resource *> m_resources;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QList<float> m_posData;
-#else
-    QVector<float> m_posData;
-#endif
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(TouchExtensionGlobal::BehaviorFlags)

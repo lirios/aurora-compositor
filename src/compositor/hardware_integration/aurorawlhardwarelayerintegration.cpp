@@ -14,3 +14,5 @@ namespace Internal {
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawlhardwarelayerintegration_p.cpp"

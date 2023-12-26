@@ -55,9 +55,6 @@ Q_SIGNALS:
     void configurationRequested(const Aurora::Compositor::WaylandResource &resource);
     void configurationCreated(Aurora::Compositor::WaylandWlrOutputConfigurationV1 *configuration);
     void clientStopped(Aurora::Compositor::WaylandClient *client);
-
-private:
-    QScopedPointer<WaylandWlrOutputManagerV1Private> const d_ptr;
 };
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrOutputHeadV1 : public QObject
@@ -127,9 +124,6 @@ Q_SIGNALS:
     void preferredModeChanged();
     void transformChanged();
     void scaleChanged();
-
-private:
-    QScopedPointer<WaylandWlrOutputHeadV1Private> const d_ptr;
 };
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrOutputModeV1 : public QObject
@@ -154,9 +148,6 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrOutputModeV1 : public QObject
 Q_SIGNALS:
     void sizeChanged();
     void refreshChanged();
-
-private:
-    QScopedPointer<WaylandWlrOutputModeV1Private> const d_ptr;
 };
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrOutputConfigurationHeadV1 : public QObject
@@ -226,9 +217,6 @@ Q_SIGNALS:
     void headDisabled(Aurora::Compositor::WaylandWlrOutputHeadV1 *head);
     void readyToApply();
     void readyToTest();
-
-private:
-    QScopedPointer<WaylandWlrOutputConfigurationV1Private> const d_ptr;
 };
 
 } // namespace Compositor

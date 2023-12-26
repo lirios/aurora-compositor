@@ -40,7 +40,6 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgShell : public WaylandShellTemplate<
 public:
     explicit WaylandXdgShell();
     explicit WaylandXdgShell(WaylandCompositor *compositor);
-    ~WaylandXdgShell();
 
     void initialize() override;
 
@@ -60,8 +59,6 @@ private Q_SLOTS:
     void handleSeatChanged(Aurora::Compositor::WaylandSeat *newSeat, Aurora::Compositor::WaylandSeat *oldSeat);
     void handleFocusChanged(Aurora::Compositor::WaylandSurface *newSurface, Aurora::Compositor::WaylandSurface *oldSurface);
 
-private:
-    QScopedPointer<WaylandXdgShellPrivate> const d_ptr;
 };
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgSurface : public WaylandShellSurfaceTemplate<WaylandXdgSurface>
@@ -76,13 +73,11 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgSurface : public WaylandShellSurface
     Q_PROPERTY(Aurora::Compositor::WaylandXdgToplevel *toplevel READ toplevel NOTIFY toplevelCreated)
     Q_PROPERTY(Aurora::Compositor::WaylandXdgPopup *popup READ popup NOTIFY popupCreated)
     Q_PROPERTY(QRect windowGeometry READ windowGeometry NOTIFY windowGeometryChanged)
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     Q_MOC_INCLUDE("aurorawaylandsurface.h")
-#endif
+
 public:
     explicit WaylandXdgSurface();
     explicit WaylandXdgSurface(WaylandXdgShell* xdgShell, WaylandSurface *surface, const WaylandResource &resource);
-    ~WaylandXdgSurface();
 
     Q_INVOKABLE void initialize(Aurora::Compositor::WaylandXdgShell* xdgShell, Aurora::Compositor::WaylandSurface *surface, const Aurora::Compositor::WaylandResource &resource);
 
@@ -109,8 +104,6 @@ Q_SIGNALS:
     void windowGeometryChanged();
 
 private:
-    QScopedPointer<WaylandXdgSurfacePrivate> const d_ptr;
-
     void initialize() override;
 
 private Q_SLOTS:
@@ -133,12 +126,8 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgToplevel : public QObject
     Q_PROPERTY(bool fullscreen READ fullscreen NOTIFY fullscreenChanged)
     Q_PROPERTY(bool resizing READ resizing NOTIFY resizingChanged)
     Q_PROPERTY(bool activated READ activated NOTIFY activatedChanged)
-// QDoc fails to parse the property type that includes the keyword 'enum'
-#ifndef Q_QDOC
     Q_PROPERTY(enum DecorationMode decorationMode READ decorationMode NOTIFY decorationModeChanged)
-#else
-    Q_PROPERTY(DecorationMode decorationMode READ decorationMode NOTIFY decorationModeChanged)
-#endif
+
 public:
     enum State : uint {
         MaximizedState  = 1,
@@ -164,11 +153,7 @@ public:
     QString appId() const;
     QSize maxSize() const;
     QSize minSize() const;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QList<WaylandXdgToplevel::State> states() const;
-#else
-    QVector<WaylandXdgToplevel::State> states() const;
-#endif
     bool maximized() const;
     bool fullscreen() const;
     bool resizing() const;
@@ -176,13 +161,8 @@ public:
     DecorationMode decorationMode() const;
 
     Q_INVOKABLE QSize sizeForResize(const QSizeF &size, const QPointF &delta, Qt::Edges edges) const;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     uint sendConfigure(const QSize &size, const QList<State> &states);
     Q_INVOKABLE uint sendConfigure(const QSize &size, const QList<int> &states);
-#else
-    uint sendConfigure(const QSize &size, const QVector<State> &states);
-    Q_INVOKABLE uint sendConfigure(const QSize &size, const QVector<int> &states);
-#endif
     Q_INVOKABLE void sendClose();
     Q_INVOKABLE uint sendMaximized(const QSize &size);
     Q_INVOKABLE uint sendUnmaximized(const QSize &size = QSize(0, 0));
@@ -216,8 +196,6 @@ Q_SIGNALS:
     void decorationModeChanged();
 
 private:
-    QScopedPointer<WaylandXdgToplevelPrivate> const d_ptr;
-
     QList<int> statesAsInts() const;
 };
 
@@ -241,8 +219,6 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgPopup : public QObject
     Q_PROPERTY(QSize positionerSize READ positionerSize CONSTANT)
     Q_PROPERTY(QPoint unconstrainedPosition READ unconstrainedPosition CONSTANT)
 public:
-    ~WaylandXdgPopup();
-
     WaylandXdgSurface *xdgSurface() const;
     WaylandXdgSurface *parentXdgSurface() const;
     WaylandSurface *parentSurface() const;
@@ -263,15 +239,13 @@ public:
     Q_INVOKABLE void sendPopupDone();
 
     static WaylandSurfaceRole *role();
-    static WaylandXdgPopup *fromResource(struct ::wl_resource *resource);
+    static WaylandXdgPopup *fromResource(::wl_resource *resource);
 
 Q_SIGNALS:
     void parentSurfaceChanged();
     void configuredGeometryChanged();
 
 private:
-    QScopedPointer<WaylandXdgPopupPrivate> const d_ptr;
-
     explicit WaylandXdgPopup(WaylandXdgSurface *xdgSurface, WaylandXdgSurface *parentXdgSurface,
                               WaylandXdgPositioner *positioner, WaylandResource &resource);
     friend class WaylandXdgSurfacePrivate;

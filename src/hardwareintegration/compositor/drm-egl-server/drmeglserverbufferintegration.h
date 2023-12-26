@@ -33,12 +33,13 @@ typedef EGLImageKHR (EGLAPIENTRYP PFNEGLCREATEDRMIMAGEMESAPROC) (EGLDisplay dpy,
 typedef EGLBoolean (EGLAPIENTRYP PFNEGLEXPORTDRMIMAGEMESAPROC) (EGLDisplay dpy, EGLImageKHR image, EGLint *name, EGLint *handle, EGLint *stride);
 #endif
 
+class QImage;
+
 namespace Aurora {
 
 namespace Compositor {
 
 class DrmEglServerBufferIntegration;
-class QImage;
 
 class DrmEglServerBuffer : public Internal::ServerBuffer, public PrivateServer::qt_server_buffer
 {

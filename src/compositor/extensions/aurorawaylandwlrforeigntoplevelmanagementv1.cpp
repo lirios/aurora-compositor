@@ -12,15 +12,12 @@ namespace Compositor {
  * WaylandWlrForeignToplevelManagerV1Private
  */
 
-WaylandWlrForeignToplevelManagerV1Private::WaylandWlrForeignToplevelManagerV1Private(WaylandWlrForeignToplevelManagerV1 *self)
-    : WaylandCompositorExtensionPrivate(self)
+WaylandWlrForeignToplevelManagerV1Private::WaylandWlrForeignToplevelManagerV1Private()
 {
 }
 
 void WaylandWlrForeignToplevelManagerV1Private::zwlr_foreign_toplevel_manager_v1_bind_resource(Resource *resource)
 {
-    Q_Q(WaylandWlrForeignToplevelManagerV1);
-
     for (auto toplevel : qAsConst(toplevels)) {
         auto d = WaylandWlrForeignToplevelHandleV1Private::get(toplevel);
         auto toplevelResource = d->add(resource->client(),
@@ -63,16 +60,15 @@ void WaylandWlrForeignToplevelManagerV1Private::zwlr_foreign_toplevel_manager_v1
  */
 
 WaylandWlrForeignToplevelManagerV1::WaylandWlrForeignToplevelManagerV1()
-    : WaylandCompositorExtensionTemplate<WaylandWlrForeignToplevelManagerV1>()
-    , d_ptr(new WaylandWlrForeignToplevelManagerV1Private(this))
+    : WaylandCompositorExtensionTemplate<WaylandWlrForeignToplevelManagerV1>(*new WaylandWlrForeignToplevelManagerV1Private)
 {
 }
 
 WaylandWlrForeignToplevelManagerV1::WaylandWlrForeignToplevelManagerV1(WaylandCompositor *compositor)
-    : WaylandCompositorExtensionTemplate<WaylandWlrForeignToplevelManagerV1>(compositor)
-    , d_ptr(new WaylandWlrForeignToplevelManagerV1Private(this))
+    : WaylandCompositorExtensionTemplate<WaylandWlrForeignToplevelManagerV1>(compositor, *new WaylandWlrForeignToplevelManagerV1Private)
 {
-    d_ptr->compositor = compositor;
+    Q_D(WaylandWlrForeignToplevelManagerV1);
+    d->compositor = compositor;
 }
 
 WaylandWlrForeignToplevelManagerV1::~WaylandWlrForeignToplevelManagerV1()
@@ -107,9 +103,8 @@ QByteArray WaylandWlrForeignToplevelManagerV1::interfaceName()
  * WaylandWlrForeignToplevelHandleV1Private
  */
 
-WaylandWlrForeignToplevelHandleV1Private::WaylandWlrForeignToplevelHandleV1Private(WaylandWlrForeignToplevelHandleV1 *self)
+WaylandWlrForeignToplevelHandleV1Private::WaylandWlrForeignToplevelHandleV1Private()
     : PrivateServer::zwlr_foreign_toplevel_handle_v1()
-    , q_ptr(self)
 {
 }
 
@@ -205,8 +200,7 @@ void WaylandWlrForeignToplevelHandleV1Private::zwlr_foreign_toplevel_handle_v1_u
  */
 
 WaylandWlrForeignToplevelHandleV1::WaylandWlrForeignToplevelHandleV1(QObject *parent)
-    : QObject(parent)
-    , d_ptr(new WaylandWlrForeignToplevelHandleV1Private(this))
+    : QObject(*new WaylandWlrForeignToplevelHandleV1Private, parent)
 {
 }
 

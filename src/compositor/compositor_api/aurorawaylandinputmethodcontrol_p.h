@@ -17,6 +17,8 @@
 #include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 #include <LiriAuroraCompositor/aurorawaylandinputmethodcontrol.h>
 
+#include <QtCore/private/qobject_p.h>
+
 namespace Aurora {
 
 namespace Compositor {
@@ -25,31 +27,24 @@ class WaylandCompositor;
 class WaylandSeat;
 class WaylandSurface;
 class WaylandTextInput;
-#if QT_WAYLAND_TEXT_INPUT_V4_WIP
-class WaylandTextInputV4;
-#endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
+class WaylandTextInputV3;
 class WaylandQtTextInputMethod;
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandInputMethodControlPrivate
+class LIRIAURORACOMPOSITOR_EXPORT WaylandInputMethodControlPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(WaylandInputMethodControl)
 
 public:
-    explicit WaylandInputMethodControlPrivate(WaylandInputMethodControl *self, WaylandSurface *surface);
+    explicit WaylandInputMethodControlPrivate(WaylandSurface *surface);
 
     WaylandTextInput *textInput() const;
-#if QT_WAYLAND_TEXT_INPUT_V4_WIP
-    WaylandTextInputV4 *textInputV4() const;
-#endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
+    WaylandTextInputV3 *textInputV3() const;
     WaylandQtTextInputMethod *textInputMethod() const;
 
     WaylandCompositor *compositor = nullptr;
     WaylandSeat *seat = nullptr;
     WaylandSurface *surface = nullptr;
     bool enabled = false;
-
-private:
-    WaylandInputMethodControl *q_ptr = nullptr;
 };
 
 } // namespace Compositor

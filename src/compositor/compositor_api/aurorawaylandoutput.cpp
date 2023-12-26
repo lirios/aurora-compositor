@@ -19,15 +19,7 @@
 #include <QtGui/QWindow>
 #include <QtGui/QExposeEvent>
 #include <QtGui/QScreen>
-
-template<typename DPtr, typename Slot>
-auto priv_slot(DPtr &&dptr, Slot &&slot)
-{
-    return [&dptr, &slot](auto && ... args)
-    {
-        (dptr->*slot)(std::forward<decltype(args)>(args) ...);
-    };
-}
+#include <private/qobject_p.h>
 
 namespace Aurora {
 
@@ -79,8 +71,7 @@ static PrivateServer::wl_output::transform toWlTransform(const WaylandOutput::Tr
     return PrivateServer::wl_output::transform_normal;
 }
 
-WaylandOutputPrivate::WaylandOutputPrivate(WaylandOutput *self)
-    : q_ptr(self)
+WaylandOutputPrivate::WaylandOutputPrivate()
 {
 }
 
@@ -228,8 +219,7 @@ void WaylandOutputPrivate::removeView(WaylandView *view, WaylandSurface *surface
 }
 
 WaylandOutput::WaylandOutput()
-    : WaylandObject()
-    , d_ptr(new WaylandOutputPrivate(this))
+    : WaylandObject(*new WaylandOutputPrivate())
 {
 }
 
@@ -274,8 +264,7 @@ WaylandOutput::WaylandOutput()
  * \l{WaylandCompositor::defaultOutput()}{default output}.
  */
 WaylandOutput::WaylandOutput(WaylandCompositor *compositor, QWindow *window)
-    : WaylandObject()
-    , d_ptr(new WaylandOutputPrivate(this))
+    : WaylandObject(*new WaylandOutputPrivate())
 {
     Q_D(WaylandOutput);
     d->compositor = compositor;
@@ -323,10 +312,10 @@ void WaylandOutput::initialize()
     WaylandCompositorPrivate::get(d->compositor)->addOutput(this);
 
     if (d->window) {
-        connect(d->window, SIGNAL(widthChanged(int)), this, SLOT(_q_handleMaybeWindowPixelSizeChanged()));
-        connect(d->window, SIGNAL(heightChanged(int)), this, SLOT(_q_handleMaybeWindowPixelSizeChanged()));
-        connect(d->window, SIGNAL(screenChanged(QScreen*)), this, SLOT(_q_handleMaybeWindowPixelSizeChanged()));
-        connect(d->window, SIGNAL(destroyed()), this, SLOT(_q_handleWindowDestroyed()));
+        QObjectPrivate::connect(d->window, &QWindow::widthChanged, d, &WaylandOutputPrivate::_q_handleMaybeWindowPixelSizeChanged);
+        QObjectPrivate::connect(d->window, &QWindow::heightChanged, d, &WaylandOutputPrivate::_q_handleMaybeWindowPixelSizeChanged);
+        QObjectPrivate::connect(d->window, &QWindow::screenChanged, d, &WaylandOutputPrivate::_q_handleMaybeWindowPixelSizeChanged);
+        QObjectPrivate::connect(d->window, &QObject::destroyed, d, &WaylandOutputPrivate::_q_handleWindowDestroyed);
     }
 
     d->init(d->compositor->display(), 2);

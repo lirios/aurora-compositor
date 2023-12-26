@@ -4,7 +4,7 @@
 #pragma once
 
 #include <LiriAuroraCompositor/liriauroracompositorglobal.h>
-#include <LiriAuroraCompositor/aurorawaylandqmlinclude.h>
+#include <LiriAuroraCompositor/auroraqmlinclude.h>
 
 #include <QtCore/QObject>
 
@@ -28,12 +28,11 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandClient : public QObject
     Q_PROPERTY(qint64 userId READ userId CONSTANT)
     Q_PROPERTY(qint64 groupId READ groupId CONSTANT)
     Q_PROPERTY(qint64 processId READ processId CONSTANT)
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     Q_MOC_INCLUDE("aurorawaylandcompositor.h")
+
     QML_NAMED_ELEMENT(WaylandClient)
     QML_ADDED_IN_VERSION(1, 0)
     QML_UNCREATABLE("")
-#endif
 public:
     ~WaylandClient() override;
 
@@ -41,7 +40,7 @@ public:
         NoProtocol = 0,
         QtTextInputMethodV1 = 1,
         TextInputV2 = 2,
-        TextInputV4 = 4,
+        TextInputV3 = 4,
 
         QtTextInputMethod = QtTextInputMethodV1,
         TextInput = TextInputV2
@@ -68,8 +67,6 @@ public Q_SLOTS:
     void close();
 
 private:
-    QScopedPointer<WaylandClientPrivate> const d_ptr;
-
     explicit WaylandClient(WaylandCompositor *compositor, wl_client *client);
 };
 

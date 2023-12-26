@@ -1,5 +1,4 @@
-// SPDX-FileCopyrightText: 2022 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-//
+// SPDX-FileCopyrightText: 2022-2024 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
@@ -31,10 +30,9 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandExtSessionLockV1
         , public PrivateServer::ext_session_lock_v1
 {
 public:
-    WaylandExtSessionLockV1(WaylandExtSessionLockManagerV1 *manager);
+    WaylandExtSessionLockV1(WaylandExtSessionLockManagerV1 *manager,
+                            const WaylandResource &resource);
     ~WaylandExtSessionLockV1();
-
-    void initialize(const WaylandResource &resource);
 
 protected:
     void ext_session_lock_v1_destroy_resource(Resource *resource) override;
@@ -46,12 +44,12 @@ protected:
 };
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandExtSessionLockManagerV1Private
-        : public WaylandCompositorExtensionPrivate
+        : public WaylandShellPrivate
         , public PrivateServer::ext_session_lock_manager_v1
 {
     Q_DECLARE_PUBLIC(WaylandExtSessionLockManagerV1)
 public:
-    WaylandExtSessionLockManagerV1Private(WaylandExtSessionLockManagerV1 *self);
+    WaylandExtSessionLockManagerV1Private();
 
     bool isLocked() const;
     void setLocked(bool value);
@@ -101,7 +99,7 @@ public:
         QSize size = QSize(0, 0);
     };
 
-    WaylandExtSessionLockSurfaceV1Private(WaylandExtSessionLockSurfaceV1 *self);
+    WaylandExtSessionLockSurfaceV1Private();
 
     quint32 sendConfigure(const QSize &size);
 

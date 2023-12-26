@@ -14,17 +14,16 @@ namespace Aurora {
 
 namespace Compositor {
 
-class WaylandTextInputV4Private;
-
+class WaylandTextInputV3Private;
 class WaylandSurface;
 
-class WaylandTextInputV4 : public WaylandCompositorExtensionTemplate<WaylandTextInputV4>
+class WaylandTextInputV3 : public WaylandCompositorExtensionTemplate<WaylandTextInputV3>
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(WaylandTextInputV4)
+    Q_DECLARE_PRIVATE(WaylandTextInputV3)
 public:
-    explicit WaylandTextInputV4(WaylandObject *container, WaylandCompositor *compositor);
-    ~WaylandTextInputV4() override;
+    explicit WaylandTextInputV3(WaylandObject *container, WaylandCompositor *compositor);
+    ~WaylandTextInputV3() override;
 
     void sendInputMethodEvent(QInputMethodEvent *event);
     void sendKeyEvent(QKeyEvent *event);

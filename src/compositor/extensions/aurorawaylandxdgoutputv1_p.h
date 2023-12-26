@@ -31,7 +31,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgOutputManagerV1Private
 {
     Q_DECLARE_PUBLIC(WaylandXdgOutputManagerV1)
 public:
-    explicit WaylandXdgOutputManagerV1Private(WaylandXdgOutputManagerV1 *self);
+    explicit WaylandXdgOutputManagerV1Private() = default;
 
     void registerXdgOutput(WaylandOutput *output, WaylandXdgOutputV1 *xdgOutput);
     void unregisterXdgOutput(WaylandOutput *output);
@@ -47,11 +47,12 @@ private:
 };
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgOutputV1Private
-        : public PrivateServer::zxdg_output_v1
+        : public QObjectPrivate
+        , public PrivateServer::zxdg_output_v1
 {
     Q_DECLARE_PUBLIC(WaylandXdgOutputV1)
 public:
-    explicit WaylandXdgOutputV1Private(WaylandXdgOutputV1 *self);
+    explicit WaylandXdgOutputV1Private() = default;
 
     void sendLogicalPosition(const QPoint &position);
     void sendLogicalSize(const QSize &size);
@@ -74,9 +75,6 @@ public:
 protected:
     void zxdg_output_v1_bind_resource(Resource *resource) override;
     void zxdg_output_v1_destroy(Resource *resource) override;
-
-private:
-    WaylandXdgOutputV1 *q_ptr = nullptr;
 };
 
 } // namespace Compositor

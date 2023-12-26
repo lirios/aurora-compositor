@@ -3,6 +3,8 @@
 
 #include "aurorawaylanddrag.h"
 
+#include <private/qobject_p.h>
+
 #include "aurorawaylandview.h"
 #include <LiriAuroraCompositor/private/aurorawaylandseat_p.h>
 
@@ -14,7 +16,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-class WaylandDragPrivate
+class WaylandDragPrivate : public QObjectPrivate
 {
 public:
     WaylandDragPrivate(WaylandSeat *seat)
@@ -36,12 +38,7 @@ public:
 };
 
 WaylandDrag::WaylandDrag(WaylandSeat *seat)
-    : QObject()
-    , d_ptr(new WaylandDragPrivate(seat))
-{
-}
-
-WaylandDrag::~WaylandDrag()
+    : QObject(* new WaylandDragPrivate(seat))
 {
 }
 

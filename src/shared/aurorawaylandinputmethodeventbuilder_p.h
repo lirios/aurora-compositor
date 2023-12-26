@@ -4,6 +4,7 @@
 #pragma once
 
 #include <QInputMethodEvent>
+#include <private/qglobal_p.h>
 
 namespace Aurora {
 
@@ -47,7 +48,7 @@ struct WaylandInputMethodContentType {
     uint32_t purpose = 0;
 
     static WaylandInputMethodContentType convert(Qt::InputMethodHints hints);
-    static WaylandInputMethodContentType convertV4(Qt::InputMethodHints hints);
+    static WaylandInputMethodContentType convertV3(Qt::InputMethodHints hints);
 };
 
 

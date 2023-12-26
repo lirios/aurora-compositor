@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
 import QtQuick
-import Aurora.Compositor 1.0
+import Aurora.Compositor
 
 WaylandQuickItem {
     id: cursorItem

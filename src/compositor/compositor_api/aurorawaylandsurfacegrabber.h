@@ -25,9 +25,7 @@ public:
         RendererNotReady,
     };
     Q_ENUM(Error)
-
     explicit WaylandSurfaceGrabber(WaylandSurface *surface, QObject *parent = nullptr);
-    ~WaylandSurfaceGrabber();
 
     WaylandSurface *surface() const;
     void grab();
@@ -37,7 +35,6 @@ Q_SIGNALS:
     void failed(Aurora::Compositor::WaylandSurfaceGrabber::Error error);
 
 private:
-    QScopedPointer<WaylandSurfaceGrabberPrivate> const d_ptr;
 };
 
 } // namespace Compositor

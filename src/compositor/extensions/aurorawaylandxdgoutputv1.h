@@ -26,14 +26,10 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgOutputManagerV1
 public:
     explicit WaylandXdgOutputManagerV1();
     WaylandXdgOutputManagerV1(WaylandCompositor *compositor);
-    ~WaylandXdgOutputManagerV1();
 
     void initialize() override;
 
     static const wl_interface *interface();
-
-private:
-    QScopedPointer<WaylandXdgOutputManagerV1Private> const d_ptr;
 };
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgOutputV1 : public QObject
@@ -43,6 +39,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgOutputV1 : public QObject
 #if LIRI_FEATURE_aurora_compositor_quick
     AURORA_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandXdgOutputV1)
 #endif
+
     Q_PROPERTY(Aurora::Compositor::WaylandXdgOutputManagerV1 *manager READ manager NOTIFY managerChanged)
     Q_PROPERTY(Aurora::Compositor::WaylandOutput *output READ output NOTIFY outputChanged)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
@@ -50,9 +47,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgOutputV1 : public QObject
     Q_PROPERTY(QPoint logicalPosition READ logicalPosition WRITE setLogicalPosition NOTIFY logicalPositionChanged)
     Q_PROPERTY(QSize logicalSize READ logicalSize WRITE setLogicalSize NOTIFY logicalSizeChanged)
     Q_PROPERTY(QRect logicalGeometry READ logicalGeometry NOTIFY logicalGeometryChanged)
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     Q_MOC_INCLUDE("aurorawaylandoutput.h")
-#endif
 public:
     WaylandXdgOutputV1();
     WaylandXdgOutputV1(WaylandOutput *output, WaylandXdgOutputManagerV1 *manager);
@@ -83,9 +78,6 @@ Q_SIGNALS:
     void logicalGeometryChanged();
     void nameChanged();
     void descriptionChanged();
-
-private:
-    QScopedPointer<WaylandXdgOutputV1Private> const d_ptr;
 };
 
 } // namespace Compositor

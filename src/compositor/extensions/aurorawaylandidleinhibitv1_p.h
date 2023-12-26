@@ -8,6 +8,8 @@
 #include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
 #include <LiriAuroraCompositor/private/aurora-server-idle-inhibit-unstable-v1.h>
 
+#include <QtCore/qpointer.h>
+
 //
 //  W A R N I N G
 //  -------------
@@ -29,7 +31,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandIdleInhibitManagerV1Private
 {
     Q_DECLARE_PUBLIC(WaylandIdleInhibitManagerV1)
 public:
-    explicit WaylandIdleInhibitManagerV1Private(WaylandIdleInhibitManagerV1 *self);
+    explicit WaylandIdleInhibitManagerV1Private() = default;
 
     class LIRIAURORACOMPOSITOR_EXPORT Inhibitor
             : public PrivateServer::zwp_idle_inhibitor_v1

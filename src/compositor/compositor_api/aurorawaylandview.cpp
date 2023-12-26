@@ -11,15 +11,11 @@
 #include <LiriAuroraCompositor/private/aurorawaylandoutput_p.h>
 
 #include <QtCore/QMutex>
+#include <QtCore/qpointer.h>
 
 namespace Aurora {
 
 namespace Compositor {
-
-WaylandViewPrivate::WaylandViewPrivate(WaylandView *self)
-    : q_ptr(self)
-{
-}
 
 void WaylandViewPrivate::markSurfaceAsDestroyed(WaylandSurface *surface)
 {
@@ -60,8 +56,7 @@ void WaylandViewPrivate::markSurfaceAsDestroyed(WaylandSurface *surface)
  * Constructs a WaylandView with the given \a renderObject and \a parent.
  */
 WaylandView::WaylandView(QObject *renderObject, QObject *parent)
-    : QObject(parent)
-    , d_ptr(new WaylandViewPrivate(this))
+    : QObject(*new WaylandViewPrivate(),parent)
 {
     d_func()->renderObject = renderObject;
 }
@@ -373,3 +368,5 @@ struct wl_resource *WaylandView::surfaceResource() const
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawaylandview.cpp"

@@ -5,6 +5,9 @@
 
 #include <QOpenGLContext>
 
+class QOpenGLContext;
+class QImage;
+
 namespace Aurora {
 
 namespace Compositor {
@@ -12,9 +15,6 @@ namespace Compositor {
 class VulkanWrapper;
 struct VulkanImageWrapper;
 class VulkanWrapperPrivate;
-
-class QOpenGLContext;
-class QImage;
 
 class VulkanWrapper
 {

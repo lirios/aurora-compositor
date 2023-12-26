@@ -4,7 +4,6 @@
 #pragma once
 
 #include <LiriAuroraCompositor/aurorawaylandcompositor.h>
-#include <QtQml/QQmlListProperty>
 #include <QtQml/QQmlParserStatus>
 
 class QQuickWindow;
@@ -18,14 +17,13 @@ class WaylandView;
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickCompositor : public WaylandCompositor, public QQmlParserStatus
 {
+    Q_INTERFACES(QQmlParserStatus)
     Q_OBJECT
+    QML_LIST_PROPERTY_ASSIGN_BEHAVIOR_REPLACE
     Q_PROPERTY(QQmlListProperty<Aurora::Compositor::WaylandOutput> outputs READ outputsListProperty DESIGNABLE false CONSTANT)
     Q_PROPERTY(QQmlListProperty<Aurora::Compositor::WaylandSeat> seats READ seatsListProperty DESIGNABLE false CONSTANT)
-    Q_INTERFACES(QQmlParserStatus)
 public:
     WaylandQuickCompositor(QObject *parent = nullptr);
-    ~WaylandQuickCompositor();
-
     void create() override;
 
     void grabSurface(WaylandSurfaceGrabber *grabber, const WaylandBufferRef &buffer) override;
@@ -33,11 +31,11 @@ public:
     QQmlListProperty<WaylandOutput> outputsListProperty();
     QQmlListProperty<WaylandSeat> seatsListProperty();
 
-    static int outputsCountFunction(QQmlListProperty<WaylandOutput> *list);
-    static WaylandOutput *outputsAtFunction(QQmlListProperty<WaylandOutput> *list, int index);
+    static qsizetype outputsCountFunction(QQmlListProperty<WaylandOutput> *list);
+    static WaylandOutput *outputsAtFunction(QQmlListProperty<WaylandOutput> *list, qsizetype index);
 
-    static int seatsCountFunction(QQmlListProperty<WaylandSeat> *list);
-    static WaylandSeat *seatsAtFunction(QQmlListProperty<WaylandSeat> *list, int index);
+    static qsizetype seatsCountFunction(QQmlListProperty<WaylandSeat> *list);
+    static WaylandSeat *seatsAtFunction(QQmlListProperty<WaylandSeat> *list, qsizetype index);
 
 protected:
     void classBegin() override;

@@ -11,16 +11,16 @@ namespace Aurora {
 
 namespace Compositor {
 
-class WaylandTextInputManagerV4Private;
+class WaylandTextInputManagerV3Private;
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandTextInputManagerV4 : public WaylandCompositorExtensionTemplate<WaylandTextInputManagerV4>
+class LIRIAURORACOMPOSITOR_EXPORT WaylandTextInputManagerV3 : public WaylandCompositorExtensionTemplate<WaylandTextInputManagerV3>
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(WaylandTextInputManagerV4)
+    Q_DECLARE_PRIVATE(WaylandTextInputManagerV3)
 public:
-    WaylandTextInputManagerV4();
-    explicit WaylandTextInputManagerV4(WaylandCompositor *compositor);
-    ~WaylandTextInputManagerV4() override;
+    WaylandTextInputManagerV3();
+    explicit WaylandTextInputManagerV3(WaylandCompositor *compositor);
+    ~WaylandTextInputManagerV3() override;
 
     void initialize() override;
 

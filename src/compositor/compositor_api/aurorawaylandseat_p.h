@@ -16,12 +16,12 @@
 
 #include <stdint.h>
 
-#include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 #include <LiriAuroraCompositor/aurorawaylandseat.h>
 
 #include <QtCore/QList>
 #include <QtCore/QPoint>
 #include <QtCore/QScopedPointer>
+#include <QtCore/private/qobject_p.h>
 
 #include <LiriAuroraCompositor/private/aurora-server-wayland.h>
 
@@ -49,10 +49,11 @@ class InputMethod;
 
 }
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandSeatPrivate : public PrivateServer::wl_seat
+class LIRIAURORACOMPOSITOR_EXPORT WaylandSeatPrivate : public QObjectPrivate, public PrivateServer::wl_seat
 {
-    Q_DECLARE_PUBLIC(WaylandSeat)
 public:
+    Q_DECLARE_PUBLIC(WaylandSeat)
+
     WaylandSeatPrivate(WaylandSeat *seat);
     ~WaylandSeatPrivate() override;
 
@@ -92,14 +93,13 @@ private:
     QScopedPointer<WaylandTouch> touch;
 #if LIRI_FEATURE_aurora_datadevice
     QScopedPointer<Internal::DataDevice> data_device;
+# if QT_CONFIG(draganddrop)
     QScopedPointer<WaylandDrag> drag_handle;
+# endif
 #endif
     QScopedPointer<WaylandKeymap> keymap;
 
     struct ::wl_client *m_exclusiveClient = nullptr;
-
-protected:
-    WaylandSeat *q_ptr = nullptr;
 };
 
 } // namespace Compositor

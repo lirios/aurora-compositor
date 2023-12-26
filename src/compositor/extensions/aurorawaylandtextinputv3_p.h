@@ -4,7 +4,7 @@
 #pragma once
 
 #include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
-#include <LiriAuroraCompositor/private/aurora-server-text-input-unstable-v4-wip.h>
+#include <LiriAuroraCompositor/private/aurora-server-text-input-unstable-v3.h>
 #include <LiriAuroraCompositor/WaylandDestroyListener>
 
 #include <QtCore/QObject>
@@ -33,12 +33,12 @@ namespace Compositor {
 class WaylandCompositor;
 class WaylandView;
 
-class WaylandTextInputV4ClientState {
+class WaylandTextInputV3ClientState {
 public:
-    WaylandTextInputV4ClientState();
+    WaylandTextInputV3ClientState();
 
-    Qt::InputMethodQueries updatedQueries(const WaylandTextInputV4ClientState &other) const;
-    Qt::InputMethodQueries mergeChanged(const WaylandTextInputV4ClientState &other);
+    Qt::InputMethodQueries updatedQueries(const WaylandTextInputV3ClientState &other) const;
+    Qt::InputMethodQueries mergeChanged(const WaylandTextInputV3ClientState &other);
 
     Qt::InputMethodHints hints = Qt::ImhNone;
     QRect cursorRectangle;
@@ -49,11 +49,11 @@ public:
     Qt::InputMethodQueries changedState;
 };
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandTextInputV4Private : public WaylandCompositorExtensionPrivate, public PrivateServer::zwp_text_input_v4
+class LIRIAURORACOMPOSITOR_EXPORT WaylandTextInputV3Private : public WaylandCompositorExtensionPrivate, public PrivateServer::zwp_text_input_v3
 {
-    Q_DECLARE_PUBLIC(WaylandTextInputV4)
+    Q_DECLARE_PUBLIC(WaylandTextInputV3)
 public:
-    explicit WaylandTextInputV4Private(WaylandCompositor *compositor);
+    explicit WaylandTextInputV3Private(WaylandCompositor *compositor);
 
     void sendInputMethodEvent(QInputMethodEvent *event);
     void sendKeyEvent(QKeyEvent *event);
@@ -72,25 +72,25 @@ public:
 
     QString currentPreeditString;
 
-    QScopedPointer<WaylandTextInputV4ClientState> currentState;
-    QScopedPointer<WaylandTextInputV4ClientState> pendingState;
+    QScopedPointer<WaylandTextInputV3ClientState> currentState;
+    QScopedPointer<WaylandTextInputV3ClientState> pendingState;
 
     uint32_t serial = 0;
 
     QHash<Resource *, WaylandSurface*> enabledSurfaces;
 
 protected:
-    void zwp_text_input_v4_bind_resource(Resource *resource) override;
-    void zwp_text_input_v4_destroy_resource(Resource *resource) override;
+    void zwp_text_input_v3_bind_resource(Resource *resource) override;
+    void zwp_text_input_v3_destroy_resource(Resource *resource) override;
 
-    void zwp_text_input_v4_destroy(Resource *resource) override;
-    void zwp_text_input_v4_enable(Resource *resource) override;
-    void zwp_text_input_v4_disable(Resource *resource) override;
-    void zwp_text_input_v4_set_surrounding_text(Resource *resource, const QString &text, int32_t cursor, int32_t anchor) override;
-    void zwp_text_input_v4_set_text_change_cause(Resource *resource, uint32_t cause) override;
-    void zwp_text_input_v4_set_content_type(Resource *resource, uint32_t hint, uint32_t purpose) override;
-    void zwp_text_input_v4_set_cursor_rectangle(Resource *resource, int32_t x, int32_t y, int32_t width, int32_t height) override;
-    void zwp_text_input_v4_commit(Resource *resource) override;
+    void zwp_text_input_v3_destroy(Resource *resource) override;
+    void zwp_text_input_v3_enable(Resource *resource) override;
+    void zwp_text_input_v3_disable(Resource *resource) override;
+    void zwp_text_input_v3_set_surrounding_text(Resource *resource, const QString &text, int32_t cursor, int32_t anchor) override;
+    void zwp_text_input_v3_set_text_change_cause(Resource *resource, uint32_t cause) override;
+    void zwp_text_input_v3_set_content_type(Resource *resource, uint32_t hint, uint32_t purpose) override;
+    void zwp_text_input_v3_set_cursor_rectangle(Resource *resource, int32_t x, int32_t y, int32_t width, int32_t height) override;
+    void zwp_text_input_v3_commit(Resource *resource) override;
 };
 
 } // namespace Compositor

@@ -23,7 +23,7 @@ namespace Compositor {
 namespace Internal
 {
     class ClientBuffer;
-} // namespace Internal
+}
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandBufferRef
 {

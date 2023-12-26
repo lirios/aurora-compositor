@@ -23,8 +23,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-WaylandXdgShellPrivate::WaylandXdgShellPrivate(WaylandXdgShell *self)
-    : WaylandShellPrivate(self)
+WaylandXdgShellPrivate::WaylandXdgShellPrivate()
 {
 }
 
@@ -154,8 +153,7 @@ void WaylandXdgShellPrivate::xdg_wm_base_pong(Resource *resource, uint32_t seria
  * Constructs a WaylandXdgShell object.
  */
 WaylandXdgShell::WaylandXdgShell()
-    : WaylandShellTemplate<WaylandXdgShell>()
-    , d_ptr(new WaylandXdgShellPrivate(this))
+    : WaylandShellTemplate<WaylandXdgShell>(*new WaylandXdgShellPrivate())
 {
 }
 
@@ -163,12 +161,7 @@ WaylandXdgShell::WaylandXdgShell()
  * Constructs a WaylandXdgShell object for the provided \a compositor.
  */
 WaylandXdgShell::WaylandXdgShell(WaylandCompositor *compositor)
-    : WaylandShellTemplate<WaylandXdgShell>(compositor)
-    , d_ptr(new WaylandXdgShellPrivate(this))
-{
-}
-
-WaylandXdgShell::~WaylandXdgShell()
+    : WaylandShellTemplate<WaylandXdgShell>(compositor, *new WaylandXdgShellPrivate())
 {
 }
 
@@ -206,7 +199,7 @@ QByteArray WaylandXdgShell::interfaceName()
 }
 
 /*!
- * \qmlmethod void AuroraCompositor::XdgShell::ping(WaylandClient client)
+ * \qmlmethod void XdgShell::ping(WaylandClient client)
  *
  * Sends a ping event to \a client. If the client replies to the event the
  * \l pong signal will be emitted.
@@ -259,8 +252,7 @@ void WaylandXdgShell::handleFocusChanged(WaylandSurface *newSurface, WaylandSurf
         WaylandXdgSurfacePrivate::get(oldXdgSurface)->handleFocusLost();
 }
 
-WaylandXdgSurfacePrivate::WaylandXdgSurfacePrivate(WaylandXdgSurface *self)
-    : WaylandCompositorExtensionPrivate(self)
+WaylandXdgSurfacePrivate::WaylandXdgSurfacePrivate()
 {
 }
 
@@ -352,6 +344,13 @@ void WaylandXdgSurfacePrivate::xdg_surface_get_popup(PrivateServer::xdg_surface:
         return;
     }
 
+    WaylandXdgSurface *parent = WaylandXdgSurface::fromResource(parentResource);
+    if (!parent) {
+        wl_resource_post_error(resource->handle, XDG_WM_BASE_ERROR_INVALID_POPUP_PARENT,
+                               "xdg_surface.get_popup with invalid popup parent");
+        return;
+    }
+
     WaylandXdgPositioner *positioner = WaylandXdgPositioner::fromResource(positionerResource);
     if (!positioner) {
         wl_resource_post_error(resource->handle, XDG_WM_BASE_ERROR_INVALID_POSITIONER,
@@ -367,18 +366,15 @@ void WaylandXdgSurfacePrivate::xdg_surface_get_popup(PrivateServer::xdg_surface:
         return;
     }
 
-    WaylandXdgSurface *parent = WaylandXdgSurface::fromResource(parentResource);
-    if (parent) {
-        QRect anchorBounds(QPoint(0, 0), parent->windowGeometry().size());
-        if (!anchorBounds.contains(positioner->m_data.anchorRect)) {
-            // TODO: this is a protocol error and should ideally be handled like this:
-            //wl_resource_post_error(resource->handle, XDG_WM_BASE_ERROR_INVALID_POSITIONER,
-            //                       "xdg_positioner anchor rect extends beyound its parent's window geometry");
-            //return;
-            // However, our own clients currently do this, so we'll settle for a gentle warning instead.
-            qCWarning(gLcAuroraCompositor) << "Ignoring client protocol error: xdg_positioner anchor"
-                                            << "rect extends beyond its parent's window geometry";
-        }
+    QRect anchorBounds(QPoint(0, 0), parent->windowGeometry().size());
+    if (!anchorBounds.contains(positioner->m_data.anchorRect)) {
+        // TODO: this is a protocol error and should ideally be handled like this:
+        //wl_resource_post_error(resource->handle, XDG_WM_BASE_ERROR_INVALID_POSITIONER,
+        //                       "xdg_positioner anchor rect extends beyound its parent's window geometry");
+        //return;
+        // However, our own clients currently do this, so we'll settle for a gentle warning instead.
+        qCWarning(gLcAuroraCompositor) << "Ignoring client protocol error: xdg_positioner anchor"
+                                        << "rect extends beyond its parent's window geometry";
     }
 
     if (!m_surface->setRole(WaylandXdgPopup::role(), resource->handle, XDG_WM_BASE_ERROR_ROLE))
@@ -466,8 +462,7 @@ void WaylandXdgSurfacePrivate::xdg_surface_set_window_geometry(PrivateServer::xd
  * Constructs a WaylandXdgSurface.
  */
 WaylandXdgSurface::WaylandXdgSurface()
-    : WaylandShellSurfaceTemplate<WaylandXdgSurface>()
-    , d_ptr(new WaylandXdgSurfacePrivate(this))
+    : WaylandShellSurfaceTemplate<WaylandXdgSurface>(*new WaylandXdgSurfacePrivate)
 {
 }
 
@@ -476,18 +471,13 @@ WaylandXdgSurface::WaylandXdgSurface()
  * given \a xdgShell, \a surface, and resource \a res.
  */
 WaylandXdgSurface::WaylandXdgSurface(WaylandXdgShell *xdgShell, WaylandSurface *surface, const WaylandResource &res)
-    : WaylandShellSurfaceTemplate<WaylandXdgSurface>()
-    , d_ptr(new WaylandXdgSurfacePrivate(this))
+    : WaylandShellSurfaceTemplate<WaylandXdgSurface>(*new WaylandXdgSurfacePrivate)
 {
     initialize(xdgShell, surface, res);
 }
 
-WaylandXdgSurface::~WaylandXdgSurface()
-{
-}
-
 /*!
- * \qmlmethod void AuroraCompositor::XdgSurface::initialize(object xdgShell, object surface, object client, int id)
+ * \qmlmethod void XdgSurface::initialize(object xdgShell, object surface, object client, int id)
  *
  * Initializes the XdgSurface, associating it with the given \a xdgShell, \a surface,
  * \a client, and \a id.
@@ -513,7 +503,7 @@ void WaylandXdgSurface::initialize(WaylandXdgShell *xdgShell, WaylandSurface *su
 }
 
 /*!
- * \qmlproperty enum AuroraCompositor::XdgSurface::windowType
+ * \qmlproperty enum XdgSurface::windowType
  *
  * This property holds the window type of the XdgSurface.
  */
@@ -524,7 +514,7 @@ Qt::WindowType WaylandXdgSurface::windowType() const
 }
 
 /*!
- * \qmlproperty rect AuroraCompositor::XdgSurface::windowGeometry
+ * \qmlproperty rect XdgSurface::windowGeometry
  *
  * This property holds the window geometry of the WaylandXdgSurface. The window
  * geometry describes the window's visible bounds from the user's perspective.
@@ -569,7 +559,7 @@ void WaylandXdgSurface::handleBufferScaleChanged()
 }
 
 /*!
- * \qmlproperty XdgShell AuroraCompositor::XdgSurface::shell
+ * \qmlproperty XdgShell XdgSurface::shell
  *
  * This property holds the shell associated with this XdgSurface.
  */
@@ -586,7 +576,7 @@ WaylandXdgShell *WaylandXdgSurface::shell() const
 }
 
 /*!
- * \qmlproperty WaylandSurface AuroraCompositor::XdgSurface::surface
+ * \qmlproperty WaylandSurface XdgSurface::surface
  *
  * This property holds the surface associated with this XdgSurface.
  */
@@ -603,7 +593,7 @@ WaylandSurface *WaylandXdgSurface::surface() const
 }
 
 /*!
- * \qmlproperty XdgToplevel AuroraCompositor::XdgSurface::toplevel
+ * \qmlproperty XdgToplevel XdgSurface::toplevel
  *
  * This property holds the properties and methods that are specific to the
  * toplevel XdgSurface.
@@ -626,7 +616,7 @@ WaylandXdgToplevel *WaylandXdgSurface::toplevel() const
 }
 
 /*!
- * \qmlproperty XdgPopup AuroraCompositor::XdgSurface::popup
+ * \qmlproperty XdgPopup XdgSurface::popup
  *
  * This property holds the properties and methods that are specific to the
  * popup XdgSurface.
@@ -720,14 +710,9 @@ WaylandQuickShellIntegration *WaylandXdgSurface::createIntegration(WaylandQuickS
  * Constructs a WaylandXdgToplevel for the given \a xdgSurface and \a resource.
  */
 WaylandXdgToplevel::WaylandXdgToplevel(WaylandXdgSurface *xdgSurface, WaylandResource &resource)
-    : QObject()
-    , d_ptr(new WaylandXdgToplevelPrivate(this, xdgSurface, resource))
+    : QObject(*new WaylandXdgToplevelPrivate(xdgSurface, resource))
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QList<WaylandXdgToplevel::State> states;
-#else
-    QVector<WaylandXdgToplevel::State> states;
-#endif
     sendConfigure({0, 0}, states);
 }
 
@@ -742,7 +727,7 @@ WaylandXdgToplevel::~WaylandXdgToplevel()
 }
 
 /*!
- * \qmlproperty XdgSurface AuroraCompositor::XdgToplevel::xdgSurface
+ * \qmlproperty XdgSurface XdgToplevel::xdgSurface
  *
  * This property holds the XdgSurface for this XdgToplevel.
  */
@@ -759,7 +744,7 @@ WaylandXdgSurface *WaylandXdgToplevel::xdgSurface() const
 }
 
 /*!
- * \qmlproperty XdgToplevel AuroraCompositor::XdgToplevel::parentToplevel
+ * \qmlproperty XdgToplevel XdgToplevel::parentToplevel
  *
  * This property holds the XdgToplevel parent of this XdgToplevel.
  */
@@ -777,7 +762,7 @@ WaylandXdgToplevel *WaylandXdgToplevel::parentToplevel() const
 }
 
 /*!
- * \qmlproperty string AuroraCompositor::XdgToplevel::title
+ * \qmlproperty string XdgToplevel::title
  *
  * This property holds the title of the XdgToplevel.
  */
@@ -794,7 +779,7 @@ QString WaylandXdgToplevel::title() const
 }
 
 /*!
- * \qmlproperty string AuroraCompositor::XdgToplevel::appId
+ * \qmlproperty string XdgToplevel::appId
  *
  * This property holds the app id of the XdgToplevel.
  */
@@ -811,7 +796,7 @@ QString WaylandXdgToplevel::appId() const
 }
 
 /*!
- * \qmlproperty size AuroraCompositor::XdgToplevel::maxSize
+ * \qmlproperty size XdgToplevel::maxSize
  *
  * This property holds the maximum size of the XdgToplevel as requested by the client.
  *
@@ -832,7 +817,7 @@ QSize WaylandXdgToplevel::maxSize() const
 }
 
 /*!
- * \qmlproperty size AuroraCompositor::XdgToplevel::minSize
+ * \qmlproperty size XdgToplevel::minSize
  *
  * This property holds the minimum size of the XdgToplevel as requested by the client.
  *
@@ -857,18 +842,14 @@ QSize WaylandXdgToplevel::minSize() const
  *
  * This property holds the last states the client acknowledged for this WaylandToplevel.
  */
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 QList<WaylandXdgToplevel::State> WaylandXdgToplevel::states() const
-#else
-QVector<WaylandXdgToplevel::State> WaylandXdgToplevel::states() const
-#endif
 {
     Q_D(const WaylandXdgToplevel);
     return d->m_lastAckedConfigure.states;
 }
 
 /*!
- * \qmlproperty bool AuroraCompositor::XdgToplevel::maximized
+ * \qmlproperty bool XdgToplevel::maximized
  *
  * This property holds whether the client has acknowledged that it should be maximized.
  */
@@ -885,7 +866,7 @@ bool WaylandXdgToplevel::maximized() const
 }
 
 /*!
- * \qmlproperty bool AuroraCompositor::XdgToplevel::fullscreen
+ * \qmlproperty bool XdgToplevel::fullscreen
  *
  * This property holds whether the client has acknowledged that it should be fullscreen.
  */
@@ -902,7 +883,7 @@ bool WaylandXdgToplevel::fullscreen() const
 }
 
 /*!
- * \qmlproperty bool AuroraCompositor::XdgToplevel::resizing
+ * \qmlproperty bool XdgToplevel::resizing
  *
  * This property holds whether the client has acknowledged that it is being resized.
  */
@@ -919,7 +900,7 @@ bool WaylandXdgToplevel::resizing() const
 }
 
 /*!
- * \qmlproperty bool AuroraCompositor::XdgToplevel::activated
+ * \qmlproperty bool XdgToplevel::activated
  *
  * This property holds whether toplevel is drawing itself as having input focus.
  */
@@ -945,7 +926,7 @@ bool WaylandXdgToplevel::activated() const
  */
 
 /*!
- * \qmlproperty enumeration AuroraCompositor::XdgToplevel::decorationMode
+ * \qmlproperty enumeration XdgToplevel::decorationMode
  *
  * This property holds the current window decoration mode for this toplevel.
  *
@@ -970,7 +951,7 @@ WaylandXdgToplevel::DecorationMode WaylandXdgToplevel::decorationMode() const
 }
 
 /*!
- * \qmlmethod size AuroraCompositor::XdgToplevel::sizeForResize(size size, point delta, uint edges)
+ * \qmlmethod size XdgToplevel::sizeForResize(size size, point delta, uint edges)
  *
  * Convenience for computing the new size given the current \a size, a \a delta, and
  * the \a edges active in the drag.
@@ -1009,11 +990,7 @@ QSize WaylandXdgToplevel::sizeForResize(const QSizeF &size, const QPointF &delta
  * of the surface. A size of zero means the client is free to decide the size.
  * Known \a states are enumerated in WaylandXdgToplevel::State.
  */
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 uint WaylandXdgToplevel::sendConfigure(const QSize &size, const QList<WaylandXdgToplevel::State> &states)
-#else
-uint WaylandXdgToplevel::sendConfigure(const QSize &size, const QVector<WaylandXdgToplevel::State> &states)
-#endif
 {
     if (!size.isValid()) {
         qWarning() << "Can't configure xdg_toplevel with an invalid size" << size;
@@ -1030,30 +1007,22 @@ uint WaylandXdgToplevel::sendConfigure(const QSize &size, const QVector<WaylandX
 }
 
 /*!
- * \qmlmethod int AuroraCompositor::XdgToplevel::sendConfigure(size size, list<int> states)
+ * \qmlmethod int XdgToplevel::sendConfigure(size size, list<int> states)
  *
  * Sends a configure event to the client. \a size contains the pixel size of the surface.
  * A size of zero means the client is free to decide the size.
  * Known \a states are enumerated in XdgToplevel::State.
  */
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 uint WaylandXdgToplevel::sendConfigure(const QSize &size, const QList<int> &states)
-#else
-uint WaylandXdgToplevel::sendConfigure(const QSize &size, const QVector<int> &states)
-#endif
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QList<State> s;
-#else
-    QVector<State> s;
-#endif
     for (auto state : states)
         s << State(state);
     return sendConfigure(size, s);
 }
 
 /*!
- * \qmlmethod void AuroraCompositor::XdgToplevel::sendClose()
+ * \qmlmethod void XdgToplevel::sendClose()
  *
  * Sends a close event to the client. The client may choose to ignore the event.
  */
@@ -1068,7 +1037,7 @@ void WaylandXdgToplevel::sendClose()
 }
 
 /*!
- * \qmlmethod void AuroraCompositor::XdgToplevel::sendMaximized(size size)
+ * \qmlmethod void XdgToplevel::sendMaximized(size size)
  *
  * Convenience for sending a configure event with the maximized state set, and
  * fullscreen and resizing removed. The activated state is left in its current state.
@@ -1096,7 +1065,7 @@ uint WaylandXdgToplevel::sendMaximized(const QSize &size)
 }
 
 /*!
- * \qmlmethod void AuroraCompositor::XdgToplevel::sendUnmaximized(size size)
+ * \qmlmethod void XdgToplevel::sendUnmaximized(size size)
  *
  * Convenience for sending a configure event with the maximized, fullscreen and
  * resizing states removed, and fullscreen and resizing removed. The activated
@@ -1126,7 +1095,7 @@ uint WaylandXdgToplevel::sendUnmaximized(const QSize &size)
 }
 
 /*!
- * \qmlmethod void AuroraCompositor::XdgToplevel::sendFullscreen(size size)
+ * \qmlmethod void XdgToplevel::sendFullscreen(size size)
  *
  * Convenience for sending a configure event with the fullscreen state set, and
  * maximized and resizing removed. The activated state is left in its current state.
@@ -1158,7 +1127,7 @@ uint WaylandXdgToplevel::sendFullscreen(const QSize &size)
 }
 
 /*!
- * \qmlmethod void AuroraCompositor::XdgToplevel::sendResizing(size maxSize)
+ * \qmlmethod void XdgToplevel::sendResizing(size maxSize)
  *
  * Convenience for sending a configure event with the resizing state set, and
  * maximized and fullscreen removed. The activated state is left in its current state.
@@ -1204,7 +1173,7 @@ WaylandXdgToplevel *WaylandXdgToplevel::fromResource(wl_resource *resource)
 }
 
 /*!
- * \qmlsignal AuroraCompositor::XdgShell::xdgSurfaceCreated(XdgSurface xdgSurface)
+ * \qmlsignal XdgShell::xdgSurfaceCreated(XdgSurface xdgSurface)
  *
  * This signal is emitted when the client has created a \c xdg_surface.
  * Note that \a xdgSurface is not mapped, i.e. according to the \c xdg-shell
@@ -1224,7 +1193,7 @@ WaylandXdgToplevel *WaylandXdgToplevel::fromResource(wl_resource *resource)
  */
 
 /*!
- * \qmlsignal AuroraCompositor::XdgShell::toplevelCreated(XdgToplevel toplevel, XdgSurface xdgSurface)
+ * \qmlsignal XdgShell::toplevelCreated(XdgToplevel toplevel, XdgSurface xdgSurface)
  *
  * This signal is emitted when the client has created a \c xdg_toplevel.
  * A common use case is to let the handler of this signal instantiate a ShellSurfaceItem or
@@ -1244,7 +1213,7 @@ WaylandXdgToplevel *WaylandXdgToplevel::fromResource(wl_resource *resource)
  */
 
 /*!
- * \qmlsignal AuroraCompositor::XdgShell::popupCreated(XdgPopup popup, XdgSurface xdgSurface)
+ * \qmlsignal XdgShell::popupCreated(XdgPopup popup, XdgSurface xdgSurface)
  *
  * This signal is emitted when the client has created a \c xdg_popup.
  * A common use case is to let the handler of this signal instantiate a ShellSurfaceItem or
@@ -1264,7 +1233,7 @@ WaylandXdgToplevel *WaylandXdgToplevel::fromResource(wl_resource *resource)
  */
 
 /*!
- * \qmlsignal AuroraCompositor::XdgShell::pong(int serial)
+ * \qmlsignal XdgShell::pong(int serial)
  *
  * This signal is emitted when the client has responded to a ping event with serial, \a serial.
  *
@@ -1292,9 +1261,8 @@ QList<int> WaylandXdgToplevel::statesAsInts() const
 
 WaylandSurfaceRole WaylandXdgToplevelPrivate::s_role("xdg_toplevel");
 
-WaylandXdgToplevelPrivate::WaylandXdgToplevelPrivate(WaylandXdgToplevel *self, WaylandXdgSurface *xdgSurface, const WaylandResource &resource)
+WaylandXdgToplevelPrivate::WaylandXdgToplevelPrivate(WaylandXdgSurface *xdgSurface, const WaylandResource &resource)
     : m_xdgSurface(xdgSurface)
-    , q_ptr(self)
 {
     init(resource.resource());
 }
@@ -1324,7 +1292,7 @@ void WaylandXdgToplevelPrivate::handleAckConfigure(uint serial)
 
     m_lastAckedConfigure = config;
 
-    for (const uint state : qAsConst(changedStates)) {
+    for (uint state : changedStates) {
         switch (state) {
         case state_maximized:
             emit q->maximizedChanged();
@@ -1581,8 +1549,7 @@ void WaylandXdgToplevelPrivate::xdg_toplevel_set_minimized(PrivateServer::xdg_to
  */
 WaylandXdgPopup::WaylandXdgPopup(WaylandXdgSurface *xdgSurface, WaylandXdgSurface *parentXdgSurface,
                                    WaylandXdgPositioner *positioner, WaylandResource &resource)
-    : QObject()
-    , d_ptr(new WaylandXdgPopupPrivate(this, xdgSurface, parentXdgSurface, positioner, resource))
+    : QObject(*new WaylandXdgPopupPrivate(xdgSurface, parentXdgSurface, positioner, resource))
 {
     connect(xdgSurface->surface(), &WaylandSurface::redraw, this, &WaylandXdgPopup::handleRedraw);
 }
@@ -1604,12 +1571,8 @@ void WaylandXdgPopup::handleRedraw()
     disconnect(d->m_xdgSurface->surface(), &WaylandSurface::redraw, this, &WaylandXdgPopup::handleRedraw);
 }
 
-WaylandXdgPopup::~WaylandXdgPopup()
-{
-}
-
 /*!
- * \qmlproperty XdgSurface AuroraCompositor::XdgPopup::xdgSurface
+ * \qmlproperty XdgSurface XdgPopup::xdgSurface
  *
  * This property holds the XdgSurface associated with this XdgPopup.
  */
@@ -1626,7 +1589,7 @@ WaylandXdgSurface *WaylandXdgPopup::xdgSurface() const
 }
 
 /*!
- * \qmlproperty XdgSurface AuroraCompositor::XdgPopup::parentXdgSurface
+ * \qmlproperty XdgSurface XdgPopup::parentXdgSurface
  *
  * This property holds the XdgSurface associated with the parent of this XdgPopup.
  */
@@ -1644,7 +1607,7 @@ WaylandXdgSurface *WaylandXdgPopup::parentXdgSurface() const
 }
 
 /*!
- * \qmlproperty Surface AuroraCompositor::XdgPopup::parentSurface
+ * \qmlproperty rect XdgPopup::configuredGeometry
  *
  * This property holds the Surface associated with the parent of this XdgPopup.
  */
@@ -1681,7 +1644,7 @@ QRect WaylandXdgPopup::configuredGeometry() const
 }
 
 /*!
- * \qmlproperty rect AuroraCompositor::XdgPopup::anchorRect
+ * \qmlproperty rect XdgPopup::anchorRect
  *
  * The anchor rectangle relative to the parent window geometry that the child
  * surface should be placed relative to.
@@ -1700,7 +1663,7 @@ QRect WaylandXdgPopup::anchorRect() const
 }
 
 /*!
- * \qmlproperty enumeration AuroraCompositor::XdgPopup::anchorEdges
+ * \qmlproperty enumeration XdgPopup::anchorEdges
  *
  * This property holds the set of edges on the anchor rect that the child surface should be placed
  * relative to. If no edges are specified in a direction, the anchor point should be
@@ -1727,7 +1690,7 @@ Qt::Edges WaylandXdgPopup::anchorEdges() const
 }
 
 /*!
- * \qmlproperty rect AuroraCompositor::XdgPopup::gravityEdges
+ * \qmlproperty rect XdgPopup::gravityEdges
  *
  * Specifies in what direction the surface should be positioned, relative to the anchor
  * point.
@@ -1752,7 +1715,7 @@ Qt::Edges WaylandXdgPopup::gravityEdges() const
 }
 
 /*!
- * \qmlproperty enumeration AuroraCompositor::XdgPopup::slideConstraints
+ * \qmlproperty enumeration XdgPopup::slideConstraints
  *
  * This property holds the orientations in which the child should slide to fit within the screen.
  *
@@ -1782,7 +1745,7 @@ Qt::Orientations WaylandXdgPopup::slideConstraints() const
 }
 
 /*!
- * \qmlproperty enumeration AuroraCompositor::XdgPopup::flipConstraints
+ * \qmlproperty enumeration XdgPopup::flipConstraints
  *
  * This property holds the orientations in which the child should flip to fit within the screen.
  *
@@ -1812,7 +1775,7 @@ Qt::Orientations WaylandXdgPopup::flipConstraints() const
 }
 
 /*!
- * \qmlproperty enumeration AuroraCompositor::XdgPopup::resizeConstraints
+ * \qmlproperty enumeration XdgPopup::resizeConstraints
  *
  * This property holds the orientations in which the child should resize to fit within the screen.
  *
@@ -1842,7 +1805,7 @@ Qt::Orientations WaylandXdgPopup::resizeConstraints() const
 }
 
 /*!
- * \qmlproperty point AuroraCompositor::XdgPopup::offset
+ * \qmlproperty point XdgPopup::offset
  *
  * The position relative to the position of the anchor on the anchor rectangle and
  * the anchor on the surface.
@@ -1861,10 +1824,11 @@ QPoint WaylandXdgPopup::offset() const
 }
 
 /*!
- * \qmlproperty size AuroraCompositor::XdgPopup::positionerSize
+ * \qmlproperty size XdgPopup::positionerSize
  *
- * Returns the size requested for the window geometry by the positioner object.
+ * The size requested for the window geometry by the positioner object.
  */
+
 /*!
  * \property WaylandXdgPopup::positionerSize
  *
@@ -1877,7 +1841,7 @@ QSize WaylandXdgPopup::positionerSize() const
 }
 
 /*!
- * \qmlproperty point AuroraCompositor::XdgPopup::unconstrainedPosition
+ * \qmlproperty point XdgPopup::unconstrainedPosition
  *
  * The position of the surface relative to the parent window geometry if the surface
  * is not constrained. I.e. when not moved to fit inside the screen or similar.
@@ -1896,7 +1860,7 @@ QPoint WaylandXdgPopup::unconstrainedPosition() const
 }
 
 /*!
- * \qmlmethod int AuroraCompositor::XdgPopup::sendConfigure(rect geometry)
+ * \qmlmethod int XdgPopup::sendConfigure(rect geometry)
  *
  * Sends a configure event to the client. \a geometry contains the window geometry
  * relative to the upper left corner of the window geometry of the parent surface.
@@ -1918,7 +1882,7 @@ uint WaylandXdgPopup::sendConfigure(const QRect &geometry)
 }
 
 /*!
- * \qmlmethod void AuroraCompositor::XdgPopup::sendPopupDone()
+ * \qmlmethod void XdgPopup::sendPopupDone()
  * \since 5.14
  *
  * Dismiss the popup. According to the \c xdg-shell protocol this should make the
@@ -1946,20 +1910,18 @@ WaylandSurfaceRole *WaylandXdgPopup::role()
 }
 
 /*!
- * Returns the WaylandXdgPopup corresponding to the \a resource.
+ * Returns the WaylandXdgPopup corresponding to the Wayland resource \a resource.
  */
-WaylandXdgPopup *WaylandXdgPopup::fromResource(struct ::wl_resource *resource)
+WaylandXdgPopup *WaylandXdgPopup::fromResource(::wl_resource *resource)
 {
     if (auto p = Internal::fromResource<WaylandXdgPopupPrivate *>(resource))
         return p->q_func();
     return nullptr;
 }
 
-WaylandXdgPopupPrivate::WaylandXdgPopupPrivate(WaylandXdgPopup *self,
-                                               WaylandXdgSurface *xdgSurface, WaylandXdgSurface *parentXdgSurface,
-                                               WaylandXdgPositioner *positioner, const WaylandResource &resource)
-    : q_ptr(self)
-    , m_xdgSurface(xdgSurface)
+WaylandXdgPopupPrivate::WaylandXdgPopupPrivate(WaylandXdgSurface *xdgSurface, WaylandXdgSurface *parentXdgSurface,
+                                                 WaylandXdgPositioner *positioner, const WaylandResource &resource)
+    : m_xdgSurface(xdgSurface)
     , m_parentXdgSurface(parentXdgSurface)
     , m_positionerData(positioner->m_data)
 {
@@ -1970,10 +1932,6 @@ WaylandXdgPopupPrivate::WaylandXdgPopupPrivate(WaylandXdgPopup *self,
 
     //TODO: Need an API for sending a different initial configure
     sendConfigure(QRect(m_positionerData.unconstrainedPosition(), m_positionerData.size));
-}
-
-WaylandXdgPopupPrivate::~WaylandXdgPopupPrivate()
-{
 }
 
 void WaylandXdgPopupPrivate::handleAckConfigure(uint serial)
@@ -2210,3 +2168,5 @@ Qt::Edges WaylandXdgPositioner::convertToEdges(WaylandXdgPositioner::gravity gra
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawaylandxdgshell.cpp"

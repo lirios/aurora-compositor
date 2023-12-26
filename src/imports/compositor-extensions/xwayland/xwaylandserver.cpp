@@ -48,16 +48,13 @@ public:
     ServerProcess(QObject *parent = nullptr)
         : QProcess(parent)
     {
-    }
-
-protected:
-    void setupChildProcess() override
-    {
-        sigset_t userSignals;
-        sigemptyset(&userSignals);
-        sigaddset(&userSignals, SIGUSR1);
-        sigaddset(&userSignals, SIGUSR2);
-        pthread_sigmask(SIG_UNBLOCK, &userSignals, nullptr);
+        setChildProcessModifier([] {
+            sigset_t userSignals;
+            sigemptyset(&userSignals);
+            sigaddset(&userSignals, SIGUSR1);
+            sigaddset(&userSignals, SIGUSR2);
+            pthread_sigmask(SIG_UNBLOCK, &userSignals, nullptr);
+        });
     }
 };
 
@@ -129,7 +126,7 @@ bool XWaylandServer::start()
 
         QFutureWatcher<void> *watcher = new QFutureWatcher<void>(this);
         connect(watcher, &QFutureWatcher<void>::finished, watcher, &QFutureWatcher<void>::deleteLater, Qt::QueuedConnection);
-        watcher->setFuture(QtConcurrent::run(this, &XWaylandServer::handleServerStarted));
+        watcher->setFuture(QtConcurrent::run([this] { handleServerStarted(); }));
     });
     connect(m_process, &QProcess::errorOccurred, [this](QProcess::ProcessError error) {
         if (error == QProcess::FailedToStart)

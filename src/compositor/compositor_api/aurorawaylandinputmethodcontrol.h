@@ -26,7 +26,6 @@ class WaylandInputMethodControl : public QObject
     Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
 public:
     explicit WaylandInputMethodControl(WaylandSurface *surface);
-    ~WaylandInputMethodControl();
 
     QVariant inputMethodQuery(Qt::InputMethodQuery query, QVariant argument) const;
 
@@ -43,8 +42,6 @@ Q_SIGNALS:
     void updateInputMethod(Qt::InputMethodQueries queries);
 
 private:
-    QScopedPointer<WaylandInputMethodControlPrivate> const d_ptr;
-
     void defaultSeatChanged();
     void surfaceEnabled(WaylandSurface *surface);
     void surfaceDisabled(WaylandSurface *surface);

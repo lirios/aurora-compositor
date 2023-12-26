@@ -14,8 +14,8 @@
 // We mean it.
 //
 
-#include <LiriAuroraCompositor/WaylandSeat>
 #include <LiriAuroraCompositor/private/aurora-server-wayland.h>
+#include <LiriAuroraCompositor/WaylandSeat>
 
 namespace Aurora {
 
@@ -36,6 +36,7 @@ public:
     void setFocus(WaylandClient *client);
     void sourceDestroyed(DataSource *source);
 
+#if QT_CONFIG(draganddrop)
     void setDragFocus(WaylandSurface *focus, const QPointF &localPosition);
 
     WaylandSurface *dragIcon() const;
@@ -44,19 +45,25 @@ public:
     void dragMove(WaylandSurface *target, const QPointF &pos);
     void drop();
     void cancelDrag();
+#endif
 
 protected:
+#if QT_CONFIG(draganddrop)
     void data_device_start_drag(Resource *resource, struct ::wl_resource *source, struct ::wl_resource *origin, struct ::wl_resource *icon, uint32_t serial) override;
+#endif
     void data_device_set_selection(Resource *resource, struct ::wl_resource *source, uint32_t serial) override;
 
 private:
+#if QT_CONFIG(draganddrop)
     void setDragIcon(WaylandSurface *icon);
+#endif
 
     WaylandCompositor *m_compositor = nullptr;
     WaylandSeat *m_seat = nullptr;
 
     DataSource *m_selectionSource = nullptr;
 
+#if QT_CONFIG(draganddrop)
     struct ::wl_client *m_dragClient = nullptr;
     DataSource *m_dragDataSource = nullptr;
 
@@ -65,6 +72,7 @@ private:
 
     WaylandSurface *m_dragIcon = nullptr;
     WaylandSurface *m_dragOrigin = nullptr;
+#endif
 };
 
 }

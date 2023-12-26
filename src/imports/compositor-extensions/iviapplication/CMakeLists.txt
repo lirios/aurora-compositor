@@ -1,25 +1,23 @@
-# SPDX-FileCopyrightText: 2022 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-#
+# SPDX-FileCopyrightText: 2024 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
 # SPDX-License-Identifier: BSD-3-Clause
 
-liri_add_qml_plugin(AuroraCompositorIviApplicationQmlPlugin
-    MODULE_PATH
-        "Aurora/Compositor/IviApplication"
-    VERSION
-        "1.0"
-    OUTPUT_NAME
-        auroracompositoriviapplicationplugin
-    SOURCES
-        aurorawaylandcompositoriviapplicationplugin.cpp
-    QML_FILES
-        qmldir
-    DEFINES
-        QT_NO_CAST_FROM_ASCII
-        QT_NO_FOREACH
-    LIBRARIES
-        Qt::Core
-        Qt::Gui
+ecm_add_qml_module(AuroraCompositorIviApplicationQmlModule
+    URI Aurora.Compositor.IviApplication
+    VERSION 1.0
+    CLASS_NAME WaylandCompositorIviApplicationPlugin
+    NO_GENERATE_PLUGIN_SOURCE
+    DEPENDENCIES QtQuick
+)
+
+target_sources(AuroraCompositorIviApplicationQmlModule
+    PRIVATE aurorawaylandcompositoriviapplicationplugin.cpp
+)
+
+target_link_libraries(AuroraCompositorIviApplicationQmlModule
+    PRIVATE
+        Qt6::Qml
+        Qt6::Quick
         Liri::AuroraCompositor
 )
 
-liri_finalize_qml_plugin(AuroraCompositorIviApplicationQmlPlugin)
+ecm_finalize_qml_module(AuroraCompositorIviApplicationQmlModule)

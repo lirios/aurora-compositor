@@ -46,7 +46,7 @@ namespace Compositor {
  *
  * In this example, \c MyExtension is an implementation of the generated interface \c my_extension.
  *
- * \sa {Qt Wayland Compositor Examples - Custom Shell}
+ * \sa {Custom Shell}
  */
 
 /*!
@@ -70,7 +70,7 @@ namespace Compositor {
  * For example, for registering global extensions, you can inherit from WaylandCompositorExtension
  * and pass the WaylandCompositor object as extension container.
  *
- * \sa WaylandCompositorExtensionTemplate, {Qt Wayland Compositor Examples - Custom Shell}
+ * \sa WaylandCompositorExtensionTemplate, {Custom Shell}
  */
 
 /*!
@@ -79,8 +79,7 @@ namespace Compositor {
  * \sa setExtensionContainer()
  */
 WaylandCompositorExtension::WaylandCompositorExtension()
-    : WaylandObject()
-    , d_ptr(new WaylandCompositorExtensionPrivate(this))
+    : WaylandObject(*new WaylandCompositorExtensionPrivate())
 {
 }
 
@@ -94,30 +93,19 @@ WaylandCompositorExtension::WaylandCompositorExtension()
  * The WaylandCompositorExtension will remove itself again when it is destroyed.
  */
 WaylandCompositorExtension::WaylandCompositorExtension(WaylandObject *container)
-    : WaylandObject()
-    , d_ptr(new WaylandCompositorExtensionPrivate(this))
+    : WaylandObject(*new WaylandCompositorExtensionPrivate())
 {
     d_func()->extension_container = container;
     QCoreApplication::postEvent(this, new QEvent(QEvent::Polish));
 }
 
-/*!
- * \internal
- * Constructs a WaylandCompositorExtension with the private object \a dptr.
- */
-WaylandCompositorExtension::WaylandCompositorExtension(WaylandCompositorExtensionPrivate &dptr)
-    : WaylandObject()
-    , d_ptr(&dptr)
+WaylandCompositorExtension::WaylandCompositorExtension(WaylandCompositorExtensionPrivate &dd)
+    : WaylandObject(dd)
 {
 }
 
-/*!
- * \internal
- * Constructs a WaylandCompositorExtension with the private object \a dptr and \a container.
- */
-WaylandCompositorExtension::WaylandCompositorExtension(WaylandObject *container, WaylandCompositorExtensionPrivate &dptr)
-    : WaylandObject()
-    , d_ptr(&dptr)
+WaylandCompositorExtension::WaylandCompositorExtension(WaylandObject *container, WaylandCompositorExtensionPrivate &dd)
+    : WaylandObject(dd)
 {
     d_func()->extension_container = container;
     QCoreApplication::postEvent(this, new QEvent(QEvent::Polish));
@@ -224,9 +212,15 @@ bool WaylandCompositorExtension::event(QEvent *event)
  *  Creates a WaylandObject as a child of \a parent.
  */
 WaylandObject::WaylandObject(QObject *parent)
-    : QObject(parent)
+    :QObject(parent)
 {
 }
+
+WaylandObject::WaylandObject(QObjectPrivate &d, QObject *parent)
+    :QObject(d, parent)
+{
+}
+
 
 WaylandObject::~WaylandObject()
 {
@@ -285,6 +279,8 @@ void WaylandObject::addExtension(WaylandCompositorExtension *extension)
  */
 void WaylandObject::removeExtension(WaylandCompositorExtension *extension)
 {
+    if (!extension->isInitialized())
+        return;
     Q_ASSERT(extension_vector.contains(extension));
     extension_vector.removeOne(extension);
 }
@@ -292,3 +288,5 @@ void WaylandObject::removeExtension(WaylandCompositorExtension *extension)
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawaylandcompositorextension.cpp"

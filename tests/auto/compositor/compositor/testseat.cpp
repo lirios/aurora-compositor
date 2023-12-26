@@ -18,7 +18,7 @@ TestSeat::~TestSeat()
 {
 }
 
-bool TestSeat::isOwner(QInputEvent *event) const
+bool TestSeat::isOwner(QEvent *event) const
 {
     m_queryCount++;
     QMouseEvent *me = dynamic_cast<QMouseEvent *>(event);

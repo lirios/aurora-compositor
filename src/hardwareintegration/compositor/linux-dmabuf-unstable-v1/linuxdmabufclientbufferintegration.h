@@ -47,10 +47,7 @@ public:
     Internal::ClientBuffer *createBufferFor(wl_resource *resource) override;
     bool importBuffer(wl_resource *resource, LinuxDmabufWlBuffer *linuxDmabufBuffer);
     void removeBuffer(wl_resource *resource);
-    void deleteOrphanedTextures();
-    void deleteSpecificOrphanedTexture(QOpenGLTexture *texture);
     void deleteImage(EGLImageKHR image);
-    void deleteGLTextureWhenPossible(QOpenGLTexture *texture, QOpenGLContext* ctx);
     PFNGLEGLIMAGETARGETTEXTURE2DOESPROC gl_egl_image_target_texture_2d = nullptr;
 
 private:
@@ -65,21 +62,12 @@ private:
 
     bool initSimpleTexture(LinuxDmabufWlBuffer *dmabufBuffer);
     bool initYuvTexture(LinuxDmabufWlBuffer *dmabufBuffer);
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QList<uint32_t> supportedDrmFormats();
     QList<uint64_t> supportedDrmModifiers(uint32_t format);
-#else
-    QVector<uint32_t> supportedDrmFormats();
-    QVector<uint64_t> supportedDrmModifiers(uint32_t format);
-#endif
 
     EGLDisplay m_eglDisplay = EGL_NO_DISPLAY;
     ::wl_display *m_wlDisplay = nullptr;
     bool m_displayBound = false;
-
-    QMutex m_orphanedTexturesLock;
-    QList<QOpenGLTexture *> m_orphanedTextures;
-    QList<QMetaObject::Connection> m_orphanedTexturesAboutToBeDestroyedConnection;
 
     QHash<EGLint, YuvFormatConversion> m_yuvFormats;
     bool m_supportsDmabufModifiers = false;

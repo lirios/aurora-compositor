@@ -35,7 +35,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrOutputManagerV1Private
 {
     Q_DECLARE_PUBLIC(WaylandWlrOutputManagerV1)
 public:
-    explicit WaylandWlrOutputManagerV1Private(WaylandWlrOutputManagerV1 *self);
+    WaylandWlrOutputManagerV1Private();
     ~WaylandWlrOutputManagerV1Private();
 
     void registerHead(WaylandWlrOutputHeadV1 *head);
@@ -54,11 +54,12 @@ public:
 };
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrOutputHeadV1Private
-        : public PrivateServer::zwlr_output_head_v1
+        : public QObjectPrivate
+        , public PrivateServer::zwlr_output_head_v1
 {
     Q_DECLARE_PUBLIC(WaylandWlrOutputHeadV1)
 public:
-    explicit WaylandWlrOutputHeadV1Private(WaylandWlrOutputHeadV1 *self);
+    WaylandWlrOutputHeadV1Private();
     ~WaylandWlrOutputHeadV1Private();
 
     void sendInfo(Resource *resource);
@@ -82,17 +83,15 @@ public:
     QPoint position;
     WaylandOutput::Transform transform = WaylandOutput::TransformNormal;
     qreal scale = 1;
-
-protected:
-    WaylandWlrOutputHeadV1 *q_ptr;
 };
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrOutputModeV1Private
-        : public PrivateServer::zwlr_output_mode_v1
+        : public QObjectPrivate
+        , public PrivateServer::zwlr_output_mode_v1
 {
     Q_DECLARE_PUBLIC(WaylandWlrOutputModeV1)
 public:
-    explicit WaylandWlrOutputModeV1Private(WaylandWlrOutputModeV1 *self);
+    WaylandWlrOutputModeV1Private();
     ~WaylandWlrOutputModeV1Private();
 
     static WaylandWlrOutputModeV1 *fromResource(wl_resource *resource);
@@ -102,17 +101,15 @@ public:
     bool initialized = false;
     QSize size;
     qint32 refreshRate = -1;
-
-protected:
-    WaylandWlrOutputModeV1 *q_ptr;
 };
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrOutputConfigurationV1Private
-        : public PrivateServer::zwlr_output_configuration_v1
+        : public QObjectPrivate
+        , public PrivateServer::zwlr_output_configuration_v1
 {
     Q_DECLARE_PUBLIC(WaylandWlrOutputConfigurationV1)
 public:
-    explicit WaylandWlrOutputConfigurationV1Private(WaylandWlrOutputConfigurationV1 *self);
+    WaylandWlrOutputConfigurationV1Private();
 
     static WaylandWlrOutputConfigurationV1Private *get(WaylandWlrOutputConfigurationV1 *configuration) { return configuration->d_func(); }
 
@@ -122,8 +119,6 @@ public:
     QVector<WaylandWlrOutputHeadV1 *> configuredHeads;
 
 protected:
-    WaylandWlrOutputConfigurationV1 *q_ptr;
-
     void zwlr_output_configuration_v1_enable_head(Resource *resource, uint32_t id, struct ::wl_resource *headResource) override;
     void zwlr_output_configuration_v1_disable_head(Resource *resource, struct ::wl_resource *headResource) override;
     void zwlr_output_configuration_v1_apply(Resource *resource) override;
@@ -132,11 +127,12 @@ protected:
 };
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrOutputConfigurationHeadV1Private
-        : public PrivateServer::zwlr_output_configuration_head_v1
+        : public QObjectPrivate
+        , public PrivateServer::zwlr_output_configuration_head_v1
 {
     Q_DECLARE_PUBLIC(WaylandWlrOutputConfigurationHeadV1)
 public:
-    explicit WaylandWlrOutputConfigurationHeadV1Private(WaylandWlrOutputConfigurationHeadV1 *self);
+    WaylandWlrOutputConfigurationHeadV1Private();
 
     static WaylandWlrOutputConfigurationHeadV1Private *get(WaylandWlrOutputConfigurationHeadV1 *configuration) { return configuration->d_func(); }
 

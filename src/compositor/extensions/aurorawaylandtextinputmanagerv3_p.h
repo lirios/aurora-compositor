@@ -5,7 +5,7 @@
 
 #include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
 
-#include <LiriAuroraCompositor/private/aurora-server-text-input-unstable-v4-wip.h>
+#include <LiriAuroraCompositor/private/aurora-server-text-input-unstable-v3.h>
 
 //
 //  W A R N I N G
@@ -22,14 +22,14 @@ namespace Aurora {
 
 namespace Compositor {
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandTextInputManagerV4Private : public WaylandCompositorExtensionPrivate, public PrivateServer::zwp_text_input_manager_v4
+class LIRIAURORACOMPOSITOR_EXPORT WaylandTextInputManagerV3Private : public WaylandCompositorExtensionPrivate, public PrivateServer::zwp_text_input_manager_v3
 {
-    Q_DECLARE_PUBLIC(WaylandTextInputManagerV4)
+    Q_DECLARE_PUBLIC(WaylandTextInputManagerV3)
 public:
-    WaylandTextInputManagerV4Private();
+    WaylandTextInputManagerV3Private();
 
 protected:
-    void zwp_text_input_manager_v4_get_text_input(Resource *resource, uint32_t id, struct ::wl_resource *seatResource) override;
+    void zwp_text_input_manager_v3_get_text_input(Resource *resource, uint32_t id, struct ::wl_resource *seatResource) override;
 };
 
 } // namespace Compositor

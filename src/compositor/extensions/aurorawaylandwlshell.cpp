@@ -24,8 +24,7 @@ namespace Compositor {
 
 WaylandSurfaceRole WaylandWlShellSurfacePrivate::s_role("wl_shell_surface");
 
-WaylandWlShellPrivate::WaylandWlShellPrivate(WaylandWlShell *self)
-    : WaylandShellPrivate(self)
+WaylandWlShellPrivate::WaylandWlShellPrivate()
 {
 }
 
@@ -67,8 +66,7 @@ void WaylandWlShellPrivate::unregisterShellSurface(WaylandWlShellSurface *shellS
         qWarning("Unexpected state. Can't find registered shell surface.");
 }
 
-WaylandWlShellSurfacePrivate::WaylandWlShellSurfacePrivate(WaylandWlShellSurface *self)
-    : WaylandCompositorExtensionPrivate(self)
+WaylandWlShellSurfacePrivate::WaylandWlShellSurfacePrivate()
 {
 }
 
@@ -265,23 +263,16 @@ void WaylandWlShellSurfacePrivate::shell_surface_set_class(Resource *resource,
  * Constructs a WaylandWlShell object.
  */
 WaylandWlShell::WaylandWlShell()
-    : WaylandShellTemplate<WaylandWlShell>()
-    , d_ptr(new WaylandWlShellPrivate(this))
-{
-}
+    : WaylandShellTemplate<WaylandWlShell>(*new WaylandWlShellPrivate())
+{ }
 
 /*!
  * Constructs a WaylandWlShell object for the provided \a compositor.
  */
 WaylandWlShell::WaylandWlShell(WaylandCompositor *compositor)
-    : WaylandShellTemplate<WaylandWlShell>(compositor)
-    , d_ptr(new WaylandWlShellPrivate(this))
-{
-}
+    : WaylandShellTemplate<WaylandWlShell>(compositor, *new WaylandWlShellPrivate())
+{ }
 
-WaylandWlShell::~WaylandWlShell()
-{
-}
 
 /*!
  * Initializes the WlShell extension.
@@ -356,7 +347,7 @@ const struct wl_interface *WaylandWlShell::interface()
 }
 
 /*!
- * \qmlsignal void AuroraCompositor::WlShell::wlShellSurfaceRequested(WaylandSurface surface, WaylandResource resource)
+ * \qmlsignal void WlShell::wlShellSurfaceRequested(WaylandSurface surface, WaylandResource resource)
  *
  * This signal is emitted when the client has requested a \c wl_shell_surface to be associated with
  * \a surface. The handler for this signal may create a shell surface for \a resource and initialize
@@ -374,7 +365,7 @@ const struct wl_interface *WaylandWlShell::interface()
  */
 
 /*!
- * \qmlsignal void AuroraCompositor::WlShell::wlShellSurfaceCreated(WlShellSurface shellSurface)
+ * \qmlsignal void WlShell::wlShellSurfaceCreated(WlShellSurface shellSurface)
  *
  * This signal is emitted when the client has created a \c wl_shell_surface.
  * A common use case is to let the handler of this signal instantiate a ShellSurfaceItem or
@@ -428,8 +419,7 @@ QByteArray WaylandWlShell::interfaceName()
  * Constructs a WaylandWlShellSurface.
  */
 WaylandWlShellSurface::WaylandWlShellSurface()
-    : WaylandShellSurfaceTemplate<WaylandWlShellSurface>()
-    , d_ptr(new WaylandWlShellSurfacePrivate(this))
+    : WaylandShellSurfaceTemplate<WaylandWlShellSurface>(*new WaylandWlShellSurfacePrivate)
 {
 }
 
@@ -437,8 +427,7 @@ WaylandWlShellSurface::WaylandWlShellSurface()
  * Constructs a WaylandWlShellSurface for \a surface and initializes it with the given \a shell and resource \a res.
  */
 WaylandWlShellSurface::WaylandWlShellSurface(WaylandWlShell *shell, WaylandSurface *surface, const WaylandResource &res)
-    : WaylandShellSurfaceTemplate<WaylandWlShellSurface>()
-    , d_ptr(new WaylandWlShellSurfacePrivate(this))
+    : WaylandShellSurfaceTemplate<WaylandWlShellSurface>(*new WaylandWlShellSurfacePrivate)
 {
     initialize(shell, surface, res);
 }
@@ -451,7 +440,7 @@ WaylandWlShellSurface::~WaylandWlShellSurface()
 }
 
 /*!
- * \qmlmethod void AuroraCompositor::WlShellSurface::initialize(WlShell shell, WaylandSurface surface, WaylandResource resource)
+ * \qmlmethod void WlShellSurface::initialize(WlShell shell, WaylandSurface surface, WaylandResource resource)
  *
  * Initializes the WlShellSurface and associates it with the given \a shell, \a surface, and \a resource.
  */
@@ -551,7 +540,7 @@ void WaylandWlShellSurface::sendConfigure(const QSize &size, ResizeEdge edges)
 }
 
 /*!
- * \qmlmethod void AuroraCompositor::WlShellSurface::sendPopupDone()
+ * \qmlmethod void WlShellSurface::sendPopupDone()
  *
  * Sends a popup_done event to the client to indicate that the user has clicked
  * somewhere outside the client's surfaces.
@@ -575,7 +564,7 @@ WaylandQuickShellIntegration *WaylandWlShellSurface::createIntegration(WaylandQu
 #endif
 
 /*!
- * \qmlproperty WaylandSurface AuroraCompositor::WlShellSurface::surface
+ * \qmlproperty WaylandSurface WlShellSurface::surface
  *
  * This property holds the \c wl_surface associated with this WlShellSurface.
  */
@@ -592,7 +581,7 @@ WaylandSurface *WaylandWlShellSurface::surface() const
 }
 
 /*!
- * \qmlproperty WlShell AuroraCompositor::WlShellSurface::shell
+ * \qmlproperty WlShell WlShellSurface::shell
  *
  * This property holds the shell associated with this WlShellSurface.
  */
@@ -609,7 +598,7 @@ WaylandWlShell *WaylandWlShellSurface::shell() const
 }
 
 /*!
- * \qmlproperty enum AuroraCompositor::WlShellSurface::windowType
+ * \qmlproperty enum WlShellSurface::windowType
  *
  * This property holds the window type of the WlShellSurface.
  */
@@ -621,7 +610,7 @@ Qt::WindowType WaylandWlShellSurface::windowType() const
 }
 
 /*!
- * \qmlproperty string AuroraCompositor::WlShellSurface::title
+ * \qmlproperty string WlShellSurface::title
  *
  * This property holds the title of the WlShellSurface.
  */
@@ -638,7 +627,7 @@ QString WaylandWlShellSurface::title() const
 }
 
 /*!
- * \qmlproperty string AuroraCompositor::WlShellSurface::className
+ * \qmlproperty string WlShellSurface::className
  *
  * This property holds the class name of the WlShellSurface.
  */
@@ -660,7 +649,7 @@ WaylandSurfaceRole *WaylandWlShellSurface::role()
 }
 
 /*!
- * \qmlmethod void AuroraCompositor::WlShellSurface::ping()
+ * \qmlmethod void WlShellSurface::ping()
  *
  * Sends a ping event to the client. If the client replies to the event the pong
  * signal will be emitted.
@@ -690,3 +679,5 @@ WaylandWlShellSurface *WaylandWlShellSurface::fromResource(wl_resource *resource
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawaylandwlshell.cpp"

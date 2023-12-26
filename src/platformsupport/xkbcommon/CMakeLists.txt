@@ -1,5 +1,4 @@
-# SPDX-FileCopyrightText: 2022 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-#
+# SPDX-FileCopyrightText: 2023 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
 # SPDX-License-Identifier: BSD-3-Clause
 
 liri_add_module(AuroraXkbCommonSupport
@@ -10,16 +9,13 @@ liri_add_module(AuroraXkbCommonSupport
         auroraxkbcommon.cpp auroraxkbcommon_p.h
     PRIVATE_HEADERS
         auroraxkbcommon_p.h
-    DEFINES
-        QT_NO_CAST_FROM_ASCII
-        QT_NO_FOREACH
     PUBLIC_LIBRARIES
-        Qt::Core
-        Qt::Gui
+        Qt6::Core
+        Qt6::Gui
         XkbCommon::XkbCommon
     LIBRARIES
-        Qt::CorePrivate
-        Qt::GuiPrivate
+        Qt6::CorePrivate
+        Qt6::GuiPrivate
 )
 
 liri_finalize_module(AuroraXkbCommonSupport)

@@ -20,18 +20,12 @@ namespace Compositor {
  */
 
 WaylandWlrExportDmabufManagerV1::WaylandWlrExportDmabufManagerV1()
-    : WaylandCompositorExtensionTemplate<WaylandWlrExportDmabufManagerV1>()
-    , d_ptr(new WaylandWlrExportDmabufManagerV1Private(this))
+    : WaylandCompositorExtensionTemplate<WaylandWlrExportDmabufManagerV1>(*new WaylandWlrExportDmabufManagerV1Private)
 {
 }
 
 WaylandWlrExportDmabufManagerV1::WaylandWlrExportDmabufManagerV1(WaylandCompositor *compositor)
-    : WaylandCompositorExtensionTemplate<WaylandWlrExportDmabufManagerV1>(compositor)
-    , d_ptr(new WaylandWlrExportDmabufManagerV1Private(this))
-{
-}
-
-WaylandWlrExportDmabufManagerV1::~WaylandWlrExportDmabufManagerV1()
+    : WaylandCompositorExtensionTemplate<WaylandWlrExportDmabufManagerV1>(compositor, *new WaylandWlrExportDmabufManagerV1Private)
 {
 }
 
@@ -62,8 +56,7 @@ QByteArray WaylandWlrExportDmabufManagerV1::interfaceName()
  * WaylandWlrExportDmabufManagerV1Private
  */
 
-WaylandWlrExportDmabufManagerV1Private::WaylandWlrExportDmabufManagerV1Private(WaylandWlrExportDmabufManagerV1 *self)
-    : WaylandCompositorExtensionPrivate(self)
+WaylandWlrExportDmabufManagerV1Private::WaylandWlrExportDmabufManagerV1Private()
 {
 }
 
@@ -95,8 +88,7 @@ void WaylandWlrExportDmabufManagerV1Private::zwlr_export_dmabuf_manager_v1_captu
 WaylandWlrExportDmabufFrameV1::WaylandWlrExportDmabufFrameV1(WaylandWlrExportDmabufManagerV1 *manager,
                                                              bool overlayCursor, WaylandOutput *output,
                                                              QObject *parent)
-    : QObject(parent)
-    , d_ptr(new WaylandWlrExportDmabufFrameV1Private(this))
+    : QObject(*new WaylandWlrExportDmabufFrameV1Private)
 {
     Q_D(WaylandWlrExportDmabufFrameV1);
     d->manager = manager;
@@ -163,9 +155,8 @@ void WaylandWlrExportDmabufFrameV1::cancel(WaylandWlrExportDmabufFrameV1::Cancel
  * WaylandWlrExportDmabufFrameV1Private
  */
 
-WaylandWlrExportDmabufFrameV1Private::WaylandWlrExportDmabufFrameV1Private(WaylandWlrExportDmabufFrameV1 *self)
+WaylandWlrExportDmabufFrameV1Private::WaylandWlrExportDmabufFrameV1Private()
     : PrivateServer::zwlr_export_dmabuf_frame_v1()
-    , q_ptr(self)
 {
 }
 

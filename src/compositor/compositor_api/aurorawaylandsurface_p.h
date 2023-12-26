@@ -16,6 +16,7 @@
 //
 
 #include <LiriAuroraCompositor/liriauroracompositorglobal.h>
+#include <private/qobject_p.h>
 
 #include <private/aurorawlclientbuffer_p.h>
 #include <LiriAuroraCompositor/aurorawaylandsurface.h>
@@ -38,6 +39,8 @@
 #include <LiriAuroraCompositor/private/aurorawaylandviewporter_p.h>
 #include <LiriAuroraCompositor/private/aurorawaylandidleinhibitv1_p.h>
 
+#include <QtCore/qpointer.h>
+
 namespace Aurora {
 
 namespace Compositor {
@@ -51,15 +54,12 @@ namespace Internal {
 class FrameCallback;
 }
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandSurfacePrivate
-        : public PrivateServer::wl_surface
+class LIRIAURORACOMPOSITOR_EXPORT WaylandSurfacePrivate : public QObjectPrivate, public PrivateServer::wl_surface
 {
-    Q_DECLARE_PUBLIC(WaylandSurface)
-    Q_DISABLE_COPY(WaylandSurfacePrivate)
 public:
     static WaylandSurfacePrivate *get(WaylandSurface *surface);
 
-    WaylandSurfacePrivate(WaylandSurface *self);
+    WaylandSurfacePrivate();
     ~WaylandSurfacePrivate() override;
 
     void ref();
@@ -152,10 +152,8 @@ public: //member variables
     bool isOpaque = false;
     Qt::ScreenOrientation contentOrientation = Qt::PrimaryOrientation;
     QWindow::Visibility visibility;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #if QT_CONFIG(im)
     WaylandInputMethodControl *inputMethodControl = nullptr;
-#endif
 #endif
 
     class Subsurface : public PrivateServer::wl_subsurface
@@ -183,9 +181,8 @@ public: //member variables
 #ifndef QT_NO_DEBUG
     static QList<WaylandSurfacePrivate *> uninitializedSurfaces;
 #endif
-
-protected:
-    WaylandSurface *q_ptr = nullptr;
+    Q_DECLARE_PUBLIC(WaylandSurface)
+    Q_DISABLE_COPY(WaylandSurfacePrivate)
 };
 
 } // namespace Compositor

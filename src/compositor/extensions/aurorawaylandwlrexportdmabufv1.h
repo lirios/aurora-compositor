@@ -24,7 +24,6 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrExportDmabufManagerV1
 public:
     WaylandWlrExportDmabufManagerV1();
     WaylandWlrExportDmabufManagerV1(WaylandCompositor *compositor);
-    ~WaylandWlrExportDmabufManagerV1();
 
     void initialize() override;
 
@@ -33,9 +32,6 @@ public:
 
 Q_SIGNALS:
     void outputCaptureRequested(Aurora::Compositor::WaylandWlrExportDmabufFrameV1 *frame);
-
-private:
-    QScopedPointer<WaylandWlrExportDmabufManagerV1Private> const d_ptr;
 };
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrExportDmabufFrameV1
@@ -86,8 +82,6 @@ public:
     Q_INVOKABLE void cancel(WaylandWlrExportDmabufFrameV1::CancelReason reason);
 
 private:
-    QScopedPointer<WaylandWlrExportDmabufFrameV1Private> const d_ptr;
-
     explicit WaylandWlrExportDmabufFrameV1(WaylandWlrExportDmabufManagerV1 *manager,
                                            bool overlayCursor,
                                            WaylandOutput *output,

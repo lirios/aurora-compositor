@@ -11,8 +11,10 @@ namespace Aurora {
 
 namespace Compositor {
 
+AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(WaylandWlShell)
+
 /*!
-    \qmlmodule Aurora.Compositor.WlShell
+    \qmlmodule QtWayland.Compositor.WlShell
     \title Qt Wayland WlShell extension
     \ingroup qmlmodules
     \brief Provides a Qt API for the WlShell extension.
@@ -30,8 +32,6 @@ namespace Compositor {
     import Aurora.Compositor.WlShell
     \endqml
 */
-
-AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(WaylandWlShell)
 
 class WaylandCompositorWlShellPlugin : public QQmlExtensionPlugin
 {

@@ -20,15 +20,11 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandTextInputManager : public WaylandCompos
 public:
     WaylandTextInputManager();
     WaylandTextInputManager(WaylandCompositor *compositor);
-    ~WaylandTextInputManager();
 
     void initialize() override;
 
     static const struct wl_interface *interface();
     static QByteArray interfaceName();
-
-private:
-    QScopedPointer<WaylandTextInputManagerPrivate> const d_ptr;
 };
 
 } // namespace Compositor

@@ -1,11 +1,11 @@
 // Copyright (C) 2021 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include "aurorawaylandtextinputv4.h"
-#include "aurorawaylandtextinputv4_p.h"
+#include "aurorawaylandtextinputv3.h"
+#include "aurorawaylandtextinputv3_p.h"
 
-#include <LiriAuroraCompositor/WaylandCompositor>
-#include <LiriAuroraCompositor/private/aurorawaylandseat_p.h>
+#include "aurorawaylandcompositor.h"
+#include "aurorawaylandseat_p.h"
 
 #include "aurorawaylandsurface.h"
 #include "aurorawaylandview.h"
@@ -16,7 +16,7 @@
 #include <qpa/qwindowsysteminterface.h>
 
 #if LIRI_FEATURE_aurora_xkbcommon
-#include <LiriAuroraXkbCommonSupport/private/qxkbcommon_p.h>
+#include <LiriAuroraXkbCommonSupport/private/auroraxkbcommon_p.h>
 #endif
 
 namespace Aurora {
@@ -25,11 +25,11 @@ namespace Compositor {
 
 Q_DECLARE_LOGGING_CATEGORY(gLcAuroraCompositorTextInput)
 
-WaylandTextInputV4ClientState::WaylandTextInputV4ClientState()
+WaylandTextInputV3ClientState::WaylandTextInputV3ClientState()
 {
 }
 
-Qt::InputMethodQueries WaylandTextInputV4ClientState::updatedQueries(const WaylandTextInputV4ClientState &other) const
+Qt::InputMethodQueries WaylandTextInputV3ClientState::updatedQueries(const WaylandTextInputV3ClientState &other) const
 {
     qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
@@ -49,7 +49,7 @@ Qt::InputMethodQueries WaylandTextInputV4ClientState::updatedQueries(const Wayla
     return queries;
 }
 
-Qt::InputMethodQueries WaylandTextInputV4ClientState::mergeChanged(const WaylandTextInputV4ClientState &other) {
+Qt::InputMethodQueries WaylandTextInputV3ClientState::mergeChanged(const WaylandTextInputV3ClientState &other) {
 
     Qt::InputMethodQueries queries;
 
@@ -81,16 +81,16 @@ Qt::InputMethodQueries WaylandTextInputV4ClientState::mergeChanged(const Wayland
     return queries;
 }
 
-WaylandTextInputV4Private::WaylandTextInputV4Private(WaylandCompositor *compositor)
+WaylandTextInputV3Private::WaylandTextInputV3Private(WaylandCompositor *compositor)
     : compositor(compositor)
-    , currentState(new WaylandTextInputV4ClientState)
-    , pendingState(new WaylandTextInputV4ClientState)
+    , currentState(new WaylandTextInputV3ClientState)
+    , pendingState(new WaylandTextInputV3ClientState)
 {
 }
 
-void WaylandTextInputV4Private::sendInputMethodEvent(QInputMethodEvent *event)
+void WaylandTextInputV3Private::sendInputMethodEvent(QInputMethodEvent *event)
 {
-    Q_Q(WaylandTextInputV4);
+    Q_Q(WaylandTextInputV3);
     qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
     if (!focusResource || !focusResource->handle)
@@ -133,11 +133,11 @@ void WaylandTextInputV4Private::sendInputMethodEvent(QInputMethodEvent *event)
 }
 
 
-void WaylandTextInputV4Private::sendKeyEvent(QKeyEvent *event)
+void WaylandTextInputV3Private::sendKeyEvent(QKeyEvent *event)
 {
     qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
-    Q_Q(WaylandTextInputV4);
+    Q_Q(WaylandTextInputV3);
 
     if (!focusResource || !focusResource->handle)
         return;
@@ -147,7 +147,7 @@ void WaylandTextInputV4Private::sendKeyEvent(QKeyEvent *event)
     send_done(focusResource->handle, serial);
 }
 
-QVariant WaylandTextInputV4Private::inputMethodQuery(Qt::InputMethodQuery property, QVariant argument) const
+QVariant WaylandTextInputV3Private::inputMethodQuery(Qt::InputMethodQuery property, QVariant argument) const
 {
     qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO << property;
 
@@ -191,10 +191,10 @@ QVariant WaylandTextInputV4Private::inputMethodQuery(Qt::InputMethodQuery proper
     }
 }
 
-void WaylandTextInputV4Private::setFocus(WaylandSurface *surface)
+void WaylandTextInputV3Private::setFocus(WaylandSurface *surface)
 {
     qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
-    Q_Q(WaylandTextInputV4);
+    Q_Q(WaylandTextInputV3);
 
     if (focusResource && focus) {
         // sync before leave
@@ -227,14 +227,14 @@ void WaylandTextInputV4Private::setFocus(WaylandSurface *surface)
     focusResource = resource;
 }
 
-void WaylandTextInputV4Private::zwp_text_input_v4_bind_resource(Resource *resource)
+void WaylandTextInputV3Private::zwp_text_input_v3_bind_resource(Resource *resource)
 {
     qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
     Q_UNUSED(resource);
 }
 
-void WaylandTextInputV4Private::zwp_text_input_v4_destroy_resource(Resource *resource)
+void WaylandTextInputV3Private::zwp_text_input_v3_destroy_resource(Resource *resource)
 {
     qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
@@ -242,20 +242,20 @@ void WaylandTextInputV4Private::zwp_text_input_v4_destroy_resource(Resource *res
         focusResource = nullptr;
 }
 
-void WaylandTextInputV4Private::zwp_text_input_v4_destroy(Resource *resource)
+void WaylandTextInputV3Private::zwp_text_input_v3_destroy(Resource *resource)
 {
     qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
     wl_resource_destroy(resource->handle);
 }
 
-void WaylandTextInputV4Private::zwp_text_input_v4_enable(Resource *resource)
+void WaylandTextInputV3Private::zwp_text_input_v3_enable(Resource *resource)
 {
     qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
-    Q_Q(WaylandTextInputV4);
+    Q_Q(WaylandTextInputV3);
 
-    pendingState.reset(new WaylandTextInputV4ClientState);
+    pendingState.reset(new WaylandTextInputV3ClientState);
 
     enabledSurfaces.insert(resource, focus);
     emit q->surfaceEnabled(focus);
@@ -265,11 +265,11 @@ void WaylandTextInputV4Private::zwp_text_input_v4_enable(Resource *resource)
     qApp->inputMethod()->show();
 }
 
-void WaylandTextInputV4Private::zwp_text_input_v4_disable(PrivateServer::zwp_text_input_v4::Resource *resource)
+void WaylandTextInputV3Private::zwp_text_input_v3_disable(PrivateServer::zwp_text_input_v3::Resource *resource)
 {
     qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
-    Q_Q(WaylandTextInputV4);
+    Q_Q(WaylandTextInputV3);
 
     WaylandSurface *s = enabledSurfaces.take(resource);
     emit q->surfaceDisabled(s);
@@ -280,14 +280,14 @@ void WaylandTextInputV4Private::zwp_text_input_v4_disable(PrivateServer::zwp_tex
         qApp->inputMethod()->commit();
     }
     qApp->inputMethod()->reset();
-    pendingState.reset(new WaylandTextInputV4ClientState);
+    pendingState.reset(new WaylandTextInputV3ClientState);
 }
 
-void WaylandTextInputV4Private::zwp_text_input_v4_set_cursor_rectangle(Resource *resource, int32_t x, int32_t y, int32_t width, int32_t height)
+void WaylandTextInputV3Private::zwp_text_input_v3_set_cursor_rectangle(Resource *resource, int32_t x, int32_t y, int32_t width, int32_t height)
 {
     qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO << x << y << width << height;
 
-    Q_Q(WaylandTextInputV4);
+    Q_Q(WaylandTextInputV3);
 
     if (resource != focusResource)
         return;
@@ -297,11 +297,11 @@ void WaylandTextInputV4Private::zwp_text_input_v4_set_cursor_rectangle(Resource 
     pendingState->changedState |= Qt::ImCursorRectangle;
 }
 
-void WaylandTextInputV4Private::zwp_text_input_v4_commit(Resource *resource)
+void WaylandTextInputV3Private::zwp_text_input_v3_commit(Resource *resource)
 {
     qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
-    Q_Q(WaylandTextInputV4);
+    Q_Q(WaylandTextInputV3);
 
     if (resource != focusResource) {
         qCDebug(gLcAuroraCompositorTextInput) << "OBS: Disabled surface!!";
@@ -329,7 +329,7 @@ void WaylandTextInputV4Private::zwp_text_input_v4_commit(Resource *resource)
         qApp->inputMethod()->invokeAction(QInputMethod::Click, pendingState->cursorPosition);
 
     Qt::InputMethodQueries queries = currentState->mergeChanged(*pendingState.data());
-    pendingState.reset(new WaylandTextInputV4ClientState);
+    pendingState.reset(new WaylandTextInputV3ClientState);
 
     if (queries) {
         qCDebug(gLcAuroraCompositorTextInput) << "QInputMethod::update() after commit with" << queries;
@@ -338,7 +338,7 @@ void WaylandTextInputV4Private::zwp_text_input_v4_commit(Resource *resource)
     }
 }
 
-void WaylandTextInputV4Private::zwp_text_input_v4_set_content_type(Resource *resource, uint32_t hint, uint32_t purpose)
+void WaylandTextInputV3Private::zwp_text_input_v3_set_content_type(Resource *resource, uint32_t hint, uint32_t purpose)
 {
     qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO << hint << purpose;
 
@@ -407,7 +407,7 @@ void WaylandTextInputV4Private::zwp_text_input_v4_set_content_type(Resource *res
     pendingState->changedState |= Qt::ImHints;
 }
 
-void WaylandTextInputV4Private::zwp_text_input_v4_set_surrounding_text(Resource *resource, const QString &text, int32_t cursor, int32_t anchor)
+void WaylandTextInputV3Private::zwp_text_input_v3_set_surrounding_text(Resource *resource, const QString &text, int32_t cursor, int32_t anchor)
 {
     qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO << text << cursor << anchor;
 
@@ -421,7 +421,7 @@ void WaylandTextInputV4Private::zwp_text_input_v4_set_surrounding_text(Resource 
     pendingState->changedState |= Qt::ImSurroundingText | Qt::ImCursorPosition | Qt::ImAnchorPosition;
 }
 
-void WaylandTextInputV4Private::zwp_text_input_v4_set_text_change_cause(Resource *resource, uint32_t cause)
+void WaylandTextInputV3Private::zwp_text_input_v3_set_text_change_cause(Resource *resource, uint32_t cause)
 {
     qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
@@ -429,57 +429,57 @@ void WaylandTextInputV4Private::zwp_text_input_v4_set_text_change_cause(Resource
     Q_UNUSED(cause);
 }
 
-WaylandTextInputV4::WaylandTextInputV4(WaylandObject *container, WaylandCompositor *compositor)
-    : WaylandCompositorExtensionTemplate(container, *new WaylandTextInputV4Private(compositor))
+WaylandTextInputV3::WaylandTextInputV3(WaylandObject *container, WaylandCompositor *compositor)
+    : WaylandCompositorExtensionTemplate(container, *new WaylandTextInputV3Private(compositor))
 {
     connect(&d_func()->focusDestroyListener, &WaylandDestroyListener::fired,
-            this, &WaylandTextInputV4::focusSurfaceDestroyed);
+            this, &WaylandTextInputV3::focusSurfaceDestroyed);
 }
 
-WaylandTextInputV4::~WaylandTextInputV4()
+WaylandTextInputV3::~WaylandTextInputV3()
 {
 }
 
-void WaylandTextInputV4::sendInputMethodEvent(QInputMethodEvent *event)
+void WaylandTextInputV3::sendInputMethodEvent(QInputMethodEvent *event)
 {
-    Q_D(WaylandTextInputV4);
+    Q_D(WaylandTextInputV3);
 
     d->sendInputMethodEvent(event);
 }
 
-void WaylandTextInputV4::sendKeyEvent(QKeyEvent *event)
+void WaylandTextInputV3::sendKeyEvent(QKeyEvent *event)
 {
-    Q_D(WaylandTextInputV4);
+    Q_D(WaylandTextInputV3);
 
     d->sendKeyEvent(event);
 }
 
-QVariant WaylandTextInputV4::inputMethodQuery(Qt::InputMethodQuery property, QVariant argument) const
+QVariant WaylandTextInputV3::inputMethodQuery(Qt::InputMethodQuery property, QVariant argument) const
 {
-    const Q_D(WaylandTextInputV4);
+    const Q_D(WaylandTextInputV3);
 
     return d->inputMethodQuery(property, argument);
 }
 
-WaylandSurface *WaylandTextInputV4::focus() const
+WaylandSurface *WaylandTextInputV3::focus() const
 {
-    const Q_D(WaylandTextInputV4);
+    const Q_D(WaylandTextInputV3);
 
     return d->focus;
 }
 
-void WaylandTextInputV4::setFocus(WaylandSurface *surface)
+void WaylandTextInputV3::setFocus(WaylandSurface *surface)
 {
-    Q_D(WaylandTextInputV4);
+    Q_D(WaylandTextInputV3);
 
     d->setFocus(surface);
 }
 
-void WaylandTextInputV4::focusSurfaceDestroyed(void *)
+void WaylandTextInputV3::focusSurfaceDestroyed(void *)
 {
     qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
-    Q_D(WaylandTextInputV4);
+    Q_D(WaylandTextInputV3);
 
     d->focusDestroyListener.reset();
 
@@ -487,32 +487,32 @@ void WaylandTextInputV4::focusSurfaceDestroyed(void *)
     d->focusResource = nullptr;
 }
 
-bool WaylandTextInputV4::isSurfaceEnabled(WaylandSurface *surface) const
+bool WaylandTextInputV3::isSurfaceEnabled(WaylandSurface *surface) const
 {
     qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
-    const Q_D(WaylandTextInputV4);
+    const Q_D(WaylandTextInputV3);
 
     return d->enabledSurfaces.values().contains(surface);
 }
 
-void WaylandTextInputV4::add(::wl_client *client, uint32_t id, int version)
+void WaylandTextInputV3::add(::wl_client *client, uint32_t id, int version)
 {
     qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
-    Q_D(WaylandTextInputV4);
+    Q_D(WaylandTextInputV3);
 
     d->add(client, id, version);
 }
 
-const wl_interface *WaylandTextInputV4::interface()
+const wl_interface *WaylandTextInputV3::interface()
 {
-    return WaylandTextInputV4Private::interface();
+    return WaylandTextInputV3Private::interface();
 }
 
-QByteArray WaylandTextInputV4::interfaceName()
+QByteArray WaylandTextInputV3::interfaceName()
 {
-    return WaylandTextInputV4Private::interfaceName();
+    return WaylandTextInputV3Private::interfaceName();
 }
 
 } // namespace Compositor

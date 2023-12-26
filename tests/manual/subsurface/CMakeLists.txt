@@ -1,25 +1,22 @@
-# SPDX-FileCopyrightText: 2022 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-#
+# SPDX-FileCopyrightText: 2022-2024 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
 # SPDX-License-Identifier: BSD-3-Clause
 
-liri_add_executable(aurora-test-subsurface
-    OUTPUT_NAME
-        subsurface
-    SOURCES
-        main.cpp
-        shmwindow.cpp shmwindow.h
-    RESOURCES
-        qml.qrc
-    DEFINES
-        QT_NO_CAST_FROM_ASCII
-        QT_NO_FOREACH
-    LIBRARIES
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::GuiPrivate
-        Qt::Quick
-    GUI
-    NO_TARGET_INSTALLATION
+add_executable(aurora-test-subsurface
+    main.cpp
+    shmwindow.cpp shmwindow.h
+    qml.qrc
 )
 
-liri_finalize_target(aurora-test-subsurface)
+set_target_properties(aurora-test-subsurface
+    PROPERTIES OUTPUT_NAME subsurface
+)
+
+target_link_libraries(aurora-test-subsurface
+    PRIVATE
+        Qt6::Core
+        Qt6::CorePrivate
+        Qt6::Gui
+        Qt6::GuiPrivate
+        Qt6::Qml
+        Qt6::Quick
+)

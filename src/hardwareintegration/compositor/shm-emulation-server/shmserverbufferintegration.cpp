@@ -3,11 +3,7 @@
 
 #include "shmserverbufferintegration.h"
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QtOpenGL/QOpenGLTexture>
-#else
-#include <QtGui/QOpenGLTexture>
-#endif
 #include <QtGui/QOpenGLContext>
 #include <QtCore/QSharedMemory>
 
@@ -38,7 +34,7 @@ ShmServerBuffer::ShmServerBuffer(ShmServerBufferIntegration *integration, const 
             break;
     }
 
-    QString key = "qt_shm_emulation_" + QString::number(qimage.cacheKey());
+    QString key = QStringLiteral("qt_shm_emulation_%1").arg(QString::number(qimage.cacheKey()));
     // ### Use proper native keys the next time we can break protocol compatibility
     QT_IGNORE_DEPRECATIONS(m_shm = new QSharedMemory(key);)
     qsizetype shm_size = qimage.sizeInBytes();

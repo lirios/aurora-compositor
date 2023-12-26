@@ -1,3 +1,0 @@
-module Aurora.Compositor.IviApplication
-plugin auroracompositoriviapplicationplugin
-classname WaylandCompositorIviApplicationPlugin

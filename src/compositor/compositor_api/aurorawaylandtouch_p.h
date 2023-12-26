@@ -24,6 +24,7 @@
 
 #include <QtCore/QPoint>
 #include <QtCore/qvarlengtharray.h>
+#include <QtCore/private/qobject_p.h>
 
 #include <LiriAuroraCompositor/private/aurora-server-wayland.h>
 
@@ -31,7 +32,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandTouchPrivate : public PrivateServer::wl_touch
+class LIRIAURORACOMPOSITOR_EXPORT WaylandTouchPrivate : public QObjectPrivate, public PrivateServer::wl_touch
 {
     Q_DECLARE_PUBLIC(WaylandTouch)
 public:
@@ -47,7 +48,6 @@ private:
     void touch_release(Resource *resource) override;
     int toSequentialWaylandId(int touchId);
 
-    WaylandTouch *q_ptr = nullptr;
     WaylandSeat *seat = nullptr;
     QVarLengthArray<int, 10> ids;
 };

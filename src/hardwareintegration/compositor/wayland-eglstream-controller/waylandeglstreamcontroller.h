@@ -8,11 +8,7 @@
 #include <LiriAuroraCompositor/private/aurora-server-wayland.h>
 #include <LiriAuroraCompositor/private/aurorawlclientbufferintegration_p.h>
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QtOpenGL/QOpenGLTexture>
-#else
-#include <QtGui/QOpenGLTexture>
-#endif
 #include <QtCore/QObject>
 #include <QtCore/QHash>
 #include <QtCore/QSize>

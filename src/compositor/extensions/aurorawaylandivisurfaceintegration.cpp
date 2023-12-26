@@ -38,3 +38,5 @@ void IviSurfaceIntegration::handleIviSurfaceDestroyed()
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawaylandivisurfaceintegration_p.cpp"

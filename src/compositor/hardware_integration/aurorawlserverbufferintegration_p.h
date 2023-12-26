@@ -14,6 +14,7 @@
 // We mean it.
 //
 
+#include <QtCore/private/qglobal_p.h>
 #include <QtCore/QSize>
 #include <QtGui/qopengl.h>
 
@@ -72,7 +73,6 @@ public:
 
     virtual bool supportsFormat(ServerBuffer::Format format) const = 0;
     virtual ServerBuffer *createServerBufferFromImage(const QImage &qimage, ServerBuffer::Format format) = 0;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     virtual ServerBuffer *createServerBufferFromData(QByteArrayView view, const QSize &size,
                                                      uint glInternalFormat)
     {
@@ -81,16 +81,6 @@ public:
         Q_UNUSED(glInternalFormat);
         return nullptr;
     }
-#else
-    virtual ServerBuffer *createServerBufferFromData(const QByteArray &data, const QSize &size,
-                                                     uint glInternalFormat)
-    {
-        Q_UNUSED(data);
-        Q_UNUSED(size);
-        Q_UNUSED(glInternalFormat);
-        return nullptr;
-    }
-#endif
 };
 
 }

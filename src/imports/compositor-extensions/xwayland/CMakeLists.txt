@@ -1,15 +1,16 @@
-# SPDX-FileCopyrightText: 2022 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-#
+# SPDX-FileCopyrightText: 2024 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
 # SPDX-License-Identifier: BSD-3-Clause
 
-liri_add_qml_plugin(AuroraXWaylandQmlPlugin
-    MODULE_PATH
-        "Aurora/Compositor/XWayland"
-    VERSION
-        "1.0"
-    OUTPUT_NAME
-        auroraxwaylandplugin
-    SOURCES
+ecm_add_qml_module(AuroraXWaylandQmlPlugin
+    URI Aurora.Compositor.XWayland
+    VERSION 1.0
+    CLASS_NAME AuroraCompositorXWaylandPlugin
+    NO_GENERATE_PLUGIN_SOURCE
+    DEPENDENCIES QtQuick
+)
+
+target_sources(AuroraXWaylandQmlPlugin
+    PRIVATE
         sigwatch.cpp sigwatch.h
         sizehints.h
         xcbatom.cpp xcbatom.h
@@ -26,15 +27,15 @@ liri_add_qml_plugin(AuroraXWaylandQmlPlugin
         xwaylandquickshellsurfaceitem.cpp xwaylandquickshellsurfaceitem.h
         xwaylandserver.cpp xwaylandserver.h
         xwaylandshellsurface.cpp xwaylandshellsurface.h
-    QML_FILES
-        qmldir
-    DEFINES
-        #QT_NO_CAST_FROM_ASCII
-        QT_NO_FOREACH
-    LIBRARIES
+)
+
+target_link_libraries(AuroraXWaylandQmlPlugin
+    PRIVATE
+        Qt6::Qml
+        Qt6::Quick
         Liri::AuroraCompositor
         ${XCB_TARGETS}
         PkgConfig::Xcursor
 )
 
-liri_finalize_qml_plugin(AuroraXWaylandQmlPlugin)
+ecm_finalize_qml_module(AuroraXWaylandQmlPlugin)

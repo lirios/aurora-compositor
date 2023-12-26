@@ -4,12 +4,9 @@
 #include "waylandeglclientbufferintegration_p.h"
 
 #include <LiriAuroraCompositor/WaylandCompositor>
+#include <LiriAuroraCompositor/private/aurorawltextureorphanage_p.h>
 #include <qpa/qplatformnativeinterface.h>
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QtOpenGL/QOpenGLTexture>
-#else
-#include <QtGui/QOpenGLTexture>
-#endif
 #include <QtGui/QGuiApplication>
 #include <QtGui/QOpenGLContext>
 #include <QtGui/QOffscreenSurface>
@@ -22,11 +19,7 @@
 #include <QMutexLocker>
 #include <QVarLengthArray>
 #include <QtCore/private/qcore_unix_p.h>
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QtGui/private/qeglstreamconvenience_p.h>
-#else
-#include <QtEglSupport/private/qeglstreamconvenience_p.h>
-#endif
 
 #ifndef GL_TEXTURE_EXTERNAL_OES
 #define GL_TEXTURE_EXTERNAL_OES     0x8D65
@@ -160,20 +153,12 @@ public:
     void setupBufferAndCleanup(BufferState *bs, QOpenGLTexture *texture, int plane);
     void handleEglstreamTexture(WaylandEglClientBuffer *buffer, wl_resource *bufferHandle);
     void registerBuffer(struct ::wl_resource *buffer, BufferState state);
-    void deleteGLTextureWhenPossible(QOpenGLTexture *texture, QOpenGLContext *ctx);
-    void deleteOrphanedTextures();
-    void deleteSpecificOrphanedTexture(QOpenGLTexture *texture);
 
     EGLDisplay egl_display = EGL_NO_DISPLAY;
     bool display_bound = false;
     ::wl_display *wlDisplay = nullptr;
     QOffscreenSurface *offscreenSurface = nullptr;
     QOpenGLContext *localContext = nullptr;
-
-    QMutex orphanedTexturesLock;
-    QList<QOpenGLTexture *> orphanedTextures;
-    QList<QMetaObject::Connection> orphanedTexturesAboutToBeDestroyedConnection;
-
 
     PFNEGLBINDWAYLANDDISPLAYWL egl_bind_wayland_display = nullptr;
     PFNEGLUNBINDWAYLANDDISPLAYWL egl_unbind_wayland_display = nullptr;
@@ -427,74 +412,6 @@ void WaylandEglClientBufferIntegrationPrivate::handleEglstreamTexture(WaylandEgl
         localContext->doneCurrent();
 }
 
-void WaylandEglClientBufferIntegrationPrivate::deleteGLTextureWhenPossible(QOpenGLTexture *texture, QOpenGLContext *ctx) {
-    QMutexLocker locker(&orphanedTexturesLock);
-
-    Q_ASSERT(ctx != nullptr);
-    Q_ASSERT(orphanedTextures.size() == orphanedTexturesAboutToBeDestroyedConnection.size());
-
-    qCDebug(gLcAuroraCompositorHardwareIntegration)
-            << Q_FUNC_INFO << " got texture and ctx to be deleted!"
-            << (void*)texture << "; " << (void*)ctx;
-
-    orphanedTextures << texture;
-    orphanedTexturesAboutToBeDestroyedConnection << QObject::connect(ctx, &QOpenGLContext::aboutToBeDestroyed,
-                                                                     ctx, [this, texture]() {
-        this->deleteSpecificOrphanedTexture(texture);
-    }, Qt::DirectConnection);
-}
-
-void WaylandEglClientBufferIntegrationPrivate::deleteOrphanedTextures()
-{
-    Q_ASSERT(QOpenGLContext::currentContext());
-
-    QMutexLocker locker(&orphanedTexturesLock);
-
-    for (int i=0; i < orphanedTextures.size(); i++) {
-        qCDebug(gLcAuroraCompositorHardwareIntegration)
-                << Q_FUNC_INFO << " about to delete a texture: "
-                << (void*)orphanedTextures[i];
-    }
-
-    qDeleteAll(orphanedTextures);
-
-    for (QMetaObject::Connection con : orphanedTexturesAboutToBeDestroyedConnection)
-        QObject::disconnect(con);
-
-    orphanedTexturesAboutToBeDestroyedConnection.clear();
-    orphanedTextures.clear();
-}
-
-void WaylandEglClientBufferIntegrationPrivate::deleteSpecificOrphanedTexture(QOpenGLTexture *texture)
-{
-    Q_ASSERT(orphanedTextures.size() == orphanedTexturesAboutToBeDestroyedConnection.size());
-
-    QMutexLocker locker(&orphanedTexturesLock);
-
-    // In this case, deleteOrphanedTextures was called while we entered (see lock!) this function!
-    if (orphanedTextures.length()==0) {
-        qCWarning(gLcAuroraCompositorHardwareIntegration)
-                << Q_FUNC_INFO
-                << "Looks like deleteOrphanedTextures() and this function where called simultaneously!"
-                << "This might cause issues!";
-        return;
-    }
-
-    int i = orphanedTextures.indexOf(texture);
-    Q_ASSERT(i!=-1);  // If it isn't empty (see above if), then it should be guaranteed to still contain this texture
-
-    orphanedTextures.removeAt(i);
-    QMetaObject::Connection con = orphanedTexturesAboutToBeDestroyedConnection.takeAt(i);
-
-    QObject::disconnect(con);
-    delete texture;
-
-    qCDebug(gLcAuroraCompositorHardwareIntegration)
-            << Q_FUNC_INFO
-            << "texture deleted due to QOpenGLContext::aboutToBeDestroyed!"
-            << "Pointer (now dead) was:" << (void*)texture;
-}
-
 WaylandEglClientBufferIntegration::WaylandEglClientBufferIntegration()
     : d_ptr(new WaylandEglClientBufferIntegrationPrivate)
 {
@@ -515,7 +432,7 @@ void WaylandEglClientBufferIntegration::initializeHardware(struct wl_display *di
 {
     Q_D(WaylandEglClientBufferIntegration);
 
-    const bool ignoreBindDisplay = !qEnvironmentVariableIsEmpty("QT_WAYLAND_IGNORE_BIND_DISPLAY");
+    const bool ignoreBindDisplay = !qgetenv("QT_WAYLAND_IGNORE_BIND_DISPLAY").isEmpty();
 
     QPlatformNativeInterface *nativeInterface = QGuiApplication::platformNativeInterface();
     if (!nativeInterface) {
@@ -621,7 +538,8 @@ WaylandEglClientBuffer::~WaylandEglClientBuffer()
                         << (void*)d->textures[i] << "; " << (void*)d->texturesContext[i]
                         <<  " ... current context might be the same: " << QOpenGLContext::currentContext();
 
-                p->deleteGLTextureWhenPossible(d->textures[i], d->texturesContext[i]);
+                Internal::WaylandTextureOrphanage::instance()->admitTexture(
+                        d->textures[i], d->texturesContext[i]);
                 d->textures[i] = nullptr;               // in case the aboutToBeDestroyed lambda is called while we where here
                 d->texturesContext[i] = nullptr;
                 QObject::disconnect(d->texturesAboutToBeDestroyedConnection[i]);
@@ -672,7 +590,7 @@ QOpenGLTexture *WaylandEglClientBuffer::toOpenGlTexture(int plane)
 {
     auto *p = WaylandEglClientBufferIntegrationPrivate::get(m_integration);
     // At this point we should have a valid OpenGL context, so it's safe to destroy textures
-    p->deleteOrphanedTextures();
+    Internal::WaylandTextureOrphanage::instance()->deleteTextures();
 
     if (!m_buffer)
         return nullptr;

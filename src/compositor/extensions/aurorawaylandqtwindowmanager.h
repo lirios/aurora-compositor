@@ -23,7 +23,6 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandQtWindowManager : public WaylandComposi
 public:
     WaylandQtWindowManager();
     explicit WaylandQtWindowManager(WaylandCompositor *compositor);
-    ~WaylandQtWindowManager();
 
     bool showIsFullScreen() const;
     void setShowIsFullScreen(bool value);
@@ -39,8 +38,6 @@ Q_SIGNALS:
     void showIsFullScreenChanged();
     void openUrl(Aurora::Compositor::WaylandClient *client, const QUrl &url);
 
-private:
-    QScopedPointer<WaylandQtWindowManagerPrivate> const d_ptr;
 };
 
 } // namespace Compositor

@@ -13,8 +13,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-WaylandTextInputManagerPrivate::WaylandTextInputManagerPrivate(WaylandTextInputManager *self)
-    : WaylandCompositorExtensionPrivate(self)
+WaylandTextInputManagerPrivate::WaylandTextInputManagerPrivate()
 {
 }
 
@@ -62,18 +61,12 @@ void WaylandTextInputManagerPrivate::zwp_text_input_manager_v2_get_text_input(Re
 */
 
 WaylandTextInputManager::WaylandTextInputManager()
-    : WaylandCompositorExtensionTemplate<WaylandTextInputManager>()
-    , d_ptr(new WaylandTextInputManagerPrivate(this))
+    : WaylandCompositorExtensionTemplate<WaylandTextInputManager>(*new WaylandTextInputManagerPrivate)
 {
 }
 
 WaylandTextInputManager::WaylandTextInputManager(WaylandCompositor *compositor)
-    : WaylandCompositorExtensionTemplate<WaylandTextInputManager>(compositor)
-    , d_ptr(new WaylandTextInputManagerPrivate(this))
-{
-}
-
-WaylandTextInputManager::~WaylandTextInputManager()
+    : WaylandCompositorExtensionTemplate<WaylandTextInputManager>(compositor, *new WaylandTextInputManagerPrivate)
 {
 }
 
@@ -103,3 +96,5 @@ QByteArray WaylandTextInputManager::interfaceName()
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawaylandtextinputmanager.cpp"

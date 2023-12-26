@@ -18,6 +18,7 @@
 #include <LiriAuroraCompositor/aurorawaylandsurface.h>
 #include <LiriAuroraCompositor/aurorawaylandbufferref.h>
 #include <QtCore/QSize>
+#include <QtCore/private/qglobal_p.h>
 #include <wayland-server-core.h>
 
 class QOpenGLTexture;

@@ -17,7 +17,7 @@ namespace Compositor {
 class WaylandSurface;
 class WaylandQtTextInputMethodPrivate;
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandQtTextInputMethod : public WaylandCompositorExtensionTemplate<WaylandQtTextInputMethod>
+class WaylandQtTextInputMethod : public WaylandCompositorExtensionTemplate<WaylandQtTextInputMethod>
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandQtTextInputMethod)
@@ -44,8 +44,6 @@ Q_SIGNALS:
     void surfaceEnabled(Aurora::Compositor::WaylandSurface *surface);
     void surfaceDisabled(Aurora::Compositor::WaylandSurface *surface);
 
-private:
-    QScopedPointer<WaylandQtTextInputMethodPrivate> const d_ptr;
 
 private Q_SLOTS:
     void sendVisibleChanged();

@@ -35,7 +35,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrScreencopyManagerV1Private
 {
     Q_DECLARE_PUBLIC(WaylandWlrScreencopyManagerV1)
 public:
-    explicit WaylandWlrScreencopyManagerV1Private(WaylandWlrScreencopyManagerV1 *self);
+    WaylandWlrScreencopyManagerV1Private();
 
 protected:
     void zwlr_screencopy_manager_v1_capture_output(Resource *resource,
@@ -52,11 +52,12 @@ protected:
 };
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrScreencopyFrameV1Private
-        : public PrivateServer::zwlr_screencopy_frame_v1
+        : public QObjectPrivate
+        , public PrivateServer::zwlr_screencopy_frame_v1
 {
     Q_DECLARE_PUBLIC(WaylandWlrScreencopyFrameV1)
 public:
-    explicit WaylandWlrScreencopyFrameV1Private(WaylandWlrScreencopyFrameV1 *self);
+    WaylandWlrScreencopyFrameV1Private();
     ~WaylandWlrScreencopyFrameV1Private();
 
     void setup();
@@ -78,8 +79,6 @@ public:
     static WaylandWlrScreencopyFrameV1Private *get(WaylandWlrScreencopyFrameV1 *frame) { return frame ? frame->d_func() : nullptr; }
 
 protected:
-    WaylandWlrScreencopyFrameV1 *q_ptr;
-
     void zwlr_screencopy_frame_v1_destroy_resource(Resource *resource) override;
     void zwlr_screencopy_frame_v1_copy(Resource *resource,
                                        struct ::wl_resource *buffer_res) override;

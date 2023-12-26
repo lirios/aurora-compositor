@@ -5,6 +5,7 @@
 #include "linuxdmabufclientbufferintegration.h"
 
 #include <LiriAuroraCompositor/WaylandCompositor>
+#include <LiriAuroraCompositor/private/aurorawltextureorphanage_p.h>
 
 #include <drm_fourcc.h>
 #include <drm_mode.h>
@@ -20,19 +21,11 @@ LinuxDmabuf::LinuxDmabuf(wl_display *display, LinuxDmabufClientBufferIntegration
 {
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 void LinuxDmabuf::setSupportedModifiers(const QHash<uint32_t, QList<uint64_t>> &modifiers)
 {
     Q_ASSERT(resourceMap().isEmpty());
     m_modifiers = modifiers;
 }
-#else
-void LinuxDmabuf::setSupportedModifiers(const QHash<uint32_t, QVector<uint64_t> > &modifiers)
-{
-    Q_ASSERT(resourceMap().isEmpty());
-    m_modifiers = modifiers;
-}
-#endif
 
 void LinuxDmabuf::zwp_linux_dmabuf_v1_bind_resource(Resource *resource)
 {
@@ -272,7 +265,8 @@ void LinuxDmabufWlBuffer::buffer_destroy(Resource *resource)
 
     for (uint32_t i = 0; i < m_planesNumber; ++i) {
         if (m_textures[i] != nullptr) {
-            m_clientBufferIntegration->deleteGLTextureWhenPossible(m_textures[i], m_texturesContext[i]);
+            Internal::WaylandTextureOrphanage::instance()->admitTexture(m_textures[i],
+                                                                          m_texturesContext[i]);
             m_textures[i] = nullptr;
             m_texturesContext[i] = nullptr;
             QObject::disconnect(m_texturesAboutToBeDestroyedConnection[i]);
@@ -319,7 +313,7 @@ void LinuxDmabufWlBuffer::initTexture(uint32_t plane, QOpenGLTexture *texture)
 
         delete this->m_textures[plane];
 
-        qCDebug(qLcWaylandCompositorHardwareIntegration)
+        qCDebug(gLcAuroraCompositorHardwareIntegration)
                 << Q_FUNC_INFO
                 << "texture deleted due to QOpenGLContext::aboutToBeDestroyed!"
                 << "Pointer (now dead) was:" << (void*)(this->m_textures[plane])

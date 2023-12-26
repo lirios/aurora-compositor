@@ -26,9 +26,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandView : public QObject
     Q_PROPERTY(Aurora::Compositor::WaylandOutput *output READ output WRITE setOutput NOTIFY outputChanged)
     Q_PROPERTY(bool bufferLocked READ isBufferLocked WRITE setBufferLocked NOTIFY bufferLockedChanged)
     Q_PROPERTY(bool allowDiscardFrontBuffer READ allowDiscardFrontBuffer WRITE setAllowDiscardFrontBuffer NOTIFY allowDiscardFrontBufferChanged)
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     Q_MOC_INCLUDE("aurorawaylandoutput.h")
-#endif
 public:
     WaylandView(QObject *renderObject = nullptr, QObject *parent = nullptr);
     ~WaylandView() override;
@@ -64,9 +62,6 @@ Q_SIGNALS:
     void outputChanged();
     void bufferLockedChanged();
     void allowDiscardFrontBufferChanged();
-
-private:
-    QScopedPointer<WaylandViewPrivate> const d_ptr;
 };
 
 } // namespace Compositor

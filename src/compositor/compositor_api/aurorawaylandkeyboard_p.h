@@ -20,6 +20,7 @@
 #include <LiriAuroraCompositor/aurorawaylandkeyboard.h>
 #include <LiriAuroraCompositor/aurorawaylanddestroylistener.h>
 
+#include <QtCore/private/qobject_p.h>
 #include <LiriAuroraCompositor/private/aurora-server-wayland.h>
 
 #include <QtCore/QList>
@@ -34,14 +35,15 @@ namespace Aurora {
 
 namespace Compositor {
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandKeyboardPrivate : public PrivateServer::wl_keyboard
+class LIRIAURORACOMPOSITOR_EXPORT WaylandKeyboardPrivate : public QObjectPrivate
+                                                  , public PrivateServer::wl_keyboard
 {
 public:
     Q_DECLARE_PUBLIC(WaylandKeyboard)
 
     static WaylandKeyboardPrivate *get(WaylandKeyboard *keyboard);
 
-    WaylandKeyboardPrivate(WaylandKeyboard *self, WaylandSeat *seat);
+    WaylandKeyboardPrivate(WaylandSeat *seat);
     ~WaylandKeyboardPrivate() override;
 
     WaylandCompositor *compositor() const { return seat->compositor(); }
@@ -82,19 +84,13 @@ private:
 
     void sendRepeatInfo();
 
-    WaylandKeyboard *q_ptr = nullptr;
-
     WaylandSeat *seat = nullptr;
 
     WaylandSurface *focus = nullptr;
     Resource *focusResource = nullptr;
     WaylandDestroyListener focusDestroyListener;
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QList<uint32_t> keys;
-#else
-    QVector<uint32_t> keys;
-#endif
     uint32_t modsDepressed = 0;
     uint32_t modsLatched = 0;
     uint32_t modsLocked = 0;

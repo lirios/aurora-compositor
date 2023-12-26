@@ -7,7 +7,9 @@
 #include "aurorawaylandcompositor.h"
 #include "aurorawaylandinputmethodcontrol.h"
 #include "aurorawaylandview.h"
+#if QT_CONFIG(draganddrop)
 #include <LiriAuroraCompositor/WaylandDrag>
+#endif
 #include <LiriAuroraCompositor/WaylandTouch>
 #include <LiriAuroraCompositor/WaylandPointer>
 #include <LiriAuroraCompositor/WaylandKeymap>
@@ -21,25 +23,18 @@
 
 #include "extensions/aurorawlqtkey_p.h"
 #include "extensions/aurorawaylandtextinput.h"
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-#if QT_CONFIG(im)
-#  if QT_WAYLAND_TEXT_INPUT_V4_WIP
-#    include "extensions/aurorawaylandtextinputv4.h"
-#  endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
-#  include "extensions/aurorawaylandqttextinputmethod.h"
-#endif
-#endif
+#include "extensions/aurorawaylandtextinputv3.h"
+#include "extensions/aurorawaylandqttextinputmethod.h"
 
 namespace Aurora {
 
 namespace Compositor {
 
-WaylandSeatPrivate::WaylandSeatPrivate(WaylandSeat *seat)
-    : q_ptr(seat)
+WaylandSeatPrivate::WaylandSeatPrivate(WaylandSeat *seat) :
 #if LIRI_FEATURE_aurora_datadevice
-    , drag_handle(new WaylandDrag(seat))
+    drag_handle(new WaylandDrag(seat)),
 #endif
-    , keymap(new WaylandKeymap())
+    keymap(new WaylandKeymap())
 {
 }
 
@@ -168,8 +163,7 @@ void WaylandSeatPrivate::seat_get_touch(wl_seat::Resource *resource, uint32_t id
  * Constructs a WaylandSeat for the given \a compositor and \a capabilityFlags.
  */
 WaylandSeat::WaylandSeat(WaylandCompositor *compositor, CapabilityFlags capabilityFlags)
-    : WaylandObject()
-    , d_ptr(new WaylandSeatPrivate(this))
+    : WaylandObject(*new WaylandSeatPrivate(this))
 {
     Q_D(WaylandSeat);
     d->compositor = compositor;
@@ -475,7 +469,6 @@ void WaylandSeat::sendFullKeyEvent(QKeyEvent *event)
         return;
     }
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #if QT_CONFIG(im)
     if (keyboardFocus()->inputMethodControl()->enabled()
         && event->nativeScanCode() == 0) {
@@ -495,19 +488,16 @@ void WaylandSeat::sendFullKeyEvent(QKeyEvent *event)
             }
         }
 
-#if QT_WAYLAND_TEXT_INPUT_V4_WIP
-        if (keyboardFocus()->client()->textInputProtocols().testFlag(WaylandClient::TextInputProtocol::TextInputV4)) {
-            WaylandTextInputV4 *textInputV4 = WaylandTextInputV4::findIn(this);
-            if (textInputV4 && !event->text().isEmpty()) {
-                // it will just commit the text for text-input-unstable-v4-wip when keyPress
+        if (keyboardFocus()->client()->textInputProtocols().testFlag(WaylandClient::TextInputProtocol::TextInputV3)) {
+            WaylandTextInputV3 *textInputV3 = WaylandTextInputV3::findIn(this);
+            if (textInputV3 && !event->text().isEmpty()) {
+                // it will just commit the text for text-input-unstable-v3 when keyPress
                 if (event->type() == QEvent::KeyPress)
-                    textInputV4->sendKeyEvent(event);
+                    textInputV3->sendKeyEvent(event);
                 return;
             }
         }
-#endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
     }
-#endif
 #endif
 
     Internal::QtKeyExtensionGlobal *ext = Internal::QtKeyExtensionGlobal::findIn(d->compositor);
@@ -570,11 +560,11 @@ void WaylandSeat::sendKeyEvent(int qtKey, bool pressed)
 }
 
 /*!
- * \qmlmethod void QtWayland.Compositor::WaylandSeat::sendUnicodeKeyEvent(uint unicode, bool pressed)
+ * \qmlmethod void AuroraCompositor::WaylandSeat::sendUnicodeKeyEvent(uint unicode, bool pressed)
  * \since 6.7
  *
  * Sends a key press (if \a pressed is \c true) or release (if \a pressed is \c false)
- * event of a UCS4 unicode through a text-input protocol.
+ * event of a UCS4 \a unicode through a text-input protocol.
  *
  * \note This function will not work properly if the client does not support the
  * text-input protocol that the compositor supports.
@@ -582,7 +572,7 @@ void WaylandSeat::sendKeyEvent(int qtKey, bool pressed)
 
 /*!
  * Sends a key press (if \a pressed is \c true) or release (if \a pressed is \c false)
- * event of a UCS4 unicode through a text-input protocol.
+ * event of a UCS4 \a unicode through a text-input protocol.
  *
  * \note This function will not work properly if the client does not support the
  * text-input protocol that the compositor supports.
@@ -598,7 +588,6 @@ void WaylandSeat::sendUnicodeKeyEvent(uint unicode, bool pressed)
         return;
     }
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #if QT_CONFIG(im)
     auto eventType = pressed ? QEvent::KeyPress : QEvent::KeyRelease;
     // make a keysym value for the UCS4
@@ -621,22 +610,19 @@ void WaylandSeat::sendUnicodeKeyEvent(uint unicode, bool pressed)
         }
     }
 
-#if QT_WAYLAND_TEXT_INPUT_V4_WIP
-    if (keyboardFocus()->client()->textInputProtocols().testFlag(WaylandClient::TextInputProtocol::TextInputV4)) {
-        WaylandTextInputV4 *textInputV4 = WaylandTextInputV4::findIn(this);
-        if (textInputV4 && !text.isEmpty()) {
-            // it will just commit the text for text-input-unstable-v4-wip when keyPress
+    if (keyboardFocus()->client()->textInputProtocols().testFlag(WaylandClient::TextInputProtocol::TextInputV3)) {
+        WaylandTextInputV3 *textInputV3 = WaylandTextInputV3::findIn(this);
+        if (textInputV3 && !text.isEmpty()) {
+            // it will just commit the text for text-input-unstable-v3 when keyPress
             if (eventType == QEvent::KeyPress)
-                textInputV4->sendKeyEvent(&event);
+                textInputV3->sendKeyEvent(&event);
             return;
         }
     }
-#endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
 #else
     Q_UNUSED(keysym);
     Q_UNUSED(pressed);
     qWarning() << "Can't send a unicode key event: Unable to find a text-input protocol.";
-#endif
 #endif
 }
 
@@ -763,11 +749,13 @@ WaylandCompositor *WaylandSeat::compositor() const
 /*!
  * Returns the drag object for this WaylandSeat.
  */
+#if QT_CONFIG(draganddrop)
 WaylandDrag *WaylandSeat::drag() const
 {
     Q_D(const WaylandSeat);
     return d->drag_handle.data();
 }
+#endif
 
 /*!
  * Returns the capability flags for this WaylandSeat.
@@ -781,7 +769,7 @@ WaylandSeat::CapabilityFlags WaylandSeat::capabilities() const
 /*!
  * \internal
  */
-bool WaylandSeat::isOwner(QInputEvent *inputEvent) const
+bool WaylandSeat::isOwner(QEvent *inputEvent) const
 {
     Q_UNUSED(inputEvent);
     return true;
@@ -836,9 +824,9 @@ void WaylandSeat::handleMouseFocusDestroyed()
  * \a oldFocus has the surface that lost keyboard focus; or \c nullptr if no surface had focus.
  */
 
-/*! \qmlsignal void AuroraCompositor::WaylandSeat::cursorSurfaceRequested(WaylandSurface surface, int hotspotX, int hotspotY, WaylandClient client)
+/*! \qmlsignal void AuroraCompositor::WaylandSeat::cursorSurfaceRequest(WaylandSurface surface, int hotspotX, int hotspotY)
  *
- * This signal is emitted when the \a client has requested for a specific \a surface to be the mouse
+ * This signal is emitted when the client has requested for a specific \a surface to be the mouse
  * cursor. For example, when the user hovers over a particular surface, and you want the cursor
  * to change into a resize arrow.
  *
@@ -849,9 +837,9 @@ void WaylandSeat::handleMouseFocusDestroyed()
 
 
 /*!
- * \fn void WaylandSeat::cursorSurfaceRequested(WaylandSurface *surface, int hotspotX, int hotspotY, WaylandClient *client)
+ * \fn void WaylandSeat::cursorSurfaceRequest(WaylandSurface *surface, int hotspotX, int hotspotY)
  *
- * This signal is emitted when the \a client has requested for a specific \a surface to be the mouse
+ * This signal is emitted when the client has requested for a specific \a surface to be the mouse
  * cursor. For example, when the user hovers over a particular surface, and you want the cursor
  * to change into a resize arrow.
  *
@@ -883,3 +871,5 @@ void WaylandSeat::handleMouseFocusDestroyed()
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawaylandseat.cpp"

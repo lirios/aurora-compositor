@@ -56,7 +56,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandTextInputPrivate : public WaylandCompos
 {
     Q_DECLARE_PUBLIC(WaylandTextInput)
 public:
-    explicit WaylandTextInputPrivate(WaylandTextInput *self, WaylandCompositor *compositor);
+    explicit WaylandTextInputPrivate(WaylandCompositor *compositor);
 
     void sendInputMethodEvent(QInputMethodEvent *event);
     void sendKeyEvent(QKeyEvent *event);

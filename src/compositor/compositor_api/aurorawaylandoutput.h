@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <LiriAuroraCompositor/aurorawaylandqmlinclude.h>
+#include <LiriAuroraCompositor/auroraqmlinclude.h>
 #include <LiriAuroraCompositor/aurorawaylandcompositorextension.h>
 #include <LiriAuroraCompositor/WaylandOutputMode>
 #include <QtCore/QObject>
@@ -41,11 +41,10 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandOutput : public WaylandObject
     Q_PROPERTY(Aurora::Compositor::WaylandOutput::Transform transform READ transform WRITE setTransform NOTIFY transformChanged)
     Q_PROPERTY(int scaleFactor READ scaleFactor WRITE setScaleFactor NOTIFY scaleFactorChanged)
     Q_PROPERTY(bool sizeFollowsWindow READ sizeFollowsWindow WRITE setSizeFollowsWindow NOTIFY sizeFollowsWindowChanged)
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+
     QML_NAMED_ELEMENT(WaylandOutputBase)
     QML_ADDED_IN_VERSION(1, 0)
     QML_UNCREATABLE("Cannot create instance of WaylandOutputBase, use WaylandOutput instead")
-#endif
 public:
     enum Subpixel {
       SubpixelUnknown = 0,
@@ -153,8 +152,6 @@ protected:
     virtual void initialize();
 
 private:
-    QScopedPointer<WaylandOutputPrivate> const d_ptr;
-
     Q_PRIVATE_SLOT(d_func(), void _q_handleMaybeWindowPixelSizeChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_handleWindowDestroyed())
 };

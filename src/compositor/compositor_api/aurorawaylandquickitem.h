@@ -13,6 +13,8 @@
 #include <LiriAuroraCompositor/aurorawaylandview.h>
 #include <LiriAuroraCompositor/aurorawaylandquicksurface.h>
 
+Q_DECLARE_METATYPE(Aurora::Compositor::WaylandQuickSurface*)
+
 namespace Aurora {
 
 namespace Compositor {
@@ -35,13 +37,11 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickItem : public QQuickItem
     Q_PROPERTY(Aurora::Compositor::WaylandOutput *output READ output WRITE setOutput NOTIFY outputChanged)
     Q_PROPERTY(bool bufferLocked READ isBufferLocked WRITE setBufferLocked NOTIFY bufferLockedChanged)
     Q_PROPERTY(bool allowDiscardFrontBuffer READ allowDiscardFrontBuffer WRITE setAllowDiscardFrontBuffer NOTIFY allowDiscardFrontBufferChanged)
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     Q_MOC_INCLUDE("aurorawaylandcompositor.h")
     Q_MOC_INCLUDE("aurorawaylandseat.h")
     Q_MOC_INCLUDE("aurorawaylanddrag.h")
     QML_NAMED_ELEMENT(WaylandQuickItem)
     QML_ADDED_IN_VERSION(1, 0)
-#endif
 public:
     WaylandQuickItem(QQuickItem *parent = nullptr);
     ~WaylandQuickItem() override;
@@ -72,11 +72,9 @@ public:
     Q_INVOKABLE QPointF mapToSurface(const QPointF &point) const;
     Q_INVOKABLE QPointF mapFromSurface(const QPointF &point) const;
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #if QT_CONFIG(im)
     QVariant inputMethodQuery(Qt::InputMethodQuery query) const override;
     Q_INVOKABLE QVariant inputMethodQuery(Qt::InputMethodQuery query, QVariant argument) const;
-#endif
 #endif
 
     QObject *subsurfaceHandler() const;
@@ -110,10 +108,8 @@ protected:
     void touchEvent(QTouchEvent *event) override;
     void touchUngrabEvent() override;
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #if QT_CONFIG(im)
     void inputMethodEvent(QInputMethodEvent *event) override;
-#endif
 #endif
 
     virtual void surfaceChangedEvent(Aurora::Compositor::WaylandSurface *newSurface, Aurora::Compositor::WaylandSurface *oldSurface);
@@ -137,11 +133,11 @@ private Q_SLOTS:
     void handleSubsurfacePosition(const QPoint &pos);
     void handlePlaceAbove(Aurora::Compositor::WaylandSurface *referenceSurface);
     void handlePlaceBelow(Aurora::Compositor::WaylandSurface *referenceSurface);
+#if QT_CONFIG(draganddrop)
     void handleDragStarted(Aurora::Compositor::WaylandDrag *drag);
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#endif
 #if QT_CONFIG(im)
     void updateInputMethod(Qt::InputMethodQueries queries);
-#endif
 #endif
     void updateFocus();
 
@@ -163,8 +159,7 @@ Q_SIGNALS:
 protected:
     QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data) override;
 
-private:
-    QScopedPointer<WaylandQuickItemPrivate> const d_ptr;
+    WaylandQuickItem(WaylandQuickItemPrivate &dd, QQuickItem *parent = nullptr);
 };
 
 } // namespace Compositor

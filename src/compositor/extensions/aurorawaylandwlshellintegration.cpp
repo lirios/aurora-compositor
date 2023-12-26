@@ -1,8 +1,6 @@
 // Copyright (C) 2017 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#include <QtQuick/QQuickWindow>
-
 #include "aurorawaylandwlshellintegration_p.h"
 
 #include <LiriAuroraCompositor/WaylandCompositor>
@@ -274,41 +272,25 @@ bool WlShellIntegration::filterMouseMoveEvent(QMouseEvent *event)
     if (grabberState == GrabberState::Resize) {
         Q_ASSERT(resizeState.seat == m_item->compositor()->seatFor(event));
         if (!resizeState.initialized) {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
             resizeState.initialMousePos = event->scenePosition();
-#else
-            resizeState.initialMousePos = event->windowPos();
-#endif
             resizeState.initialized = true;
             return true;
         }
         float scaleFactor = m_item->view()->output()->scaleFactor();
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         QPointF delta = (event->scenePosition() - resizeState.initialMousePos) / scaleFactor * devicePixelRatio();
-#else
-        QPointF delta = (event->windowPos() - resizeState.initialMousePos) / scaleFactor * devicePixelRatio();
-#endif
         QSize newSize = m_shellSurface->sizeForResize(resizeState.initialSize, delta, resizeState.resizeEdges);
         m_shellSurface->sendConfigure(newSize, resizeState.resizeEdges);
     } else if (grabberState == GrabberState::Move) {
         Q_ASSERT(moveState.seat == m_item->compositor()->seatFor(event));
         QQuickItem *moveItem = m_item->moveItem();
         if (!moveState.initialized) {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
             moveState.initialOffset = moveItem->mapFromItem(nullptr, event->scenePosition());
-#else
-            moveState.initialOffset = moveItem->mapFromItem(nullptr, event->windowPos());
-#endif
             moveState.initialized = true;
             return true;
         }
         if (!moveItem->parentItem())
             return true;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         QPointF parentPos = moveItem->parentItem()->mapFromItem(nullptr, event->scenePosition());
-#else
-        QPointF parentPos = moveItem->parentItem()->mapFromItem(nullptr, event->windowPos());
-#endif
         moveItem->setPosition(parentPos - moveState.initialOffset);
     }
     return false;
@@ -329,3 +311,5 @@ bool WlShellIntegration::filterMouseReleaseEvent(QMouseEvent *event)
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawaylandwlshellintegration_p.cpp"

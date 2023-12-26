@@ -15,24 +15,23 @@
 // We mean it.
 //
 
-#include <vector>
-
+#include <LiriAuroraCompositor/WaylandCompositor>
+#include <QtCore/private/qobject_p.h>
 #include <QtCore/QSet>
 #include <QtCore/QElapsedTimer>
 
-#include <LiriAuroraCompositor/WaylandCompositor>
-#include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
 #include <LiriAuroraCompositor/private/aurora-server-wayland.h>
+
+#include <QtCore/qpointer.h>
+
+#include <vector>
 
 #if LIRI_FEATURE_aurora_xkbcommon
 #include <LiriAuroraXkbCommonSupport/private/auroraxkbcommon_p.h>
+using namespace Aurora::PlatformSupport;
 #endif
 
 class QWindowSystemEventHandler;
-
-#if LIRI_FEATURE_aurora_xkbcommon
-using namespace Aurora::PlatformSupport;
-#endif
 
 namespace Aurora {
 
@@ -48,12 +47,8 @@ namespace Internal {
 
 class WaylandSurface;
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandCompositorPrivate
-        : public PrivateServer::wl_compositor
-        , public PrivateServer::wl_subcompositor
+class LIRIAURORACOMPOSITOR_EXPORT WaylandCompositorPrivate : public QObjectPrivate, public PrivateServer::wl_compositor, public PrivateServer::wl_subcompositor
 {
-    Q_DECLARE_PUBLIC(WaylandCompositor)
-    Q_DISABLE_COPY(WaylandCompositorPrivate)
 public:
     static WaylandCompositorPrivate *get(WaylandCompositor *compositor) { return compositor->d_func(); }
 
@@ -98,7 +93,7 @@ public:
 
     void connectToExternalSockets();
 
-    virtual WaylandSeat *seatFor(QInputEvent *inputEvent);
+    virtual WaylandSeat *seatFor(QEvent *inputEvent);
 
 protected:
     void compositor_create_surface(wl_compositor::Resource *resource, uint32_t id) override;
@@ -107,7 +102,6 @@ protected:
     void subcompositor_get_subsurface(wl_subcompositor::Resource *resource, uint32_t id, struct ::wl_resource *surface, struct ::wl_resource *parent) override;
 
     virtual WaylandSurface *createDefaultSurface();
-
 protected:
     void initializeHardwareIntegration();
     void initializeExtensions();
@@ -156,8 +150,8 @@ protected:
     XkbCommon::ScopedXKBContext mXkbContext;
 #endif
 
-protected:
-    WaylandCompositor *q_ptr = nullptr;
+    Q_DECLARE_PUBLIC(WaylandCompositor)
+    Q_DISABLE_COPY(WaylandCompositorPrivate)
 };
 
 const QList<Internal::ClientBufferIntegration *> WaylandCompositorPrivate::clientBufferIntegrations() const

@@ -1,8 +1,6 @@
 // Copyright (C) 2017 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#include <QQmlProperty>
-
 #include "aurorawaylandquickshellsurfaceitem.h"
 #include "aurorawaylandquickshellsurfaceitem_p.h"
 
@@ -58,8 +56,7 @@ WaylandQuickShellSurfaceItem *WaylandQuickShellSurfaceItemPrivate::maybeCreateAu
  * Constructs a WaylandQuickWlShellSurfaceItem with the given \a parent.
  */
 WaylandQuickShellSurfaceItem::WaylandQuickShellSurfaceItem(QQuickItem *parent)
-    : WaylandQuickItem(parent)
-    , d_ptr(new WaylandQuickShellSurfaceItemPrivate(this))
+    : WaylandQuickItem(*new WaylandQuickShellSurfaceItemPrivate(), parent)
 {
 }
 
@@ -71,6 +68,14 @@ WaylandQuickShellSurfaceItem::~WaylandQuickShellSurfaceItem()
         removeEventFilter(d->m_shellIntegration);
         delete d->m_shellIntegration;
     }
+}
+
+/*!
+ * \internal
+ */
+WaylandQuickShellSurfaceItem::WaylandQuickShellSurfaceItem(WaylandQuickShellSurfaceItemPrivate &dd, QQuickItem *parent)
+    : WaylandQuickItem(dd, parent)
+{
 }
 
 /*!
@@ -290,8 +295,7 @@ static WaylandQuickShellSurfaceItem *findSurfaceItemFromMoveItem(QQuickItem *mov
         return nullptr;
     if (auto *surf = qobject_cast<WaylandQuickShellSurfaceItem *>(moveItem))
         return surf;
-    const auto children = moveItem->childItems();
-    for (auto *item : children) {
+    for (auto *item : moveItem->childItems()) {
         if (auto *surf = findSurfaceItemFromMoveItem(item))
             return surf;
     }
@@ -340,8 +344,7 @@ void WaylandQuickShellSurfaceItemPrivate::lower()
     QQuickItem *parent = moveItem->parentItem();
     if (!parent)
         return;
-    const auto children = parent->childItems();
-    auto it = children.cbegin();
+    auto it = parent->childItems().cbegin();
 
     auto skip = [this](QQuickItem *item) {
         if (auto *surf = findSurfaceItemFromMoveItem(item))
@@ -415,3 +418,7 @@ void WaylandQuickShellSurfaceItem::setStaysOnBottom(bool onBottom)
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawaylandquickshellsurfaceitem_p.cpp"
+
+#include "moc_aurorawaylandquickshellsurfaceitem.cpp"

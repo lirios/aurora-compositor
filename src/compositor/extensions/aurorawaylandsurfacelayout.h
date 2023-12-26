@@ -21,7 +21,8 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandSurfaceLayout : public QQuickItem
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandSurfaceLayout)
     Q_PROPERTY(Aurora::Compositor::WaylandOutput *output READ output WRITE setOutput NOTIFY outputChanged)
-    QML_ELEMENT
+    QML_NAMED_ELEMENT(WaylandSurfaceLayout)
+    QML_UNCREATABLE("Cannot create instance of WaylandSurfaceLayout")
 public:
     WaylandSurfaceLayout(QQuickItem *parent = nullptr);
     ~WaylandSurfaceLayout();
@@ -35,8 +36,8 @@ Q_SIGNALS:
 protected:
     void itemChange(ItemChange change,
                     const ItemChangeData &data) override;
-    void geometryChanged(const QRectF &newGeometry,
-                         const QRectF &oldGeometry) override;
+    void geometryChange(const QRectF &newGeometry,
+                        const QRectF &oldGeometry) override;
     void updatePolish() override;
     void componentComplete() override;
 

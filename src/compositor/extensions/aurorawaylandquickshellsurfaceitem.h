@@ -22,11 +22,9 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickShellSurfaceItem : public WaylandQ
     Q_PROPERTY(bool autoCreatePopupItems READ autoCreatePopupItems WRITE setAutoCreatePopupItems NOTIFY autoCreatePopupItemsChanged)
     Q_PROPERTY(bool staysOnTop READ staysOnTop WRITE setStaysOnTop NOTIFY staysOnTopChanged)
     Q_PROPERTY(bool staysOnBottom READ staysOnBottom WRITE setStaysOnBottom NOTIFY staysOnBottomChanged)
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     Q_MOC_INCLUDE("aurorawaylandshellsurface.h")
     QML_NAMED_ELEMENT(ShellSurfaceItem)
     QML_ADDED_IN_VERSION(1, 0)
-#endif
 public:
     WaylandQuickShellSurfaceItem(QQuickItem *parent = nullptr);
     ~WaylandQuickShellSurfaceItem() override;
@@ -52,8 +50,8 @@ Q_SIGNALS:
     void staysOnTopChanged();
     void staysOnBottomChanged();
 
-private:
-    QScopedPointer<WaylandQuickShellSurfaceItemPrivate> const d_ptr;
+protected:
+    WaylandQuickShellSurfaceItem(WaylandQuickShellSurfaceItemPrivate &dd, QQuickItem *parent);
 };
 
 } // namespace Compositor

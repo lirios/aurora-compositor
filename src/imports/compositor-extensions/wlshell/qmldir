@@ -1,3 +1,0 @@
-module Aurora.Compositor.WlShell
-plugin auroracompositorwlshellplugin
-classname WaylandCompositorWlShellPlugin

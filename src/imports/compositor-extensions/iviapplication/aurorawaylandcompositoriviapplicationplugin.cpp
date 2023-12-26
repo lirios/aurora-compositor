@@ -12,6 +12,8 @@ namespace Aurora {
 
 namespace Compositor {
 
+AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(WaylandIviApplication)
+
 /*!
     \qmlmodule Aurora.Compositor.IviApplication
     \title Qt Wayland IviApplication Extension
@@ -30,8 +32,6 @@ namespace Compositor {
     import Aurora.Compositor.IviApplication
     \endqml
 */
-
-AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(WaylandIviApplication)
 
 class WaylandCompositorIviApplicationPlugin : public QQmlExtensionPlugin
 {

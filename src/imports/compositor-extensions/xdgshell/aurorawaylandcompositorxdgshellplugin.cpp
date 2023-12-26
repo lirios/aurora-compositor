@@ -13,6 +13,10 @@ namespace Aurora {
 
 namespace Compositor {
 
+AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(WaylandXdgShell)
+AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(WaylandXdgDecorationManagerV1)
+AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(WaylandXdgOutputManagerV1)
+
 /*!
     \qmlmodule Aurora.Compositor.XdgShell
     \title Qt Wayland XdgShell Extension
@@ -32,10 +36,6 @@ namespace Compositor {
     \endqml
 */
 
-AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(WaylandXdgShell)
-AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(WaylandXdgDecorationManagerV1)
-AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(WaylandXdgOutputManagerV1)
-
 class WaylandCompositorXdgShellPlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
@@ -51,14 +51,14 @@ public:
     {
         qmlRegisterModule(uri, 1, 0);
 
-        qmlRegisterType<WaylandXdgShellQuickExtension>(uri, 1, 0, "XdgShell");
-        qmlRegisterType<WaylandXdgSurface>(uri, 1, 0, "XdgSurface");
-        qmlRegisterUncreatableType<WaylandXdgToplevel>(uri, 1, 0, "XdgToplevel", QObject::tr("Cannot create instance of XdgShellToplevel"));
-        qmlRegisterUncreatableType<WaylandXdgPopup>(uri, 1, 0, "XdgPopup", QObject::tr("Cannot create instance of XdgShellPopup"));
+        qmlRegisterType<WaylandXdgShellQuickExtension>(uri, 1, 3, "XdgShell");
+        qmlRegisterType<WaylandXdgSurface>(uri, 1, 3, "XdgSurface");
+        qmlRegisterUncreatableType<WaylandXdgToplevel>(uri, 1, 3, "XdgToplevel", QObject::tr("Cannot create instance of XdgShellToplevel"));
+        qmlRegisterUncreatableType<WaylandXdgPopup>(uri, 1, 3, "XdgPopup", QObject::tr("Cannot create instance of XdgShellPopup"));
 
-        qmlRegisterType<WaylandXdgDecorationManagerV1QuickExtension>(uri, 1, 0, "XdgDecorationManagerV1");
-        qmlRegisterType<WaylandXdgOutputManagerV1QuickExtension>(uri, 1, 0, "XdgOutputManagerV1");
-        qmlRegisterType<WaylandQuickXdgOutputV1>(uri, 1, 0, "XdgOutputV1");
+        qmlRegisterType<WaylandXdgDecorationManagerV1QuickExtension>(uri, 1, 3, "XdgDecorationManagerV1");
+        qmlRegisterType<WaylandXdgOutputManagerV1QuickExtension>(uri, 1, 14, "XdgOutputManagerV1");
+        qmlRegisterType<WaylandQuickXdgOutputV1>(uri, 1, 14, "XdgOutputV1");
     }
 };
 

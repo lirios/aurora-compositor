@@ -20,7 +20,6 @@
 #include "aurorawaylandoutput.h"
 #include <LiriAuroraCompositor/private/aurorawaylandcompositor_p.h>
 #include <LiriAuroraCompositor/WaylandViewporter>
-#include "aurorawaylandseat.h"
 #include "aurorawaylandsurfacegrabber.h"
 
 namespace Aurora {
@@ -30,9 +29,9 @@ namespace Compositor {
 class WaylandQuickCompositorPrivate : public WaylandCompositorPrivate
 {
 public:
-    explicit WaylandQuickCompositorPrivate(WaylandQuickCompositor *self)
-        : WaylandCompositorPrivate(self)
-        , m_viewporter(new WaylandViewporter(self))
+    explicit WaylandQuickCompositorPrivate(WaylandCompositor *compositor)
+        : WaylandCompositorPrivate(compositor)
+        , m_viewporter(new WaylandViewporter(compositor))
     {
     }
 protected:
@@ -46,10 +45,6 @@ private:
 
 WaylandQuickCompositor::WaylandQuickCompositor(QObject *parent)
     : WaylandCompositor(*new WaylandQuickCompositorPrivate(this), parent)
-{
-}
-
-WaylandQuickCompositor::~WaylandQuickCompositor()
 {
 }
 
@@ -162,22 +157,22 @@ QQmlListProperty<WaylandSeat> WaylandQuickCompositor::seatsListProperty()
                                          &WaylandQuickCompositor::seatsAtFunction);
 }
 
-int WaylandQuickCompositor::outputsCountFunction(QQmlListProperty<WaylandOutput> *list)
+qsizetype WaylandQuickCompositor::outputsCountFunction(QQmlListProperty<WaylandOutput> *list)
 {
     return static_cast<WaylandCompositor *>(list->data)->outputs().size();
 }
 
-WaylandOutput *WaylandQuickCompositor::outputsAtFunction(QQmlListProperty<WaylandOutput> *list, int index)
+WaylandOutput *WaylandQuickCompositor::outputsAtFunction(QQmlListProperty<WaylandOutput> *list, qsizetype index)
 {
     return static_cast<WaylandCompositor *>(list->data)->outputs().at(index);
 }
 
-int WaylandQuickCompositor::seatsCountFunction(QQmlListProperty<WaylandSeat> *list)
+qsizetype WaylandQuickCompositor::seatsCountFunction(QQmlListProperty<WaylandSeat> *list)
 {
     return static_cast<WaylandCompositor *>(list->data)->seats().size();
 }
 
-WaylandSeat *WaylandQuickCompositor::seatsAtFunction(QQmlListProperty<WaylandSeat> *list, int index)
+WaylandSeat *WaylandQuickCompositor::seatsAtFunction(QQmlListProperty<WaylandSeat> *list, qsizetype index)
 {
     return static_cast<WaylandCompositor *>(list->data)->seats().at(index);
 }
@@ -185,3 +180,5 @@ WaylandSeat *WaylandQuickCompositor::seatsAtFunction(QQmlListProperty<WaylandSea
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawaylandquickcompositor.cpp"

@@ -1,31 +1,5 @@
-/****************************************************************************
-**
-** Copyright (C) 2017 The Qt Company Ltd.
-** Contact: https://www.qt.io/licensing/
-**
-** This file is part of the QtWaylandCompositor module of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:GPL$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see https://www.qt.io/terms-conditions. For further
-** information use the contact form at https://www.qt.io/contact-us.
-**
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3 or (at your option) any later version
-** approved by the KDE Free Qt Foundation. The licenses are as published by
-** the Free Software Foundation and appearing in the file LICENSE.GPL3
-** included in the packaging of this file. Please review the following
-** information to ensure the GNU General Public License requirements will
-** be met: https://www.gnu.org/licenses/gpl-3.0.html.
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
+// Copyright (C) 2017 The Qt Company Ltd.
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
 #include "aurorawaylandivisurface.h"
 #include "aurorawaylandivisurface_p.h"
@@ -74,8 +48,7 @@ WaylandSurfaceRole WaylandIviSurfacePrivate::s_role("ivi_surface");
  * Constructs a WaylandIviSurface.
  */
 WaylandIviSurface::WaylandIviSurface()
-    : WaylandShellSurfaceTemplate<WaylandIviSurface>()
-    , d_ptr(new WaylandIviSurfacePrivate(this))
+    : WaylandShellSurfaceTemplate<WaylandIviSurface>(*new WaylandIviSurfacePrivate())
 {
 }
 
@@ -84,18 +57,13 @@ WaylandIviSurface::WaylandIviSurface()
  * given \a application, \a surface, \a iviId, and \a resource.
  */
 WaylandIviSurface::WaylandIviSurface(WaylandIviApplication *application, WaylandSurface *surface, uint iviId, const WaylandResource &resource)
-    : WaylandShellSurfaceTemplate<WaylandIviSurface>()
-    , d_ptr(new WaylandIviSurfacePrivate(this))
+    : WaylandShellSurfaceTemplate<WaylandIviSurface>(*new WaylandIviSurfacePrivate())
 {
     initialize(application, surface, iviId, resource);
 }
 
-WaylandIviSurface::~WaylandIviSurface()
-{
-}
-
 /*!
- * \qmlmethod void AuroraCompositor::IviSurface::initialize(IviApplication iviApplication, WaylandSurface surface, int iviId, WaylandResource resource)
+ * \qmlmethod void IviSurface::initialize(IviApplication iviApplication, WaylandSurface surface, int iviId, WaylandResource resource)
  *
  * Initializes the IviSurface, associating it with the given \a iviApplication, \a surface,
  * \a iviId, and \a resource.
@@ -122,7 +90,7 @@ void WaylandIviSurface::initialize(WaylandIviApplication *iviApplication, Waylan
     WaylandCompositorExtension::initialize();
 }
 
-/*!
+/*
  * \internal
  */
 WaylandShell *WaylandIviSurface::shell() const
@@ -132,7 +100,7 @@ WaylandShell *WaylandIviSurface::shell() const
 }
 
 /*!
- * \qmlproperty WaylandSurface AuroraCompositor::IviSurface::surface
+ * \qmlproperty WaylandSurface IviSurface::surface
  *
  * This property holds the surface associated with this IviSurface.
  */
@@ -149,7 +117,7 @@ WaylandSurface *WaylandIviSurface::surface() const
 }
 
 /*!
- * \qmlproperty int AuroraCompositor::IviSurface::iviId
+ * \qmlproperty int IviSurface::iviId
  * \readonly
  *
  * This property holds the ivi id id of this IviSurface.
@@ -198,7 +166,7 @@ WaylandIviSurface *WaylandIviSurface::fromResource(wl_resource *resource)
 }
 
 /*!
- * \qmlmethod int AuroraCompositor::IviSurface::sendConfigure(size size)
+ * \qmlmethod int IviSurface::sendConfigure(size size)
  *
  * Sends a configure event to the client, telling it to resize the surface to the given \a size.
  */
@@ -231,8 +199,7 @@ void WaylandIviSurface::initialize()
     WaylandShellSurfaceTemplate::initialize();
 }
 
-WaylandIviSurfacePrivate::WaylandIviSurfacePrivate(WaylandIviSurface *self)
-    : WaylandCompositorExtensionPrivate(self)
+WaylandIviSurfacePrivate::WaylandIviSurfacePrivate()
 {
 }
 
@@ -252,3 +219,5 @@ void WaylandIviSurfacePrivate::ivi_surface_destroy(PrivateServer::ivi_surface::R
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawaylandivisurface.cpp"

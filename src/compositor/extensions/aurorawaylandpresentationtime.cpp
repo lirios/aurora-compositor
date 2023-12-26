@@ -6,9 +6,6 @@
 
 #include <time.h>
 #include <QQuickWindow>
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-#  include <QScreen>
-#endif
 #include <LiriAuroraCompositor/WaylandView>
 #include <LiriAuroraCompositor/WaylandQuickItem>
 
@@ -67,22 +64,16 @@ namespace Compositor {
  * Constructs a WaylandPresentationTime object for \a compositor.
  */
 WaylandPresentationTime::WaylandPresentationTime(WaylandCompositor *compositor)
-    : WaylandCompositorExtensionTemplate(compositor)
-    , d_ptr(new WaylandPresentationTimePrivate(this))
+    : WaylandCompositorExtensionTemplate(compositor, *new WaylandPresentationTimePrivate)
 {
 
-}
-
-WaylandPresentationTime::~WaylandPresentationTime()
-{
 }
 
 /*!
  * Constructs an empty WaylandPresentationTime object.
  */
 WaylandPresentationTime::WaylandPresentationTime()
-    : WaylandCompositorExtensionTemplate()
-    , d_ptr(new WaylandPresentationTimePrivate(this))
+    : WaylandCompositorExtensionTemplate(*new WaylandPresentationTimePrivate)
 {
 }
 
@@ -115,7 +106,7 @@ WaylandCompositor *WaylandPresentationTime::compositor() const
 }
 
 /*!
- * \qmlmethod void WaylandCompositor::PresentationTime::sendFeedback(Window window, int sequence, int sec, int nsec)
+ * \qmlmethod void PresentationTime::sendFeedback(Window window, int sequence, int sec, int nsec)
  *
  * Interface to notify that a frame is presented on screen using \a window.
  * If your platform supports DRM events, \c page_flip_handler is the proper timing to send it.
@@ -255,11 +246,7 @@ void PresentationFeedback::connectToWindow(QQuickWindow *window)
     m_connectedWindow = window;
 
     connect(window, &QQuickWindow::beforeSynchronizing, this, &PresentationFeedback::onSync);
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     connect(window, &QQuickWindow::afterFrameEnd, this, &PresentationFeedback::onSwapped);
-#else
-    connect(window, &QQuickWindow::frameSwapped, this, &PresentationFeedback::onSwapped);
-#endif
 }
 
 void PresentationFeedback::onSync()
@@ -278,11 +265,7 @@ void PresentationFeedback::onSwapped()
     QQuickWindow *window = qobject_cast<QQuickWindow *>(sender());
 
     if (m_sync) {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         disconnect(window, &QQuickWindow::afterFrameEnd, this, &PresentationFeedback::onSwapped);
-#else
-        disconnect(window, &QQuickWindow::frameSwapped, this, &PresentationFeedback::onSwapped);
-#endif
         connect(m_presentationTime, &WaylandPresentationTime::presented, this, &PresentationFeedback::sendPresented);
     }
 }
@@ -332,8 +315,7 @@ void PresentationFeedback::wp_presentation_feedback_destroy_resource(Resource *r
     delete this;
 }
 
-WaylandPresentationTimePrivate::WaylandPresentationTimePrivate(WaylandPresentationTime *self)
-    : WaylandCompositorExtensionPrivate(self)
+WaylandPresentationTimePrivate::WaylandPresentationTimePrivate()
 {
 }
 
@@ -356,3 +338,7 @@ void WaylandPresentationTimePrivate::wp_presentation_feedback(Resource *resource
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawaylandpresentationtime_p_p.cpp"
+
+#include "moc_aurorawaylandpresentationtime_p.cpp"

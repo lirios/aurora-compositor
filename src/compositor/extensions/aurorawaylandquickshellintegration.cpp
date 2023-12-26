@@ -3,10 +3,6 @@
 
 #include "aurorawaylandquickshellintegration.h"
 
-namespace Aurora {
-
-namespace Compositor {
-
 /*!
  * \class WaylandQuickShellIntegration
  * \inmodule AuroraCompositor
@@ -58,6 +54,10 @@ namespace Compositor {
  * \sa QObject::eventFilter()
  */
 
+namespace Aurora {
+
+namespace Compositor {
+
 WaylandQuickShellIntegration::WaylandQuickShellIntegration(QObject *parent)
     : QObject(parent)
 {
@@ -70,3 +70,5 @@ WaylandQuickShellIntegration::~WaylandQuickShellIntegration()
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawaylandquickshellintegration.cpp"

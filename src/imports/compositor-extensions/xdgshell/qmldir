@@ -1,3 +1,0 @@
-module Aurora.Compositor.XdgShell
-plugin auroracompositorxdgshellplugin
-classname WaylandCompositorXdgShellPlugin

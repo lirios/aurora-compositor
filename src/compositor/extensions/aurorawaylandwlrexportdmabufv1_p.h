@@ -31,11 +31,9 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrExportDmabufManagerV1Private
 {
     Q_DECLARE_PUBLIC(WaylandWlrExportDmabufManagerV1)
 public:
-    explicit WaylandWlrExportDmabufManagerV1Private(WaylandWlrExportDmabufManagerV1 *self);
+    explicit WaylandWlrExportDmabufManagerV1Private();
 
 protected:
-    WaylandWlrExportDmabufManagerV1 *q_ptr;
-
     void zwlr_export_dmabuf_manager_v1_capture_output(Resource *resource,
                                                       uint32_t id,
                                                       int32_t overlay_cursor,
@@ -43,11 +41,12 @@ protected:
 };
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrExportDmabufFrameV1Private
-        : public PrivateServer::zwlr_export_dmabuf_frame_v1
+        : public QObjectPrivate
+        , public PrivateServer::zwlr_export_dmabuf_frame_v1
 {
     Q_DECLARE_PUBLIC(WaylandWlrExportDmabufFrameV1)
 public:
-    explicit WaylandWlrExportDmabufFrameV1Private(WaylandWlrExportDmabufFrameV1 *self);
+    explicit WaylandWlrExportDmabufFrameV1Private();
 
     static WaylandWlrExportDmabufFrameV1Private *get(WaylandWlrExportDmabufFrameV1 *self) { return self->d_func(); }
 
@@ -56,8 +55,6 @@ public:
     WaylandOutput *output = nullptr;
 
 protected:
-    WaylandWlrExportDmabufFrameV1 *q_ptr = nullptr;
-
     void zwlr_export_dmabuf_frame_v1_destroy_resource(Resource *resource) override;
     void zwlr_export_dmabuf_frame_v1_destroy(Resource *resource) override;
 };

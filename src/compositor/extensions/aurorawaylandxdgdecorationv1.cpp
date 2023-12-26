@@ -67,12 +67,7 @@ namespace Compositor {
     Constructs a WaylandXdgDecorationManagerV1 object.
 */
 WaylandXdgDecorationManagerV1::WaylandXdgDecorationManagerV1()
-    : WaylandCompositorExtensionTemplate<WaylandXdgDecorationManagerV1>()
-    , d_ptr(new WaylandXdgDecorationManagerV1Private(this))
-{
-}
-
-WaylandXdgDecorationManagerV1::~WaylandXdgDecorationManagerV1()
+    : WaylandCompositorExtensionTemplate<WaylandXdgDecorationManagerV1>(*new WaylandXdgDecorationManagerV1Private)
 {
 }
 
@@ -93,7 +88,7 @@ void WaylandXdgDecorationManagerV1::initialize()
 }
 
 /*!
-    \qmlproperty string AuroraCompositor::XdgDecorationManagerV1::preferredMode
+    \qmlproperty string XdgDecorationManagerV1::preferredMode
 
     This property holds the decoration mode the compositor prefers.
 
@@ -130,11 +125,6 @@ void WaylandXdgDecorationManagerV1::setPreferredMode(WaylandXdgToplevel::Decorat
 const wl_interface *WaylandXdgDecorationManagerV1::interface()
 {
     return WaylandXdgDecorationManagerV1Private::interface();
-}
-
-WaylandXdgDecorationManagerV1Private::WaylandXdgDecorationManagerV1Private(WaylandXdgDecorationManagerV1 *self)
-    : WaylandCompositorExtensionPrivate(self)
-{
 }
 
 void WaylandXdgDecorationManagerV1Private::zxdg_decoration_manager_v1_get_toplevel_decoration(
@@ -240,3 +230,5 @@ void WaylandXdgToplevelDecorationV1::handleClientPreferredModeChanged()
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawaylandxdgdecorationv1.cpp"

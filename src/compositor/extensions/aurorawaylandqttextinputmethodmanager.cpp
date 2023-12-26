@@ -102,3 +102,5 @@ QByteArray WaylandQtTextInputMethodManager::interfaceName()
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawaylandqttextinputmethodmanager.cpp"

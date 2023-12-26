@@ -12,6 +12,8 @@
 #include "aurorawaylandoutput.h"
 #include "aurorawaylandwlrscreencopyv1_p.h"
 
+#include <GL/gl.h>
+
 static inline QImage::Format fromWaylandShmFormat(wl_shm_format format)
 {
     switch (format) {
@@ -65,8 +67,7 @@ bool WaylandWlrScreencopyFrameEventFilter::eventFilter(QObject *watched, QEvent 
  * WaylandWlrScreencopyManagerV1Private
  */
 
-WaylandWlrScreencopyManagerV1Private::WaylandWlrScreencopyManagerV1Private(WaylandWlrScreencopyManagerV1 *self)
-    : WaylandCompositorExtensionPrivate(self)
+WaylandWlrScreencopyManagerV1Private::WaylandWlrScreencopyManagerV1Private()
 {
 }
 
@@ -146,18 +147,12 @@ void WaylandWlrScreencopyManagerV1Private::zwlr_screencopy_manager_v1_destroy(
  */
 
 WaylandWlrScreencopyManagerV1::WaylandWlrScreencopyManagerV1()
-    : WaylandCompositorExtensionTemplate<WaylandWlrScreencopyManagerV1>()
-    , d_ptr(new WaylandWlrScreencopyManagerV1Private(this))
+    : WaylandCompositorExtensionTemplate<WaylandWlrScreencopyManagerV1>(*new WaylandWlrScreencopyManagerV1Private)
 {
 }
 
 WaylandWlrScreencopyManagerV1::WaylandWlrScreencopyManagerV1(WaylandCompositor *compositor)
-    : WaylandCompositorExtensionTemplate<WaylandWlrScreencopyManagerV1>(compositor)
-    , d_ptr(new WaylandWlrScreencopyManagerV1Private(this))
-{
-}
-
-WaylandWlrScreencopyManagerV1::~WaylandWlrScreencopyManagerV1()
+    : WaylandCompositorExtensionTemplate<WaylandWlrScreencopyManagerV1>(compositor, *new WaylandWlrScreencopyManagerV1Private)
 {
 }
 
@@ -188,9 +183,7 @@ QByteArray WaylandWlrScreencopyManagerV1::interfaceName()
  * WaylandWlrScreencopyFrameV1Private
  */
 
-WaylandWlrScreencopyFrameV1Private::WaylandWlrScreencopyFrameV1Private(WaylandWlrScreencopyFrameV1 *self)
-    : PrivateServer::zwlr_screencopy_frame_v1()
-    , q_ptr(self)
+WaylandWlrScreencopyFrameV1Private::WaylandWlrScreencopyFrameV1Private()
 {
 }
 
@@ -289,8 +282,7 @@ void WaylandWlrScreencopyFrameV1Private::zwlr_screencopy_frame_v1_copy_with_dama
  */
 
 WaylandWlrScreencopyFrameV1::WaylandWlrScreencopyFrameV1(QObject *parent)
-    : QObject(parent)
-    , d_ptr(new WaylandWlrScreencopyFrameV1Private(this))
+    : QObject(*new WaylandWlrScreencopyFrameV1Private, parent)
 {
 }
 

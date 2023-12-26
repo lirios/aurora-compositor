@@ -4,7 +4,7 @@
 #pragma once
 
 #include <LiriAuroraCompositor/liriauroracompositorglobal.h>
-#include <LiriAuroraCompositor/aurorawaylandqmlinclude.h>
+#include <LiriAuroraCompositor/auroraqmlinclude.h>
 
 #include <QtCore/QObject>
 #include <QtCore/QPointF>
@@ -24,15 +24,13 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandDrag : public QObject
 
     Q_PROPERTY(Aurora::Compositor::WaylandSurface *icon READ icon NOTIFY iconChanged)
     Q_PROPERTY(bool visible READ visible NOTIFY iconChanged)
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     Q_MOC_INCLUDE("aurorawaylandsurface.h")
+
     QML_NAMED_ELEMENT(WaylandDrag)
     QML_ADDED_IN_VERSION(1, 0)
     QML_UNCREATABLE("")
-#endif
 public:
     explicit WaylandDrag(WaylandSeat *seat);
-    ~WaylandDrag();
 
     WaylandSurface *icon() const;
     WaylandSurface *origin() const;
@@ -47,9 +45,6 @@ public Q_SLOTS:
 Q_SIGNALS:
     void iconChanged();
     void dragStarted(); // WaylandSurface *icon????
-
-private:
-    QScopedPointer<WaylandDragPrivate> const d_ptr;
 };
 
 } // namespace Compositor

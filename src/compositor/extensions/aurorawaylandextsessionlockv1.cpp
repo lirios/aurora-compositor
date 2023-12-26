@@ -1,5 +1,4 @@
-// SPDX-FileCopyrightText: 2022 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-//
+// SPDX-FileCopyrightText: 2022-2024 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "aurorawaylandcompositor.h"
@@ -22,17 +21,11 @@ namespace Compositor {
 
 WaylandExtSessionLockManagerV1::WaylandExtSessionLockManagerV1()
     : WaylandShellTemplate<WaylandExtSessionLockManagerV1>()
-    , d_ptr(new WaylandExtSessionLockManagerV1Private(this))
 {
 }
 
 WaylandExtSessionLockManagerV1::WaylandExtSessionLockManagerV1(WaylandCompositor *compositor)
     : WaylandShellTemplate<WaylandExtSessionLockManagerV1>(compositor)
-    , d_ptr(new WaylandExtSessionLockManagerV1Private(this))
-{
-}
-
-WaylandExtSessionLockManagerV1::~WaylandExtSessionLockManagerV1()
 {
 }
 
@@ -75,8 +68,7 @@ QByteArray WaylandExtSessionLockManagerV1::interfaceName()
  * WaylandExtSessionLockManagerV1Private
  */
 
-WaylandExtSessionLockManagerV1Private::WaylandExtSessionLockManagerV1Private(WaylandExtSessionLockManagerV1 *self)
-    : WaylandCompositorExtensionPrivate(self)
+WaylandExtSessionLockManagerV1Private::WaylandExtSessionLockManagerV1Private()
 {
 }
 
@@ -154,8 +146,6 @@ void WaylandExtSessionLockManagerV1Private::unregisterLockSurface(WaylandExtSess
 
 void WaylandExtSessionLockManagerV1Private::ext_session_lock_manager_v1_bind_resource(Resource *resource)
 {
-    Q_Q(WaylandExtSessionLockManagerV1);
-
     // We can allow only one client at a time
     if (m_client) {
         wl_resource_post_error(resource->handle, WL_DISPLAY_ERROR_IMPLEMENTATION,
@@ -188,12 +178,11 @@ void WaylandExtSessionLockManagerV1Private::ext_session_lock_manager_v1_lock(Res
 {
     Q_Q(WaylandExtSessionLockManagerV1);
 
-    auto *lock = new WaylandExtSessionLockV1(q);
     WaylandResource lockResource(wl_resource_create(resource->client(),
                                                     &ext_session_lock_v1_interface,
                                                     wl_resource_get_version(resource->handle), id));
 
-    lock->initialize(lockResource);
+    auto *lock = new WaylandExtSessionLockV1(q, lockResource);
 
     if (sessionLock.isNull()) {
         // No previous lock was acquired, we can proceed
@@ -220,19 +209,15 @@ void WaylandExtSessionLockManagerV1Private::ext_session_lock_manager_v1_lock(Res
  * WaylandExtSessionLockV1
  */
 
-WaylandExtSessionLockV1::WaylandExtSessionLockV1(WaylandExtSessionLockManagerV1 *manager)
+WaylandExtSessionLockV1::WaylandExtSessionLockV1(WaylandExtSessionLockManagerV1 *manager, const WaylandResource &resource)
     : WaylandShellTemplate<WaylandExtSessionLockV1>(manager)
 {
+    initialize();
+    init(resource.resource());
 }
 
 WaylandExtSessionLockV1::~WaylandExtSessionLockV1()
 {
-}
-
-void WaylandExtSessionLockV1::initialize(const WaylandResource &resource)
-{
-    WaylandShellTemplate::initialize();
-    init(resource.resource());
 }
 
 void WaylandExtSessionLockV1::ext_session_lock_v1_destroy_resource(Resource *resource)
@@ -340,7 +325,6 @@ WaylandExtSessionLockSurfaceV1::WaylandExtSessionLockSurfaceV1(WaylandExtSession
                                                                WaylandOutput *output,
                                                                const WaylandResource &resource)
     : WaylandShellSurfaceTemplate<WaylandExtSessionLockSurfaceV1>(manager)
-    , d_ptr(new WaylandExtSessionLockSurfaceV1Private(this))
 {
     Q_D(WaylandExtSessionLockSurfaceV1);
 
@@ -421,8 +405,7 @@ void WaylandExtSessionLockSurfaceV1::initialize()
  * WaylandExtSessionLockSurfaceV1Private
  */
 
-WaylandExtSessionLockSurfaceV1Private::WaylandExtSessionLockSurfaceV1Private(WaylandExtSessionLockSurfaceV1 *self)
-    : WaylandCompositorExtensionPrivate(self)
+WaylandExtSessionLockSurfaceV1Private::WaylandExtSessionLockSurfaceV1Private()
 {
 }
 
@@ -474,8 +457,6 @@ void WaylandExtSessionLockSurfaceV1Private::ext_session_lock_surface_v1_destroy(
 
 void WaylandExtSessionLockSurfaceV1Private::ext_session_lock_surface_v1_ack_configure(Resource *resource, uint32_t serial)
 {
-    Q_Q(WaylandExtSessionLockSurfaceV1);
-
     ConfigureEvent config;
     bool found = false;
 

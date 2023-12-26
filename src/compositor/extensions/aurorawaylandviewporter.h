@@ -20,14 +20,10 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandViewporter
 public:
     explicit WaylandViewporter();
     explicit WaylandViewporter(WaylandCompositor *compositor);
-    ~WaylandViewporter();
 
     void initialize() override;
 
     static const struct wl_interface *interface();
-
-private:
-    QScopedPointer<WaylandViewporterPrivate> const d_ptr;
 };
 
 } // namespace Compositor

@@ -21,16 +21,12 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandDestroyListener : public QObject
     Q_DECLARE_PRIVATE(WaylandDestroyListener)
 public:
     WaylandDestroyListener(QObject *parent = nullptr);
-    ~WaylandDestroyListener();
-
     void listenForDestruction(struct wl_resource *resource);
     void reset();
 
 Q_SIGNALS:
     void fired(void *data);
 
-private:
-    QScopedPointer<WaylandDestroyListenerPrivate> const d_ptr;
 };
 
 } // namespace Compositor

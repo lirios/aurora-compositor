@@ -16,6 +16,7 @@
 
 #include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 #include <QtCore/QStringList>
+#include <QtCore/private/qglobal_p.h>
 
 namespace Aurora {
 

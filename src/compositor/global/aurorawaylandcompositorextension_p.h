@@ -14,18 +14,20 @@
 // We mean it.
 //
 
+#include <QtCore/private/qobject_p.h>
+
 #include <LiriAuroraCompositor/WaylandCompositorExtension>
 
 namespace Aurora {
 
 namespace Compositor {
 
-class LIRIAURORACOMPOSITOR_EXPORT WaylandCompositorExtensionPrivate
+class LIRIAURORACOMPOSITOR_EXPORT WaylandCompositorExtensionPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(WaylandCompositorExtension)
+
 public:
-    WaylandCompositorExtensionPrivate(WaylandCompositorExtension *self)
-        : q_ptr(self)
+    WaylandCompositorExtensionPrivate()
     {
     }
 
@@ -33,9 +35,6 @@ public:
 
     WaylandObject *extension_container = nullptr;
     bool initialized = false;
-
-protected:
-    WaylandCompositorExtension *q_ptr = nullptr;
 };
 
 } // namespace Compositor

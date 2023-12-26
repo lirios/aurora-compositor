@@ -1,3 +1,0 @@
-module Aurora.Compositor.XWayland
-plugin auroraxwaylandplugin
-classname WaylandCompositorXWaylandPlugin

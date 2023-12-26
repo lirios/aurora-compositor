@@ -32,7 +32,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandIviSurfacePrivate
     Q_DECLARE_PUBLIC(WaylandIviSurface)
 
 public:
-    WaylandIviSurfacePrivate(WaylandIviSurface *self);
+    WaylandIviSurfacePrivate();
     static WaylandIviSurfacePrivate *get(WaylandIviSurface *iviSurface) { return iviSurface->d_func(); }
 
 protected:

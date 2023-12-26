@@ -5,6 +5,7 @@
 
 #if QT_CONFIG(opengl)
 #include "hardware_integration/aurorawlclientbufferintegration_p.h"
+#include <qpa/qplatformopenglcontext.h>
 #include <QOpenGLTexture>
 #endif
 

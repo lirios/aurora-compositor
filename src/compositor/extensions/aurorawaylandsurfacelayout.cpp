@@ -248,8 +248,8 @@ void WaylandSurfaceLayout::itemChange(QQuickItem::ItemChange change,
         polish();
 }
 
-void WaylandSurfaceLayout::geometryChanged(const QRectF &newGeometry,
-                                           const QRectF &oldGeometry)
+void WaylandSurfaceLayout::geometryChange(const QRectF &newGeometry,
+                                          const QRectF &oldGeometry)
 {
     Q_UNUSED(newGeometry)
     Q_UNUSED(oldGeometry)

@@ -1,22 +1,19 @@
 // Copyright (C) 2017 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#include <QCursor>
-#include <QImage>
-#include <QPixmap>
-
 #include "aurorawaylandmousetracker_p.h"
+
+#include <QtQuick/private/qquickitem_p.h>
 
 namespace Aurora {
 
 namespace Compositor {
 
-class WaylandMouseTrackerPrivate
+class WaylandMouseTrackerPrivate : public QQuickItemPrivate
 {
     Q_DECLARE_PUBLIC(WaylandMouseTracker)
 public:
-    WaylandMouseTrackerPrivate(WaylandMouseTracker *self)
-        : q_ptr(self)
+    WaylandMouseTrackerPrivate()
     {
         QImage cursorImage(64,64,QImage::Format_ARGB32);
         cursorImage.fill(Qt::transparent);
@@ -49,14 +46,10 @@ public:
     bool windowSystemCursorEnabled = false;
     QPixmap cursorPixmap;
     bool hovered = false;
-
-private:
-    WaylandMouseTracker *q_ptr = nullptr;
 };
 
 WaylandMouseTracker::WaylandMouseTracker(QQuickItem *parent)
-    : QQuickItem(parent)
-    , d_ptr(new WaylandMouseTrackerPrivate(this))
+        : QQuickItem(*(new WaylandMouseTrackerPrivate), parent)
 {
     Q_D(WaylandMouseTracker);
     setFiltersChildMouseEvents(true);
@@ -65,10 +58,6 @@ WaylandMouseTracker::WaylandMouseTracker(QQuickItem *parent)
 #if QT_CONFIG(cursor)
     setCursor(QCursor(d->cursorPixmap));
 #endif
-}
-
-WaylandMouseTracker::~WaylandMouseTracker()
-{
 }
 
 qreal WaylandMouseTracker::mouseX() const
@@ -115,18 +104,10 @@ bool WaylandMouseTracker::childMouseEventFilter(QQuickItem *item, QEvent *event)
     Q_D(WaylandMouseTracker);
     if (event->type() == QEvent::MouseMove) {
         QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         d->handleMousePos(mapFromItem(item, mouseEvent->position()));
-#else
-        d->handleMousePos(mapFromItem(item, mouseEvent->localPos()));
-#endif
     } else if (event->type() == QEvent::HoverMove) {
         QHoverEvent *hoverEvent = static_cast<QHoverEvent *>(event);
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         d->handleMousePos(mapFromItem(item, hoverEvent->position()));
-#else
-        d->handleMousePos(mapFromItem(item, hoverEvent->posF()));
-#endif
     }
     return false;
 }
@@ -135,22 +116,14 @@ void WaylandMouseTracker::mouseMoveEvent(QMouseEvent *event)
 {
     Q_D(WaylandMouseTracker);
     QQuickItem::mouseMoveEvent(event);
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     d->handleMousePos(event->position());
-#else
-    d->handleMousePos(event->localPos());
-#endif
 }
 
 void WaylandMouseTracker::hoverMoveEvent(QHoverEvent *event)
 {
     Q_D(WaylandMouseTracker);
     QQuickItem::hoverMoveEvent(event);
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     d->handleMousePos(event->position());
-#else
-    d->handleMousePos(event->posF());
-#endif
 }
 
 void WaylandMouseTracker::hoverEnterEvent(QHoverEvent *event)
@@ -170,3 +143,5 @@ void WaylandMouseTracker::hoverLeaveEvent(QHoverEvent *event)
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawaylandmousetracker_p.cpp"

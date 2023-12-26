@@ -1,26 +1,23 @@
-# SPDX-FileCopyrightText: 2021 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-#
+# SPDX-FileCopyrightText: 2024 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
 # SPDX-License-Identifier: BSD-3-Clause
 
-liri_add_qml_plugin(AuroraCompositorLiriQmlPlugin
-    MODULE_PATH
-        "Aurora/Compositor/Liri"
-    VERSION
-        "1.0"
-    OUTPUT_NAME
-        auroraliriplugin
-    SOURCES
-        auroraliriplugin.cpp
-    QML_FILES
-        qmldir
-    DEFINES
-        QT_NO_CAST_FROM_ASCII
-        QT_NO_FOREACH
-    LIBRARIES
-        Qt::Core
-        Qt::Gui
-        Liri::AuroraCompositor
-        Liri::AuroraCompositorPrivate
+ecm_add_qml_module(AuroraCompositorLiriQmlPlugin
+    URI Aurora.Compositor.Liri
+    VERSION 1.0
+    CLASS_NAME AuroraCompositorLiriPlugin
+    NO_GENERATE_PLUGIN_SOURCE
+    DEPENDENCIES QtQuick
 )
 
-liri_finalize_qml_plugin(AuroraCompositorLiriQmlPlugin)
+target_sources(AuroraCompositorLiriQmlPlugin
+    PRIVATE auroraliriplugin.cpp
+)
+
+target_link_libraries(AuroraCompositorLiriQmlPlugin
+    PRIVATE
+        Qt6::Qml
+        Qt6::Quick
+        Liri::AuroraCompositor
+)
+
+ecm_finalize_qml_module(AuroraCompositorLiriQmlPlugin)

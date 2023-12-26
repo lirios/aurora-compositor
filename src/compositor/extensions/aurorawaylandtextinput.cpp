@@ -17,9 +17,6 @@
 
 #if LIRI_FEATURE_aurora_xkbcommon
 #include <LiriAuroraXkbCommonSupport/private/auroraxkbcommon_p.h>
-#endif
-
-#if LIRI_FEATURE_aurora_xkbcommon
 using namespace Aurora::PlatformSupport;
 #endif
 
@@ -87,9 +84,8 @@ Qt::InputMethodQueries WaylandTextInputClientState::mergeChanged(const WaylandTe
     return queries;
 }
 
-WaylandTextInputPrivate::WaylandTextInputPrivate(WaylandTextInput *self, WaylandCompositor *compositor)
-    : WaylandCompositorExtensionPrivate(self)
-    , compositor(compositor)
+WaylandTextInputPrivate::WaylandTextInputPrivate(WaylandCompositor *compositor)
+    : compositor(compositor)
     , currentState(new WaylandTextInputClientState)
     , pendingState(new WaylandTextInputClientState)
 {
@@ -309,7 +305,7 @@ void WaylandTextInputPrivate::sendModifiersMap(const QByteArray &modifiersMap)
     send_modifiers_map(focusResource->handle, modifiersMap);
 }
 
-#if LIRI_FEATURE_aurora_xkbcommon
+#if !LIRI_FEATURE_aurora_xkbcommon
 #define XKB_MOD_NAME_SHIFT   "Shift"
 #define XKB_MOD_NAME_CTRL    "Control"
 #define XKB_MOD_NAME_ALT     "Mod1"
@@ -342,13 +338,9 @@ void WaylandTextInputPrivate::zwp_text_input_v2_enable(Resource *resource, wl_re
     WaylandSurface *s = WaylandSurface::fromResource(surface);
     enabledSurfaces.insert(resource, s);
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-#if QT_CONFIG(im)
     WaylandInputMethodControl *control = s->inputMethodControl();
     if (control)
         control->updateTextInput();
-#endif
-#endif
 
     emit q->surfaceEnabled(s);
 }
@@ -507,8 +499,7 @@ void WaylandTextInputPrivate::zwp_text_input_v2_set_surrounding_text(Resource *r
 }
 
 WaylandTextInput::WaylandTextInput(WaylandObject *container, WaylandCompositor *compositor)
-    : WaylandCompositorExtensionTemplate(container)
-    , d_ptr(new WaylandTextInputPrivate(this, compositor))
+    : WaylandCompositorExtensionTemplate(container, *new WaylandTextInputPrivate(compositor))
 {
     connect(&d_func()->focusDestroyListener, &WaylandDestroyListener::fired,
             this, &WaylandTextInput::focusSurfaceDestroyed);
@@ -617,6 +608,7 @@ QByteArray WaylandTextInput::interfaceName()
     return WaylandTextInputPrivate::interfaceName();
 }
 
+
 void WaylandTextInput::sendModifiersMap(const QByteArray &modifiersMap)
 {
     Q_D(WaylandTextInput);
@@ -646,3 +638,5 @@ void WaylandTextInput::sendModifiersMap(const QByteArray &modifiersMap)
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawaylandtextinput.cpp"

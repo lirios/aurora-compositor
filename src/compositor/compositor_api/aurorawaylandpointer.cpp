@@ -13,9 +13,9 @@ namespace Compositor {
 WaylandSurfaceRole WaylandPointerPrivate::s_role("wl_pointer");
 
 WaylandPointerPrivate::WaylandPointerPrivate(WaylandPointer *pointer, WaylandSeat *seat)
-    : q_ptr(pointer)
-    , seat(seat)
+    : seat(seat)
 {
+    Q_UNUSED(pointer);
 }
 
 uint WaylandPointerPrivate::sendButton(Qt::MouseButton button, uint32_t state)
@@ -96,7 +96,7 @@ void WaylandPointerPrivate::pointer_set_cursor(wl_pointer::Resource *resource, u
     Q_UNUSED(serial);
 
     if (!surface) {
-        emit seat->cursorSurfaceRequested(nullptr, 0, 0, WaylandClient::fromWlClient(compositor(), resource->client()));
+        Q_EMIT seat->cursorSurfaceRequested(nullptr, 0, 0, WaylandClient::fromWlClient(compositor(), resource->client()));
         return;
     }
 
@@ -111,7 +111,7 @@ void WaylandPointerPrivate::pointer_set_cursor(wl_pointer::Resource *resource, u
     wl_resource *displayRes = wl_client_get_object(resource->client(), 1);
     if (s->setRole(&WaylandPointerPrivate::s_role, displayRes, WL_DISPLAY_ERROR_INVALID_OBJECT)) {
         s->markAsCursorSurface(true);
-        emit seat->cursorSurfaceRequested(s, hotspot_x, hotspot_y, WaylandClient::fromWlClient(compositor(), resource->client()));
+        Q_EMIT seat->cursorSurfaceRequested(s, hotspot_x, hotspot_y, WaylandClient::fromWlClient(compositor(), resource->client()));
     }
 }
 
@@ -129,15 +129,10 @@ void WaylandPointerPrivate::pointer_set_cursor(wl_pointer::Resource *resource, u
  * Constructs a WaylandPointer for the given \a seat and with the given \a parent.
  */
 WaylandPointer::WaylandPointer(WaylandSeat *seat, QObject *parent)
-    : WaylandObject(parent)
-    , d_ptr(new WaylandPointerPrivate(this, seat))
+    : WaylandObject(* new WaylandPointerPrivate(this, seat), parent)
 {
     connect(&d_func()->enteredSurfaceDestroyListener, &WaylandDestroyListener::fired, this, &WaylandPointer::enteredSurfaceDestroyed);
     connect(seat, &WaylandSeat::mouseFocusChanged, this, &WaylandPointer::pointerFocusChanged);
-}
-
-WaylandPointer::~WaylandPointer()
-{
 }
 
 /*!
@@ -175,7 +170,7 @@ void WaylandPointer::setOutput(WaylandOutput *output)
     Q_D(WaylandPointer);
     if (d->output == output) return;
     d->output = output;
-    emit outputChanged();
+    Q_EMIT outputChanged();
 }
 
 /*!
@@ -405,3 +400,5 @@ void WaylandPointer::pointerFocusChanged(WaylandView *newFocus, WaylandView *old
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawaylandpointer.cpp"

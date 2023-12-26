@@ -1,24 +1,19 @@
-# SPDX-FileCopyrightText: 2022 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-#
+# SPDX-FileCopyrightText: 2022-2024 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
 # SPDX-License-Identifier: BSD-3-Clause
 
-liri_add_executable(aurora-test-qmlclient
-    OUTPUT_NAME
-        qmlclient
-    SOURCES
-        main.cpp
-    RESOURCES
-        qml.qrc
-    DEFINES
-        QT_NO_CAST_FROM_ASCII
-        QT_NO_FOREACH
-    LIBRARIES
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::GuiPrivate
-        Qt::Quick
-    GUI
-    NO_TARGET_INSTALLATION
+add_executable(aurora-test-qmlclient
+    main.cpp
+    qml.qrc
 )
 
-liri_finalize_target(aurora-test-qmlclient)
+set_target_properties(aurora-test-qmlclient
+    PROPERTIES OUTPUT_NAME qmlclient
+)
+
+target_link_libraries(aurora-test-qmlclient
+    PRIVATE
+        Qt6::CorePrivate
+        Qt6::Gui
+        Qt6::GuiPrivate
+        Qt6::Quick
+)

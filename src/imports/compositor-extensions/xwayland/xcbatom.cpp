@@ -71,9 +71,9 @@ QString Atom::nameFromAtom(xcb_atom_t atom)
     if (reply) {
         int length = xcb_get_atom_name_name_length(reply);
         char *n = xcb_get_atom_name_name(reply);
-        name = name.sprintf("%.*s", length, n);
+        name = name.asprintf("%.*s", length, n);
     } else {
-        name = name.sprintf("(atom %u)", atom);
+        name = name.asprintf("(atom %u)", atom);
     }
 
     free(reply);

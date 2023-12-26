@@ -17,6 +17,8 @@
 
 #include <LiriAuroraCompositor/private/aurora-server-wayland.h>
 
+#include <QtCore/qpointer.h>
+
 //
 //  W A R N I N G
 //  -------------
@@ -38,7 +40,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandWlShellPrivate
 {
     Q_DECLARE_PUBLIC(WaylandWlShell)
 public:
-    WaylandWlShellPrivate(WaylandWlShell *self);
+    WaylandWlShellPrivate();
 
     void unregisterShellSurface(WaylandWlShellSurface *shellSurface);
 
@@ -56,7 +58,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandWlShellSurfacePrivate
 {
     Q_DECLARE_PUBLIC(WaylandWlShellSurface)
 public:
-    WaylandWlShellSurfacePrivate(WaylandWlShellSurface *self);
+    WaylandWlShellSurfacePrivate();
     ~WaylandWlShellSurfacePrivate() override;
 
     static WaylandWlShellSurfacePrivate *get(WaylandWlShellSurface *surface) { return surface->d_func(); }

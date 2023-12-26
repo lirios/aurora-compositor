@@ -12,11 +12,7 @@
 #include "wayland_wrapper/aurorawldatadevicemanager_p.h"
 #endif
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-#if QT_CONFIG(im)
 #include "aurorawaylandinputmethodcontrol_p.h"
-#endif
-#endif
 
 #include <LiriAuroraCompositor/WaylandCompositor>
 #include <LiriAuroraCompositor/WaylandClient>
@@ -27,6 +23,8 @@
 #include <LiriAuroraCompositor/private/aurorawaylandview_p.h>
 #include <LiriAuroraCompositor/private/aurorawaylandseat_p.h>
 #include <LiriAuroraCompositor/private/aurorawaylandutils_p.h>
+
+#include <QtCore/private/qobject_p.h>
 
 #include <QtGui/QGuiApplication>
 #include <QtGui/QScreen>
@@ -83,9 +81,8 @@ static QRegion infiniteRegion() {
 QList<WaylandSurfacePrivate *> WaylandSurfacePrivate::uninitializedSurfaces;
 #endif
 
-WaylandSurfacePrivate::WaylandSurfacePrivate(WaylandSurface *self)
-    : q_ptr(self)
-    , inputRegion(infiniteRegion())
+WaylandSurfacePrivate::WaylandSurfacePrivate()
+    : inputRegion(infiniteRegion())
 {
     pending.buffer = WaylandBufferRef();
     pending.newlyAttached = false;
@@ -412,7 +409,7 @@ Internal::ClientBuffer *WaylandSurfacePrivate::getBuffer(struct ::wl_resource *b
  * Constructs a an uninitialized WaylandSurface.
  */
 WaylandSurface::WaylandSurface()
-    : WaylandSurface(*new WaylandSurfacePrivate(this))
+    : WaylandObject(*new WaylandSurfacePrivate())
 {
 }
 
@@ -421,18 +418,16 @@ WaylandSurface::WaylandSurface()
  * and \a version.
  */
 WaylandSurface::WaylandSurface(WaylandCompositor *compositor, WaylandClient *client, uint id, int version)
-    : WaylandSurface(*new WaylandSurfacePrivate(this))
+    : WaylandObject(*new WaylandSurfacePrivate())
 {
     initialize(compositor, client, id, version);
 }
 
 /*!
  * \internal
- * Constructs a WaylandSurface with the private object \a dptr and \a parent.
  */
 WaylandSurface::WaylandSurface(WaylandSurfacePrivate &dptr)
-    : WaylandObject()
-    , d_ptr(&dptr)
+    : WaylandObject(dptr)
 {
 }
 
@@ -465,10 +460,8 @@ void WaylandSurface::initialize(WaylandCompositor *compositor, WaylandClient *cl
     d->client = client;
     d->init(client->client(), id, version);
     d->isInitialized = true;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #if QT_CONFIG(im)
     d->inputMethodControl = new WaylandInputMethodControl(this);
-#endif
 #endif
 #ifndef QT_NO_DEBUG
     WaylandSurfacePrivate::removeUninitializedSurface(d);
@@ -862,14 +855,12 @@ bool WaylandSurface::isOpaque() const
     return d->isOpaque;
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #if QT_CONFIG(im)
 WaylandInputMethodControl *WaylandSurface::inputMethodControl() const
 {
     Q_D(const WaylandSurface);
     return d->inputMethodControl;
 }
-#endif
 #endif
 
 /*!
@@ -1140,3 +1131,5 @@ void WaylandSurfacePrivate::Subsurface::subsurface_set_desync(wl_subsurface::Res
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawaylandsurface.cpp"

@@ -6,7 +6,9 @@
 #include <LiriAuroraCompositor/WaylandQuickShellSurfaceItem>
 #include <LiriAuroraCompositor/WaylandQuickShellIntegration>
 #include <LiriAuroraCompositor/private/aurorawaylandquickitem_p.h>
+
 #include <QtCore/QBasicTimer>
+#include <QtCore/qpointer.h>
 
 #include <functional>
 
@@ -32,12 +34,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickShellSurfaceItemPrivate : public W
 {
     Q_DECLARE_PUBLIC(WaylandQuickShellSurfaceItem)
 public:
-    WaylandQuickShellSurfaceItemPrivate(WaylandQuickShellSurfaceItem *self)
-        : WaylandQuickItemPrivate(self)
-        , q_ptr(self)
-    {
-    }
-
+    WaylandQuickShellSurfaceItemPrivate() {}
     WaylandQuickShellSurfaceItem *maybeCreateAutoPopup(WaylandShellSurface* shellSurface);
     static WaylandQuickShellSurfaceItemPrivate *get(WaylandQuickShellSurfaceItem *item) { return item->d_func(); }
 
@@ -50,9 +47,6 @@ public:
     bool m_autoCreatePopupItems = true;
     bool staysOnTop = false;
     bool staysOnBottom = false;
-
-private:
-    WaylandQuickShellSurfaceItem *q_ptr = nullptr;
 };
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickShellEventFilter : public QObject

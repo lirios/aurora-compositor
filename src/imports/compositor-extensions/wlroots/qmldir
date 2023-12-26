@@ -1,3 +1,0 @@
-module Aurora.Compositor.Wlroots
-plugin auroracompositorwlrootsplugin
-classname AuroraCompositorWlrootsPlugin

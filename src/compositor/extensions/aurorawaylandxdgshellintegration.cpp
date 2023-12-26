@@ -53,11 +53,9 @@ bool XdgToplevelIntegration::eventFilter(QObject *object, QEvent *event)
         return filterMouseMoveEvent(mouseEvent);
     } else if (event->type() == QEvent::MouseButtonRelease || event->type() == QEvent::TouchEnd || event->type() == QEvent::TouchCancel) {
         return filterPointerReleaseEvent();
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     } else if (event->type() == QEvent::TouchUpdate) {
         QTouchEvent *touchEvent = static_cast<QTouchEvent *>(event);
         return filterTouchUpdateEvent(touchEvent);
-#endif
     }
     return WaylandQuickShellIntegration::eventFilter(object, event);
 }
@@ -88,7 +86,6 @@ bool XdgToplevelIntegration::filterPointerMoveEvent(const QPointF &scenePosition
     return false;
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 bool XdgToplevelIntegration::filterTouchUpdateEvent(QTouchEvent *event)
 {
     if (event->pointCount() == 0)
@@ -100,18 +97,13 @@ bool XdgToplevelIntegration::filterTouchUpdateEvent(QTouchEvent *event)
     QEventPoint point = event->points().first();
     return filterPointerMoveEvent(point.scenePosition());
  }
-#endif
 
 bool XdgToplevelIntegration::filterMouseMoveEvent(QMouseEvent *event)
 {
     Q_ASSERT(grabberState != GrabberState::Move || moveState.seat == m_item->compositor()->seatFor(event));
     Q_ASSERT(grabberState != GrabberState::Resize || resizeState.seat == m_item->compositor()->seatFor(event));
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     return filterPointerMoveEvent(event->scenePosition());
-#else
-    return filterPointerMoveEvent(event->windowPos());
-#endif
 }
 
 bool XdgToplevelIntegration::filterPointerReleaseEvent()
@@ -146,11 +138,7 @@ void XdgToplevelIntegration::handleSetMaximized()
     if (!m_item->view()->isPrimary())
         return;
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QList<WaylandXdgToplevel::State> states = m_toplevel->states();
-#else
-    QVector<WaylandXdgToplevel::State> states = m_toplevel->states();
-#endif
 
     if (!states.contains(WaylandXdgToplevel::State::FullscreenState) && !states.contains(WaylandXdgToplevel::State::MaximizedState)) {
         windowedGeometry.initialWindowSize = m_xdgSurface->windowGeometry().size();
@@ -206,11 +194,7 @@ void XdgToplevelIntegration::handleSetFullscreen()
     if (!m_item->view()->isPrimary())
         return;
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QList<WaylandXdgToplevel::State> states = m_toplevel->states();
-#else
-    QVector<WaylandXdgToplevel::State> states = m_toplevel->states();
-#endif
 
     if (!states.contains(WaylandXdgToplevel::State::FullscreenState) && !states.contains(WaylandXdgToplevel::State::MaximizedState)) {
         windowedGeometry.initialWindowSize = m_xdgSurface->windowGeometry().size();
@@ -325,3 +309,5 @@ void XdgPopupIntegration::handleGeometryChanged()
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawaylandxdgshellintegration_p.cpp"

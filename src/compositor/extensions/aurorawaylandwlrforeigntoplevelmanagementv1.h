@@ -38,9 +38,6 @@ public:
 Q_SIGNALS:
     void handleAdded(Aurora::Compositor::WaylandWlrForeignToplevelHandleV1 *handle);
     void clientStopped(Aurora::Compositor::WaylandClient *client);
-
-private:
-    QScopedPointer<WaylandWlrForeignToplevelManagerV1Private> const d_ptr;
 };
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrForeignToplevelHandleV1 : public QObject
@@ -127,12 +124,8 @@ Q_SIGNALS:
     void closeRequested();
     void rectangleChanged();
     void parentChanged();
-
-private:
-    QScopedPointer<WaylandWlrForeignToplevelHandleV1Private> const d_ptr;
 };
 
 } // namespace Compositor
 
 } // namespace Aurora
-

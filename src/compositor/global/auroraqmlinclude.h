@@ -13,7 +13,6 @@
 //
 // We mean it.
 //
-
 #include <QtCore/qglobal.h>
 #include <LiriAuroraGlobalPrivate/aurorafeatures.h>
 

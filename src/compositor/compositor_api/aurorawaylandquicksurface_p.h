@@ -14,7 +14,6 @@
 // We mean it.
 //
 
-#include <LiriAuroraCompositor/WaylandQuickSurface>
 #include <LiriAuroraCompositor/private/aurorawaylandsurface_p.h>
 
 namespace Aurora {
@@ -25,8 +24,11 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickSurfacePrivate : public WaylandSur
 {
     Q_DECLARE_PUBLIC(WaylandQuickSurface)
 public:
-    WaylandQuickSurfacePrivate(WaylandQuickSurface *self)
-        : WaylandSurfacePrivate(self)
+    WaylandQuickSurfacePrivate()
+    {
+    }
+
+    ~WaylandQuickSurfacePrivate() override
     {
     }
 

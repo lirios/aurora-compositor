@@ -41,7 +41,6 @@ public:
 
     WaylandWlrLayerShellV1();
     WaylandWlrLayerShellV1(WaylandCompositor *compositor);
-    ~WaylandWlrLayerShellV1();
 
     void initialize() override;
 
@@ -53,9 +52,6 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void layerSurfaceCreated(Aurora::Compositor::WaylandWlrLayerSurfaceV1 *layerSurface);
-
-private:
-    WaylandWlrLayerShellV1Private *const d_ptr;
 };
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrLayerSurfaceV1
@@ -63,7 +59,9 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrLayerSurfaceV1
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandWlrLayerSurfaceV1)
+#if LIRI_FEATURE_aurora_compositor_quick
     AURORA_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandWlrLayerSurfaceV1)
+#endif
     Q_PROPERTY(Aurora::Compositor::WaylandWlrLayerShellV1 *shell READ shell NOTIFY shellChanged)
     Q_PROPERTY(Aurora::Compositor::WaylandSurface *surface READ surface NOTIFY surfaceChanged)
     Q_PROPERTY(Aurora::Compositor::WaylandOutput *output READ output CONSTANT)
@@ -80,9 +78,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrLayerSurfaceV1
     Q_PROPERTY(Aurora::Compositor::WaylandWlrLayerSurfaceV1::KeyboardInteractivity keyboardInteractivity READ keyboardInteractivity NOTIFY keyboardInteractivityChanged)
     Q_PROPERTY(bool mapped READ isMapped NOTIFY mappedChanged)
     Q_PROPERTY(bool configured READ isConfigured NOTIFY configuredChanged)
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     Q_MOC_INCLUDE("aurorawaylandsurface.h")
-#endif
     public:
         enum Anchor {
                  TopAnchor = 1,
@@ -101,21 +97,13 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrLayerSurfaceV1
     };
     Q_ENUM(KeyboardInteractivity)
 
-    WaylandWlrLayerSurfaceV1();
     WaylandWlrLayerSurfaceV1(WaylandWlrLayerShellV1 *shell,
                              WaylandSurface *surface,
                              WaylandOutput *output,
                              WaylandWlrLayerShellV1::Layer layer,
                              const QString &nameSpace,
-                             const Aurora::Compositor::WaylandResource &resource);
+                             const WaylandResource &resource);
     ~WaylandWlrLayerSurfaceV1() override;
-
-    Q_INVOKABLE void initialize(Aurora::Compositor::WaylandWlrLayerShellV1 *shell,
-                                Aurora::Compositor::WaylandSurface *surface,
-                                Aurora::Compositor::WaylandOutput *output,
-                                Aurora::Compositor::WaylandWlrLayerShellV1::Layer layer,
-                                const QString &nameSpace,
-                                const Aurora::Compositor::WaylandResource &resource);
 
     WaylandWlrLayerShellV1 *shell() const override;
     WaylandSurface *surface() const;
@@ -167,8 +155,6 @@ Q_SIGNALS:
     void xdgPopupParentChanged(Aurora::Compositor::WaylandXdgPopup *popup);
 
 private:
-    QScopedPointer<WaylandWlrLayerSurfaceV1Private> const d_ptr;
-
     void initialize() override;
 };
 

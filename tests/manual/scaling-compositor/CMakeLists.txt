@@ -1,22 +1,17 @@
-# SPDX-FileCopyrightText: 2022 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-#
+# SPDX-FileCopyrightText: 2022-2024 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
 # SPDX-License-Identifier: BSD-3-Clause
 
-liri_add_executable(aurora-test-scaling-compositor
-    OUTPUT_NAME
-        scaling-compositor
-    SOURCES
-        main.cpp
-    RESOURCES
-        qml.qrc
-    DEFINES
-        QT_NO_CAST_FROM_ASCII
-        QT_NO_FOREACH
-    LIBRARIES
-        Qt::Gui
-        Qt::Qml
-    GUI
-    NO_TARGET_INSTALLATION
+add_executable(aurora-test-scaling-compositor
+    main.cpp
+    qml.qrc
 )
 
-liri_finalize_target(aurora-test-scaling-compositor)
+set_target_properties(aurora-test-scaling-compositor
+    PROPERTIES OUTPUT_NAME scaling-compositor
+)
+
+target_link_libraries(aurora-test-scaling-compositor
+    PRIVATE
+        Qt6::Gui
+	Qt6::Qml
+)

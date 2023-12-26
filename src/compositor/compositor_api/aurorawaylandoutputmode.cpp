@@ -4,6 +4,10 @@
 #include "aurorawaylandoutputmode.h"
 #include "aurorawaylandoutputmode_p.h"
 
+namespace Aurora {
+
+namespace Compositor {
+
 /*!
    \class WaylandOutputMode
    \inmodule AuroraCompositor
@@ -15,10 +19,6 @@
 
    \sa WaylandOutput
 */
-
-namespace Aurora {
-
-namespace Compositor {
 
 WaylandOutputMode::WaylandOutputMode()
     : d(new WaylandOutputModePrivate)

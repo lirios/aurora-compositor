@@ -18,18 +18,24 @@ namespace Aurora {
 namespace Compositor {
 
 WaylandQuickSurface::WaylandQuickSurface()
-    : WaylandSurface(*new WaylandQuickSurfacePrivate(this))
+    : WaylandSurface(* new WaylandQuickSurfacePrivate())
 {
 
 }
 WaylandQuickSurface::WaylandQuickSurface(WaylandCompositor *compositor, WaylandClient *client, quint32 id, int version)
-    : WaylandSurface(*new WaylandQuickSurfacePrivate(this))
+                    : WaylandSurface(* new WaylandQuickSurfacePrivate())
 {
     initialize(compositor, client, id, version);
 }
 
+WaylandQuickSurface::WaylandQuickSurface(WaylandQuickSurfacePrivate &dptr)
+    : WaylandSurface(dptr)
+{
+}
+
 WaylandQuickSurface::~WaylandQuickSurface()
 {
+
 }
 
 /*!
@@ -56,3 +62,5 @@ void WaylandQuickSurface::setUseTextureAlpha(bool useTextureAlpha)
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawaylandquicksurface.cpp"

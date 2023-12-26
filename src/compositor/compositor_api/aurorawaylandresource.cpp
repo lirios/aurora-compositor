@@ -17,7 +17,7 @@ namespace Compositor {
  * The WaylandResource is a simple wrapper around the Wayland type \c wl_resource, and makes it
  * possible to use wl_resource pointers in Qt Quick APIs.
  *
- * \sa {Qt Wayland Compositor Examples - Custom Shell}
+ * \sa {Custom Shell}
  */
 
 /*!
@@ -44,3 +44,5 @@ WaylandResource::WaylandResource(wl_resource *resource)
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawaylandresource.cpp"

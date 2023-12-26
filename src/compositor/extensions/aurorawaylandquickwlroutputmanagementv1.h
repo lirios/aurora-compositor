@@ -26,6 +26,9 @@ public:
 
     QQmlListProperty<WaylandWlrOutputModeV1> modesList();
 
+    static qsizetype modesCount(QQmlListProperty<WaylandWlrOutputModeV1> *prop);
+    static WaylandWlrOutputModeV1 *modesAt(QQmlListProperty<WaylandWlrOutputModeV1> *prop, qsizetype index);
+
 protected:
     void classBegin() override {}
     void componentComplete() override;

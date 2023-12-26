@@ -23,3 +23,5 @@ ClientBufferIntegrationPlugin::~ClientBufferIntegrationPlugin()
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawlclientbufferintegrationplugin_p.cpp"

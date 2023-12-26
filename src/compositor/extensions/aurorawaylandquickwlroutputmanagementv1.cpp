@@ -20,13 +20,19 @@ WaylandQuickWlrOutputHeadV1::WaylandQuickWlrOutputHeadV1(QObject *parent)
 
 QQmlListProperty<WaylandWlrOutputModeV1> WaylandQuickWlrOutputHeadV1::modesList()
 {
-    auto countFunc = [](QQmlListProperty<WaylandWlrOutputModeV1> *prop) {
-        return static_cast<WaylandQuickWlrOutputHeadV1 *>(prop->object)->modes().size();
-    };
-    auto atFunc = [](QQmlListProperty<WaylandWlrOutputModeV1> *prop, int index) {
-        return static_cast<WaylandQuickWlrOutputHeadV1 *>(prop->object)->modes().at(index);
-    };
-    return QQmlListProperty<WaylandWlrOutputModeV1>(this, this, countFunc, atFunc);
+    return QQmlListProperty<WaylandWlrOutputModeV1>(this, this, modesCount, modesAt);
+}
+
+qsizetype WaylandQuickWlrOutputHeadV1::modesCount(QQmlListProperty<WaylandWlrOutputModeV1> *prop)
+{
+    return static_cast<WaylandQuickWlrOutputHeadV1 *>(prop->object)->modes().size();
+}
+
+WaylandWlrOutputModeV1 *
+WaylandQuickWlrOutputHeadV1::modesAt(QQmlListProperty<WaylandWlrOutputModeV1> *prop,
+                                     qsizetype index)
+{
+    return static_cast<WaylandQuickWlrOutputHeadV1 *>(prop->object)->modes().at(index);
 }
 
 void WaylandQuickWlrOutputHeadV1::componentComplete()
@@ -55,7 +61,7 @@ QQmlListProperty<WaylandWlrOutputConfigurationHeadV1> WaylandQuickWlrOutputConfi
     auto countFunc = [](QQmlListProperty<WaylandWlrOutputConfigurationHeadV1> *prop) {
         return static_cast<WaylandQuickWlrOutputConfigurationV1 *>(prop->object)->enabledHeads().size();
     };
-    auto atFunc = [](QQmlListProperty<WaylandWlrOutputConfigurationHeadV1> *prop, int index) {
+    auto atFunc = [](QQmlListProperty<WaylandWlrOutputConfigurationHeadV1> *prop, qsizetype index) {
         return static_cast<WaylandQuickWlrOutputConfigurationV1 *>(prop->object)->enabledHeads().at(index);
     };
     return QQmlListProperty<WaylandWlrOutputConfigurationHeadV1>(this, this, countFunc, atFunc);
@@ -66,7 +72,7 @@ QQmlListProperty<WaylandWlrOutputHeadV1> WaylandQuickWlrOutputConfigurationV1::d
     auto countFunc = [](QQmlListProperty<WaylandWlrOutputHeadV1> *prop) {
         return static_cast<WaylandQuickWlrOutputConfigurationV1 *>(prop->object)->disabledHeads().size();
     };
-    auto atFunc = [](QQmlListProperty<WaylandWlrOutputHeadV1> *prop, int index) {
+    auto atFunc = [](QQmlListProperty<WaylandWlrOutputHeadV1> *prop, qsizetype index) {
         return static_cast<WaylandQuickWlrOutputConfigurationV1 *>(prop->object)->disabledHeads().at(index);
     };
     return QQmlListProperty<WaylandWlrOutputHeadV1>(this, this, countFunc, atFunc);

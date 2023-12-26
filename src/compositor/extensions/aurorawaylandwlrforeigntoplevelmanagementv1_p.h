@@ -34,7 +34,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrForeignToplevelManagerV1Private
 {
     Q_DECLARE_PUBLIC(WaylandWlrForeignToplevelManagerV1)
 public:
-    explicit WaylandWlrForeignToplevelManagerV1Private(WaylandWlrForeignToplevelManagerV1 *self);
+    explicit WaylandWlrForeignToplevelManagerV1Private();
 
     static WaylandWlrForeignToplevelManagerV1Private *get(WaylandWlrForeignToplevelManagerV1 *self) { return self->d_func(); }
 
@@ -48,11 +48,12 @@ protected:
 };
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrForeignToplevelHandleV1Private
-        : public PrivateServer::zwlr_foreign_toplevel_handle_v1
+        : public QObjectPrivate
+        , public PrivateServer::zwlr_foreign_toplevel_handle_v1
 {
     Q_DECLARE_PUBLIC(WaylandWlrForeignToplevelHandleV1)
 public:
-    explicit WaylandWlrForeignToplevelHandleV1Private(WaylandWlrForeignToplevelHandleV1 *self);
+    WaylandWlrForeignToplevelHandleV1Private();
 
     static WaylandWlrForeignToplevelHandleV1Private *get(WaylandWlrForeignToplevelHandleV1 *self) { return self->d_func(); }
 
@@ -68,8 +69,6 @@ public:
     WaylandWlrForeignToplevelHandleV1 *parentHandle = nullptr;
 
 protected:
-    WaylandWlrForeignToplevelHandleV1 *q_ptr;
-
     void zwlr_foreign_toplevel_handle_v1_set_maximized(Resource *resource) override;
     void zwlr_foreign_toplevel_handle_v1_unset_maximized(Resource *resource) override;
     void zwlr_foreign_toplevel_handle_v1_set_minimized(Resource *resource) override;

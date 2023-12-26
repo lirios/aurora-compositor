@@ -25,7 +25,6 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrScreencopyManagerV1
 public:
     WaylandWlrScreencopyManagerV1();
     WaylandWlrScreencopyManagerV1(WaylandCompositor *compositor);
-    ~WaylandWlrScreencopyManagerV1();
 
     void initialize() override;
 
@@ -34,9 +33,6 @@ public:
 
 Q_SIGNALS:
     void captureOutputRequested(Aurora::Compositor::WaylandWlrScreencopyFrameV1 *frame);
-
-private:
-    QScopedPointer<WaylandWlrScreencopyManagerV1Private> const d_ptr;
 };
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandWlrScreencopyFrameV1 : public QObject
@@ -70,8 +66,6 @@ Q_SIGNALS:
     void ready();
 
 private:
-    QScopedPointer<WaylandWlrScreencopyFrameV1Private> const d_ptr;
-
     explicit WaylandWlrScreencopyFrameV1(QObject *parent = nullptr);
 
     friend class WaylandWlrScreencopyManagerV1Private;

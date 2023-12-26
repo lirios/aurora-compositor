@@ -66,7 +66,7 @@ void dumpProperty(xcb_atom_t property, xcb_get_property_reply_t *reply)
         return;
     }
 
-    buffer += QString().sprintf("%s/%d, length %d (value_len %d): ",
+    buffer += QString::asprintf("%s/%d, length %d (value_len %d): ",
                                 qPrintable(Xcb::Atom::nameFromAtom(reply->type)),
                                 reply->format,
                                 xcb_get_property_value_length(reply),
@@ -74,12 +74,12 @@ void dumpProperty(xcb_atom_t property, xcb_get_property_reply_t *reply)
 
     if (reply->type == Xcb::resources()->atoms->incr) {
         qint32 *v = (qint32 *)xcb_get_property_value(reply);
-        buffer += QString().sprintf("%d", *v);
+        buffer += QString::asprintf("%d", *v);
     } else if (reply->type == Xcb::resources()->atoms->utf8_string ||
                reply->type == Xcb::resources()->atoms->string) {
         const char *v = (const char *)xcb_get_property_value(reply);
         int len = reply->value_len > 40 ? 40 : reply->value_len;
-        buffer += QString().sprintf("\"%.*s\"", len, v);
+        buffer += QString::asprintf("\"%.*s\"", len, v);
     } else if (reply->type == XCB_ATOM_ATOM) {
         xcb_atom_t *v = (xcb_atom_t *)xcb_get_property_value(reply);
 

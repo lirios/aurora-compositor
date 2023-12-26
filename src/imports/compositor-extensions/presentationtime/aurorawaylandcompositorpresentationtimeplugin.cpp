@@ -11,6 +11,8 @@ namespace Aurora {
 
 namespace Compositor {
 
+AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(WaylandPresentationTime)
+
 /*!
     \qmlmodule Aurora.Compositor.PresentationTime
     \title Qt Wayland Presentation Time Extension
@@ -32,8 +34,6 @@ namespace Compositor {
     import Aurora.Compositor.PresentationTime
     \endqml
 */
-
-AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_CLASS(WaylandPresentationTime)
 
 class WaylandCompositorPresentationTimePlugin : public QQmlExtensionPlugin
 {

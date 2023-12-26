@@ -20,7 +20,6 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandXdgDecorationManagerV1 : public Wayland
 
 public:
     explicit WaylandXdgDecorationManagerV1();
-    ~WaylandXdgDecorationManagerV1();
 
     void initialize() override;
 
@@ -31,9 +30,6 @@ public:
 
 Q_SIGNALS:
     void preferredModeChanged();
-
-private:
-    QScopedPointer<WaylandXdgDecorationManagerV1Private> const d_ptr;
 };
 
 } // namespace Compositor

@@ -14,14 +14,16 @@
 // We mean it.
 //
 
-#include <QtCore/QMutex>
+#include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/QSGMaterialShader>
 #include <QtQuick/QSGMaterial>
-#include <QtQuick/QQuickWindow>
 
 #include <LiriAuroraCompositor/WaylandQuickItem>
 #include <LiriAuroraCompositor/WaylandOutput>
 
+#include <QtCore/qpointer.h>
+
+class QMutex;
 class QOpenGLTexture;
 
 namespace Aurora {
@@ -31,7 +33,6 @@ namespace Compositor {
 class WaylandSurfaceTextureProvider;
 
 #if QT_CONFIG(opengl)
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 class WaylandBufferMaterialShader : public QSGMaterialShader
 {
 public:
@@ -70,56 +71,13 @@ private:
     QVarLengthArray<QSGTexture*, 3> m_scenegraphTextures;
     WaylandBufferRef m_bufferRef;
 };
-#else
-class WaylandBufferMaterialShader : public QSGMaterialShader
-{
-public:
-    WaylandBufferMaterialShader(WaylandBufferRef::BufferFormatEgl format);
-
-    void updateState(const RenderState &state, QSGMaterial *newEffect, QSGMaterial *oldEffect) override;
-    char const *const *attributeNames() const override;
-
-protected:
-    void initialize() override;
-
-private:
-    const WaylandBufferRef::BufferFormatEgl m_format;
-    int m_id_matrix;
-    int m_id_opacity;
-    QVarLengthArray<int, 3> m_id_tex;
-};
-
-class WaylandBufferMaterial : public QSGMaterial
-{
-public:
-    WaylandBufferMaterial(WaylandBufferRef::BufferFormatEgl format);
-    ~WaylandBufferMaterial() override;
-
-    void setTextureForPlane(int plane, QOpenGLTexture *texture);
-
-    void bind();
-
-    QSGMaterialType *type() const override;
-    QSGMaterialShader *createShader() const override;
-
-private:
-    void setTextureParameters(GLenum target);
-    void ensureTextures(int count);
-
-    const WaylandBufferRef::BufferFormatEgl m_format;
-    QVarLengthArray<QOpenGLTexture*, 3> m_textures;
-};
-#endif
 #endif // QT_CONFIG(opengl)
 
-class WaylandQuickItemPrivate
+class WaylandQuickItemPrivate : public QQuickItemPrivate
 {
     Q_DECLARE_PUBLIC(WaylandQuickItem)
 public:
-    WaylandQuickItemPrivate(WaylandQuickItem *self)
-        : q_ptr(self)
-    {
-    }
+    WaylandQuickItemPrivate() = default;
 
     void init()
     {
@@ -142,7 +100,7 @@ public:
         QObject::connect(view.data(), &WaylandView::outputChanged, q, &WaylandQuickItem::outputChanged);
         QObject::connect(view.data(), &WaylandView::outputChanged, q, &WaylandQuickItem::updateOutput);
         QObject::connect(view.data(), &WaylandView::bufferLockedChanged, q, &WaylandQuickItem::bufferLockedChanged);
-        QObject::connect(view.data(), &WaylandView::allowDiscardFrontBufferChanged, q, &WaylandQuickItem::allowDiscardFrontBufferChanged);
+        QObject::connect(view.data(), &WaylandView::allowDiscardFrontBufferChanged, q, &WaylandQuickItem::allowDiscardFrontBuffer);
 
         q->updateWindow();
     }
@@ -198,9 +156,6 @@ public:
     WaylandSurface::Origin origin = WaylandSurface::OriginTopLeft;
     QPointer<QObject> subsurfaceHandler;
     QList<WaylandSeat *> touchingSeats;
-
-private:
-    WaylandQuickItem *q_ptr = nullptr;
 };
 
 } // namespace Compositor

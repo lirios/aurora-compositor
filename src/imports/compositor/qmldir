@@ -1,3 +1,0 @@
-module Aurora.Compositor
-plugin auroracompositorplugin
-classname AuroraWaylandCompositorPlugin

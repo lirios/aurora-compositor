@@ -1,3 +1,0 @@
-module Aurora.Compositor.Ext
-plugin auroraextplugin
-classname AuroraCompositorExtPlugin

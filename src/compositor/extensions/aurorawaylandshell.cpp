@@ -8,25 +8,16 @@ namespace Aurora {
 
 namespace Compositor {
 
-WaylandShellPrivate::WaylandShellPrivate(WaylandShell *self)
-    : WaylandCompositorExtensionPrivate(self)
-    , q_ptr(self)
+WaylandShellPrivate::WaylandShellPrivate()
 {
 }
 
 WaylandShell::WaylandShell()
-    : WaylandCompositorExtension()
-    , d_ptr(new WaylandShellPrivate(this))
 {
 }
 
 WaylandShell::WaylandShell(WaylandObject *waylandObject)
-    : WaylandCompositorExtension(waylandObject)
-    , d_ptr(new WaylandShellPrivate(this))
-{
-}
-
-WaylandShell::~WaylandShell()
+    : WaylandCompositorExtension(waylandObject, *new WaylandShellPrivate())
 {
 }
 
@@ -40,7 +31,7 @@ WaylandShell::~WaylandShell()
  */
 
 /*!
- * \qmlproperty enumeration AuroraCompositor::Shell::focusPolicy
+ * \qmlproperty enumeration Shell::focusPolicy
  *
  * This property holds the focus policy of the Shell.
  */
@@ -65,6 +56,16 @@ void WaylandShell::setFocusPolicy(WaylandShell::FocusPolicy focusPolicy)
 
     d->focusPolicy = focusPolicy;
     emit focusPolicyChanged();
+}
+
+WaylandShell::WaylandShell(WaylandShellPrivate &dd)
+    : WaylandCompositorExtension(dd)
+{
+}
+
+WaylandShell::WaylandShell(WaylandObject *container, WaylandShellPrivate &dd)
+    : WaylandCompositorExtension(container, dd)
+{
 }
 
 } // namespace Compositor

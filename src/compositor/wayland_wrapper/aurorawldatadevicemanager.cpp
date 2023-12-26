@@ -11,11 +11,11 @@
 #include "aurorawldatasource_p.h"
 #include "aurorawldataoffer_p.h"
 #include "aurorawaylandmimehelper_p.h"
-#include "auroraunixutils_p.h"
 
 #include <QtCore/QDebug>
 #include <QtCore/QSocketNotifier>
 #include <fcntl.h>
+#include <QtCore/private/qcore_unix_p.h>
 #include <QtCore/QFile>
 
 namespace Aurora {
@@ -69,7 +69,7 @@ void DataDeviceManager::retain()
 {
     QList<QString> offers = m_current_selection_source->mimeTypes();
     finishReadFromClient();
-    if (m_retainedReadIndex >= offers.count()) {
+    if (m_retainedReadIndex >= offers.size()) {
         WaylandCompositorPrivate::get(m_compositor)->feedRetainedSelectionData(&m_retainedData);
         return;
     }
@@ -115,7 +115,7 @@ void DataDeviceManager::readFromClient(int fd)
             // when it still tries to write.
             int n;
             do {
-                n = aurora_safe_read(fd, buf, sizeof buf);
+                n = QT_READ(fd, buf, sizeof buf);
             } while (n > 0);
             if (n != -1 || (errno != EAGAIN && errno != EWOULDBLOCK)) {
                 m_obsoleteRetainedReadNotifiers.removeAt(i);
@@ -125,7 +125,7 @@ void DataDeviceManager::readFromClient(int fd)
             return;
         }
     }
-    int n = aurora_safe_read(fd, buf, sizeof buf);
+    int n = QT_READ(fd, buf, sizeof buf);
     if (n <= 0) {
         if (n != -1 || (errno != EAGAIN && errno != EWOULDBLOCK)) {
             finishReadFromClient(true);
@@ -249,3 +249,5 @@ const struct wl_data_offer_interface DataDeviceManager::compositor_offer_interfa
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawldatadevicemanager_p.cpp"

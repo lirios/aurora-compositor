@@ -55,13 +55,12 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandSurface : public WaylandObject
     Q_PROPERTY(bool cursorSurface READ isCursorSurface WRITE markAsCursorSurface NOTIFY cursorSurfaceChanged)
     Q_PROPERTY(bool inhibitsIdle READ inhibitsIdle NOTIFY inhibitsIdleChanged)
     Q_PROPERTY(bool isOpaque READ isOpaque NOTIFY isOpaqueChanged)
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     Q_MOC_INCLUDE("aurorawaylanddrag.h")
     Q_MOC_INCLUDE("aurorawaylandcompositor.h")
+
     QML_NAMED_ELEMENT(WaylandSurfaceBase)
     QML_ADDED_IN_VERSION(1, 0)
     QML_UNCREATABLE("Cannot create instance of WaylandSurfaceBase, use WaylandSurface instead")
-#endif
 public:
     enum Origin {
         OriginTopLeft,
@@ -118,10 +117,8 @@ public:
     bool inhibitsIdle() const;
     bool isOpaque() const;
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #if QT_CONFIG(im)
     WaylandInputMethodControl *inputMethodControl() const;
-#endif
 #endif
 
 public Q_SLOTS:
@@ -129,11 +126,14 @@ public Q_SLOTS:
     void updateSelection();
 #endif
 
+protected:
+    WaylandSurface(WaylandSurfacePrivate &dptr);
+
 Q_SIGNALS:
     void hasContentChanged();
     void damaged(const QRegion &rect);
     void parentChanged(Aurora::Compositor::WaylandSurface *newParent, Aurora::Compositor::WaylandSurface *oldParent);
-    void childAdded(Aurora::Compositor::WaylandSurface *child);
+    void childAdded(WaylandSurface *child);
     void sourceGeometryChanged();
     void destinationSizeChanged();
     void bufferSizeChanged();
@@ -152,11 +152,6 @@ Q_SIGNALS:
 
     void configure(bool hasBuffer);
     void redraw();
-
-protected:
-    WaylandSurface(WaylandSurfacePrivate &dptr);
-
-    QScopedPointer<WaylandSurfacePrivate> const d_ptr;
 };
 
 } // namespace Compositor

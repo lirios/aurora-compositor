@@ -15,7 +15,6 @@
 //
 
 #include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
-#include <LiriAuroraCompositor/private/aurorawaylandpresentationtime_p.h>
 #include <LiriAuroraCompositor/private/aurora-server-presentation-time.h>
 
 #include <QObject>
@@ -27,6 +26,7 @@ class QQuickWindow;
 namespace Aurora {
 
 namespace Compositor {
+
 
 class WaylandSurface;
 class WaylandView;
@@ -72,7 +72,7 @@ class WaylandPresentationTimePrivate : public WaylandCompositorExtensionPrivate,
 {
     Q_DECLARE_PUBLIC(WaylandPresentationTime)
 public:
-    WaylandPresentationTimePrivate(WaylandPresentationTime *self);
+    WaylandPresentationTimePrivate();
 
 protected:
     void wp_presentation_feedback(Resource *resource, struct ::wl_resource *surface, uint32_t callback) override;

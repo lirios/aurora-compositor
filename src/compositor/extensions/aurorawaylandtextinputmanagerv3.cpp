@@ -1,37 +1,36 @@
 // Copyright (C) 2021 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include "aurorawaylandtextinputmanagerv4.h"
-#include "aurorawaylandtextinputmanagerv4_p.h"
+#include "aurorawaylandtextinputmanagerv3.h"
+#include "aurorawaylandtextinputmanagerv3_p.h"
 
-#include <LiriAuroraCompositor/WaylandCompositor>
-#include <LiriAuroraCompositor/WaylandSeat>
-
-#include "aurorawaylandtextinputv4.h"
+#include "aurorawaylandcompositor.h"
+#include "aurorawaylandseat.h"
+#include "aurorawaylandtextinputv3.h"
 
 namespace Aurora {
 
 namespace Compositor {
 
-WaylandTextInputManagerV4Private::WaylandTextInputManagerV4Private()
+WaylandTextInputManagerV3Private::WaylandTextInputManagerV3Private()
 {
 }
 
-void WaylandTextInputManagerV4Private::zwp_text_input_manager_v4_get_text_input(Resource *resource, uint32_t id, struct ::wl_resource *seatResource)
+void WaylandTextInputManagerV3Private::zwp_text_input_manager_v3_get_text_input(Resource *resource, uint32_t id, struct ::wl_resource *seatResource)
 {
     qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
-    Q_Q(WaylandTextInputManagerV4);
+    Q_Q(WaylandTextInputManagerV3);
     WaylandCompositor *compositor = static_cast<WaylandCompositor *>(q->extensionContainer());
     WaylandSeat *seat = WaylandSeat::fromSeatResource(seatResource);
-    WaylandTextInputV4 *textInput = WaylandTextInputV4::findIn(seat);
+    WaylandTextInputV3 *textInput = WaylandTextInputV3::findIn(seat);
     if (!textInput) {
-        textInput = new WaylandTextInputV4(seat, compositor);
+        textInput = new WaylandTextInputV3(seat, compositor);
     }
     textInput->add(resource->client(), id, wl_resource_get_version(resource->handle));
     WaylandClient *client = WaylandClient::fromWlClient(compositor, resource->client());
     WaylandClient::TextInputProtocols p = client->textInputProtocols();
-    client->setTextInputProtocols(p.setFlag(WaylandClient::TextInputProtocol::TextInputV4));
+    client->setTextInputProtocols(p.setFlag(WaylandClient::TextInputProtocol::TextInputV3));
     if (!textInput->isInitialized())
         textInput->initialize();
 }
@@ -40,13 +39,13 @@ void WaylandTextInputManagerV4Private::zwp_text_input_manager_v4_get_text_input(
   \internal
   \preliminary
 
-  \qmltype TextInputManagerV4
-  \instantiates WaylandTextInputManagerV4
+  \qmltype TextInputManagerV3
+  \instantiates WaylandTextInputManagerV3
   \inqmlmodule Aurora.Compositor
   \brief Provides access to input methods in the compositor.
 
-  The \c TextInputManagerV4 corresponds to the \c zwp_text_input_manager_v4 interface
-  in the \c text_input_unstable_v4 extension protocol.
+  The \c TextInputManagerV3 corresponds to the \c zwp_text_input_manager_v3 interface
+  in the \c text_input_unstable_v3 extension protocol.
 
   Instantiating this as child of a \l WaylandCompositor adds it to the list of interfaces available
   to the client. If a client binds to it, then it will be used to communciate text input to
@@ -58,12 +57,12 @@ void WaylandTextInputManagerV4Private::zwp_text_input_manager_v4_get_text_input(
 /*!
   \internal
   \preliminary
-  \class WaylandTextInputManagerV4
+  \class WaylandTextInputManagerV3
   \inmodule AuroraCompositor
   \brief Provides access to input methods in the compositor.
 
-  The \c WaylandTextInputManagerV4 corresponds to the \c zwp_text_input_manager_v4 interface
-  in the \c text_input_unstable_v4 extension protocol.
+  The \c WaylandTextInputManagerV3 corresponds to the \c zwp_text_input_manager_v3 interface
+  in the \c text_input_unstable_v3 extension protocol.
 
   Instantiating this as child of a \l WaylandCompositor adds it to the list of interfaces available
   to the client. If a client binds to it, then it will be used to communciate text input to
@@ -71,43 +70,43 @@ void WaylandTextInputManagerV4Private::zwp_text_input_manager_v4_get_text_input(
   \note This protocol is currently a work-in-progress and only exists in Qt for validation purposes. It may change at any time.
 */
 
-WaylandTextInputManagerV4::WaylandTextInputManagerV4()
-    : WaylandCompositorExtensionTemplate<WaylandTextInputManagerV4>(*new WaylandTextInputManagerV4Private)
+WaylandTextInputManagerV3::WaylandTextInputManagerV3()
+    : WaylandCompositorExtensionTemplate<WaylandTextInputManagerV3>(*new WaylandTextInputManagerV3Private)
 {
 }
 
-WaylandTextInputManagerV4::WaylandTextInputManagerV4(WaylandCompositor *compositor)
-    : WaylandCompositorExtensionTemplate<WaylandTextInputManagerV4>(compositor, *new WaylandTextInputManagerV4Private)
+WaylandTextInputManagerV3::WaylandTextInputManagerV3(WaylandCompositor *compositor)
+    : WaylandCompositorExtensionTemplate<WaylandTextInputManagerV3>(compositor, *new WaylandTextInputManagerV3Private)
 {
 }
 
-WaylandTextInputManagerV4::~WaylandTextInputManagerV4()
+WaylandTextInputManagerV3::~WaylandTextInputManagerV3()
 {
 }
 
-void WaylandTextInputManagerV4::initialize()
+void WaylandTextInputManagerV3::initialize()
 {
     qCDebug(gLcAuroraCompositorTextInput) << Q_FUNC_INFO;
 
-    Q_D(WaylandTextInputManagerV4);
+    Q_D(WaylandTextInputManagerV3);
 
     WaylandCompositorExtensionTemplate::initialize();
     WaylandCompositor *compositor = static_cast<WaylandCompositor *>(extensionContainer());
     if (!compositor) {
-        qWarning() << "Failed to find WaylandCompositor when initializing WaylandTextInputManagerV4";
+        qWarning() << "Failed to find WaylandCompositor when initializing WaylandTextInputManagerV3";
         return;
     }
     d->init(compositor->display(), 1);
 }
 
-const wl_interface *WaylandTextInputManagerV4::interface()
+const wl_interface *WaylandTextInputManagerV3::interface()
 {
-    return WaylandTextInputManagerV4Private::interface();
+    return WaylandTextInputManagerV3Private::interface();
 }
 
-QByteArray WaylandTextInputManagerV4::interfaceName()
+QByteArray WaylandTextInputManagerV3::interfaceName()
 {
-    return WaylandTextInputManagerV4Private::interfaceName();
+    return WaylandTextInputManagerV3Private::interfaceName();
 }
 
 } // namespace Compositor

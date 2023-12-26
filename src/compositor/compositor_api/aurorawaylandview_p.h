@@ -7,6 +7,7 @@
 
 #include <QtCore/QPoint>
 #include <QtCore/QMutex>
+#include <QtCore/private/qobject_p.h>
 
 #include <LiriAuroraCompositor/WaylandBufferRef>
 
@@ -28,13 +29,14 @@ namespace Compositor {
 class WaylandSurface;
 class WaylandOutput;
 
-class WaylandViewPrivate
+class WaylandViewPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(WaylandView)
 public:
     static WaylandViewPrivate *get(WaylandView *view) { return view->d_func(); }
 
-    WaylandViewPrivate(WaylandView *self);
+    WaylandViewPrivate()
+    { }
 
     void markSurfaceAsDestroyed(WaylandSurface *surface);
     void setSurface(WaylandSurface *newSurface);
@@ -55,9 +57,6 @@ public:
     bool forceAdvanceSucceed = false;
     bool allowDiscardFrontBuffer = false;
     bool independentFrameCallback = false; //If frame callbacks are independent of the main quick scene graph
-
-private:
-    WaylandView *q_ptr = nullptr;
 };
 
 } // namespace Compositor

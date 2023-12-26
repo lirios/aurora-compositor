@@ -15,6 +15,7 @@
 //
 
 #include <LiriAuroraCompositor/WaylandQuickItem>
+#include <QtCore/private/qglobal_p.h>
 
 namespace Aurora {
 
@@ -28,10 +29,8 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickHardwareLayer : public QObject, pu
     Q_INTERFACES(QQmlParserStatus)
     Q_DECLARE_PRIVATE(WaylandQuickHardwareLayer)
     Q_PROPERTY(int stackingLevel READ stackingLevel WRITE setStackingLevel NOTIFY stackingLevelChanged)
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QML_NAMED_ELEMENT(WaylandHardwareLayer)
     QML_ADDED_IN_VERSION(1, 2)
-#endif
 public:
     explicit WaylandQuickHardwareLayer(QObject *parent = nullptr);
     ~WaylandQuickHardwareLayer() override;
@@ -49,9 +48,6 @@ public:
 
 Q_SIGNALS:
     void stackingLevelChanged();
-
-private:
-    QScopedPointer<WaylandQuickHardwareLayerPrivate> const d_ptr;
 };
 
 } // namespace Compositor

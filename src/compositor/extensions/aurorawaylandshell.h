@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <LiriAuroraCompositor/aurorawaylandqmlinclude.h>
+#include <LiriAuroraCompositor/auroraqmlinclude.h>
 #include <LiriAuroraCompositor/aurorawaylandcompositorextension.h>
 
 namespace Aurora {
@@ -17,11 +17,10 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandShell : public WaylandCompositorExtensi
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandShell)
     Q_PROPERTY(FocusPolicy focusPolicy READ focusPolicy WRITE setFocusPolicy NOTIFY focusPolicyChanged)
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+
     QML_NAMED_ELEMENT(Shell)
     QML_UNCREATABLE("")
     QML_ADDED_IN_VERSION(1, 0)
-#endif
 public:
     enum FocusPolicy {
         AutomaticFocus,
@@ -31,7 +30,6 @@ public:
 
     WaylandShell();
     WaylandShell(WaylandObject *waylandObject);
-    ~WaylandShell();
 
     FocusPolicy focusPolicy() const;
     void setFocusPolicy(FocusPolicy focusPolicy);
@@ -40,7 +38,8 @@ Q_SIGNALS:
     void focusPolicyChanged();
 
 protected:
-    QScopedPointer<WaylandShellPrivate> const d_ptr;
+    explicit WaylandShell(WaylandShellPrivate &dd);
+    explicit WaylandShell(WaylandObject *container, WaylandShellPrivate &dd);
 };
 
 template <typename T>
@@ -65,6 +64,15 @@ public:
         if (!container) return nullptr;
         return qobject_cast<T *>(container->extension(T::interfaceName()));
     }
+
+protected:
+    WaylandShellTemplate(WaylandShellPrivate &dd)
+        : WaylandShell(dd)
+    { }
+
+    WaylandShellTemplate(WaylandObject *container, WaylandShellPrivate &dd)
+        : WaylandShell(container,dd)
+    { }
 };
 
 } // namespace Compositor

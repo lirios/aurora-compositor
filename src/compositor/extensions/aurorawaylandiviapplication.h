@@ -24,7 +24,6 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandIviApplication : public WaylandShellTem
 public:
     WaylandIviApplication();
     WaylandIviApplication(WaylandCompositor *compositor);
-    ~WaylandIviApplication();
 
     void initialize() override;
 
@@ -35,8 +34,6 @@ Q_SIGNALS:
     void iviSurfaceRequested(Aurora::Compositor::WaylandSurface *surface, uint iviId, const Aurora::Compositor::WaylandResource &resource);
     void iviSurfaceCreated(Aurora::Compositor::WaylandIviSurface *iviSurface);
 
-private:
-    QScopedPointer<WaylandIviApplicationPrivate> const d_ptr;
 };
 
 } // namespace Compositor

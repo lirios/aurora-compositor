@@ -1,31 +1,5 @@
-/****************************************************************************
-**
-** Copyright (C) 2017 The Qt Company Ltd.
-** Contact: https://www.qt.io/licensing/
-**
-** This file is part of the QtWaylandCompositor module of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:GPL$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see https://www.qt.io/terms-conditions. For further
-** information use the contact form at https://www.qt.io/contact-us.
-**
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3 or (at your option) any later version
-** approved by the KDE Free Qt Foundation. The licenses are as published by
-** the Free Software Foundation and appearing in the file LICENSE.GPL3
-** included in the packaging of this file. Please review the following
-** information to ensure the GNU General Public License requirements will
-** be met: https://www.gnu.org/licenses/gpl-3.0.html.
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
+// Copyright (C) 2017 The Qt Company Ltd.
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
 #pragma once
 
@@ -34,7 +8,7 @@
 #include <QtCore/QString>
 
 #include <LiriAuroraCompositor/liriauroracompositorglobal.h>
-#include <LiriAuroraCompositor/aurorawaylandqmlinclude.h>
+#include <LiriAuroraCompositor/auroraqmlinclude.h>
 #include <LiriAuroraCompositor/aurorawaylandcompositorextension.h>
 #include <LiriAuroraCompositor/aurorawaylandkeyboard.h>
 #include <LiriAuroraCompositor/aurorawaylandview.h>
@@ -59,19 +33,18 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandSeat : public WaylandObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(WaylandSeat)
-    Q_PROPERTY(Aurora::Compositor::WaylandPointer *pointer READ pointer NOTIFY pointerChanged)
-    Q_PROPERTY(Aurora::Compositor::WaylandKeyboard *keyboard READ keyboard NOTIFY keyboardChanged)
-    Q_PROPERTY(Aurora::Compositor::WaylandTouch *touch READ touch NOTIFY touchChanged)
+
+#if QT_CONFIG(draganddrop)
     Q_PROPERTY(Aurora::Compositor::WaylandDrag *drag READ drag CONSTANT)
-    Q_PROPERTY(Aurora::Compositor::WaylandKeymap *keymap READ keymap CONSTANT)
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     Q_MOC_INCLUDE("aurorawaylanddrag.h")
+#endif
+    Q_PROPERTY(Aurora::Compositor::WaylandKeymap *keymap READ keymap CONSTANT)
     Q_MOC_INCLUDE("aurorawaylandkeymap.h")
     Q_MOC_INCLUDE("aurorawaylandview.h")
+
     QML_NAMED_ELEMENT(WaylandSeat)
     QML_ADDED_IN_VERSION(1, 0)
     QML_UNCREATABLE("")
-#endif
 public:
     enum CapabilityFlag {
         // The order should match the enum WL_SEAT_CAPABILITY_*
@@ -127,11 +100,13 @@ public:
 
     WaylandCompositor *compositor() const;
 
+#if QT_CONFIG(draganddrop)
     WaylandDrag *drag() const;
+#endif
 
     WaylandSeat::CapabilityFlags capabilities() const;
 
-    virtual bool isOwner(QInputEvent *inputEvent) const;
+    virtual bool isOwner(QEvent *inputEvent) const;
 
     static WaylandSeat *fromSeatResource(struct ::wl_resource *resource);
 
@@ -144,7 +119,6 @@ Q_SIGNALS:
     void cursorSurfaceRequested(Aurora::Compositor::WaylandSurface *surface, int hotspotX, int hotspotY, Aurora::Compositor::WaylandClient *client);
 
 private:
-    QScopedPointer<WaylandSeatPrivate> const d_ptr;
     void handleMouseFocusDestroyed();
 };
 

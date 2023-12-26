@@ -14,7 +14,7 @@
 // We mean it.
 //
 
-#include <QQuickItem>
+#include <QtQuick/private/qquickmousearea_p.h>
 
 #include <LiriAuroraCompositor/liriauroracompositorglobal.h>
 
@@ -31,14 +31,12 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandMouseTracker : public QQuickItem
     Q_PROPERTY(qreal mouseX READ mouseX NOTIFY mouseXChanged)
     Q_PROPERTY(qreal mouseY READ mouseY NOTIFY mouseYChanged)
     Q_PROPERTY(bool containsMouse READ hovered NOTIFY hoveredChanged)
+
     Q_PROPERTY(bool windowSystemCursorEnabled READ windowSystemCursorEnabled WRITE setWindowSystemCursorEnabled NOTIFY windowSystemCursorEnabledChanged)
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QML_NAMED_ELEMENT(WaylandMouseTracker)
     QML_ADDED_IN_VERSION(1, 0)
-#endif
 public:
     WaylandMouseTracker(QQuickItem *parent = nullptr);
-    ~WaylandMouseTracker();
 
     qreal mouseX() const;
     qreal mouseY() const;
@@ -47,7 +45,7 @@ public:
     bool windowSystemCursorEnabled() const;
     bool hovered() const;
 
-signals:
+Q_SIGNALS:
     void mouseXChanged();
     void mouseYChanged();
     void windowSystemCursorEnabledChanged();
@@ -59,9 +57,6 @@ protected:
     void hoverMoveEvent(QHoverEvent *event) override;
     void hoverEnterEvent(QHoverEvent *event) override;
     void hoverLeaveEvent(QHoverEvent *event) override;
-
-private:
-    QScopedPointer<WaylandMouseTrackerPrivate> const d_ptr;
 };
 
 } // namespace Compositor

@@ -47,3 +47,5 @@ bool QtKeyExtensionGlobal::postQtKeyEvent(QKeyEvent *event, WaylandSurface *surf
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawlqtkey_p.cpp"

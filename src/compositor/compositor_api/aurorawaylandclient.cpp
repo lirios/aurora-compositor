@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
 #include "aurorawaylandclient.h"
+#include <QtCore/private/qobject_p.h>
 
 #include <LiriAuroraCompositor/WaylandCompositor>
 #include <LiriAuroraCompositor/private/aurorawaylandcompositor_p.h>
@@ -14,7 +15,7 @@ namespace Aurora {
 
 namespace Compositor {
 
-class WaylandClientPrivate
+class WaylandClientPrivate : public QObjectPrivate
 {
 public:
     WaylandClientPrivate(WaylandCompositor *compositor, wl_client *_client)
@@ -23,6 +24,10 @@ public:
     {
         // Save client credentials
         wl_client_get_credentials(client, &pid, &uid, &gid);
+    }
+
+    ~WaylandClientPrivate() override
+    {
     }
 
     static void client_destroy_callback(wl_listener *listener, void *data)
@@ -75,8 +80,7 @@ public:
  * Constructs a WaylandClient for the \a compositor and the Wayland \a client.
  */
 WaylandClient::WaylandClient(WaylandCompositor *compositor, wl_client *client)
-    : QObject()
-    , d_ptr(new WaylandClientPrivate(compositor, client))
+    : QObject(*new WaylandClientPrivate(compositor, client))
 {
     Q_D(WaylandClient);
 

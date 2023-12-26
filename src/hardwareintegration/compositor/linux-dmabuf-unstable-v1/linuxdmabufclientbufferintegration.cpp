@@ -6,12 +6,9 @@
 
 #include <LiriAuroraCompositor/WaylandCompositor>
 #include <LiriAuroraCompositor/private/aurora-server-wayland.h>
+#include <LiriAuroraCompositor/private/aurorawltextureorphanage_p.h>
 #include <qpa/qplatformnativeinterface.h>
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QtOpenGL/QOpenGLTexture>
-#else
-#include <QtGui/QOpenGLTexture>
-#endif
 #include <QtCore/QVarLengthArray>
 #include <QtGui/QGuiApplication>
 #include <QtGui/QOpenGLContext>
@@ -259,7 +256,7 @@ void LinuxDmabufClientBufferIntegration::initializeHardware(struct ::wl_display 
 {
     m_linuxDmabuf.reset(new LinuxDmabuf(display, this));
 
-    const bool ignoreBindDisplay = !qEnvironmentVariableIsEmpty("QT_WAYLAND_IGNORE_BIND_DISPLAY") && qEnvironmentVariableIntValue("QT_WAYLAND_IGNORE_BIND_DISPLAY") != 0;
+    const bool ignoreBindDisplay = !qgetenv("QT_WAYLAND_IGNORE_BIND_DISPLAY").isEmpty() && qgetenv("QT_WAYLAND_IGNORE_BIND_DISPLAY").toInt() != 0;
 
     // initialize hardware extensions
     egl_query_dmabuf_modifiers_ext = reinterpret_cast<PFNEGLQUERYDMABUFMODIFIERSEXTPROC>(eglGetProcAddress("eglQueryDmaBufModifiersEXT"));
@@ -312,19 +309,13 @@ void LinuxDmabufClientBufferIntegration::initializeHardware(struct ::wl_display 
     }
 
     // request and sent formats/modifiers only after egl_display is bound
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QHash<uint32_t, QList<uint64_t>> modifiers;
-#else
-    QHash<uint32_t, QVector<uint64_t>> modifiers;
-#endif
-    const auto formats = supportedDrmFormats();
-    for (const auto &format : formats) {
+    for (const auto &format : supportedDrmFormats()) {
         modifiers[format] = supportedDrmModifiers(format);
     }
     m_linuxDmabuf->setSupportedModifiers(modifiers);
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 QList<uint32_t> LinuxDmabufClientBufferIntegration::supportedDrmFormats()
 {
     if (!egl_query_dmabuf_formats_ext)
@@ -360,107 +351,6 @@ QList<uint64_t> LinuxDmabufClientBufferIntegration::supportedDrmModifiers(uint32
     }
 
     return QList<uint64_t>();
-}
-#else
-QVector<uint32_t> LinuxDmabufClientBufferIntegration::supportedDrmFormats()
-{
-    if (!egl_query_dmabuf_formats_ext)
-        return QVector<uint32_t>();
-
-    // request total number of formats
-    EGLint count = 0;
-    EGLBoolean success = egl_query_dmabuf_formats_ext(m_eglDisplay, 0, nullptr, &count);
-
-    if (success && count > 0) {
-        QVector<uint32_t> drmFormats(count);
-        if (egl_query_dmabuf_formats_ext(m_eglDisplay, count, (EGLint *) drmFormats.data(), &count))
-            return drmFormats;
-    }
-
-    return QVector<uint32_t>();
-}
-
-QVector<uint64_t> LinuxDmabufClientBufferIntegration::supportedDrmModifiers(uint32_t format)
-{
-    if (!egl_query_dmabuf_modifiers_ext)
-        return QVector<uint64_t>();
-
-    // request total number of formats
-    EGLint count = 0;
-    EGLBoolean success = egl_query_dmabuf_modifiers_ext(m_eglDisplay, format, 0, nullptr, nullptr, &count);
-
-    if (success && count > 0) {
-        QVector<uint64_t> modifiers(count);
-        if (egl_query_dmabuf_modifiers_ext(m_eglDisplay, format, count, modifiers.data(), nullptr, &count)) {
-            return modifiers;
-        }
-    }
-
-    return QVector<uint64_t>();
-}
-#endif
-
-
-void LinuxDmabufClientBufferIntegration::deleteGLTextureWhenPossible(QOpenGLTexture *texture, QOpenGLContext *ctx) {
-    QMutexLocker locker(&m_orphanedTexturesLock);
-
-    Q_ASSERT(m_orphanedTextures.size() == m_orphanedTexturesAboutToBeDestroyedConnection.size());
-
-    m_orphanedTextures << texture;
-    m_orphanedTexturesAboutToBeDestroyedConnection << QObject::connect(ctx, &QOpenGLContext::aboutToBeDestroyed,
-                                                                       ctx, [this, texture]() {
-        this->deleteSpecificOrphanedTexture(texture);
-    }, Qt::DirectConnection);
-}
-
-
-void LinuxDmabufClientBufferIntegration::deleteOrphanedTextures()
-{
-    Q_ASSERT(QOpenGLContext::currentContext());
-
-    QMutexLocker locker(&m_orphanedTexturesLock);
-
-    if (!m_orphanedTextures.isEmpty())
-        qCDebug(qLcWaylandCompositorHardwareIntegration) << "About to delete some textures: "
-                                                           << m_orphanedTextures;
-
-    qDeleteAll(m_orphanedTextures);
-
-    for (QMetaObject::Connection con : m_orphanedTexturesAboutToBeDestroyedConnection)
-           QObject::disconnect(con);
-
-    m_orphanedTexturesAboutToBeDestroyedConnection.clear();
-    m_orphanedTextures.clear();
-}
-
-void LinuxDmabufClientBufferIntegration::deleteSpecificOrphanedTexture(QOpenGLTexture *texture)
-{
-    Q_ASSERT(m_orphanedTextures.size() == m_orphanedTexturesAboutToBeDestroyedConnection.size());
-
-    QMutexLocker locker(&m_orphanedTexturesLock);
-
-    // In this case, deleteOrphanedTextures was called while we entered (see lock!) this function!
-    if (m_orphanedTextures.length()==0) {
-        qCWarning(qLcWaylandCompositorHardwareIntegration)
-                << Q_FUNC_INFO
-                << "Looks like deleteOrphanedTextures() and this function where called simultaneously!"
-                << "This might cause issues!";
-        return;
-    }
-
-    int i = m_orphanedTextures.indexOf(texture);
-    Q_ASSERT(i!=-1);  // If it isn't empty (see above if), then it should be guaranteed to still contain this texture
-
-    m_orphanedTextures.removeAt(i);
-    QMetaObject::Connection con = m_orphanedTexturesAboutToBeDestroyedConnection.takeAt(i);
-
-    QObject::disconnect(con);
-    delete texture;
-
-    qCDebug(qLcWaylandCompositorHardwareIntegration)
-            << Q_FUNC_INFO
-            << "texture deleted due to QOpenGLContext::aboutToBeDestroyed!"
-            << "Pointer (now dead) was:" << (void*)texture;
 }
 
 void LinuxDmabufClientBufferIntegration::deleteImage(EGLImageKHR image)
@@ -509,7 +399,7 @@ LinuxDmabufClientBuffer::LinuxDmabufClientBuffer(LinuxDmabufClientBufferIntegrat
 QOpenGLTexture *LinuxDmabufClientBuffer::toOpenGlTexture(int plane)
 {
     // At this point we should have a valid OpenGL context, so it's safe to destroy textures
-    m_integration->deleteOrphanedTextures();
+    Internal::WaylandTextureOrphanage::instance()->deleteTextures();
 
     if (!m_buffer)
         return nullptr;

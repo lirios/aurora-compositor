@@ -8,6 +8,8 @@
 #include <LiriAuroraCompositor/private/aurorawaylandcompositorextension_p.h>
 #include <LiriAuroraCompositor/private/aurora-server-viewporter.h>
 
+#include <QtCore/qpointer.h>
+
 //
 //  W A R N I N G
 //  -------------
@@ -31,7 +33,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandViewporterPrivate
 {
     Q_DECLARE_PUBLIC(WaylandViewporter)
 public:
-    explicit WaylandViewporterPrivate(WaylandViewporter *self);
+    explicit WaylandViewporterPrivate() = default;
 
     class LIRIAURORACOMPOSITOR_EXPORT Viewport
             : public PrivateServer::wp_viewport

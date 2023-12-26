@@ -4,7 +4,7 @@
 #pragma once
 
 #include <LiriAuroraCompositor/liriauroracompositorglobal.h>
-#include <LiriAuroraCompositor/aurorawaylandqmlinclude.h>
+#include <LiriAuroraCompositor/auroraqmlinclude.h>
 #include <LiriAuroraCompositor/aurorawaylandcompositorextension.h>
 #include <LiriAuroraCompositor/WaylandOutput>
 
@@ -56,12 +56,10 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandCompositor : public WaylandObject
     Q_PROPERTY(bool useHardwareIntegrationExtension READ useHardwareIntegrationExtension WRITE setUseHardwareIntegrationExtension NOTIFY useHardwareIntegrationExtensionChanged)
     Q_PROPERTY(Aurora::Compositor::WaylandSeat *defaultSeat READ defaultSeat NOTIFY defaultSeatChanged)
     Q_PROPERTY(QVector<ShmFormat> additionalShmFormats READ additionalShmFormats WRITE setAdditionalShmFormats NOTIFY additionalShmFormatsChanged)
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     Q_MOC_INCLUDE("aurorawaylandseat.h")
     QML_NAMED_ELEMENT(WaylandCompositorBase)
     QML_UNCREATABLE("Cannot create instance of WaylandCompositorBase, use WaylandCompositor instead")
     QML_ADDED_IN_VERSION(1, 0)
-#endif
 public:
     // Duplicates subset of supported values wl_shm_format enum
     enum ShmFormat {
@@ -119,7 +117,7 @@ public:
     WaylandSeat *defaultSeat() const;
     QList<WaylandSeat *> seats() const;
 
-    WaylandSeat *seatFor(QInputEvent *inputEvent);
+    WaylandSeat *seatFor(QEvent *inputEvent);
 
     bool useHardwareIntegrationExtension() const;
     void setUseHardwareIntegrationExtension(bool use);
@@ -156,16 +154,13 @@ Q_SIGNALS:
     void additionalShmFormatsChanged();
 
 protected:
-    WaylandCompositor(WaylandCompositorPrivate &dptr, QObject *parent = nullptr);
-
     virtual void retainedSelectionReceived(QMimeData *mimeData);
     virtual WaylandSeat *createSeat();
     virtual WaylandPointer *createPointerDevice(WaylandSeat *seat);
     virtual WaylandKeyboard *createKeyboardDevice(WaylandSeat *seat);
     virtual WaylandTouch *createTouchDevice(WaylandSeat *seat);
 
-protected:
-    QScopedPointer<WaylandCompositorPrivate> const d_ptr;
+    WaylandCompositor(WaylandCompositorPrivate &dptr, QObject *parent = nullptr);
 };
 
 } // namespace Compositor

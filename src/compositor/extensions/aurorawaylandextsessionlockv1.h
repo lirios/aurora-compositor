@@ -1,5 +1,4 @@
-// SPDX-FileCopyrightText: 2022 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-//
+// SPDX-FileCopyrightText: 2022-2024 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #pragma once
@@ -27,7 +26,6 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandExtSessionLockManagerV1
 public:
     WaylandExtSessionLockManagerV1();
     WaylandExtSessionLockManagerV1(WaylandCompositor *compositor);
-    ~WaylandExtSessionLockManagerV1();
 
     bool isLocked() const;
     bool hasClientConnected() const;
@@ -41,9 +39,6 @@ signals:
     void lockedChanged();
     void hasClientConnectedChanged();
     void lockSurfaceCreated(Aurora::Compositor::WaylandExtSessionLockSurfaceV1 *lockSurface);
-
-private:
-    QScopedPointer<WaylandExtSessionLockManagerV1Private> const d_ptr;
 };
 
 class LIRIAURORACOMPOSITOR_EXPORT WaylandExtSessionLockSurfaceV1
@@ -74,9 +69,7 @@ public:
 #endif
 
 private:
-    QScopedPointer<WaylandExtSessionLockSurfaceV1Private> const d_ptr;
-
-    Q_PRIVATE_SLOT(d_func(), void handleSurfaceDamaged());
+    Q_PRIVATE_SLOT(d_func(), void handleSurfaceDamaged())
 
     void initialize() override;
 };

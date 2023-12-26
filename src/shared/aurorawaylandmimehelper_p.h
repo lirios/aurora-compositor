@@ -6,6 +6,7 @@
 #include <QString>
 #include <QByteArray>
 #include <QMimeData>
+#include <private/qglobal_p.h>
 
 namespace Aurora {
 

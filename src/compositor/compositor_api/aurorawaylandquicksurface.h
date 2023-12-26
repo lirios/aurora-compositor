@@ -21,10 +21,8 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandQuickSurface : public WaylandSurface
     Q_DECLARE_PRIVATE(WaylandQuickSurface)
     AURORA_COMPOSITOR_DECLARE_QUICK_CHILDREN(WaylandQuickSurface)
     Q_PROPERTY(bool useTextureAlpha READ useTextureAlpha WRITE setUseTextureAlpha NOTIFY useTextureAlphaChanged)
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QML_NAMED_ELEMENT(WaylandSurface)
     QML_ADDED_IN_VERSION(1, 0)
-#endif
 public:
     WaylandQuickSurface();
     WaylandQuickSurface(WaylandCompositor *compositor, WaylandClient *client, quint32 id, int version);
@@ -33,6 +31,9 @@ public:
     bool useTextureAlpha() const;
     void setUseTextureAlpha(bool useTextureAlpha);
 
+protected:
+    WaylandQuickSurface(WaylandQuickSurfacePrivate &dptr);
+
 Q_SIGNALS:
     void useTextureAlphaChanged();
 };
@@ -40,6 +41,4 @@ Q_SIGNALS:
 } // namespace Compositor
 
 } // namespace Aurora
-
-Q_DECLARE_METATYPE(Aurora::Compositor::WaylandQuickSurface*)
 

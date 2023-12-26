@@ -23,3 +23,5 @@ HardwareLayerIntegrationPlugin::~HardwareLayerIntegrationPlugin()
 } // namespace Compositor
 
 } // namespace Aurora
+
+#include "moc_aurorawlhardwarelayerintegrationplugin_p.cpp"

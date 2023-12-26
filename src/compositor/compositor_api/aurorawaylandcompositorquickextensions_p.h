@@ -1,31 +1,5 @@
-/****************************************************************************
-**
-** Copyright (C) 2020 The Qt Company Ltd.
-** Contact: https://www.qt.io/licensing/
-**
-** This file is part of the QtWaylandCompositor module of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:GPL$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see https://www.qt.io/terms-conditions. For further
-** information use the contact form at https://www.qt.io/contact-us.
-**
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3 or (at your option) any later version
-** approved by the KDE Free Qt Foundation. The licenses are as published by
-** the Free Software Foundation and appearing in the file LICENSE.GPL3
-** included in the packaging of this file. Please review the following
-** information to ensure the GNU General Public License requirements will
-** be met: https://www.gnu.org/licenses/gpl-3.0.html.
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
+// Copyright (C) 2020 The Qt Company Ltd.
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
 #pragma once
 
@@ -49,9 +23,7 @@
 #include <LiriAuroraCompositor/aurorawaylandqtwindowmanager.h>
 #include <LiriAuroraCompositor/aurorawaylandtextinputmanager.h>
 #include <QtCore/private/qglobal_p.h>
-#if QT_WAYLAND_TEXT_INPUT_V4_WIP
-#include <LiriAuroraCompositor/aurorawaylandtextinputmanagerv4.h>
-#endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
+#include <LiriAuroraCompositor/aurorawaylandtextinputmanagerv3.h>
 #include <LiriAuroraCompositor/aurorawaylandqttextinputmethodmanager.h>
 #include <LiriAuroraCompositor/aurorawaylandidleinhibitv1.h>
 
@@ -112,9 +84,7 @@ private:
 AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(WaylandQtWindowManager, QtWindowManager)
 AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(WaylandIdleInhibitManagerV1, IdleInhibitManagerV1)
 AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(WaylandTextInputManager, TextInputManager)
-#if QT_WAYLAND_TEXT_INPUT_V4_WIP
-AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(WaylandTextInputManagerV4, TextInputManagerV4)
-#endif // QT_WAYLAND_TEXT_INPUT_V4_WIP
+AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(WaylandTextInputManagerV3, TextInputManagerV3)
 AURORA_COMPOSITOR_DECLARE_QUICK_EXTENSION_NAMED_CLASS(WaylandQtTextInputMethodManager, QtTextInputMethodManager)
 
 } // namespace Compositor
