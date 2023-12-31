@@ -105,7 +105,7 @@ target_link_libraries(AuroraCompositorPrivate
         Qt6::CorePrivate
 )
 
-qt_add_resources(AuroraCompositor
+qt6_add_resources(AuroraCompositor
     PREFIX
         "/qt-project.org/wayland/compositor"
     FILES
