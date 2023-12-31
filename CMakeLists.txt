@@ -43,6 +43,9 @@ if(NOT LIRI_LOCAL_ECM)
     list(APPEND CMAKE_MODULE_PATH "${LCS_MODULE_PATH}")
 endif()
 
+## Liri specific setup common for all modules:
+include(LiriSetup)
+
 ## Add some paths to check for CMake modules:
 list(PREPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
