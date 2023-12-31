@@ -29,29 +29,21 @@ void WaylandSurfaceLayoutPrivate::applyExclusive(WaylandWlrLayerSurfaceV1 *layer
 
     switch (layerSurface->anchors()) {
     case WaylandWlrLayerSurfaceV1::LeftAnchor:
-    case WaylandWlrLayerSurfaceV1::LeftAnchor | WaylandWlrLayerSurfaceV1::TopAnchor | WaylandWlrLayerSurfaceV1::BottomAnchor: {
-        auto margin = layerSurface->exclusiveZone() + layerSurface->leftMargin();
-        availableGeometry->adjust(margin, 0, 0, 0);
+    case WaylandWlrLayerSurfaceV1::LeftAnchor | WaylandWlrLayerSurfaceV1::TopAnchor | WaylandWlrLayerSurfaceV1::BottomAnchor:
+        availableGeometry->adjust(layerSurface->leftMargin() + layerSurface->exclusiveZone(), 0, 0, 0);
         break;
-    }
     case WaylandWlrLayerSurfaceV1::RightAnchor:
-    case WaylandWlrLayerSurfaceV1::RightAnchor | WaylandWlrLayerSurfaceV1::TopAnchor | WaylandWlrLayerSurfaceV1::BottomAnchor: {
-        auto margin = layerSurface->exclusiveZone() + layerSurface->rightMargin();
-        availableGeometry->adjust(0, 0, -margin, 0);
+    case WaylandWlrLayerSurfaceV1::RightAnchor | WaylandWlrLayerSurfaceV1::TopAnchor | WaylandWlrLayerSurfaceV1::BottomAnchor:
+        availableGeometry->adjust(0, 0, -layerSurface->rightMargin() - layerSurface->exclusiveZone(), 0);
         break;
-    }
     case WaylandWlrLayerSurfaceV1::TopAnchor:
-    case WaylandWlrLayerSurfaceV1::TopAnchor | WaylandWlrLayerSurfaceV1::LeftAnchor | WaylandWlrLayerSurfaceV1::RightAnchor: {
-        auto margin = layerSurface->exclusiveZone() + layerSurface->topMargin();
-        availableGeometry->adjust(0, margin, 0, 0);
+    case WaylandWlrLayerSurfaceV1::TopAnchor | WaylandWlrLayerSurfaceV1::LeftAnchor | WaylandWlrLayerSurfaceV1::RightAnchor:
+        availableGeometry->adjust(0, layerSurface->topMargin() + layerSurface->exclusiveZone(), 0, 0);
         break;
-    }
     case WaylandWlrLayerSurfaceV1::BottomAnchor:
-    case WaylandWlrLayerSurfaceV1::BottomAnchor | WaylandWlrLayerSurfaceV1::LeftAnchor | WaylandWlrLayerSurfaceV1::RightAnchor: {
-        auto margin = layerSurface->exclusiveZone() + layerSurface->bottomMargin();
-        availableGeometry->adjust(0, 0, 0, -margin);
+    case WaylandWlrLayerSurfaceV1::BottomAnchor | WaylandWlrLayerSurfaceV1::LeftAnchor | WaylandWlrLayerSurfaceV1::RightAnchor:
+        availableGeometry->adjust(0, 0, 0, -layerSurface->bottomMargin() - layerSurface->exclusiveZone());
         break;
-    }
     default:
         break;
     }
@@ -130,13 +122,15 @@ void WaylandSurfaceLayoutPrivate::arrangeLayer(WaylandWlrLayerShellV1::Layer lay
         // Set geometry
         if (box.isValid()) {
             item->setPosition(box.topLeft());
-            applyExclusive(layerSurface, availableGeometry);
             layerSurface->sendConfigure(box.size().toSize());
             qCDebug(gLcAuroraCompositor) << "Layer surface" << layerSurface->nameSpace() << "geometry" << box;
         } else {
             qCWarning(gLcAuroraCompositor) << "Closing layer surface" << layerSurface->nameSpace() << "due to invalid geometry" << box;
             layerSurface->close();
         }
+
+        if (exclusive && layerSurface->exclusiveZone() > 0)
+            applyExclusive(layerSurface, availableGeometry);
     }
 }
 
@@ -154,17 +148,17 @@ void WaylandSurfaceLayoutPrivate::layoutItems()
     arrangeLayer(WaylandWlrLayerShellV1::BottomLayer, true, &availableGeometry);
     arrangeLayer(WaylandWlrLayerShellV1::BackgroundLayer, true, &availableGeometry);
 
-    // Set available geometry
-    if (output) {
-        output->setAvailableGeometry(availableGeometry.toRect());
-        qCDebug(gLcAuroraCompositor) << "Set output" << output->model() << "available geometry to" << availableGeometry;
-    }
-
     // Arrange non-exclusive layer surfaces from top to bottom
     arrangeLayer(WaylandWlrLayerShellV1::OverlayLayer, false, &availableGeometry);
     arrangeLayer(WaylandWlrLayerShellV1::TopLayer, false, &availableGeometry);
     arrangeLayer(WaylandWlrLayerShellV1::BottomLayer, false, &availableGeometry);
     arrangeLayer(WaylandWlrLayerShellV1::BackgroundLayer, false, &availableGeometry);
+
+    // Set available geometry
+    if (output) {
+        output->setAvailableGeometry(availableGeometry.toRect());
+        qCDebug(gLcAuroraCompositor) << "Set output" << output->model() << "available geometry to" << availableGeometry;
+    }
 
     // Stack items
     auto items = q->childItems();
