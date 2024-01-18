@@ -1,8 +1,10 @@
 # SPDX-FileCopyrightText: 2023 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
 # SPDX-License-Identifier: BSD-3-Clause
 
-## Find Aurora Scanner:
-find_package(AuroraScanner REQUIRED)
+if(NOT COMMAND aurora_generate_wayland_protocol_server_sources)
+    ## Find Aurora Scanner:
+    find_package(AuroraScanner REQUIRED)
+endif()
 
 ## Find Wayland:
 set(WAYLAND_MIN_VERSION "1.15")
