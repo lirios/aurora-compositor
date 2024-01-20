@@ -10,6 +10,7 @@
 #include <QRect>
 #include <QScreen>
 #include <QUuid>
+#include <QQmlEngine>
 
 #include <LiriAuroraPlatform/Edid>
 
@@ -22,6 +23,8 @@ class OutputPrivate;
 class LIRIAURORAPLATFORM_EXPORT Output : public QObject
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(PlatformOutput)
+    QML_UNCREATABLE("Cannot instantiate PlatformOutput")
     Q_PROPERTY(QUuid uuid READ uuid CONSTANT)
     Q_PROPERTY(QScreen *screen READ screen NOTIFY screenChanged)
     Q_PROPERTY(QString name READ name CONSTANT)

@@ -79,6 +79,10 @@ public:
 
     void handleWindowPixelSizeChanged();
 
+    WaylandOutput::Subpixel convertSubpixel(const Aurora::Platform::Output::Subpixel &subpixel);
+    WaylandOutput::Transform convertTransform(const Aurora::Platform::Output::Transform &transform);
+    void addModesFromPlatformOutput();
+
     QPointer<WaylandXdgOutputV1> xdgOutput;
 
 protected:
@@ -105,6 +109,7 @@ private:
     bool sizeFollowsWindow = false;
     bool initialized = false;
     QSize windowPixelSize;
+    Aurora::Platform::Output *platformOutput = nullptr;
 
     Q_DISABLE_COPY(WaylandOutputPrivate)
 
@@ -115,4 +120,3 @@ private:
 } // namespace Compositor
 
 } // namespace Aurora
-

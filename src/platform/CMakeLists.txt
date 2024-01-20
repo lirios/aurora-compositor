@@ -24,6 +24,7 @@ liri_add_module(AuroraPlatform
         inputmanager.cpp inputmanager.h
         keyboarddevice.cpp keyboarddevice.h keyboarddevice_p.h
         output.cpp output.h output_p.h
+        outputsmodel.cpp outputsmodel.h outputsmodel_p.h
         pointerdevice.cpp pointerdevice.h
         session.cpp session.h
         session_noop.cpp session_noop_p.h
@@ -39,6 +40,13 @@ liri_add_module(AuroraPlatform
         Qt6::Core
         Qt6::Gui
         Liri::AuroraCore
+        Qt6::Qml
 )
-
 liri_finalize_module(AuroraPlatform)
+
+ecm_add_qml_module(AuroraPlatform
+    URI Aurora.Platform
+    VERSION 1.0
+    GENERATE_PLUGIN_SOURCE
+)
+ecm_finalize_qml_module(AuroraPlatform)

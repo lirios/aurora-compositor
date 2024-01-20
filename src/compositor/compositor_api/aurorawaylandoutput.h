@@ -11,6 +11,8 @@
 #include <QtCore/QRect>
 #include <QtCore/QSize>
 
+#include <LiriAuroraPlatform/Output>
+
 struct wl_resource;
 
 class QWindow;
@@ -41,6 +43,7 @@ class LIRIAURORACOMPOSITOR_EXPORT WaylandOutput : public WaylandObject
     Q_PROPERTY(Aurora::Compositor::WaylandOutput::Transform transform READ transform WRITE setTransform NOTIFY transformChanged)
     Q_PROPERTY(int scaleFactor READ scaleFactor WRITE setScaleFactor NOTIFY scaleFactorChanged)
     Q_PROPERTY(bool sizeFollowsWindow READ sizeFollowsWindow WRITE setSizeFollowsWindow NOTIFY sizeFollowsWindowChanged)
+    Q_PROPERTY(Aurora::Platform::Output *platformOutput READ platformOutput WRITE setPlatformOutput NOTIFY platformOutputChanged)
 
     QML_NAMED_ELEMENT(WaylandOutputBase)
     QML_ADDED_IN_VERSION(1, 0)
@@ -120,6 +123,9 @@ public:
     bool physicalSizeFollowsSize() const;
     void setPhysicalSizeFollowsSize(bool follow);
 
+    Aurora::Platform::Output *platformOutput() const;
+    void setPlatformOutput(Aurora::Platform::Output *platformOutput);
+
     void frameStarted();
     void sendFrameCallbacks();
 
@@ -145,6 +151,7 @@ Q_SIGNALS:
     void manufacturerChanged();
     void modelChanged();
     void windowDestroyed();
+    void platformOutputChanged();
 
 protected:
     bool event(QEvent *event) override;

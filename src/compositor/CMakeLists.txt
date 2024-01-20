@@ -94,6 +94,7 @@ liri_add_module(AuroraCompositor
     LIBRARIES
         Qt6::GuiPrivate
         Liri::AuroraGlobalPrivate
+        Liri::AuroraPlatform
     PKGCONFIG_DEPENDENCIES
         Qt6Core
         Qt6Gui
@@ -235,7 +236,8 @@ if (TARGET Qt6::Qml)
         URI Aurora.Compositor
         VERSION 1.0
         GENERATE_PLUGIN_SOURCE
-        DEPENDENCIES QtQuick
+        DEPENDENCIES Qt.Quick
+        IMPORTS Aurora.Platform
     )
 
     ecm_target_qml_sources(AuroraCompositor

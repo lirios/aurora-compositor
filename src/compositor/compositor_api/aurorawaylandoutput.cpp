@@ -187,6 +187,64 @@ void WaylandOutputPrivate::handleWindowPixelSizeChanged()
     }
 }
 
+WaylandOutput::Subpixel
+WaylandOutputPrivate::convertSubpixel(const Aurora::Platform::Output::Subpixel &subpixel)
+{
+    switch (subpixel) {
+    case Aurora::Platform::Output::Subpixel::Unknown:
+        return WaylandOutput::SubpixelUnknown;
+    case Aurora::Platform::Output::Subpixel::None:
+        return WaylandOutput::SubpixelNone;
+    case Aurora::Platform::Output::Subpixel::HorizontalRGB:
+        return WaylandOutput::SubpixelHorizontalRgb;
+    case Aurora::Platform::Output::Subpixel::HorizontalBGR:
+        return WaylandOutput::SubpixelHorizontalBgr;
+    case Aurora::Platform::Output::Subpixel::VerticalRGB:
+        return WaylandOutput::SubpixelVerticalRgb;
+    case Aurora::Platform::Output::Subpixel::VerticalBGR:
+        return WaylandOutput::SubpixelVerticalBgr;
+    }
+}
+
+WaylandOutput::Transform
+WaylandOutputPrivate::convertTransform(const Aurora::Platform::Output::Transform &transform)
+{
+    switch (transform) {
+    case Aurora::Platform::Output::Transform::Normal:
+        return WaylandOutput::TransformNormal;
+    case Aurora::Platform::Output::Transform::Rotated90:
+        return WaylandOutput::Transform90;
+    case Aurora::Platform::Output::Transform::Rotated180:
+        return WaylandOutput::Transform180;
+    case Aurora::Platform::Output::Transform::Rotated270:
+        return WaylandOutput::Transform270;
+    case Aurora::Platform::Output::Transform::Flipped:
+        return WaylandOutput::TransformFlipped;
+    case Aurora::Platform::Output::Transform::Flipped90:
+        return WaylandOutput::TransformFlipped90;
+    case Aurora::Platform::Output::Transform::Flipped180:
+        return WaylandOutput::TransformFlipped180;
+    case Aurora::Platform::Output::Transform::Flipped270:
+        return WaylandOutput::TransformFlipped270;
+    }
+}
+
+void WaylandOutputPrivate::addModesFromPlatformOutput()
+{
+    Q_Q(WaylandOutput);
+
+    if (platformOutput) {
+        const auto modes = platformOutput->modes();
+        for (const auto &mode : modes) {
+            WaylandOutputMode waylandMode(mode.size, mode.refreshRate);
+            q->addMode(waylandMode);
+
+            if (mode.flags.testFlag(Aurora::Platform::Output::Mode::Flag::Current))
+                q->setCurrentMode(waylandMode);
+        }
+    }
+}
+
 void WaylandOutputPrivate::addView(WaylandView *view, WaylandSurface *surface)
 {
     for (int i = 0; i < surfaceViews.size(); i++) {
@@ -926,6 +984,64 @@ void WaylandOutput::sendFrameCallbacks()
         }
     }
     wl_display_flush_clients(d->compositor->display());
+}
+
+Aurora::Platform::Output *WaylandOutput::platformOutput() const
+{
+    Q_D(const WaylandOutput);
+    return d->platformOutput;
+}
+
+void WaylandOutput::setPlatformOutput(Aurora::Platform::Output *platformOutput)
+{
+    Q_D(WaylandOutput);
+
+    if (d->platformOutput == platformOutput)
+        return;
+
+    if (d->initialized) {
+        qWarning("Setting PlatformOutput %p on WaylandOutput %p is not "
+                 "supported after WaylandOutput has been initialized",
+                 static_cast<void *>(platformOutput), static_cast<void *>(this));
+        return;
+    }
+
+    d->platformOutput = platformOutput;
+    Q_EMIT platformOutputChanged();
+
+    if (platformOutput) {
+        if (d->sizeFollowsWindow) {
+            setSizeFollowsWindow(false);
+            qWarning("WaylandOutput is directly retrieving information from the "
+                     "underlying platform: size follows window has been disabled");
+        }
+
+        setPosition(d->platformOutput->globalPosition());
+        setManufacturer(d->platformOutput->manufacturer());
+        setModel(d->platformOutput->model());
+        setPhysicalSize(d->platformOutput->physicalSize());
+        setSubpixel(d->convertSubpixel(d->platformOutput->subpixel()));
+        setTransform(d->convertTransform(d->platformOutput->transform()));
+        setScaleFactor(d->platformOutput->scale());
+
+        d->addModesFromPlatformOutput();
+
+        connect(d->platformOutput, &Aurora::Platform::Output::modeAdded, this,
+                [this](const Aurora::Platform::Output::Mode &mode) {
+                    WaylandOutputMode waylandMode(mode.size, mode.refreshRate);
+                    addMode(waylandMode);
+
+                    if (mode.flags.testFlag(Aurora::Platform::Output::Mode::Flag::Current))
+                        setCurrentMode(waylandMode);
+                });
+        connect(d->platformOutput, &Aurora::Platform::Output::modeChanged, this,
+                [this](const Aurora::Platform::Output::Mode &mode) {
+                    WaylandOutputMode waylandMode(mode.size, mode.refreshRate);
+                    setCurrentMode(waylandMode);
+                });
+    } else {
+        disconnect(d->platformOutput, nullptr, this, nullptr);
+    }
 }
 
 /*!
