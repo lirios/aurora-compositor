@@ -62,6 +62,8 @@ public:
     void preInit();
     void init();
 
+    void verifyXdgRuntimeDir();
+
     void destroySurface(WaylandSurface *surface);
     void unregisterSurface(WaylandSurface *surface);
 

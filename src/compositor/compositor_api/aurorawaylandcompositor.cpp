@@ -38,8 +38,12 @@
 #include "aurorawaylandsharedmemoryformathelper_p.h"
 
 #include <QtCore/QCoreApplication>
+#include <QtCore/QDir>
+#include <QtCore/QFile>
+#include <QtCore/QFileInfo>
 #include <QtCore/QStringList>
 #include <QtCore/QSocketNotifier>
+#include <QtCore/QStandardPaths>
 
 #include <QtGui/QDesktopServices>
 #include <QtGui/QScreen>
@@ -149,6 +153,8 @@ WaylandCompositorPrivate::WaylandCompositorPrivate(WaylandCompositor *compositor
         ownsDisplay = true;
     }
 
+    verifyXdgRuntimeDir();
+
     eventHandler.reset(new Internal::WindowSystemEventHandler(compositor));
     timer.start();
 
@@ -161,6 +167,48 @@ WaylandCompositorPrivate::WaylandCompositorPrivate(WaylandCompositor *compositor
         return;
     }
 #endif
+}
+
+void WaylandCompositorPrivate::verifyXdgRuntimeDir()
+{
+    const auto runtimePath = QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation);
+    if (runtimePath.isEmpty()) {
+        qFatal("The XDG_RUNTIME_DIR environment variable is not set.\n"
+               "Refer to your distribution on how to get it, or read\n"
+               "http://www.freedesktop.org/wiki/Specifications/basedir-spec\n"
+               "on how to implement it.");
+    }
+
+    const auto runtimeDir = QDir(runtimePath);
+    if (!runtimeDir.exists()) {
+        qFatal("Runtime directory does not exist, please check the "
+               "XDG_RUNTIME_DIR environment variable.\n"
+               "Refer to your distribution on how to get it, or read\n"
+               "http://www.freedesktop.org/wiki/Specifications/basedir-spec\n"
+               "on how to implement it.");
+    }
+
+    // Check directory permissions
+    QFileInfo fileInfo(runtimePath);
+    if (!(fileInfo.permissions() & QFile::ReadUser) || !(fileInfo.permissions() & QFile::WriteUser)
+        || !(fileInfo.permissions() & QFile::ExeUser)) {
+        qFatal("Runtime directory \"%s\" does not have 700 permissions.\n"
+               "Please check the XDG_RUNTIME_DIR environment variable."
+               "Refer to your distribution on how to get it, or read\n"
+               "http://www.freedesktop.org/wiki/Specifications/basedir-spec\n"
+               "on how to implement it.",
+               qPrintable(runtimePath));
+    }
+
+    // Check owner
+    if (fileInfo.ownerId() != getuid()) {
+        qFatal("Current user is not the owner of the runtime directory."
+               "Please check the XDG_RUNTIME_DIR environment variable."
+               "Refer to your distribution on how to get it, or read\n"
+               "http://www.freedesktop.org/wiki/Specifications/basedir-spec\n"
+               "on how to implement it.",
+               qPrintable(runtimePath));
+    }
 }
 
 void WaylandCompositorPrivate::init()
