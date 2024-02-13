@@ -6,6 +6,7 @@
 
 #include <QObject>
 
+#include <LiriAuroraPlatform/DeviceIntegration>
 #include <LiriAuroraPlatform/Session>
 
 #include <EGL/egl.h>
@@ -48,6 +49,7 @@ public:
     static DrmBackend *instance();
 
 Q_SIGNALS:
+    void statusChanged(DeviceIntegration::Status status);
     void deviceAdded(DrmDevice *device);
     void deviceRemoved(DrmDevice *device);
     void outputAdded(DrmOutput *output);

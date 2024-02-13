@@ -34,28 +34,25 @@ namespace Platform {
 
 Q_GLOBAL_STATIC(DrmBackend, gDrmBackend)
 
-static QStringList splitPathList(const QString &inputString, const QChar &delimiter)
+static QStringList splitPathList(const QString &input, const QChar delimiter)
 {
-    QStringList result;
-    QString segment;
-
-    auto isDelimiter = [delimiter](QChar c) { return c == delimiter; };
-
-    for (QChar c : inputString) {
-        if (c == QLatin1Char('\\') && !segment.isEmpty()) {
-            segment.chop(1); // Remove the backslash and continue
-        } else if (std::ranges::any_of(segment, isDelimiter) && !segment.isEmpty()) {
-            result.push_back(std::move(segment));
-            segment.clear();
+    QStringList ret;
+    QString tmp;
+    for (int i = 0; i < input.size(); i++) {
+        if (input[i] == delimiter) {
+            if (i > 0 && input[i - 1] == QLatin1Char('\\')) {
+                tmp[tmp.size() - 1] = delimiter;
+            } else if (!tmp.isEmpty()) {
+                ret.append(tmp);
+                tmp = QString();
+            }
         } else {
-            segment.push_back(c);
+            tmp.append(input[i]);
         }
     }
-
-    if (!segment.isEmpty())
-        result.push_back(std::move(segment));
-
-    return result;
+    if (!tmp.isEmpty())
+        ret.append(tmp);
+    return ret;
 }
 
 DrmBackend::DrmBackend(QObject *parent)
@@ -66,9 +63,9 @@ DrmBackend::DrmBackend(QObject *parent)
     , m_explicitDevices(splitPathList(qEnvironmentVariable("AURORA_DRM_DEVICES"), QLatin1Char(':')))
 {
     if (m_session)
-        qCFatal(gLcDrm, "Session support not available, aborting...");
+        qCInfo(gLcDrm, "Session support: %s", qPrintable(m_session->name()));
     else
-        qCInfo(gLcDrm) << "Session support:" << m_session->name();
+        qCFatal(gLcDrm, "Session support not available, aborting...");
 
     connect(m_udevMonitor, &UdevMonitor::deviceAdded, this, &DrmBackend::handleDeviceAdded);
     connect(m_udevMonitor, &UdevMonitor::deviceRemoved, this, &DrmBackend::handleDeviceRemoved);

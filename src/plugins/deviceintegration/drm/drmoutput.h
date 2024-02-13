@@ -15,13 +15,15 @@ class DrmOutput : public Output
 {
     Q_OBJECT
 public:
-    explicit DrmOutput(QObject *parent = nullptr);
+    explicit DrmOutput(const std::shared_ptr<DrmConnector> &connector, QObject *parent = nullptr);
     ~DrmOutput() override;
 
-    QString name() const override;
-    QString description() const override;
+    DrmConnector *connector() const;
 
     void destroy();
+
+private:
+    const std::shared_ptr<DrmConnector> m_connector;
 };
 
 } // namespace Platform

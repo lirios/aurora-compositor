@@ -12,7 +12,6 @@ qt6_add_plugin(AuroraDeviceIntegrationDrm
     SHARED
     CLASS_NAME DrmIntegrationPlugin
     MANUAL_FINALIZATION
-    c_ptr.h
     drmbackend.cpp drmbackend.h
     drmblob.cpp drmblob.h
     drmcrtc.cpp drmcrtc.h
@@ -27,7 +26,6 @@ qt6_add_plugin(AuroraDeviceIntegrationDrm
     drmpointer.h
     drmproperty.cpp drmproperty.h
     drmwindow.cpp drmwindow.h
-    edid.cpp edid.h
     filedescriptor.cpp filedescriptor.h
     udev.cpp udev.h
     ${AuroraDeviceIntegrationDrm_SOURCES}
@@ -48,7 +46,6 @@ target_link_libraries(AuroraDeviceIntegrationDrm
         PkgConfig::Libdrm
         PkgConfig::Gbm
         PkgConfig::Libxcvt
-        PkgConfig::LibDisplayInfo
         PkgConfig::Libudev
         Liri::AuroraPlatformPrivate
 )

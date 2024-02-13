@@ -55,6 +55,20 @@ DrmDevice::DrmDevice(const QString &path, int fd, dev_t deviceId, QObject *paren
     uint64_t capability = 0;
     m_hasAddFB2ModifiersSupport =
             drmGetCap(m_fd, DRM_CAP_ADDFB2_MODIFIERS, &capability) == 0 && capability == 1;
+    if (drmGetCap(m_fd, DRM_CAP_CURSOR_WIDTH, &capability) == 0)
+        m_cursorSize.setWidth(capability);
+    if (drmGetCap(m_fd, DRM_CAP_CURSOR_HEIGHT, &capability) == 0)
+        m_cursorSize.setHeight(capability);
+    if (drmGetCap(m_fd, DRM_CAP_TIMESTAMP_MONOTONIC, &capability) == 0 && capability == 1)
+        m_presentationClock = CLOCK_MONOTONIC;
+    else
+        m_presentationClock = CLOCK_REALTIME;
+    qCDebug(gLcDrm, "Capabilities for \"%s\":", qPrintable(path));
+    qCDebug(gLcDrm) << "\tdrmModeAddFB2WithModifiers:"
+                    << (m_hasAddFB2ModifiersSupport ? "supported" : "not supported");
+    qCDebug(gLcDrm, "\tCursor size: %dx%d", m_cursorSize.width(), m_cursorSize.height());
+    qCDebug(gLcDrm) << "\tPresentation clock:"
+                    << (m_presentationClock == CLOCK_MONOTONIC ? "monotonic" : "realtime");
 
     // Reopen the drm node to create a new GEM handle namespace
     m_gbmFd = FileDescriptor(open(qPrintable(path), O_RDWR | O_CLOEXEC));
@@ -178,8 +192,6 @@ bool DrmDevice::updateOutputs()
     if (!isActive())
         return false;
 
-    // waitIdle();
-
     // Get resources
     DrmUniquePtr<drmModeRes> resources(drmModeGetResources(m_fd));
     if (!resources) {
@@ -202,21 +214,130 @@ bool DrmDevice::updateOutputs()
                                      [currentConnector](const auto &connector) {
                                          return connector->id() == currentConnector;
                                      });
+        if (it == m_connectors.end()) {
+            auto conn = std::make_shared<DrmConnector>(this, currentConnector);
+            if (!conn->init())
+                continue;
+            existing.push_back(conn.get());
+            m_allObjects.push_back(conn.get());
+            m_connectors.push_back(std::move(conn));
+        } else {
+            (*it)->updateProperties();
+            existing.push_back(it->get());
+        }
+    }
+    for (auto it = m_connectors.begin(); it != m_connectors.end();) {
+        DrmConnector *conn = it->get();
+        const auto output = findOutput(conn->id());
+        const bool stillExists = existing.contains(conn);
+        if (!stillExists || !conn->isConnected()) {
+            if (output) {
+                removeOutput(output);
+            }
+        } else if (!output) {
+            qCDebug(gLcDrm, "New %soutput on \"%s\": %s",
+                    conn->isNonDesktop() ? "non-desktop " : "", qPrintable(m_path),
+                    qPrintable(conn->modelName()));
+#if 0
+            const auto pipeline = conn->pipeline();
+            m_pipelines << pipeline;
+#endif
+            auto output = new DrmOutput(*it);
+            m_drmOutputs << output;
+            addedOutputs << output;
+            Q_EMIT outputAdded(output);
+#if 0
+            pipeline->setLayers(m_platform->renderBackend()->createPrimaryLayer(pipeline),
+                                m_platform->renderBackend()->createCursorLayer(pipeline));
+            pipeline->setActive(!conn->isNonDesktop());
+            pipeline->applyPendingChanges();
+#endif
+        }
+        if (stillExists) {
+            it++;
+        } else {
+            m_allObjects.removeOne(it->get());
+            it = m_connectors.erase(it);
+        }
     }
 
-    // Create connectors
-    for (int i = 0; i < resources->count_connectors; i++) { }
+    // Update crtc properties
+    for (const auto &crtc : std::as_const(m_crtcs)) {
+        crtc->updateProperties();
+    }
 
-    return false;
+    // Update plane properties
+    for (const auto &plane : std::as_const(m_planes)) {
+        plane->updateProperties();
+    }
+
+#if 0
+    DrmPipeline::Error err = testPendingConfiguration();
+    if (err == DrmPipeline::Error::None) {
+        for (const auto &pipeline : std::as_const(m_pipelines)) {
+            pipeline->applyPendingChanges();
+            if (pipeline->output() && !pipeline->crtc()) {
+                pipeline->setEnable(false);
+                pipeline->output()->updateEnabled(false);
+            }
+        }
+    } else if (err == DrmPipeline::Error::NoPermission) {
+        for (const auto &pipeline : std::as_const(m_pipelines)) {
+            pipeline->revertPendingChanges();
+        }
+        for (const auto &output : std::as_const(addedOutputs)) {
+            removeOutput(output);
+            const auto it = std::find_if(
+                    m_connectors.begin(), m_connectors.end(),
+                    [output](const auto &conn) { return conn.get() == output->connector(); });
+            Q_ASSERT(it != m_connectors.end());
+            m_allObjects.removeOne(it->get());
+            m_connectors.erase(it);
+        }
+    } else {
+        qCWarning(KWIN_DRM, "Failed to find a working setup for new outputs!");
+        for (const auto &pipeline : std::as_const(m_pipelines)) {
+            pipeline->revertPendingChanges();
+        }
+        for (const auto &output : std::as_const(addedOutputs)) {
+            output->updateEnabled(false);
+            output->pipeline()->setEnable(false);
+            output->pipeline()->applyPendingChanges();
+        }
+    }
+#endif
+
+    return true;
 }
 
 void DrmDevice::removeOutputs()
 {
 }
 
+void DrmDevice::removeOutput(DrmOutput *output)
+{
+    qCDebug(gLcDrm) << "Removing output" << output;
+    // m_pipelines.removeOne(output->pipeline());
+    // output->pipeline()->setLayers(nullptr, nullptr);
+    m_drmOutputs.removeOne(output);
+    Q_EMIT outputRemoved(output);
+    // output->unref();
+}
+
 QList<DrmOutput *> DrmDevice::drmOutputs() const
 {
     return m_drmOutputs;
+}
+
+DrmOutput *DrmDevice::findOutput(quint32 connectorId)
+{
+    auto it = std::find_if(
+            m_drmOutputs.constBegin(), m_drmOutputs.constEnd(),
+            [connectorId](DrmOutput *o) { return o->connector()->id() == connectorId; });
+    if (it != m_drmOutputs.constEnd()) {
+        return *it;
+    }
+    return nullptr;
 }
 
 void DrmDevice::initDrmResources()
@@ -297,9 +418,8 @@ void DrmDevice::initDrmResources()
             const auto notconnected = std::find_if(list.begin(), list.end(), [](DrmPlane *plane) {
                 return plane->crtcId.value() == 0;
             });
-            if (notconnected != list.end()) {
+            if (notconnected != list.end())
                 return *notconnected;
-            }
             return list.empty() ? nullptr : list.front();
         };
 

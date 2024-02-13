@@ -27,6 +27,12 @@ DrmIntegration::~DrmIntegration()
 
 void DrmIntegration::initialize()
 {
+    connect(DrmBackend::instance(), &DrmBackend::statusChanged, this,
+            [this](DeviceIntegration::Status status) { DeviceIntegration::setStatus(status); });
+    connect(DrmBackend::instance(), &DrmBackend::outputAdded, this, &DrmIntegration::outputAdded);
+    connect(DrmBackend::instance(), &DrmBackend::outputRemoved, this,
+            &DrmIntegration::outputRemoved);
+
     DrmBackend::instance()->initialize();
 }
 

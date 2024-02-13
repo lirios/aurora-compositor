@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QList>
+#include <QSize>
 
 #include <gbm.h>
 
@@ -52,8 +53,11 @@ public:
 
     bool updateOutputs();
     void removeOutputs();
+    void removeOutput(DrmOutput *output);
 
     QList<DrmOutput *> drmOutputs() const;
+
+    DrmOutput *findOutput(quint32 connectorId);
 
 Q_SIGNALS:
     void activeChanged(bool active);
@@ -78,6 +82,9 @@ private:
     bool m_removed = false;
     bool m_hasAtomicSupport = false;
     bool m_hasAddFB2ModifiersSupport = false;
+
+    QSize m_cursorSize = { 64, 64 };
+    clockid_t m_presentationClock;
 
     QList<DrmObject *> m_allObjects;
     std::vector<std::unique_ptr<DrmPlane>> m_planes;

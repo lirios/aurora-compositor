@@ -15,7 +15,6 @@
 #include "drmblob.h"
 #include "drmobject.h"
 #include "drmpointer.h"
-#include "edid.h"
 
 namespace Aurora {
 
